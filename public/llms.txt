@@ -1,0 +1,22 @@
+# byteflow.tools
+
+byteflow.tools is a privacy-first collection of developer tools that run locally in the browser.
+
+## Canonical
+- https://byteflow.tools/
+
+## Discovery
+- Sitemap: https://byteflow.tools/sitemap.xml
+
+## Locales
+- en
+- zh-CN
+- zh-TW
+- ja
+- ko
+- de
+- fr
+
+## Contact
+- Email: contact@byteflow.tools
+- GitHub: https://github.com/baixiangcpp/byteflow.tools

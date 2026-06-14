@@ -1,0 +1,69 @@
+name: Bug report
+description: Report a reproducible problem in Byteflow.
+title: "bug: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Remove secrets, private payloads, customer data, and production tokens before sharing examples or screenshots.
+  - type: input
+    id: url
+    attributes:
+      label: Affected URL or tool
+      description: Link the page or name the tool where the issue appears.
+      placeholder: https://byteflow.tools/en/json-formatter
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: Provide the smallest reproducible sequence.
+      placeholder: |
+        1. Open ...
+        2. Paste sanitized input ...
+        3. Click ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What happened instead? Include console errors if relevant.
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and OS
+      placeholder: Chrome 126 on macOS 15
+    validations:
+      required: true
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - Hosted site
+        - Local development
+        - Static export build
+        - Documentation
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Screenshots or additional context
+      description: Attach sanitized screenshots, recordings, or sample data.
+    validations:
+      required: false

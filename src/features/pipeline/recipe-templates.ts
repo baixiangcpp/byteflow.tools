@@ -1,0 +1,158 @@
+import { getPipelineAdapter } from "./adapter-registry"
+import { DEFAULT_RECIPE_SETTINGS, RECIPE_SCHEMA_VERSION, type RecipeDocument, type RecipeEdge, type RecipeStep } from "./recipe-types"
+
+type TemplateStepDefinition = {
+    toolKey: string
+    labelKey: string
+    options: Record<string, unknown>
+}
+
+export interface PipelineRecipeTemplate {
+    id: string
+    titleKey: string
+    descriptionKey: string
+    sampleInput: string
+    steps: readonly TemplateStepDefinition[]
+}
+
+export interface RecipeFromTemplateResult {
+    recipe: RecipeDocument
+    initialInput: string
+}
+
+export const PIPELINE_RECIPE_TEMPLATES = [
+    {
+        id: "json_minify_base64url",
+        titleKey: "template_json_minify_base64url_title",
+        descriptionKey: "template_json_minify_base64url_description",
+        sampleInput: '{ "user": "alice@example.com", "role": "admin", "active": true }',
+        steps: [
+            {
+                toolKey: "json_formatter",
+                labelKey: "template_step_minify_json",
+                options: { mode: "minify", indent: 2 },
+            },
+            {
+                toolKey: "base64_encode_decode",
+                labelKey: "template_step_base64url_encode",
+                options: { operation: "encode", urlSafe: true },
+            },
+        ],
+    },
+    {
+        id: "url_decode_json_pretty",
+        titleKey: "template_url_decode_json_title",
+        descriptionKey: "template_url_decode_json_description",
+        sampleInput: "%7B%22user%22%3A%22alice%40example.com%22%2C%22active%22%3Atrue%7D",
+        steps: [
+            {
+                toolKey: "url_encode_decode",
+                labelKey: "template_step_url_decode",
+                options: { operation: "decode", mode: "component" },
+            },
+            {
+                toolKey: "json_formatter",
+                labelKey: "template_step_pretty_json",
+                options: { mode: "pretty", indent: 2 },
+            },
+        ],
+    },
+    {
+        id: "clean_copied_config",
+        titleKey: "template_clean_copied_config_title",
+        descriptionKey: "template_clean_copied_config_description",
+        sampleInput: "API_KEY\u200b=\u00a0abc123\nNAME\u3000=\tByteflow",
+        steps: [
+            {
+                toolKey: "invisible_chars_detector",
+                labelKey: "template_step_clean_invisible_chars",
+                options: {
+                    removeZeroWidth: true,
+                    normalizeSpaces: true,
+                    removeControlExceptNewlineTab: true,
+                },
+            },
+            {
+                toolKey: "multiple_whitespace_remover",
+                labelKey: "template_step_normalize_whitespace",
+                options: {},
+            },
+        ],
+    },
+    {
+        id: "scrub_log_secrets",
+        titleKey: "template_scrub_log_secrets_title",
+        descriptionKey: "template_scrub_log_secrets_description",
+        sampleInput: "2026-06-10T12:00:00Z WARN user=alice@example.com ip=203.0.113.10 Authorization: Bearer secret-token-value-12345",
+        steps: [
+            {
+                toolKey: "invisible_chars_detector",
+                labelKey: "template_step_clean_invisible_chars",
+                options: {
+                    removeZeroWidth: true,
+                    normalizeSpaces: true,
+                    removeControlExceptNewlineTab: true,
+                },
+            },
+            {
+                toolKey: "log_scrubber",
+                labelKey: "template_step_scrub_log_secrets",
+                options: {},
+            },
+        ],
+    },
+] as const satisfies readonly PipelineRecipeTemplate[]
+
+export function getPipelineRecipeTemplate(templateId: string): PipelineRecipeTemplate | undefined {
+    return PIPELINE_RECIPE_TEMPLATES.find((template) => template.id === templateId)
+}
+
+export function createRecipeFromTemplate(
+    template: PipelineRecipeTemplate,
+    options: {
+        recipeId: string
+        now?: string
+        createStepId: (index: number, toolKey: string) => string
+        translate?: (key: string) => string
+    },
+): RecipeFromTemplateResult {
+    const now = options.now ?? new Date().toISOString()
+    const translate = options.translate ?? ((key: string) => key)
+    const steps: RecipeStep[] = template.steps.map((step, index) => {
+        const adapter = getPipelineAdapter(step.toolKey)
+        if (!adapter) {
+            throw new Error(`Missing pipeline adapter for template step: ${step.toolKey}`)
+        }
+
+        return {
+            id: options.createStepId(index, step.toolKey),
+            toolKey: adapter.toolKey,
+            label: translate(step.labelKey),
+            adapterVersion: adapter.version,
+            inputMode: "previous_output",
+            options: {
+                ...adapter.defaultOptions,
+                ...step.options,
+            },
+        }
+    })
+    const edges: RecipeEdge[] = steps.slice(0, -1).map((step, index) => ({
+        fromStepId: step.id,
+        toStepId: steps[index + 1].id,
+    }))
+
+    return {
+        recipe: {
+            schemaVersion: RECIPE_SCHEMA_VERSION,
+            id: options.recipeId,
+            name: translate(template.titleKey),
+            description: translate(template.descriptionKey),
+            createdAt: now,
+            updatedAt: now,
+            steps,
+            edges,
+            settings: { ...DEFAULT_RECIPE_SETTINGS },
+        },
+        initialInput: template.sampleInput,
+    }
+}

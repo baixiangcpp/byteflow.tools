@@ -1,0 +1,23 @@
+{
+  "generatedAt": "2026-03-07T00:00:00.000Z",
+  "source": "npm run check:content-template:quality",
+  "rollout": {
+    "defaultMode": "fail"
+  },
+  "minimums": {
+    "introTextChars": 40,
+    "useCaseItems": 3,
+    "inputExampleBlocks": 2,
+    "outputExampleBlocks": 2,
+    "faqItems": 3
+  },
+  "maxPlaceholderSignalPages": {
+    "en": 97,
+    "zh-CN": 0,
+    "zh-TW": 0,
+    "ja": 0,
+    "ko": 0,
+    "de": 0,
+    "fr": 0
+  }
+}

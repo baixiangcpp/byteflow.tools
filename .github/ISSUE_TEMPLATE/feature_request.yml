@@ -1,0 +1,46 @@
+name: Feature request
+description: Suggest a browser-local tool or improvement.
+title: "feat: "
+labels:
+  - enhancement
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What workflow or user problem should this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the tool, behavior, or improvement you want.
+    validations:
+      required: true
+  - type: textarea
+    id: inputs_outputs
+    attributes:
+      label: Inputs and outputs
+      description: What input should the feature accept, and what output should it produce?
+    validations:
+      required: false
+  - type: dropdown
+    id: privacy
+    attributes:
+      label: Local-first fit
+      description: Can this run entirely in the browser without sending user payloads to a server?
+      options:
+        - Yes
+        - Mostly, with documented limitations
+        - No
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: related
+    attributes:
+      label: Related tools or references
+      description: Link related Byteflow tools, comparable products, specs, or examples.
+    validations:
+      required: false

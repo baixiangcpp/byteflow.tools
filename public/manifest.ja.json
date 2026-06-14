@@ -1,0 +1,88 @@
+{
+    "name": "byteflow.tools",
+    "short_name": "byteflow",
+    "description": "ゼロレイテンシ、完全ローカルで動作する開発者ツール。ブラウザ上で直接処理します。",
+    "id": "/ja?source=pwa",
+    "lang": "ja",
+    "start_url": "/ja?utm_source=pwa",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#0a0a1a",
+    "theme_color": "#0a0a1a",
+    "icons": [
+        {
+            "src": "/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/favicon.ico",
+            "sizes": "16x16 32x32 48x48",
+            "type": "image/x-icon"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "JSON フォーマッター",
+            "short_name": "JSON フォーマッター",
+            "description": "JSON を即座に整形し、構文を検証します。",
+            "url": "/ja/json-formatter"
+        },
+        {
+            "name": "JWTワークベンチ",
+            "short_name": "JWTワークベンチ",
+            "description": "ローカルファーストの1つのワークスペースでJWTのエンコード・デコード・検証を行えます。",
+            "url": "/ja/jwt-workbench"
+        },
+        {
+            "name": "Base64 エンコード/デコード",
+            "short_name": "Base64",
+            "description": "テキストを Base64 に変換し、Base64 をテキストへ戻します。",
+            "url": "/ja/base64-encode-decode"
+        },
+        {
+            "name": "パスワードジェネレーター",
+            "short_name": "パスワードジェネレーター",
+            "description": "条件を指定して安全なランダムパスワードを作成します。",
+            "url": "/ja/password-generator"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/pwa-screenshots/home-en-1280x720.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide"
+        },
+        {
+            "src": "/pwa-screenshots/json-formatter-en-1280x720.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide"
+        }
+    ],
+    "categories": [
+        "developer",
+        "productivity",
+        "utilities"
+    ]
+}

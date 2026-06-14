@@ -1,0 +1,5 @@
+export const TEXT_SAMPLE_INPUT = "user_001|zh-CN|text"
+export const TEXT_SAMPLE_BASE64 = "dXNlcl8wMDF8emgtQ058dGV4dA=="
+export const URL_SAFE_SAMPLE_INPUT = "https://example.com/r?q=user_001&lang=zh-CN"
+export const URL_SAFE_SAMPLE_BASE64 = "aHR0cHM6Ly9leGFtcGxlLmNvbS9yP3E9dXNlcl8wMDEmbGFuZz16aC1DTg"
+export const BINARY_SAMPLE_BASE64 = "AAECAwQFBgcICQ=="

@@ -1,0 +1,6 @@
+export const INPUT_STORAGE_KEY = "byteflow:csv-json-converter:input"
+export const DIRECTION_STORAGE_KEY = "byteflow:csv-json-converter:direction"
+export const DELIMITER_STORAGE_KEY = "byteflow:csv-json-converter:delimiter"
+export const HAS_HEADER_STORAGE_KEY = "byteflow:csv-json-converter:has-header"
+export const TYPE_INFERENCE_STORAGE_KEY = "byteflow:csv-json-converter:type-inference"
+export const JSON_ARRAY_REQUIRED_ERROR = "__JSON_ARRAY_REQUIRED__"

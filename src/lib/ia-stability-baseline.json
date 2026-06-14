@@ -1,0 +1,73 @@
+{
+  "schemaVersion": 1,
+  "menuGroupHubs": [
+    "convert-encode",
+    "design-media",
+    "format-validate",
+    "generators-ids",
+    "text-content",
+    "web-api"
+  ],
+  "toolCategoryHubs": [
+    "formatters",
+    "generators",
+    "network-tools",
+    "text-tools"
+  ],
+  "sitemapHubs": [
+    "convert-encode",
+    "design-media",
+    "format-validate",
+    "formatters",
+    "generators",
+    "generators-ids",
+    "network-tools",
+    "text-content",
+    "text-tools",
+    "web-api"
+  ],
+  "requiredPersistentPages": [
+    "about",
+    "contact"
+  ],
+  "sitemapStaticPages": [
+    "about",
+    "all-tools",
+    "api-auth-header-mistakes",
+    "base64-encoding-when-and-how-to-use-it",
+    "certificate-chain-basics-for-developers",
+    "color-extraction-from-images-use-cases-and-tools",
+    "contact",
+    "convert-curl-to-fetch-python",
+    "csp-mistakes-that-break-production",
+    "css-animations-and-transitions-guide",
+    "css-border-radius-and-shapes-guide",
+    "css-formatter",
+    "css-layout-patterns-for-developers",
+    "dns-records-uptime",
+    "hash-functions-compared-md5-vs-sha256-vs-sha512",
+    "image-optimization-for-web-complete-workflow",
+    "image-privacy-how-to-censor-and-protect-images",
+    "install-app",
+    "json-formatting-errors",
+    "json-schema-validation-checklist",
+    "json-vs-json5-differences",
+    "jwt-security-best-practices-for-token-handling",
+    "md5-digest-generator",
+    "mock-openapi-quickly",
+    "modern-css-effects-guide",
+    "openapi-debugging-workflow-checklist",
+    "pricing",
+    "privacy",
+    "robots-txt-testing-checklist",
+    "sha1-digest-generator",
+    "sha224-digest-generator",
+    "sha256-digest-generator",
+    "sha384-digest-generator",
+    "sha512-digest-generator",
+    "svg-optimization-and-conversion-best-practices",
+    "terms",
+    "url-encoding-explained-common-mistakes-and-solutions",
+    "validate-json-before-api-requests"
+  ]
+}

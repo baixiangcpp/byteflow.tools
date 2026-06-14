@@ -1,0 +1,9 @@
+import type { ToolMeta } from "@/core/registry/types"
+
+export const toolManifest = {
+    key: "jwt_workbench",
+    slug: "jwt-workbench",
+    category: "text-string",
+    relatedTools: ["jwt_decoder", "jwt_verifier", "base64_encode_decode", "hash_generator"],
+    keywords: ["jwt workbench", "jwt encode decode verify", "jwt hs256 signer", "jwt all in one tool"],
+} satisfies ToolMeta

@@ -1,0 +1,9 @@
+import type { ToolMeta } from "@/core/registry/types"
+
+export const toolManifest = {
+    key: "multiple_whitespace_remover",
+    slug: "multiple-whitespace-remover",
+    category: "text-string",
+    relatedTools: ["text_diff_checker", "slugify_case_converter", "markdown_preview", "lorem_ipsum"],
+    keywords: ["remove extra spaces", "whitespace remover", "collapse whitespace", "trim text online"],
+} satisfies ToolMeta

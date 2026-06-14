@@ -1,0 +1,48 @@
+import fs from "node:fs"
+import path from "node:path"
+import { describe, expect, it } from "vitest"
+
+const CREATE_TOOL_SOURCE = fs.readFileSync(path.join(process.cwd(), "scripts/scaffolding/create-tool.js"), "utf8")
+
+describe("create-tool scaffold boundaries", () => {
+    it("generates feature pages separately from app route wrappers", () => {
+        expect(CREATE_TOOL_SOURCE).toContain('const ROUTE_ROOT = "src/app/[lang]"')
+        expect(CREATE_TOOL_SOURCE).toContain('const FEATURE_TOOL_ROOT = "src/features/tools"')
+        expect(CREATE_TOOL_SOURCE).toContain("function createFeaturePageTemplate")
+        expect(CREATE_TOOL_SOURCE).toContain("function createManifestTemplate")
+        expect(CREATE_TOOL_SOURCE).toContain("function createTypesTemplate")
+        expect(CREATE_TOOL_SOURCE).toContain("function createConstantsTemplate")
+        expect(CREATE_TOOL_SOURCE).toContain("function createLogicTemplate")
+        expect(CREATE_TOOL_SOURCE).toContain("function createSamplesTemplate")
+        expect(CREATE_TOOL_SOURCE).toContain("function createBrowserActionsTemplate")
+        expect(CREATE_TOOL_SOURCE).toContain("function createRoutePageTemplate")
+        expect(CREATE_TOOL_SOURCE).toContain('import { SAMPLE_INPUT } from "./samples"')
+        expect(CREATE_TOOL_SOURCE).toContain('fs.writeFileSync(path.join(featureDirPath, "page.tsx"), createFeaturePageTemplate(toolKey), "utf8")')
+        expect(CREATE_TOOL_SOURCE).toContain('fs.writeFileSync(path.join(featureDirPath, "types.ts"), createTypesTemplate(), "utf8")')
+        expect(CREATE_TOOL_SOURCE).toContain('fs.writeFileSync(path.join(featureDirPath, "constants.ts"), createConstantsTemplate(), "utf8")')
+        expect(CREATE_TOOL_SOURCE).toContain('fs.writeFileSync(path.join(featureDirPath, "logic.ts"), createLogicTemplate(), "utf8")')
+        expect(CREATE_TOOL_SOURCE).toContain('fs.writeFileSync(path.join(featureDirPath, "samples.ts"), createSamplesTemplate(), "utf8")')
+        expect(CREATE_TOOL_SOURCE).toContain('fs.writeFileSync(path.join(featureDirPath, "browser-actions.ts"), createBrowserActionsTemplate(), "utf8")')
+        expect(CREATE_TOOL_SOURCE).toContain('fs.writeFileSync(path.join(featureDirPath, "manifest.ts"), createManifestTemplate(')
+        expect(CREATE_TOOL_SOURCE).toContain('fs.writeFileSync(path.join(dirPath, "page.tsx"), createRoutePageTemplate(slug, toolKey), "utf8")')
+    })
+
+    it("keeps generated route pages as thin wrappers around named feature exports", () => {
+        expect(CREATE_TOOL_SOURCE).toContain('return `"use client"')
+        expect(CREATE_TOOL_SOURCE).toContain('import { ${componentName}Page } from "@/features/tools/${slug}/page"')
+        expect(CREATE_TOOL_SOURCE).toContain("export default function Page()")
+        expect(CREATE_TOOL_SOURCE).toContain("return <${componentName}Page />")
+        expect(CREATE_TOOL_SOURCE).toContain("export function ${componentName}Page()")
+        expect(CREATE_TOOL_SOURCE).not.toContain("export default function ${componentName}Page()")
+    })
+
+    it("creates manifest metadata instead of appending legacy category metadata", () => {
+        expect(CREATE_TOOL_SOURCE).toContain('import type { ToolMeta } from "@/core/registry/types"')
+        expect(CREATE_TOOL_SOURCE).toContain("satisfies ToolMeta")
+        expect(CREATE_TOOL_SOURCE).toContain("relatedTools:")
+        expect(CREATE_TOOL_SOURCE).toContain("keywords:")
+        expect(CREATE_TOOL_SOURCE).toContain("[create-tool] Created manifest:")
+        expect(CREATE_TOOL_SOURCE).not.toContain("appendToTsArrayFile")
+        expect(CREATE_TOOL_SOURCE).not.toContain("Updated meta:")
+    })
+})

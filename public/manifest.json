@@ -1,0 +1,88 @@
+{
+    "name": "byteflow.tools",
+    "short_name": "byteflow",
+    "description": "Zero-latency, completely local-first developer tools running directly in your browser.",
+    "id": "/en?source=pwa",
+    "lang": "en",
+    "start_url": "/en?utm_source=pwa",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#0a0a1a",
+    "theme_color": "#0a0a1a",
+    "icons": [
+        {
+            "src": "/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/favicon.ico",
+            "sizes": "16x16 32x32 48x48",
+            "type": "image/x-icon"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "JSON Formatter",
+            "short_name": "JSON",
+            "description": "Format, validate, and minify JSON payloads instantly.",
+            "url": "/en/json-formatter"
+        },
+        {
+            "name": "JWT Workbench",
+            "short_name": "JWT",
+            "description": "Encode, decode, and verify JWT tokens in one local-first workspace.",
+            "url": "/en/jwt-workbench"
+        },
+        {
+            "name": "Base64 Encode/Decode",
+            "short_name": "Base64",
+            "description": "Encode text to Base64 format or decode it back to a readable string.",
+            "url": "/en/base64-encode-decode"
+        },
+        {
+            "name": "Password Generator",
+            "short_name": "Password",
+            "description": "Generate secure, cryptographically random passwords instantly.",
+            "url": "/en/password-generator"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/pwa-screenshots/home-en-1280x720.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide"
+        },
+        {
+            "src": "/pwa-screenshots/json-formatter-en-1280x720.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide"
+        }
+    ],
+    "categories": [
+        "developer",
+        "productivity",
+        "utilities"
+    ]
+}

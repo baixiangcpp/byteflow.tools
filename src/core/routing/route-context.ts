@@ -1,0 +1,44 @@
+import { LOCALES } from "@/core/i18n/i18n"
+import { CLIENT_MENU_GROUPS, getClientToolBySlug } from "@/generated/client-tool-lookup"
+
+export type RouteType = "home" | "tool" | "hub" | "content" | "other"
+
+const CATEGORY_HUB_SLUGS = ["formatters", "text-tools", "generators", "network-tools"] as const
+const HUB_SLUGS = new Set([...CATEGORY_HUB_SLUGS, ...CLIENT_MENU_GROUPS.map((group) => group.hubSlug)])
+const CONTENT_ROUTE_SLUGS = new Set(["about", "pricing", "contact", "privacy", "terms"])
+
+export function getRouteContext(pathname: string): {
+    locale: string | null
+    routeType: RouteType
+    slug: string | null
+} {
+    const segments = pathname.split("/").filter(Boolean)
+
+    if (segments.length === 0) {
+        return { locale: null, routeType: "home", slug: null }
+    }
+
+    const localeSegment = segments[0]
+    if (!LOCALES.includes(localeSegment as (typeof LOCALES)[number])) {
+        return { locale: null, routeType: "other", slug: segments[0] || null }
+    }
+
+    if (segments.length === 1) {
+        return { locale: localeSegment, routeType: "home", slug: null }
+    }
+
+    const slug = segments[1]
+    if (getClientToolBySlug(slug)) {
+        return { locale: localeSegment, routeType: "tool", slug }
+    }
+
+    if (HUB_SLUGS.has(slug)) {
+        return { locale: localeSegment, routeType: "hub", slug }
+    }
+
+    if (CONTENT_ROUTE_SLUGS.has(slug)) {
+        return { locale: localeSegment, routeType: "content", slug }
+    }
+
+    return { locale: localeSegment, routeType: "content", slug }
+}

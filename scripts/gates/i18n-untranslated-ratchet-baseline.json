@@ -1,0 +1,16 @@
+{
+    "updatedAt": "2026-06-14",
+    "source": "npm run check:i18n",
+    "rollout": {
+        "defaultMode": "fail",
+        "notes": "Baseline counts same-as-en strings after excluding explicit technical/shared-copy allowlist entries."
+    },
+    "sameAsEnMax": {
+        "zh-CN": 0,
+        "zh-TW": 0,
+        "ja": 0,
+        "ko": 0,
+        "de": 0,
+        "fr": 0
+    }
+}

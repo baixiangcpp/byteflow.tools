@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/baixiangcpp/byteflow.tools/security/advisories/new
+    about: Please report vulnerabilities privately instead of opening a public issue.
+  - name: Questions and ideas
+    url: https://github.com/baixiangcpp/byteflow.tools/issues/new/choose
+    about: Open a focused issue for questions, usage help, and early ideas.

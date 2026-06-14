@@ -1,0 +1,88 @@
+{
+    "name": "byteflow.tools",
+    "short_name": "byteflow",
+    "description": "Outils développeur à latence nulle, entièrement locaux, directement dans votre navigateur.",
+    "id": "/fr?source=pwa",
+    "lang": "fr",
+    "start_url": "/fr?utm_source=pwa",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#0a0a1a",
+    "theme_color": "#0a0a1a",
+    "icons": [
+        {
+            "src": "/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/favicon.ico",
+            "sizes": "16x16 32x32 48x48",
+            "type": "image/x-icon"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Formateur JSON",
+            "short_name": "JSON",
+            "description": "Formatez et validez votre JSON instantanément avec coloration syntaxique.",
+            "url": "/fr/json-formatter"
+        },
+        {
+            "name": "Atelier JWT",
+            "short_name": "Atelier JWT",
+            "description": "Encodez, décodez et vérifiez des JWT dans un seul espace de travail local-first.",
+            "url": "/fr/jwt-workbench"
+        },
+        {
+            "name": "Encodage/Décodage Base64",
+            "short_name": "Base64",
+            "description": "Encodez du texte en Base64 et décodez Base64 en texte.",
+            "url": "/fr/base64-encode-decode"
+        },
+        {
+            "name": "Générateur de mot de passe",
+            "short_name": "Password",
+            "description": "Créez des mots de passe aléatoires sécurisés avec des règles personnalisées.",
+            "url": "/fr/password-generator"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/pwa-screenshots/home-en-1280x720.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide"
+        },
+        {
+            "src": "/pwa-screenshots/json-formatter-en-1280x720.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide"
+        }
+    ],
+    "categories": [
+        "developer",
+        "productivity",
+        "utilities"
+    ]
+}

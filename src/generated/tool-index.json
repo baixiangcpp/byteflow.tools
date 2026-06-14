@@ -1,0 +1,3779 @@
+{
+  "generatedAt": "2026-06-13T13:37:23.968Z",
+  "counts": {
+    "canonicalTools": 121,
+    "aliasRoutes": 1,
+    "routeDirs": 169,
+    "unknownRouteDirs": 0
+  },
+  "canonicalTools": [
+    {
+      "index": 1,
+      "key": "json_formatter",
+      "slug": "json-formatter",
+      "category": "formatters",
+      "relatedTools": [
+        "jsonpath_playground",
+        "json_diff_viewer",
+        "json_to_typescript",
+        "yaml_json_converter"
+      ],
+      "keywords": [
+        "json formatter",
+        "json beautifier",
+        "json prettify",
+        "format json online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/json-formatter/manifest.ts"
+    },
+    {
+      "index": 2,
+      "key": "xml_formatter",
+      "slug": "xml-formatter",
+      "category": "formatters",
+      "relatedTools": [
+        "json_formatter",
+        "html_css_beautifier",
+        "yaml_json_converter",
+        "sql_formatter"
+      ],
+      "keywords": [
+        "xml formatter",
+        "xml beautifier",
+        "format xml online",
+        "xml pretty print"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/xml-formatter/manifest.ts"
+    },
+    {
+      "index": 3,
+      "key": "sql_formatter",
+      "slug": "sql-formatter",
+      "category": "formatters",
+      "relatedTools": [
+        "json_formatter",
+        "xml_formatter",
+        "html_css_beautifier"
+      ],
+      "keywords": [
+        "sql formatter",
+        "sql beautifier",
+        "format sql online",
+        "sql pretty print"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/sql-formatter/manifest.ts"
+    },
+    {
+      "index": 4,
+      "key": "javascript_formatter",
+      "slug": "javascript-formatter",
+      "category": "formatters",
+      "relatedTools": [
+        "json_formatter",
+        "html_css_beautifier",
+        "sql_formatter",
+        "markdown_preview"
+      ],
+      "keywords": [
+        "javascript formatter",
+        "js formatter",
+        "beautify javascript",
+        "format javascript online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/javascript-formatter/manifest.ts"
+    },
+    {
+      "index": 5,
+      "key": "javascript_minifier",
+      "slug": "javascript-minifier",
+      "category": "formatters",
+      "relatedTools": [
+        "javascript_formatter",
+        "css_minifier",
+        "html_formatter",
+        "json_formatter"
+      ],
+      "keywords": [
+        "javascript minifier",
+        "js minify",
+        "minify javascript",
+        "compress javascript online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/javascript-minifier/manifest.ts"
+    },
+    {
+      "index": 6,
+      "key": "html_minifier",
+      "slug": "html-minifier",
+      "category": "formatters",
+      "relatedTools": [
+        "html_formatter",
+        "html_css_beautifier",
+        "css_minifier",
+        "javascript_minifier"
+      ],
+      "keywords": [
+        "html minifier",
+        "minify html",
+        "html compressor",
+        "compress html online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/html-minifier/manifest.ts"
+    },
+    {
+      "index": 7,
+      "key": "html_encoder_decoder",
+      "slug": "html-encoder-decoder",
+      "category": "formatters",
+      "relatedTools": [
+        "html_formatter",
+        "html_minifier",
+        "url_encode_decode",
+        "base64_encode_decode"
+      ],
+      "keywords": [
+        "html encoder",
+        "html decoder",
+        "html entities encode",
+        "html entities decode"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/html-encoder-decoder/manifest.ts"
+    },
+    {
+      "index": 8,
+      "key": "html_css_beautifier",
+      "slug": "html-css-beautifier",
+      "category": "formatters",
+      "relatedTools": [
+        "html_formatter",
+        "css_minifier",
+        "svg_optimizer",
+        "xml_formatter"
+      ],
+      "keywords": [
+        "html beautifier",
+        "css formatter",
+        "html formatter online",
+        "beautify html css"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/html-css-beautifier/manifest.ts"
+    },
+    {
+      "index": 9,
+      "key": "html_formatter",
+      "slug": "html-formatter",
+      "category": "formatters",
+      "relatedTools": [
+        "html_css_beautifier",
+        "xml_formatter",
+        "css_minifier",
+        "markdown_preview"
+      ],
+      "keywords": [
+        "html formatter",
+        "beautify html",
+        "format html online",
+        "html pretty print"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/html-formatter/manifest.ts"
+    },
+    {
+      "index": 10,
+      "key": "yaml_json_converter",
+      "slug": "yaml-json-converter",
+      "category": "formatters",
+      "relatedTools": [
+        "json_formatter",
+        "json_to_typescript",
+        "jsonpath_playground",
+        "xml_formatter"
+      ],
+      "keywords": [
+        "yaml to json",
+        "json to yaml",
+        "yaml converter online",
+        "yaml json transform"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/yaml-json-converter/manifest.ts"
+    },
+    {
+      "index": 11,
+      "key": "markdown_preview",
+      "slug": "markdown-preview",
+      "category": "formatters",
+      "relatedTools": [
+        "html_formatter",
+        "html_css_beautifier",
+        "text_diff_checker",
+        "lorem_ipsum"
+      ],
+      "keywords": [
+        "markdown preview",
+        "markdown editor online",
+        "markdown to html",
+        "gfm preview"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/markdown-preview/manifest.ts"
+    },
+    {
+      "index": 12,
+      "key": "html_to_markdown",
+      "slug": "html-to-markdown",
+      "category": "formatters",
+      "relatedTools": [
+        "markdown_preview",
+        "html_formatter",
+        "html_encoder_decoder",
+        "text_diff_checker"
+      ],
+      "keywords": [
+        "html to markdown",
+        "convert html to markdown",
+        "html markdown converter",
+        "html2md online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/html-to-markdown/manifest.ts"
+    },
+    {
+      "index": 13,
+      "key": "json_to_typescript",
+      "slug": "json-to-typescript",
+      "category": "formatters",
+      "relatedTools": [
+        "json_formatter",
+        "yaml_json_converter",
+        "jsonpath_playground"
+      ],
+      "keywords": [
+        "json to typescript",
+        "json to interface",
+        "generate typescript types",
+        "json to ts"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/json-to-typescript/manifest.ts"
+    },
+    {
+      "index": 14,
+      "key": "css_minifier",
+      "slug": "css-minifier",
+      "category": "formatters",
+      "relatedTools": [
+        "html_css_beautifier",
+        "svg_optimizer",
+        "json_formatter"
+      ],
+      "keywords": [
+        "css minifier",
+        "minify css online",
+        "css compressor",
+        "css optimize"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/css-minifier/manifest.ts"
+    },
+    {
+      "index": 15,
+      "key": "svg_optimizer",
+      "slug": "svg-optimizer",
+      "category": "formatters",
+      "relatedTools": [
+        "css_minifier",
+        "html_css_beautifier",
+        "image_base64"
+      ],
+      "keywords": [
+        "svg optimizer",
+        "svgo online",
+        "optimize svg",
+        "compress svg"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/svg-optimizer/manifest.ts"
+    },
+    {
+      "index": 16,
+      "key": "jsonpath_playground",
+      "slug": "jsonpath-playground",
+      "category": "formatters",
+      "relatedTools": [
+        "json_formatter",
+        "json_diff_viewer",
+        "json_to_typescript",
+        "yaml_json_converter"
+      ],
+      "keywords": [
+        "jsonpath tester",
+        "jsonpath playground",
+        "jsonpath query",
+        "json path online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/jsonpath-playground/manifest.ts"
+    },
+    {
+      "index": 17,
+      "key": "openapi_viewer",
+      "slug": "openapi-viewer",
+      "category": "formatters",
+      "relatedTools": [
+        "json_formatter",
+        "yaml_json_converter",
+        "jsonpath_playground"
+      ],
+      "keywords": [
+        "openapi viewer",
+        "swagger viewer online",
+        "openapi explorer",
+        "api spec viewer"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/openapi-viewer/manifest.ts"
+    },
+    {
+      "index": 18,
+      "key": "json_diff_viewer",
+      "slug": "json-diff-viewer",
+      "category": "formatters",
+      "relatedTools": [
+        "json_formatter",
+        "text_diff_checker",
+        "jsonpath_playground"
+      ],
+      "keywords": [
+        "json diff",
+        "compare json online",
+        "json diff viewer",
+        "json compare tool"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/json-diff-viewer/manifest.ts"
+    },
+    {
+      "index": 19,
+      "key": "csv_json_converter",
+      "slug": "csv-json-converter",
+      "category": "formatters",
+      "relatedTools": [
+        "json_formatter",
+        "yaml_json_converter",
+        "json_to_typescript",
+        "text_diff_checker"
+      ],
+      "keywords": [
+        "csv to json",
+        "json to csv",
+        "csv converter online",
+        "csv json transform"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/csv-json-converter/manifest.ts"
+    },
+    {
+      "index": 20,
+      "key": "base64_encode_decode",
+      "slug": "base64-encode-decode",
+      "category": "text-string",
+      "relatedTools": [
+        "url_encode_decode",
+        "jwt_decoder",
+        "hash_generator",
+        "image_base64"
+      ],
+      "keywords": [
+        "base64 encode",
+        "base64 decode",
+        "base64 converter online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/base64-encode-decode/manifest.ts"
+    },
+    {
+      "index": 21,
+      "key": "url_encode_decode",
+      "slug": "url-encode-decode",
+      "category": "text-string",
+      "relatedTools": [
+        "base64_encode_decode",
+        "jwt_decoder",
+        "user_agent_parser"
+      ],
+      "keywords": [
+        "url encode",
+        "url decode",
+        "percent encoding",
+        "url encoder online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/url-encode-decode/manifest.ts"
+    },
+    {
+      "index": 22,
+      "key": "jwt_decoder",
+      "slug": "jwt-decoder",
+      "category": "text-string",
+      "relatedTools": [
+        "jwt_workbench",
+        "base64_encode_decode",
+        "hash_generator",
+        "url_encode_decode"
+      ],
+      "keywords": [
+        "jwt decoder",
+        "decode jwt online",
+        "jwt parser",
+        "json web token decoder"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/jwt-decoder/manifest.ts"
+    },
+    {
+      "index": 23,
+      "key": "jwt_workbench",
+      "slug": "jwt-workbench",
+      "category": "text-string",
+      "relatedTools": [
+        "jwt_decoder",
+        "jwt_verifier",
+        "base64_encode_decode",
+        "hash_generator"
+      ],
+      "keywords": [
+        "jwt workbench",
+        "jwt encode decode verify",
+        "jwt hs256 signer",
+        "jwt all in one tool"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/jwt-workbench/manifest.ts"
+    },
+    {
+      "index": 24,
+      "key": "hash_generator",
+      "slug": "hash-generator",
+      "category": "text-string",
+      "relatedTools": [
+        "md5_generator",
+        "base64_encode_decode",
+        "jwt_decoder",
+        "password_generator"
+      ],
+      "keywords": [
+        "hash generator",
+        "md5 hash",
+        "sha256 hash online",
+        "sha512 generator"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/hash-generator/manifest.ts"
+    },
+    {
+      "index": 25,
+      "key": "md5_generator",
+      "slug": "md5-generator",
+      "category": "text-string",
+      "relatedTools": [
+        "hash_generator",
+        "base64_encode_decode",
+        "text_diff_checker",
+        "password_generator"
+      ],
+      "keywords": [
+        "md5 generator",
+        "md5 hash online",
+        "md5 checksum",
+        "md5 encoder"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/md5-generator/manifest.ts"
+    },
+    {
+      "index": 26,
+      "key": "text_diff_checker",
+      "slug": "text-diff-checker",
+      "category": "text-string",
+      "relatedTools": [
+        "json_diff_viewer",
+        "markdown_preview",
+        "base64_encode_decode"
+      ],
+      "keywords": [
+        "text diff",
+        "compare text online",
+        "diff checker",
+        "text comparison tool"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/text-diff-checker/manifest.ts"
+    },
+    {
+      "index": 27,
+      "key": "multiple_whitespace_remover",
+      "slug": "multiple-whitespace-remover",
+      "category": "text-string",
+      "relatedTools": [
+        "text_diff_checker",
+        "slugify_case_converter",
+        "markdown_preview",
+        "lorem_ipsum"
+      ],
+      "keywords": [
+        "remove extra spaces",
+        "whitespace remover",
+        "collapse whitespace",
+        "trim text online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/multiple-whitespace-remover/manifest.ts"
+    },
+    {
+      "index": 28,
+      "key": "letter_counter",
+      "slug": "letter-counter",
+      "category": "text-string",
+      "relatedTools": [
+        "multiple_whitespace_remover",
+        "text_diff_checker",
+        "lorem_ipsum",
+        "slugify_case_converter"
+      ],
+      "keywords": [
+        "letter counter",
+        "character counter",
+        "word counter",
+        "text analyzer"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/letter-counter/manifest.ts"
+    },
+    {
+      "index": 29,
+      "key": "bionic_reading_converter",
+      "slug": "bionic-reading-converter",
+      "category": "text-string",
+      "relatedTools": [
+        "letter_counter",
+        "multiple_whitespace_remover",
+        "markdown_preview",
+        "text_diff_checker"
+      ],
+      "keywords": [
+        "bionic reading converter",
+        "speed reading text",
+        "bionic text generator",
+        "focus reading tool"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/bionic-reading-converter/manifest.ts"
+    },
+    {
+      "index": 30,
+      "key": "google_fonts_pair_finder",
+      "slug": "google-fonts-pair-finder",
+      "category": "text-string",
+      "relatedTools": [
+        "color_converter",
+        "ai_color_palette_generator",
+        "code_to_image_converter",
+        "open_graph_meta_generator"
+      ],
+      "keywords": [
+        "google fonts pair finder",
+        "font pairing generator",
+        "typography pairing",
+        "font combination tool"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/google-fonts-pair-finder/manifest.ts"
+    },
+    {
+      "index": 31,
+      "key": "text_to_handwriting_converter",
+      "slug": "text-to-handwriting-converter",
+      "category": "text-string",
+      "relatedTools": [
+        "code_to_image_converter",
+        "google_fonts_pair_finder",
+        "image_caption_generator",
+        "instagram_post_generator"
+      ],
+      "keywords": [
+        "text to handwriting converter",
+        "handwriting generator",
+        "typed text to handwritten",
+        "handwriting png"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/text-to-handwriting-converter/manifest.ts"
+    },
+    {
+      "index": 32,
+      "key": "code_to_image_converter",
+      "slug": "code-to-image-converter",
+      "category": "text-string",
+      "relatedTools": [
+        "markdown_preview",
+        "ascii_art_generator",
+        "json_formatter",
+        "html_formatter"
+      ],
+      "keywords": [
+        "code to image",
+        "snippet to png",
+        "source code screenshot",
+        "code image generator"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/code-to-image-converter/manifest.ts"
+    },
+    {
+      "index": 33,
+      "key": "image_base64",
+      "slug": "image-base64",
+      "category": "text-string",
+      "relatedTools": [
+        "base64_encode_decode",
+        "svg_optimizer",
+        "qr_code_generator"
+      ],
+      "keywords": [
+        "image to base64",
+        "base64 to image",
+        "convert image base64 online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/image-base64/manifest.ts"
+    },
+    {
+      "index": 34,
+      "key": "unix_timestamp",
+      "slug": "unix-timestamp",
+      "category": "generators",
+      "relatedTools": [
+        "uuid_generator",
+        "cron_visualizer",
+        "crontab_generator"
+      ],
+      "keywords": [
+        "unix timestamp",
+        "epoch converter",
+        "timestamp to date",
+        "unix time online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/unix-timestamp/manifest.ts"
+    },
+    {
+      "index": 35,
+      "key": "uuid_generator",
+      "slug": "uuid-generator",
+      "category": "generators",
+      "relatedTools": [
+        "password_generator",
+        "unix_timestamp",
+        "lorem_ipsum"
+      ],
+      "keywords": [
+        "uuid generator",
+        "uuid v4 generator",
+        "generate uuid online",
+        "guid generator"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/uuid-generator/manifest.ts"
+    },
+    {
+      "index": 36,
+      "key": "lorem_ipsum",
+      "slug": "lorem-ipsum",
+      "category": "generators",
+      "relatedTools": [
+        "password_generator",
+        "uuid_generator",
+        "markdown_preview"
+      ],
+      "keywords": [
+        "lorem ipsum generator",
+        "dummy text generator",
+        "placeholder text"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/lorem-ipsum/manifest.ts"
+    },
+    {
+      "index": 37,
+      "key": "password_generator",
+      "slug": "password-generator",
+      "category": "generators",
+      "relatedTools": [
+        "hash_generator",
+        "uuid_generator",
+        "lorem_ipsum"
+      ],
+      "keywords": [
+        "password generator",
+        "random password",
+        "strong password generator online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/password-generator/manifest.ts"
+    },
+    {
+      "index": 38,
+      "key": "color_converter",
+      "slug": "color-converter",
+      "category": "generators",
+      "relatedTools": [
+        "css_minifier",
+        "html_css_beautifier",
+        "svg_optimizer"
+      ],
+      "keywords": [
+        "color converter",
+        "hex to rgb",
+        "hsl converter",
+        "color picker online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/color-converter/manifest.ts"
+    },
+    {
+      "index": 39,
+      "key": "react_native_shadow_generator",
+      "slug": "react-native-shadow-generator",
+      "category": "generators",
+      "relatedTools": [
+        "css_box_shadow_generator",
+        "css_glassmorphism_generator",
+        "css_border_radius_generator",
+        "color_converter"
+      ],
+      "keywords": [
+        "react native shadow generator",
+        "ios shadowoffset shadowradius",
+        "android elevation generator",
+        "react native style shadow"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/react-native-shadow-generator/manifest.ts"
+    },
+    {
+      "index": 40,
+      "key": "ai_color_palette_generator",
+      "slug": "ai-color-palette-generator",
+      "category": "generators",
+      "relatedTools": [
+        "color_mixer",
+        "color_shades_generator",
+        "color_converter",
+        "css_gradient_generator"
+      ],
+      "keywords": [
+        "ai color palette generator",
+        "brand palette generator",
+        "color scheme creator",
+        "palette maker online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/ai-color-palette-generator/manifest.ts"
+    },
+    {
+      "index": 41,
+      "key": "color_mixer",
+      "slug": "color-mixer",
+      "category": "generators",
+      "relatedTools": [
+        "color_shades_generator",
+        "color_converter",
+        "ai_color_palette_generator",
+        "css_gradient_generator"
+      ],
+      "keywords": [
+        "color mixer",
+        "mix two colors",
+        "rgb color blend",
+        "hsl color blend"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/color-mixer/manifest.ts"
+    },
+    {
+      "index": 42,
+      "key": "color_shades_generator",
+      "slug": "color-shades-generator",
+      "category": "generators",
+      "relatedTools": [
+        "ai_color_palette_generator",
+        "color_mixer",
+        "color_converter",
+        "css_gradient_generator"
+      ],
+      "keywords": [
+        "color shades generator",
+        "tailwind color scale",
+        "color ramp generator",
+        "generate color tokens"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/color-shades-generator/manifest.ts"
+    },
+    {
+      "index": 43,
+      "key": "image_average_color_finder",
+      "slug": "image-average-color-finder",
+      "category": "generators",
+      "relatedTools": [
+        "image_color_extractor",
+        "ai_color_palette_generator",
+        "color_shades_generator",
+        "color_converter"
+      ],
+      "keywords": [
+        "image average color finder",
+        "average image color",
+        "dominant average hex",
+        "image color analyzer"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/image-average-color-finder/manifest.ts"
+    },
+    {
+      "index": 44,
+      "key": "image_caption_generator",
+      "slug": "image-caption-generator",
+      "category": "generators",
+      "relatedTools": [
+        "image_color_extractor",
+        "code_to_image_converter",
+        "image_average_color_finder",
+        "color_mixer"
+      ],
+      "keywords": [
+        "image caption generator",
+        "add text to image",
+        "caption maker",
+        "image quote generator"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/image-caption-generator/manifest.ts"
+    },
+    {
+      "index": 45,
+      "key": "image_color_extractor",
+      "slug": "image-color-extractor",
+      "category": "generators",
+      "relatedTools": [
+        "image_average_color_finder",
+        "color_shades_generator",
+        "ai_color_palette_generator",
+        "color_mixer"
+      ],
+      "keywords": [
+        "image color extractor",
+        "extract color palette from image",
+        "image palette generator",
+        "dominant colors from photo"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/image-color-extractor/manifest.ts"
+    },
+    {
+      "index": 46,
+      "key": "image_color_picker",
+      "slug": "image-color-picker",
+      "category": "generators",
+      "relatedTools": [
+        "image_color_extractor",
+        "image_average_color_finder",
+        "color_converter",
+        "color_mixer"
+      ],
+      "keywords": [
+        "image color picker",
+        "pick color from image",
+        "image hex picker",
+        "sample image color"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/image-color-picker/manifest.ts"
+    },
+    {
+      "index": 47,
+      "key": "image_cropper",
+      "slug": "image-cropper",
+      "category": "generators",
+      "relatedTools": [
+        "image_filters",
+        "image_caption_generator",
+        "code_to_image_converter",
+        "image_base64"
+      ],
+      "keywords": [
+        "image cropper",
+        "crop image online",
+        "photo crop tool",
+        "crop png jpg"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/image-cropper/manifest.ts"
+    },
+    {
+      "index": 48,
+      "key": "image_filters",
+      "slug": "image-filters",
+      "category": "generators",
+      "relatedTools": [
+        "instagram_filters",
+        "image_cropper",
+        "image_caption_generator",
+        "image_color_extractor"
+      ],
+      "keywords": [
+        "image filters",
+        "photo filter editor",
+        "adjust brightness contrast image",
+        "image effects online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/image-filters/manifest.ts"
+    },
+    {
+      "index": 49,
+      "key": "instagram_filters",
+      "slug": "instagram-filters",
+      "category": "generators",
+      "relatedTools": [
+        "instagram_post_generator",
+        "instagram_story_generator",
+        "image_filters",
+        "instagram_photo_downloader"
+      ],
+      "keywords": [
+        "instagram filters",
+        "ig filters online",
+        "instagram style photo editor",
+        "photo preset filters"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/instagram-filters/manifest.ts"
+    },
+    {
+      "index": 50,
+      "key": "instagram_post_generator",
+      "slug": "instagram-post-generator",
+      "category": "generators",
+      "relatedTools": [
+        "instagram_story_generator",
+        "tweet_generator",
+        "instagram_filters",
+        "open_graph_meta_generator"
+      ],
+      "keywords": [
+        "instagram post generator",
+        "instagram mockup maker",
+        "social post generator",
+        "instagram post template"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/instagram-post-generator/manifest.ts"
+    },
+    {
+      "index": 51,
+      "key": "instagram_story_generator",
+      "slug": "instagram-story-generator",
+      "category": "generators",
+      "relatedTools": [
+        "instagram_post_generator",
+        "tweet_generator",
+        "instagram_filters",
+        "open_graph_meta_generator"
+      ],
+      "keywords": [
+        "instagram story generator",
+        "instagram story template",
+        "story mockup generator",
+        "social story maker"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/instagram-story-generator/manifest.ts"
+    },
+    {
+      "index": 52,
+      "key": "open_graph_meta_generator",
+      "slug": "open-graph-meta-generator",
+      "category": "generators",
+      "relatedTools": [
+        "tweet_generator",
+        "tweet_to_image_converter",
+        "instagram_post_generator",
+        "instagram_story_generator"
+      ],
+      "keywords": [
+        "open graph meta generator",
+        "og tags generator",
+        "twitter card meta tags",
+        "social preview meta"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/open-graph-meta-generator/manifest.ts"
+    },
+    {
+      "index": 53,
+      "key": "tweet_generator",
+      "slug": "tweet-generator",
+      "category": "generators",
+      "relatedTools": [
+        "tweet_to_image_converter",
+        "open_graph_meta_generator",
+        "twitter_ad_revenue_generator",
+        "instagram_post_generator"
+      ],
+      "keywords": [
+        "tweet generator",
+        "twitter post generator",
+        "tweet image maker",
+        "social tweet mockup"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/tweet-generator/manifest.ts"
+    },
+    {
+      "index": 54,
+      "key": "tweet_to_image_converter",
+      "slug": "tweet-to-image-converter",
+      "category": "generators",
+      "relatedTools": [
+        "tweet_generator",
+        "open_graph_meta_generator",
+        "instagram_post_generator",
+        "code_to_image_converter"
+      ],
+      "keywords": [
+        "tweet to image converter",
+        "convert tweet to png",
+        "tweet image converter",
+        "x post image maker"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/tweet-to-image-converter/manifest.ts"
+    },
+    {
+      "index": 55,
+      "key": "twitter_ad_revenue_generator",
+      "slug": "twitter-ad-revenue-generator",
+      "category": "generators",
+      "relatedTools": [
+        "tweet_generator",
+        "tweet_to_image_converter",
+        "open_graph_meta_generator",
+        "id_generator"
+      ],
+      "keywords": [
+        "twitter ad revenue generator",
+        "x ad revenue calculator",
+        "social ad revenue forecast",
+        "cpm ctr calculator"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/twitter-ad-revenue-generator/manifest.ts"
+    },
+    {
+      "index": 56,
+      "key": "instagram_photo_downloader",
+      "slug": "instagram-photo-downloader",
+      "category": "generators",
+      "relatedTools": [
+        "instagram_post_generator",
+        "instagram_story_generator",
+        "instagram_filters",
+        "image_resizer"
+      ],
+      "keywords": [
+        "instagram photo downloader",
+        "download instagram image",
+        "instagram media saver",
+        "authorized ig image download"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/instagram-photo-downloader/manifest.ts"
+    },
+    {
+      "index": 57,
+      "key": "vimeo_thumbnail_grabber",
+      "slug": "vimeo-thumbnail-grabber",
+      "category": "generators",
+      "relatedTools": [
+        "youtube_thumbnail_grabber",
+        "tweet_to_image_converter",
+        "open_graph_meta_generator",
+        "image_resizer"
+      ],
+      "keywords": [
+        "vimeo thumbnail grabber",
+        "vimeo thumbnail downloader",
+        "vimeo cover image",
+        "get vimeo video thumbnail"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/vimeo-thumbnail-grabber/manifest.ts"
+    },
+    {
+      "index": 58,
+      "key": "youtube_thumbnail_grabber",
+      "slug": "youtube-thumbnail-grabber",
+      "category": "generators",
+      "relatedTools": [
+        "vimeo_thumbnail_grabber",
+        "tweet_to_image_converter",
+        "open_graph_meta_generator",
+        "image_resizer"
+      ],
+      "keywords": [
+        "youtube thumbnail grabber",
+        "youtube thumbnail downloader",
+        "youtube video thumbnail",
+        "get youtube thumbnail url"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/youtube-thumbnail-grabber/manifest.ts"
+    },
+    {
+      "index": 59,
+      "key": "image_resizer",
+      "slug": "image-resizer",
+      "category": "generators",
+      "relatedTools": [
+        "image_cropper",
+        "image_filters",
+        "image_base64",
+        "code_to_image_converter"
+      ],
+      "keywords": [
+        "image resizer",
+        "resize image online",
+        "change photo dimensions",
+        "image resize tool"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/image-resizer/manifest.ts"
+    },
+    {
+      "index": 60,
+      "key": "photo_censor",
+      "slug": "photo-censor",
+      "category": "generators",
+      "relatedTools": [
+        "image_filters",
+        "image_cropper",
+        "image_resizer",
+        "scanned_pdf_converter"
+      ],
+      "keywords": [
+        "photo censor",
+        "blur image area",
+        "pixelate image region",
+        "hide sensitive info image"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/photo-censor/manifest.ts"
+    },
+    {
+      "index": 61,
+      "key": "scanned_pdf_converter",
+      "slug": "scanned-pdf-converter",
+      "category": "generators",
+      "relatedTools": [
+        "photo_censor",
+        "image_filters",
+        "image_resizer",
+        "image_base64"
+      ],
+      "keywords": [
+        "scanned pdf converter",
+        "scan to pdf",
+        "enhance scanned document",
+        "multi page pdf exporter"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/scanned-pdf-converter/manifest.ts"
+    },
+    {
+      "index": 62,
+      "key": "svg_blob_generator",
+      "slug": "svg-blob-generator",
+      "category": "generators",
+      "relatedTools": [
+        "svg_pattern_generator",
+        "svg_stroke_to_fill_converter",
+        "svg_optimizer",
+        "css_clip_path_generator"
+      ],
+      "keywords": [
+        "svg blob generator",
+        "organic svg shape",
+        "blob path generator",
+        "random blob svg"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/svg-blob-generator/manifest.ts"
+    },
+    {
+      "index": 63,
+      "key": "svg_pattern_generator",
+      "slug": "svg-pattern-generator",
+      "category": "generators",
+      "relatedTools": [
+        "svg_blob_generator",
+        "svg_optimizer",
+        "css_background_pattern_generator",
+        "css_gradient_generator"
+      ],
+      "keywords": [
+        "svg pattern generator",
+        "seamless svg pattern",
+        "tileable pattern svg",
+        "svg texture generator"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/svg-pattern-generator/manifest.ts"
+    },
+    {
+      "index": 64,
+      "key": "svg_stroke_to_fill_converter",
+      "slug": "svg-stroke-to-fill-converter",
+      "category": "generators",
+      "relatedTools": [
+        "svg_optimizer",
+        "svg_blob_generator",
+        "svg_pattern_generator",
+        "svg_to_png_converter"
+      ],
+      "keywords": [
+        "svg stroke to fill",
+        "convert stroke to fill svg",
+        "outline to fill svg",
+        "svg path converter"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/svg-stroke-to-fill-converter/manifest.ts"
+    },
+    {
+      "index": 65,
+      "key": "svg_to_png_converter",
+      "slug": "svg-to-png-converter",
+      "category": "generators",
+      "relatedTools": [
+        "svg_optimizer",
+        "svg_pattern_generator",
+        "svg_blob_generator",
+        "svg_stroke_to_fill_converter"
+      ],
+      "keywords": [
+        "svg to png converter",
+        "convert svg to png",
+        "svg rasterizer",
+        "export svg as png"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/svg-to-png-converter/manifest.ts"
+    },
+    {
+      "index": 66,
+      "key": "css_background_pattern_generator",
+      "slug": "css-background-pattern-generator",
+      "category": "generators",
+      "relatedTools": [
+        "css_border_radius_generator",
+        "css_box_shadow_generator",
+        "color_converter",
+        "css_minifier"
+      ],
+      "keywords": [
+        "css background pattern generator",
+        "css texture generator",
+        "css background maker",
+        "pattern css online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/css-background-pattern-generator/manifest.ts"
+    },
+    {
+      "index": 67,
+      "key": "css_border_radius_generator",
+      "slug": "css-border-radius-generator",
+      "category": "generators",
+      "relatedTools": [
+        "css_background_pattern_generator",
+        "css_box_shadow_generator",
+        "color_converter",
+        "css_minifier"
+      ],
+      "keywords": [
+        "css border radius generator",
+        "rounded corner generator",
+        "border radius css",
+        "radius generator online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/css-border-radius-generator/manifest.ts"
+    },
+    {
+      "index": 68,
+      "key": "css_box_shadow_generator",
+      "slug": "css-box-shadow-generator",
+      "category": "generators",
+      "relatedTools": [
+        "css_border_radius_generator",
+        "css_background_pattern_generator",
+        "color_converter",
+        "css_minifier"
+      ],
+      "keywords": [
+        "css box shadow generator",
+        "shadow generator",
+        "css shadow builder",
+        "box shadow css online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/css-box-shadow-generator/manifest.ts"
+    },
+    {
+      "index": 69,
+      "key": "css_checkbox_generator",
+      "slug": "css-checkbox-generator",
+      "category": "generators",
+      "relatedTools": [
+        "css_border_radius_generator",
+        "css_box_shadow_generator",
+        "css_background_pattern_generator",
+        "color_converter"
+      ],
+      "keywords": [
+        "css checkbox generator",
+        "custom checkbox css",
+        "checkbox style maker",
+        "checkbox ui generator"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/css-checkbox-generator/manifest.ts"
+    },
+    {
+      "index": 70,
+      "key": "css_clip_path_generator",
+      "slug": "css-clip-path-generator",
+      "category": "generators",
+      "relatedTools": [
+        "css_background_pattern_generator",
+        "css_box_shadow_generator",
+        "color_converter",
+        "svg_optimizer"
+      ],
+      "keywords": [
+        "css clip path generator",
+        "polygon clip path",
+        "clip-path css",
+        "shape generator css"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/css-clip-path-generator/manifest.ts"
+    },
+    {
+      "index": 71,
+      "key": "css_cubic_bezier_generator",
+      "slug": "css-cubic-bezier-generator",
+      "category": "generators",
+      "relatedTools": [
+        "css_box_shadow_generator",
+        "css_clip_path_generator",
+        "css_checkbox_generator",
+        "css_minifier"
+      ],
+      "keywords": [
+        "css cubic bezier generator",
+        "easing curve generator",
+        "transition timing function",
+        "cubic bezier tool"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/css-cubic-bezier-generator/manifest.ts"
+    },
+    {
+      "index": 72,
+      "key": "css_glassmorphism_generator",
+      "slug": "css-glassmorphism-generator",
+      "category": "generators",
+      "relatedTools": [
+        "css_gradient_generator",
+        "css_box_shadow_generator",
+        "css_border_radius_generator",
+        "color_converter"
+      ],
+      "keywords": [
+        "css glassmorphism generator",
+        "glass effect css",
+        "frosted glass ui",
+        "backdrop filter generator"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/css-glassmorphism-generator/manifest.ts"
+    },
+    {
+      "index": 73,
+      "key": "css_gradient_generator",
+      "slug": "css-gradient-generator",
+      "category": "generators",
+      "relatedTools": [
+        "css_glassmorphism_generator",
+        "color_converter",
+        "css_background_pattern_generator",
+        "css_minifier"
+      ],
+      "keywords": [
+        "css gradient generator",
+        "linear gradient css",
+        "radial gradient generator",
+        "gradient maker online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/css-gradient-generator/manifest.ts"
+    },
+    {
+      "index": 74,
+      "key": "css_loader_generator",
+      "slug": "css-loader-generator",
+      "category": "generators",
+      "relatedTools": [
+        "css_cubic_bezier_generator",
+        "css_gradient_generator",
+        "css_box_shadow_generator",
+        "css_minifier"
+      ],
+      "keywords": [
+        "css loader generator",
+        "spinner css generator",
+        "loading animation css",
+        "css preloaders"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/css-loader-generator/manifest.ts"
+    },
+    {
+      "index": 75,
+      "key": "css_switch_generator",
+      "slug": "css-switch-generator",
+      "category": "generators",
+      "relatedTools": [
+        "css_checkbox_generator",
+        "css_border_radius_generator",
+        "css_glassmorphism_generator",
+        "color_converter"
+      ],
+      "keywords": [
+        "css switch generator",
+        "toggle switch css",
+        "custom switch styles",
+        "switch ui generator"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/css-switch-generator/manifest.ts"
+    },
+    {
+      "index": 76,
+      "key": "css_text_glitch_effect_generator",
+      "slug": "css-text-glitch-effect-generator",
+      "category": "generators",
+      "relatedTools": [
+        "css_gradient_generator",
+        "css_loader_generator",
+        "code_to_image_converter",
+        "css_minifier"
+      ],
+      "keywords": [
+        "css text glitch effect",
+        "glitch text css",
+        "neon glitch generator",
+        "animated text effect css"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/css-text-glitch-effect-generator/manifest.ts"
+    },
+    {
+      "index": 77,
+      "key": "css_triangle_generator",
+      "slug": "css-triangle-generator",
+      "category": "generators",
+      "relatedTools": [
+        "css_clip_path_generator",
+        "css_switch_generator",
+        "css_border_radius_generator",
+        "css_minifier"
+      ],
+      "keywords": [
+        "css triangle generator",
+        "triangle arrow css",
+        "tooltip arrow css",
+        "directional triangle css"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/css-triangle-generator/manifest.ts"
+    },
+    {
+      "index": 78,
+      "key": "qr_code_generator",
+      "slug": "qr-code-generator",
+      "category": "generators",
+      "relatedTools": [
+        "uuid_generator",
+        "password_generator",
+        "url_encode_decode"
+      ],
+      "keywords": [
+        "qr code generator",
+        "generate qr code online",
+        "qr code maker"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/qr-code-generator/manifest.ts"
+    },
+    {
+      "index": 79,
+      "key": "barcode_generator",
+      "slug": "barcode-generator",
+      "category": "generators",
+      "relatedTools": [
+        "qr_code_generator",
+        "id_generator",
+        "fake_iban_generator",
+        "list_randomizer"
+      ],
+      "keywords": [
+        "barcode generator",
+        "code128 generator",
+        "ean13 generator",
+        "barcode png svg export"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/barcode-generator/manifest.ts"
+    },
+    {
+      "index": 80,
+      "key": "fake_iban_generator",
+      "slug": "fake-iban-generator",
+      "category": "generators",
+      "relatedTools": [
+        "barcode_generator",
+        "list_randomizer",
+        "id_generator",
+        "password_generator"
+      ],
+      "keywords": [
+        "fake iban generator",
+        "test iban data",
+        "iban checksum generator",
+        "dummy bank iban"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/fake-iban-generator/manifest.ts"
+    },
+    {
+      "index": 81,
+      "key": "list_randomizer",
+      "slug": "list-randomizer",
+      "category": "generators",
+      "relatedTools": [
+        "fake_iban_generator",
+        "id_generator",
+        "lorem_ipsum",
+        "password_generator"
+      ],
+      "keywords": [
+        "list randomizer",
+        "shuffle list online",
+        "random sample picker",
+        "seeded random list"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/list-randomizer/manifest.ts"
+    },
+    {
+      "index": 82,
+      "key": "ascii_art_generator",
+      "slug": "ascii-art-generator",
+      "category": "generators",
+      "relatedTools": [
+        "lorem_ipsum",
+        "markdown_preview",
+        "text_diff_checker"
+      ],
+      "keywords": [
+        "ascii art generator",
+        "text to ascii art",
+        "figlet online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/ascii-art-generator/manifest.ts"
+    },
+    {
+      "index": 83,
+      "key": "env_parser",
+      "slug": "env-parser",
+      "category": "generators",
+      "relatedTools": [
+        "json_formatter",
+        "yaml_json_converter",
+        "base64_encode_decode"
+      ],
+      "keywords": [
+        "env parser",
+        "dotenv parser",
+        "parse .env file online",
+        "environment variable viewer"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/env-parser/manifest.ts"
+    },
+    {
+      "index": 84,
+      "key": "id_generator",
+      "slug": "id-generator",
+      "category": "generators",
+      "relatedTools": [
+        "uuid_generator",
+        "password_generator",
+        "unix_timestamp",
+        "hash_generator"
+      ],
+      "keywords": [
+        "uuid v7 generator",
+        "ulid generator",
+        "nanoid generator",
+        "unique id generator online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/id-generator/manifest.ts"
+    },
+    {
+      "index": 85,
+      "key": "regex_tester",
+      "slug": "regex-tester",
+      "category": "network-web",
+      "relatedTools": [
+        "jsonpath_playground",
+        "text_diff_checker",
+        "url_encode_decode"
+      ],
+      "keywords": [
+        "regex tester",
+        "regex online",
+        "test regular expression",
+        "regex debugger"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/regex-tester/manifest.ts"
+    },
+    {
+      "index": 86,
+      "key": "regex_generator",
+      "slug": "regex-generator",
+      "category": "network-web",
+      "relatedTools": [
+        "regex_tester",
+        "text_diff_checker",
+        "jsonpath_playground",
+        "url_encode_decode"
+      ],
+      "keywords": [
+        "regex generator",
+        "generate regex",
+        "regex pattern builder",
+        "regular expression generator"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/regex-generator/manifest.ts"
+    },
+    {
+      "index": 87,
+      "key": "crontab_generator",
+      "slug": "crontab-generator",
+      "category": "network-web",
+      "relatedTools": [
+        "cron_visualizer",
+        "unix_timestamp",
+        "regex_tester"
+      ],
+      "keywords": [
+        "crontab generator",
+        "cron expression builder",
+        "cron maker online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/crontab-generator/manifest.ts"
+    },
+    {
+      "index": 88,
+      "key": "user_agent_parser",
+      "slug": "user-agent-parser",
+      "category": "network-web",
+      "relatedTools": [
+        "url_encode_decode",
+        "http_status_codes",
+        "url_parser",
+        "chmod_calculator"
+      ],
+      "keywords": [
+        "user agent parser",
+        "parse user agent",
+        "ua string analyzer online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/user-agent-parser/manifest.ts"
+    },
+    {
+      "index": 89,
+      "key": "cron_visualizer",
+      "slug": "cron-visualizer",
+      "category": "network-web",
+      "relatedTools": [
+        "crontab_generator",
+        "unix_timestamp",
+        "regex_tester"
+      ],
+      "keywords": [
+        "cron visualizer",
+        "cron schedule viewer",
+        "visualize cron expression"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/cron-visualizer/manifest.ts"
+    },
+    {
+      "index": 90,
+      "key": "http_status_codes",
+      "slug": "http-status-codes",
+      "category": "network-web",
+      "relatedTools": [
+        "user_agent_parser",
+        "url_encode_decode",
+        "url_parser",
+        "http_request_builder"
+      ],
+      "keywords": [
+        "http status codes",
+        "http response codes list",
+        "status code reference"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/http-status-codes/manifest.ts"
+    },
+    {
+      "index": 91,
+      "key": "chmod_calculator",
+      "slug": "chmod-calculator",
+      "category": "network-web",
+      "relatedTools": [
+        "env_parser",
+        "regex_tester",
+        "user_agent_parser",
+        "cidr_subnet_calculator"
+      ],
+      "keywords": [
+        "chmod calculator",
+        "unix permissions calculator",
+        "file permissions chmod"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/chmod-calculator/manifest.ts"
+    },
+    {
+      "index": 92,
+      "key": "cidr_subnet_calculator",
+      "slug": "cidr-subnet-calculator",
+      "category": "network-web",
+      "relatedTools": [
+        "url_parser",
+        "http_request_builder",
+        "chmod_calculator",
+        "http_status_codes"
+      ],
+      "keywords": [
+        "cidr calculator",
+        "subnet calculator",
+        "ipv4 cidr to range",
+        "network broadcast calculator"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/cidr-subnet-calculator/manifest.ts"
+    },
+    {
+      "index": 93,
+      "key": "url_parser",
+      "slug": "url-parser",
+      "category": "network-web",
+      "relatedTools": [
+        "url_encode_decode",
+        "http_status_codes",
+        "user_agent_parser",
+        "http_request_builder"
+      ],
+      "keywords": [
+        "url parser",
+        "url decoder",
+        "query string parser",
+        "url components breakdown"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/url-parser/manifest.ts"
+    },
+    {
+      "index": 94,
+      "key": "certificate_decoder",
+      "slug": "certificate-decoder",
+      "category": "network-web",
+      "relatedTools": [
+        "jwt_decoder",
+        "base64_encode_decode",
+        "http_status_codes",
+        "security_header_analyzer"
+      ],
+      "keywords": [
+        "pem decoder",
+        "x509 certificate viewer",
+        "ssl certificate decoder online",
+        "certificate parser"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/certificate-decoder/manifest.ts"
+    },
+    {
+      "index": 95,
+      "key": "http_request_builder",
+      "slug": "http-request-builder",
+      "category": "network-web",
+      "relatedTools": [
+        "url_parser",
+        "http_status_codes",
+        "url_encode_decode",
+        "user_agent_parser"
+      ],
+      "keywords": [
+        "http request builder",
+        "curl generator",
+        "api request builder",
+        "rest client online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/http-request-builder/manifest.ts"
+    },
+    {
+      "index": 96,
+      "key": "curl_to_code",
+      "slug": "curl-to-code",
+      "category": "network-web",
+      "relatedTools": [
+        "http_request_builder",
+        "url_parser",
+        "http_status_codes",
+        "jwt_decoder"
+      ],
+      "keywords": [
+        "curl to code",
+        "curl to javascript",
+        "curl to python",
+        "curl converter online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/curl-to-code/manifest.ts"
+    },
+    {
+      "index": 97,
+      "key": "ndjson_formatter",
+      "slug": "ndjson-formatter",
+      "category": "formatters",
+      "relatedTools": [
+        "json_formatter",
+        "csv_json_converter",
+        "json_diff_viewer",
+        "jsonpath_playground"
+      ],
+      "keywords": [
+        "ndjson formatter",
+        "newline json",
+        "jsonl formatter",
+        "ndjson to json array"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/ndjson-formatter/manifest.ts"
+    },
+    {
+      "index": 98,
+      "key": "jwt_verifier",
+      "slug": "jwt-verifier",
+      "category": "text-string",
+      "relatedTools": [
+        "jwt_workbench",
+        "jwt_decoder",
+        "hash_generator",
+        "base64_encode_decode",
+        "certificate_decoder"
+      ],
+      "keywords": [
+        "jwt verify",
+        "jwt signature verifier",
+        "hmac jwt verify",
+        "jwt validator online"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/jwt-verifier/manifest.ts"
+    },
+    {
+      "index": 99,
+      "key": "slugify_case_converter",
+      "slug": "slugify-case-converter",
+      "category": "text-string",
+      "relatedTools": [
+        "url_encode_decode",
+        "base64_encode_decode",
+        "hash_generator",
+        "text_diff_checker"
+      ],
+      "keywords": [
+        "slugify",
+        "case converter",
+        "camelcase converter",
+        "snake case to camel case"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/slugify-case-converter/manifest.ts"
+    },
+    {
+      "index": 100,
+      "key": "invisible_chars_detector",
+      "slug": "invisible-characters-detector",
+      "category": "text-string",
+      "relatedTools": [
+        "text_diff_checker",
+        "multiple_whitespace_remover",
+        "base64_encode_decode",
+        "url_encode_decode"
+      ],
+      "keywords": [
+        "invisible characters detector",
+        "zero width space",
+        "control characters",
+        "unicode detector",
+        "hidden characters finder"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/invisible-characters-detector/manifest.ts"
+    },
+    {
+      "index": 101,
+      "key": "robots_txt_tester",
+      "slug": "robots-txt-tester",
+      "category": "network-web",
+      "relatedTools": [
+        "user_agent_parser",
+        "http_status_codes",
+        "url_parser",
+        "csp_parser"
+      ],
+      "keywords": [
+        "robots.txt tester",
+        "robots txt checker",
+        "robots txt validator",
+        "crawler access tester"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/robots-txt-tester/manifest.ts"
+    },
+    {
+      "index": 102,
+      "key": "csp_parser",
+      "slug": "csp-parser",
+      "category": "network-web",
+      "relatedTools": [
+        "http_status_codes",
+        "certificate_decoder",
+        "header_diff",
+        "robots_txt_tester"
+      ],
+      "keywords": [
+        "csp parser",
+        "content security policy analyzer",
+        "csp validator",
+        "csp checker"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/csp-parser/manifest.ts"
+    },
+    {
+      "index": 103,
+      "key": "csv_diff",
+      "slug": "csv-diff",
+      "category": "formatters",
+      "relatedTools": [
+        "csv_json_converter",
+        "text_diff_checker",
+        "json_diff_viewer",
+        "header_diff"
+      ],
+      "keywords": [
+        "csv diff",
+        "csv compare",
+        "csv difference checker",
+        "spreadsheet diff"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/csv-diff/manifest.ts"
+    },
+    {
+      "index": 104,
+      "key": "header_diff",
+      "slug": "header-diff",
+      "category": "network-web",
+      "relatedTools": [
+        "http_status_codes",
+        "http_request_builder",
+        "csp_parser",
+        "text_diff_checker"
+      ],
+      "keywords": [
+        "header diff",
+        "http header compare",
+        "request diff",
+        "header comparison"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/header-diff/manifest.ts"
+    },
+    {
+      "index": 105,
+      "key": "security_header_analyzer",
+      "slug": "security-header-analyzer",
+      "category": "network-web",
+      "relatedTools": [
+        "csp_parser",
+        "header_diff",
+        "http_status_codes",
+        "certificate_decoder"
+      ],
+      "keywords": [
+        "security header analyzer",
+        "http security headers",
+        "csp hsts checker",
+        "header security audit"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/security-header-analyzer/manifest.ts"
+    },
+    {
+      "index": 106,
+      "key": "totp_generator",
+      "slug": "totp-generator",
+      "category": "generators",
+      "relatedTools": [
+        "password_generator",
+        "hash_generator",
+        "uuid_generator",
+        "id_generator"
+      ],
+      "keywords": [
+        "totp generator",
+        "hotp generator",
+        "2fa code",
+        "authenticator code generator"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/totp-generator/manifest.ts"
+    },
+    {
+      "index": 107,
+      "key": "openapi_mock",
+      "slug": "openapi-mock",
+      "category": "network-web",
+      "relatedTools": [
+        "openapi_viewer",
+        "http_request_builder",
+        "json_formatter",
+        "curl_to_code"
+      ],
+      "keywords": [
+        "openapi mock",
+        "swagger mock",
+        "api mock generator",
+        "mock response generator"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/openapi-mock/manifest.ts"
+    },
+    {
+      "index": 108,
+      "key": "docker_run_to_compose",
+      "slug": "docker-run-to-compose",
+      "category": "network-web",
+      "relatedTools": [
+        "env_parser",
+        "yaml_json_converter",
+        "chmod_calculator",
+        "curl_to_code"
+      ],
+      "keywords": [
+        "docker run to compose",
+        "docker compose converter",
+        "docker command to yaml",
+        "containerize"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/docker-run-to-compose/manifest.ts"
+    },
+    {
+      "index": 109,
+      "key": "local_log_parser",
+      "slug": "local-log-parser",
+      "category": "network-web",
+      "relatedTools": [
+        "json_formatter",
+        "ndjson_formatter",
+        "regex_tester",
+        "text_diff_checker"
+      ],
+      "keywords": [
+        "log parser",
+        "log analyzer",
+        "json lines",
+        "ndjson logs",
+        "log viewer"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/local-log-parser/manifest.ts"
+    },
+    {
+      "index": 110,
+      "key": "jq_playground",
+      "slug": "jq-playground",
+      "category": "network-web",
+      "relatedTools": [
+        "json_formatter",
+        "jsonpath_playground",
+        "json_to_typescript",
+        "yaml_json_converter"
+      ],
+      "keywords": [
+        "jq playground",
+        "jq online",
+        "json query language",
+        "jq filter",
+        "json transform"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/jq-playground/manifest.ts"
+    },
+    {
+      "index": 111,
+      "key": "log_scrubber",
+      "slug": "log-scrubber",
+      "category": "network-web",
+      "relatedTools": [
+        "local_log_parser",
+        "security_header_analyzer",
+        "jwt_decoder",
+        "text_diff_checker"
+      ],
+      "keywords": [
+        "log scrubber",
+        "log redaction",
+        "secret redaction",
+        "pii remover"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/log-scrubber/manifest.ts"
+    },
+    {
+      "index": 112,
+      "key": "gzip_brotli_lab",
+      "slug": "gzip-brotli-lab",
+      "category": "text-string",
+      "relatedTools": [
+        "base64_encode_decode",
+        "url_encode_decode",
+        "http_request_builder",
+        "local_log_parser"
+      ],
+      "keywords": [
+        "gzip brotli lab",
+        "gzip decoder",
+        "brotli compression",
+        "http compression"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/gzip-brotli-lab/manifest.ts"
+    },
+    {
+      "index": 113,
+      "key": "yaml_merge_patch_explorer",
+      "slug": "yaml-merge-patch-explorer",
+      "category": "formatters",
+      "relatedTools": [
+        "yaml_json_converter",
+        "json_diff_viewer",
+        "openapi_viewer",
+        "docker_run_to_compose"
+      ],
+      "keywords": [
+        "yaml merge",
+        "yaml patch",
+        "json merge patch",
+        "kubernetes yaml"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/yaml-merge-patch-explorer/manifest.ts"
+    },
+    {
+      "index": 114,
+      "key": "yq_playground",
+      "slug": "yq-playground",
+      "category": "network-web",
+      "relatedTools": [
+        "yaml_json_converter",
+        "json_formatter",
+        "jq_playground",
+        "jsonpath_playground"
+      ],
+      "keywords": [
+        "yq playground",
+        "yaml query",
+        "yaml filter",
+        "yq online",
+        "yaml transform"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/yq-playground/manifest.ts"
+    },
+    {
+      "index": 115,
+      "key": "structured_data_visualizer",
+      "slug": "structured-data-visualizer",
+      "category": "formatters",
+      "relatedTools": [
+        "json_formatter",
+        "yaml_json_converter",
+        "xml_formatter",
+        "jsonpath_playground"
+      ],
+      "keywords": [
+        "structured data visualizer",
+        "json tree",
+        "yaml tree",
+        "xml tree",
+        "data graph"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/structured-data-visualizer/manifest.ts"
+    },
+    {
+      "index": 116,
+      "key": "har_viewer_sanitizer",
+      "slug": "har-viewer-sanitizer",
+      "category": "network-web",
+      "relatedTools": [
+        "local_log_parser",
+        "log_scrubber",
+        "http_status_codes",
+        "security_header_analyzer"
+      ],
+      "keywords": [
+        "har viewer",
+        "har sanitizer",
+        "http archive",
+        "network log sanitizer",
+        "har redaction"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/har-viewer-sanitizer/manifest.ts"
+    },
+    {
+      "index": 117,
+      "key": "pipeline_builder",
+      "slug": "pipeline-builder",
+      "category": "network-web",
+      "relatedTools": [
+        "json_formatter",
+        "base64_encode_decode",
+        "url_encode_decode",
+        "log_scrubber"
+      ],
+      "keywords": [
+        "pipeline builder",
+        "recipe builder",
+        "tool chaining",
+        "local workflow",
+        "developer workbench"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/pipeline-builder/manifest.ts"
+    },
+    {
+      "index": 118,
+      "key": "saml_decoder",
+      "slug": "saml-decoder",
+      "category": "network-web",
+      "relatedTools": [
+        "jwt_decoder",
+        "certificate_decoder",
+        "base64_encode_decode",
+        "security_header_analyzer"
+      ],
+      "keywords": [
+        "saml decoder",
+        "saml response decoder",
+        "saml request parser",
+        "saml assertion viewer"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/saml-decoder/manifest.ts"
+    },
+    {
+      "index": 119,
+      "key": "asn1_der_inspector",
+      "slug": "asn1-der-inspector",
+      "category": "network-web",
+      "relatedTools": [
+        "certificate_decoder",
+        "base64_encode_decode",
+        "hex_bytes_workbench",
+        "jwt_decoder"
+      ],
+      "keywords": [
+        "asn1 der inspector",
+        "der parser",
+        "asn.1 viewer",
+        "certificate der decoder"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/asn1-der-inspector/manifest.ts"
+    },
+    {
+      "index": 120,
+      "key": "hex_bytes_workbench",
+      "slug": "hex-bytes-workbench",
+      "category": "text-string",
+      "relatedTools": [
+        "base64_encode_decode",
+        "url_encode_decode",
+        "hash_generator",
+        "unicode_inspector"
+      ],
+      "keywords": [
+        "hex bytes workbench",
+        "hex decoder",
+        "bytes inspector",
+        "utf8 hex converter"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/hex-bytes-workbench/manifest.ts"
+    },
+    {
+      "index": 121,
+      "key": "unicode_inspector",
+      "slug": "unicode-inspector",
+      "category": "text-string",
+      "relatedTools": [
+        "invisible_chars_detector",
+        "text_diff_checker",
+        "hex_bytes_workbench",
+        "multiple_whitespace_remover"
+      ],
+      "keywords": [
+        "unicode inspector",
+        "code point inspector",
+        "unicode analyzer",
+        "utf8 inspector"
+      ],
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/unicode-inspector/manifest.ts"
+    }
+  ],
+  "aliases": [
+    {
+      "slug": "cron-expression-generator",
+      "targetSlug": "crontab-generator",
+      "pagePath": "src/app/[lang]/cron-expression-generator/page.tsx",
+      "inStaticGroup": false,
+      "inHubGroup": false
+    }
+  ],
+  "routeEntries": [
+    {
+      "slug": "about",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "ai-color-palette-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "api-auth-header-mistakes",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "ascii-art-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "asn1-der-inspector",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "barcode-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "base64-encode-decode",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "base64-encoding-when-and-how-to-use-it",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "bionic-reading-converter",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "certificate-chain-basics-for-developers",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "certificate-decoder",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "chmod-calculator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "cidr-subnet-calculator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "code-to-image-converter",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "color-converter",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "color-extraction-from-images-use-cases-and-tools",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "color-mixer",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "color-shades-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "contact",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "convert-curl-to-fetch-python",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "convert-encode",
+      "hasPage": true,
+      "kind": "hub",
+      "targetSlug": null,
+      "inHubGroup": true,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "cron-expression-generator",
+      "hasPage": true,
+      "kind": "alias-tool",
+      "targetSlug": "crontab-generator",
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "cron-visualizer",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "crontab-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "csp-mistakes-that-break-production",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "csp-parser",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "css-animations-and-transitions-guide",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "css-background-pattern-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "css-border-radius-and-shapes-guide",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "css-border-radius-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "css-box-shadow-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "css-checkbox-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "css-clip-path-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "css-cubic-bezier-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "css-formatter",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "css-glassmorphism-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "css-gradient-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "css-layout-patterns-for-developers",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "css-loader-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "css-minifier",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "css-switch-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "css-text-glitch-effect-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "css-triangle-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "csv-diff",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "csv-json-converter",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "curl-to-code",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "design-media",
+      "hasPage": true,
+      "kind": "hub",
+      "targetSlug": null,
+      "inHubGroup": true,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "dns-records-uptime",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "docker-run-to-compose",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "env-parser",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "fake-iban-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "format-validate",
+      "hasPage": true,
+      "kind": "hub",
+      "targetSlug": null,
+      "inHubGroup": true,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "formatters",
+      "hasPage": true,
+      "kind": "hub",
+      "targetSlug": null,
+      "inHubGroup": true,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "generators",
+      "hasPage": true,
+      "kind": "hub",
+      "targetSlug": null,
+      "inHubGroup": true,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "generators-ids",
+      "hasPage": true,
+      "kind": "hub",
+      "targetSlug": null,
+      "inHubGroup": true,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "google-fonts-pair-finder",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "gzip-brotli-lab",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "har-viewer-sanitizer",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "hash-functions-compared-md5-vs-sha256-vs-sha512",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "hash-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "header-diff",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "hex-bytes-workbench",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "html-css-beautifier",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "html-encoder-decoder",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "html-formatter",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "html-minifier",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "html-to-markdown",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "http-request-builder",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "http-status-codes",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "id-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "image-average-color-finder",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "image-base64",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "image-caption-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "image-color-extractor",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "image-color-picker",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "image-cropper",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "image-filters",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "image-optimization-for-web-complete-workflow",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "image-privacy-how-to-censor-and-protect-images",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "image-resizer",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "instagram-filters",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "instagram-photo-downloader",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "instagram-post-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "instagram-story-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "install-app",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "invisible-characters-detector",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "javascript-formatter",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "javascript-minifier",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "jq-playground",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "json-diff-viewer",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "json-formatter",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "json-formatting-errors",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "json-schema-validation-checklist",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "json-to-typescript",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "json-vs-json5-differences",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "jsonpath-playground",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "jwt-decoder",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "jwt-security-best-practices-for-token-handling",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "jwt-verifier",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "jwt-workbench",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "letter-counter",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "list-randomizer",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "local-log-parser",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "log-scrubber",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "lorem-ipsum",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "markdown-preview",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "md5-digest-generator",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "md5-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "mock-openapi-quickly",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "modern-css-effects-guide",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "multiple-whitespace-remover",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "ndjson-formatter",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "network-tools",
+      "hasPage": true,
+      "kind": "hub",
+      "targetSlug": null,
+      "inHubGroup": true,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "open-graph-meta-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "openapi-debugging-workflow-checklist",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "openapi-mock",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "openapi-viewer",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "password-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "photo-censor",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "pipeline-builder",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "pricing",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "privacy",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "qr-code-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "react-native-shadow-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "regex-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "regex-tester",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "robots-txt-tester",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "robots-txt-testing-checklist",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "saml-decoder",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "scanned-pdf-converter",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "security-header-analyzer",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "sha1-digest-generator",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "sha224-digest-generator",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "sha256-digest-generator",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "sha384-digest-generator",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "sha512-digest-generator",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "slugify-case-converter",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "sql-formatter",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "structured-data-visualizer",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "svg-blob-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "svg-optimization-and-conversion-best-practices",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "svg-optimizer",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "svg-pattern-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "svg-stroke-to-fill-converter",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "svg-to-png-converter",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "terms",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "text-content",
+      "hasPage": true,
+      "kind": "hub",
+      "targetSlug": null,
+      "inHubGroup": true,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "text-diff-checker",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "text-to-handwriting-converter",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "text-tools",
+      "hasPage": true,
+      "kind": "hub",
+      "targetSlug": null,
+      "inHubGroup": true,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "totp-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "tweet-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "tweet-to-image-converter",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "twitter-ad-revenue-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "unicode-inspector",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "unix-timestamp",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "url-encode-decode",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "url-encoding-explained-common-mistakes-and-solutions",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "url-parser",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "user-agent-parser",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "uuid-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "validate-json-before-api-requests",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
+    },
+    {
+      "slug": "vimeo-thumbnail-grabber",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "web-api",
+      "hasPage": true,
+      "kind": "hub",
+      "targetSlug": null,
+      "inHubGroup": true,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "xml-formatter",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "yaml-json-converter",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "yaml-merge-patch-explorer",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "youtube-thumbnail-grabber",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "yq-playground",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    }
+  ],
+  "integrity": {
+    "duplicateKeys": [],
+    "duplicateSlugs": [],
+    "missingRegistryMetaKeys": [],
+    "extraMetaKeys": [],
+    "missingCanonicalRoutes": [],
+    "unknownRouteDirs": []
+  }
+}

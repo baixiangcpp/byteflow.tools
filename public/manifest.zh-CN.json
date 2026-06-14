@@ -1,0 +1,88 @@
+{
+    "name": "byteflow.tools",
+    "short_name": "byteflow",
+    "description": "零延迟、完全本地运行的开发者工具，直接在浏览器中处理，无需服务器。",
+    "id": "/zh-CN?source=pwa",
+    "lang": "zh-CN",
+    "start_url": "/zh-CN?utm_source=pwa",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#0a0a1a",
+    "theme_color": "#0a0a1a",
+    "icons": [
+        {
+            "src": "/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/favicon.ico",
+            "sizes": "16x16 32x32 48x48",
+            "type": "image/x-icon"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "JSON 格式化工具",
+            "short_name": "JSON 格式化工具",
+            "description": "即时格式化、验证和压缩 JSON 数据。",
+            "url": "/zh-CN/json-formatter"
+        },
+        {
+            "name": "JWT 工作台",
+            "short_name": "JWT 工作台",
+            "description": "在同一本地优先工作区中完成 JWT 编码、解码与校验。",
+            "url": "/zh-CN/jwt-workbench"
+        },
+        {
+            "name": "Base64 编码/解码",
+            "short_name": "Base64 编码/解码",
+            "description": "将文本编码为 Base64 或将 Base64 解码为可读字符串。",
+            "url": "/zh-CN/base64-encode-decode"
+        },
+        {
+            "name": "密码生成器",
+            "short_name": "密码生成器",
+            "description": "生成高度安全的强随机密码。",
+            "url": "/zh-CN/password-generator"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/pwa-screenshots/home-en-1280x720.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide"
+        },
+        {
+            "src": "/pwa-screenshots/json-formatter-en-1280x720.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide"
+        }
+    ],
+    "categories": [
+        "developer",
+        "productivity",
+        "utilities"
+    ]
+}

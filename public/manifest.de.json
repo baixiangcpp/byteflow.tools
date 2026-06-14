@@ -1,0 +1,88 @@
+{
+    "name": "byteflow.tools",
+    "short_name": "byteflow",
+    "description": "Latenzfreie, vollständig lokale Entwicklerwerkzeuge direkt in Ihrem Browser.",
+    "id": "/de?source=pwa",
+    "lang": "de",
+    "start_url": "/de?utm_source=pwa",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#0a0a1a",
+    "theme_color": "#0a0a1a",
+    "icons": [
+        {
+            "src": "/icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-maskable-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icon-maskable-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/favicon.ico",
+            "sizes": "16x16 32x32 48x48",
+            "type": "image/x-icon"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "JSON-Formatter",
+            "short_name": "JSON",
+            "description": "Formatieren und validieren Sie JSON sofort mit Syntaxhervorhebung.",
+            "url": "/de/json-formatter"
+        },
+        {
+            "name": "JWT-Workbench",
+            "short_name": "JWT",
+            "description": "JWTs in einem lokalen Workspace kodieren, dekodieren und verifizieren.",
+            "url": "/de/jwt-workbench"
+        },
+        {
+            "name": "Base64 kodieren/dekodieren",
+            "short_name": "Base64",
+            "description": "Kodieren Sie Text in Base64 und dekodieren Sie Base64 zurück zu Text.",
+            "url": "/de/base64-encode-decode"
+        },
+        {
+            "name": "Passwort-Generator",
+            "short_name": "Password",
+            "description": "Erstellen Sie sichere Zufallspasswörter mit eigenen Regeln.",
+            "url": "/de/password-generator"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/pwa-screenshots/home-en-1280x720.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide"
+        },
+        {
+            "src": "/pwa-screenshots/json-formatter-en-1280x720.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide"
+        }
+    ],
+    "categories": [
+        "developer",
+        "productivity",
+        "utilities"
+    ]
+}

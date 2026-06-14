@@ -1,0 +1,288 @@
+import { fireEvent, render, screen, waitFor } from "@testing-library/react"
+import { beforeEach, describe, expect, it, vi } from "vitest"
+import { MENU_GROUP_DEFS } from "@/core/registry/menu-groups"
+import { toolGroups } from "@/components/layout/tool-groups"
+import { Navbar } from "@/components/layout/navbar"
+import { Sidebar } from "@/components/layout/sidebar"
+import { Footer } from "@/components/layout/footer"
+import { CommandPalette } from "@/components/layout/command-palette"
+import { getAllToolsHref } from "@/core/routing/all-tools-route"
+
+const mocks = vi.hoisted(() => ({
+    pathname: "/en",
+    push: vi.fn(),
+    langValue: {
+        lang: "en",
+        t: {},
+        englishToolSearchAliases: {},
+    } as {
+        lang: string
+        t: Record<string, unknown>
+        englishToolSearchAliases?: Record<string, { title?: string; description?: string }>
+    },
+}))
+
+function createMockLangValue(lang: string) {
+    const nav: Record<string, string> = {
+        all_tools: "All tools",
+        search: "Search",
+        navigation: "Navigation",
+        home: "Home",
+        related_tools: "Related tools",
+    }
+
+    for (const group of MENU_GROUP_DEFS) {
+        nav[group.navKey] = group.navKey
+    }
+
+    for (const group of toolGroups) {
+        nav[group.navKey] = nav[group.navKey] || group.navKey
+    }
+
+    const pages: Record<string, string> = {
+        about_title: "About",
+        pricing_title: "Pricing",
+        contact_title: "Contact",
+        privacy_title: "Privacy",
+        terms_title: "Terms",
+    }
+
+    const common: Record<string, string> = {
+        all_tools: "All tools",
+        install_app_label: "Install app",
+        footer_copyright: "Copyright {year} byteflow.tools. All rights reserved.",
+        no_results: "No results",
+        favorites: "Favorites",
+        recent_tools: "Recent tools",
+        no_favorites: "No favorites yet.",
+        no_recent_tools: "No recent tools yet.",
+        add_favorite: "Add to favorites",
+        remove_favorite: "Remove from favorites",
+    }
+
+    const tools: Record<string, { title: string; description: string }> = {}
+    const englishToolSearchAliases: Record<string, { title: string; description: string }> = {}
+    for (const group of toolGroups) {
+        for (const item of group.items) {
+            tools[item.key] = { title: `title-${item.key}`, description: `desc-${item.key}` }
+            englishToolSearchAliases[item.key] = {
+                title: item.key === "json_formatter" ? "JSON Formatter" : `en-title-${item.key}`,
+                description: item.key === "json_formatter" ? "Format JSON" : `en-desc-${item.key}`,
+            }
+        }
+    }
+
+    return {
+        lang,
+        englishToolSearchAliases,
+        t: {
+            nav,
+            pages,
+            common,
+            tools,
+            site: {
+                description: "Privacy-first tools.",
+            },
+        },
+    }
+}
+
+vi.mock("next/navigation", () => ({
+    usePathname: () => mocks.pathname,
+    useRouter: () => ({ push: mocks.push }),
+}))
+
+vi.mock("next/link", () => ({
+    default: ({ href, children, ...props }: { href: string; children: React.ReactNode }) => (
+        <a href={href} {...props}>
+            {children}
+        </a>
+    ),
+}))
+
+vi.mock("next/image", () => ({
+    default: ({ src, alt }: { src: string; alt?: string }) => (
+        <span data-testid="mock-next-image" data-src={src} aria-label={alt ?? ""} />
+    ),
+}))
+
+vi.mock("@/core/i18n/lang-provider", () => ({
+    useLang: () => mocks.langValue,
+}))
+
+vi.mock("@/components/layout/theme-toggle", () => ({
+    ThemeToggle: () => <button type="button">Theme</button>,
+}))
+
+vi.mock("@/components/layout/language-switcher", () => ({
+    LanguageSwitcher: () => <button type="button">Language</button>,
+}))
+
+vi.mock("@/components/ui/dropdown-menu", () => ({
+    DropdownMenu: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    DropdownMenuTrigger: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    DropdownMenuContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}))
+
+vi.mock("@/components/ui/sheet", () => ({
+    Sheet: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    SheetTrigger: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    SheetContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    SheetTitle: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    SheetClose: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}))
+
+vi.mock("@/components/ui/accordion", () => ({
+    Accordion: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    AccordionItem: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    AccordionTrigger: ({ children }: { children: React.ReactNode }) => <button type="button">{children}</button>,
+    AccordionContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}))
+
+vi.mock("@/components/ui/dialog", () => ({
+    DialogTitle: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}))
+
+vi.mock("@/components/ui/command", () => ({
+    CommandDialog: ({ open, children }: { open: boolean; children: React.ReactNode }) =>
+        open ? <div data-testid="command-dialog">{children}</div> : null,
+    CommandEmpty: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    CommandGroup: ({ heading, children }: { heading: string; children: React.ReactNode }) => (
+        <section>
+            <h3>{heading}</h3>
+            {children}
+        </section>
+    ),
+    CommandInput: ({ placeholder }: { placeholder: string }) => <input placeholder={placeholder} />,
+    CommandItem: ({ children, onSelect, value }: { children: React.ReactNode; onSelect?: () => void; value?: string }) => (
+        <button type="button" data-value={value ?? ""} onClick={() => onSelect?.()}>
+            {children}
+        </button>
+    ),
+    CommandList: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+    CommandSeparator: () => <hr />,
+}))
+
+describe("layout components", () => {
+    beforeEach(() => {
+        mocks.pathname = "/en"
+        mocks.push.mockReset()
+        mocks.langValue = createMockLangValue("en")
+    })
+
+    it("renders navbar search triggers with the command-palette data contract", () => {
+        render(
+            <Navbar
+                lang="en"
+                labels={{
+                    allTools: "All tools",
+                    openNavigation: "Open Navigation",
+                    search: "Search",
+                }}
+            />,
+        )
+
+        expect(screen.getByRole("link", { name: "byteflow.tools" })).toHaveAttribute("href", "/en")
+        expect(screen.getByRole("link", { name: "All tools" })).toHaveAttribute("href", getAllToolsHref("en"))
+        expect(screen.getByLabelText("Search")).toHaveAttribute("data-command-palette-trigger")
+    })
+
+    it("renders sidebar links with locale-aware href and active state", () => {
+        mocks.pathname = "/en/json-formatter"
+
+        render(<Sidebar />)
+
+        const activeLink = document.querySelector('a[href="/en/json-formatter"]')
+        expect(activeLink).toBeInTheDocument()
+        expect(activeLink).toHaveClass("text-primary")
+    })
+
+    it("renders footer category and navigation links with locale prefix", () => {
+        render(<Footer />)
+
+        expect(screen.getByRole("link", { name: "byteflow.tools" })).toHaveAttribute("href", "/en")
+        expect(screen.getByRole("link", { name: "format_validate" })).toHaveAttribute("href", "/en/format-validate")
+        expect(screen.getByRole("link", { name: "About" })).toHaveAttribute("href", "/en/about")
+        expect(screen.queryByRole("link", { name: "json_formatter" })).not.toBeInTheDocument()
+    })
+
+    it("opens command palette with ctrl+k and navigates when selecting a command", async () => {
+        render(<CommandPalette />)
+
+        expect(screen.queryByTestId("command-dialog")).not.toBeInTheDocument()
+
+        fireEvent.keyDown(document, { key: "k", ctrlKey: true })
+        expect(screen.getByTestId("command-dialog")).toBeInTheDocument()
+
+        fireEvent.click(screen.getByRole("button", { name: "Home" }))
+
+        await waitFor(() => expect(mocks.push).toHaveBeenCalledWith("/en"))
+        await waitFor(() => expect(screen.queryByTestId("command-dialog")).not.toBeInTheDocument())
+    })
+
+    it("indexes description and metadata terms in command item search value", () => {
+        render(<CommandPalette />)
+
+        fireEvent.keyDown(document, { key: "k", ctrlKey: true })
+        const jsonFormatterItem = screen.getByRole("button", { name: "title-json_formatter" })
+        const searchValue = jsonFormatterItem.getAttribute("data-value") || ""
+
+        expect(searchValue).toContain("desc-json_formatter")
+        expect(searchValue).toContain("json-formatter")
+    })
+
+    it("keeps English tool names as search aliases without replacing localized labels", () => {
+        const localizedValue = createMockLangValue("fr")
+        localizedValue.t.tools.json_formatter = {
+            title: "Formateur JSON",
+            description: "Mettre en forme JSON",
+        }
+        mocks.langValue = localizedValue
+
+        render(<CommandPalette />)
+
+        fireEvent.keyDown(document, { key: "k", ctrlKey: true })
+
+        const jsonFormatterItem = screen.getByRole("button", { name: "Formateur JSON" })
+        const searchValue = jsonFormatterItem.getAttribute("data-value") || ""
+
+        expect(searchValue).toContain("JSON Formatter")
+        expect(screen.queryByRole("button", { name: "JSON Formatter" })).not.toBeInTheDocument()
+    })
+
+    it("does not open command palette while typing in an input", () => {
+        render(
+            <>
+                <input aria-label="Editor input" />
+                <CommandPalette />
+            </>,
+        )
+
+        fireEvent.keyDown(screen.getByRole("textbox", { name: "Editor input" }), {
+            key: "k",
+            ctrlKey: true,
+        })
+
+        expect(screen.queryByTestId("command-dialog")).not.toBeInTheDocument()
+    })
+
+    it("fails fast when visible i18n labels are missing", () => {
+        const completeValue = createMockLangValue("en")
+        mocks.langValue = {
+            ...completeValue,
+            t: {
+                ...completeValue.t,
+                nav: {},
+                tools: {},
+                common: {
+                    all_tools: "All tools",
+                    no_results: "No results",
+                    install_app_label: "Install app",
+                },
+            },
+        }
+
+        expect(() => render(<Sidebar />)).toThrow("[i18n] Missing translation value for nav.")
+        expect(() => render(<CommandPalette />)).toThrow("[i18n] Missing translation value for nav.navigation")
+    })
+})
