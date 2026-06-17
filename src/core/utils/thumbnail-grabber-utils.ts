@@ -1,18 +1,18 @@
+import { parseSafeExternalUrl } from "@/core/security/external-url"
+
 export type ThumbnailCandidate = {
     label: string
     url: string
 }
 
 function parseUrl(input: string): URL | null {
-    const value = input.trim()
-    if (!value) return null
-
-    const withProtocol = /^https?:\/\//i.test(value) ? value : `https://${value}`
-    try {
-        return new URL(withProtocol)
-    } catch {
-        return null
-    }
+    const parsed = parseSafeExternalUrl(input, {
+        requireHttps: true,
+        addHttpsWhenMissing: true,
+        allowedHostnames: ["youtu.be"],
+        allowedHostnameSuffixes: ["youtube.com", "youtube-nocookie.com", "vimeo.com"],
+    })
+    return parsed.ok ? parsed.url : null
 }
 
 export function parseYouTubeVideoId(input: string): string | null {
