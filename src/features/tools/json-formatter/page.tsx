@@ -3,17 +3,12 @@
 import * as React from "react"
 import {
     Play,
-    Copy,
     Eraser,
     Braces,
     AlignLeft,
     ListTree,
     Upload,
     ArrowRightLeft,
-    Maximize2,
-    Minimize2,
-    Search,
-    X,
     TestTube2,
     Workflow,
 } from "lucide-react"
@@ -30,12 +25,15 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from "@/components/ui/input"
 import { readStorageString, writeStorageString, removeStorageKey } from "@/core/storage/tool-persistence"
 import { enforceToolInputPersistencePolicy } from "@/core/storage/tool-persistence-policy"
-import { importTextFile, TEXT_FILE_IMPORT_ACCEPT } from "@/core/files/text-file-import"
+import { importTextFile } from "@/core/files/text-file-import"
 import { buildToolHandoffLink, getToolHandoffFromSearchParams } from "@/core/routing/tool-handoff"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildJsonParseErrorMessage } from "@/features/tools/json-formatter/error-utils"
 import { PrivacyBadge } from "@/features/tool-shell/privacy-badge"
 import { PrivacyFAQ } from "@/features/tool-shell/privacy-faq"
+import { JsonImportDropzone } from "./json-import-dropzone"
+import { JsonOutputToolbar } from "./json-output-toolbar"
+import { JsonTreeSearch } from "./json-tree-search"
 import { INPUT_STORAGE_DEBOUNCE_MS, INPUT_STORAGE_KEY, JSON_FORMATTER_PERSISTENCE_POLICY, VIEW_MODE_STORAGE_KEY } from "./constants"
 import {
     findMatchingPaths,
@@ -575,46 +573,14 @@ export function JsonFormatterPage() {
                 <ToolActionBar actions={actions} handoffPayload={handoffPayload} />
             </div>
 
-            <div
-                className={`rounded-xl border border-dashed px-4 py-3 transition-colors ${isImportDragActive ? "border-primary bg-primary/10" : "border-border/70 bg-card/40"}`}
-                onDragOver={(event) => {
-                    event.preventDefault()
-                    setIsImportDragActive(true)
-                }}
-                onDragLeave={(event) => {
-                    event.preventDefault()
-                    setIsImportDragActive(false)
-                }}
-                onDrop={(event) => {
-                    event.preventDefault()
-                    setIsImportDragActive(false)
-                    const file = event.dataTransfer.files?.[0]
-                    if (!file) return
-                    void handleImportFile(file)
-                }}
-            >
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                    <p className="text-sm text-muted-foreground">
-                        {text("drag_drop_import_hint")}
-                    </p>
-                    <Button variant="outline" size="sm" onClick={openImportPicker}>
-                        <Upload className="mr-2 h-4 w-4" />
-                        {text("import_file")}
-                    </Button>
-                </div>
-                <input
-                    ref={fileInputRef}
-                    type="file"
-                    accept={TEXT_FILE_IMPORT_ACCEPT}
-                    className="hidden"
-                    onChange={(event) => {
-                        const file = event.target.files?.[0]
-                        event.currentTarget.value = ""
-                        if (!file) return
-                        void handleImportFile(file)
-                    }}
-                />
-            </div>
+            <JsonImportDropzone
+                fileInputRef={fileInputRef}
+                isDragActive={isImportDragActive}
+                onDragActiveChange={setIsImportDragActive}
+                onImportFile={handleImportFile}
+                onOpenImportPicker={openImportPicker}
+                text={text}
+            />
 
             {error ? (
                 <div className="rounded-md bg-destructive/90 p-3 text-sm font-medium text-destructive-foreground">
@@ -649,72 +615,26 @@ export function JsonFormatterPage() {
                 </div>
 
                 <div ref={outputPaneRef} className="flex h-full flex-col">
-                    <div className="tool-pane-header tool-pane-header-between">
-                        <div className="flex items-center gap-2">
-                            <span>{t.common.output}</span>
-                            <div className="flex items-center rounded-md border bg-muted p-0.5">
-                                <button
-                                    type="button"
-                                    onClick={() => switchViewMode("text")}
-                                    className={`rounded px-2 py-1 text-[11px] transition-colors ${viewMode === "text" ? "bg-background text-foreground" : "text-muted-foreground"}`}
-                                >
-                                    {toolT.view_text}
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={() => switchViewMode("tree")}
-                                    className={`rounded px-2 py-1 text-[11px] transition-colors ${viewMode === "tree" ? "bg-background text-foreground" : "text-muted-foreground"}`}
-                                >
-                                    <span className="inline-flex items-center gap-1">
-                                        <ListTree className="h-3.5 w-3.5" />
-                                        {toolT.view_tree}
-                                    </span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div className="flex items-center gap-1">
-                            {viewMode === "tree" && (
-                                <div className="flex items-center gap-1 border-r pr-2 mr-1">
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-7 w-7"
-                                        title={text("tree_expand_all")}
-                                        onClick={handleExpandAll}
-                                        disabled={treeData === null}
-                                    >
-                                        <Maximize2 className="h-3.5 w-3.5" />
-                                    </Button>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="h-7 w-7"
-                                        title={text("tree_collapse_all")}
-                                        onClick={handleCollapseAll}
-                                        disabled={treeData === null}
-                                    >
-                                        <Minimize2 className="h-3.5 w-3.5" />
-                                    </Button>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className={`h-7 w-7 ${isSearchOpen ? "bg-accent text-accent-foreground" : ""}`}
-                                        title={t.common.search}
-                                        onClick={() => setIsSearchOpen(!isSearchOpen)}
-                                        disabled={treeData === null}
-                                    >
-                                        <Search className="h-3.5 w-3.5" />
-                                    </Button>
-                                </div>
-                            )}
-
-                            <Button variant="ghost" size="icon" className="h-7 w-7" onClick={handleCopy} disabled={!output && treeData === null}>
-                                <Copy className="h-4 w-4" />
-                                <span className="sr-only">{t.common.copy_output}</span>
-                            </Button>
-                        </div>
-                    </div>
+                    <JsonOutputToolbar
+                        canCopy={Boolean(output || treeData !== null)}
+                        hasTreeData={treeData !== null}
+                        isSearchOpen={isSearchOpen}
+                        labels={{
+                            collapseAll: text("tree_collapse_all"),
+                            copyOutput: t.common.copy_output,
+                            expandAll: text("tree_expand_all"),
+                            output: t.common.output,
+                            search: t.common.search,
+                            viewText: toolT.view_text,
+                            viewTree: toolT.view_tree,
+                        }}
+                        onCollapseAll={handleCollapseAll}
+                        onCopy={handleCopy}
+                        onExpandAll={handleExpandAll}
+                        onToggleSearch={() => setIsSearchOpen(!isSearchOpen)}
+                        onViewModeChange={switchViewMode}
+                        viewMode={viewMode}
+                    />
 
                     {viewMode === "text" ? (
                         <div className="min-h-[300px] flex-1">
@@ -742,38 +662,18 @@ export function JsonFormatterPage() {
                                 {toolT.tree_hint}
                             </div>
                             <div className="flex-1 overflow-auto p-2">
-                                {isSearchOpen && (
-                                    <div className="absolute top-2 right-4 z-10 flex items-center gap-2 rounded-lg border bg-background/95 p-1 shadow-lg backdrop-blur-md animate-in fade-in zoom-in duration-200">
-                                        <div className="relative">
-                                            <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
-                                            <Input
-                                                autoFocus
-                                                className="h-8 w-48 pl-8 text-xs focus-visible:ring-1 focus-visible:ring-primary/50"
-                                                placeholder={text("tree_search_placeholder")}
-                                                value={searchQuery}
-                                                onChange={(e) => setSearchQuery(e.target.value)}
-                                                onKeyDown={(e) => {
-                                                    if (e.key === "Escape") {
-                                                        setIsSearchOpen(false)
-                                                        setSearchQuery("")
-                                                    }
-                                                }}
-                                            />
-                                        </div>
-                                        <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="h-7 w-7"
-                                            onClick={() => {
-                                                setIsSearchOpen(false)
-                                                setSearchQuery("")
-                                            }}
-                                            aria-label={t.common.close}
-                                        >
-                                            <X className="h-3.5 w-3.5" />
-                                        </Button>
-                                    </div>
-                                )}
+                                {isSearchOpen ? (
+                                    <JsonTreeSearch
+                                        closeLabel={t.common.close}
+                                        onClose={() => {
+                                            setIsSearchOpen(false)
+                                            setSearchQuery("")
+                                        }}
+                                        onQueryChange={setSearchQuery}
+                                        placeholder={text("tree_search_placeholder")}
+                                        query={searchQuery}
+                                    />
+                                ) : null}
                                 {treeData === null ? (
                                     <ToolEmptyState
                                         icon={ListTree}
