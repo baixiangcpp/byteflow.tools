@@ -22,7 +22,7 @@ const CATEGORY_CONFIG = {
     },
 };
 
-const MANIFESTS_PATH = "src/core/registry/manifests.ts";
+const TOOL_ORDER_PATH = "src/core/registry/tool-order.json";
 const ROUTE_ROOT = "src/app/[lang]";
 const FEATURE_TOOL_ROOT = "src/features/tools";
 const TRANSLATION_FILES = {
@@ -96,14 +96,13 @@ function asTsStringArray(items) {
     return `[${items.map((item) => `\"${item}\"`).join(", ")}]`;
 }
 
-function slugToManifestIdentifier(slug) {
-    return `${slug.replace(/-([a-z0-9])/g, (_, char) => char.toUpperCase()).replace(/^[0-9]/, (char) => `_${char}`)}Manifest`;
-}
-
 function ensureNotExistsInMeta(key, slug) {
-    const manifestsSource = readText(MANIFESTS_PATH);
-    if (manifestsSource.includes(`/${slug}/manifest"`)) {
-        throw new Error(`Tool slug already exists in manifest aggregator: ${slug}`);
+    const order = JSON.parse(readText(TOOL_ORDER_PATH));
+    if (!Array.isArray(order) || order.some((item) => typeof item !== "string")) {
+        throw new Error(`${TOOL_ORDER_PATH} must contain an array of slug strings`);
+    }
+    if (order.includes(slug)) {
+        throw new Error(`Tool slug already exists in ${TOOL_ORDER_PATH}: ${slug}`);
     }
 
     const manifestFiles = fs
@@ -391,30 +390,16 @@ function createRouteFiles({ slug, toolKey, category, relatedTools, keywords }) {
     }), "utf8");
 }
 
-function updateManifestAggregator(slug) {
-    const content = readText(MANIFESTS_PATH);
-    const identifier = slugToManifestIdentifier(slug);
-    const importLine = `import { toolManifest as ${identifier} } from "@/features/tools/${slug}/manifest"`;
-
-    if (content.includes(importLine)) {
-        throw new Error(`Manifest import already exists in ${MANIFESTS_PATH}: ${slug}`);
+function updateToolOrder(slug) {
+    const order = JSON.parse(readText(TOOL_ORDER_PATH));
+    if (!Array.isArray(order) || order.some((item) => typeof item !== "string")) {
+        throw new Error(`${TOOL_ORDER_PATH} must contain an array of slug strings`);
     }
-
-    const typeImport = 'import type { ToolMeta } from "./types"';
-    const typeImportIndex = content.indexOf(typeImport);
-    if (typeImportIndex === -1) {
-        throw new Error(`Unable to find ToolMeta import in ${MANIFESTS_PATH}`);
+    if (order.includes(slug)) {
+        throw new Error(`Tool slug already exists in ${TOOL_ORDER_PATH}: ${slug}`);
     }
-
-    const arrayClose = content.indexOf("\n] satisfies ToolMeta[]");
-    if (arrayClose === -1) {
-        throw new Error(`Unable to find TOOL_MANIFESTS closing bracket in ${MANIFESTS_PATH}`);
-    }
-
-    const withImport = `${content.slice(0, typeImportIndex)}${importLine}\n${content.slice(typeImportIndex)}`;
-    const adjustedArrayClose = arrayClose + importLine.length + 1;
-    const next = `${withImport.slice(0, adjustedArrayClose)}    ${identifier},\n${withImport.slice(adjustedArrayClose)}`;
-    writeText(MANIFESTS_PATH, next);
+    order.push(slug);
+    writeText(TOOL_ORDER_PATH, `${JSON.stringify(order, null, 2)}\n`);
 }
 
 function main() {
@@ -455,17 +440,17 @@ function main() {
         keywords,
     });
 
-    updateManifestAggregator(slug);
+    updateToolOrder(slug);
     updateTranslations(key, title);
 
     console.log(`[create-tool] Created route: ${path.join(ROUTE_ROOT, slug)}`);
     console.log(`[create-tool] Created feature page: ${path.join(FEATURE_TOOL_ROOT, slug, "page.tsx")}`);
     console.log(`[create-tool] Created manifest: ${path.join(FEATURE_TOOL_ROOT, slug, "manifest.ts")}`);
     console.log(`[create-tool] Created feature modules: ${path.join(FEATURE_TOOL_ROOT, slug, "{logic,samples,types}.ts")}`);
-    console.log(`[create-tool] Updated manifest aggregator: ${MANIFESTS_PATH}`);
+    console.log(`[create-tool] Updated tool order: ${TOOL_ORDER_PATH}`);
     console.log("[create-tool] Updated translations: en, zh-CN, zh-TW, ja, ko, de, fr");
     console.log("[create-tool] Next steps:");
-    console.log("  1) npm run generate:tool-index");
+    console.log("  1) npm run generate:registry-manifests && npm run generate:tool-index");
     console.log("  2) npm run lint && npm run test && npm run check:i18n && npm run build");
 }
 

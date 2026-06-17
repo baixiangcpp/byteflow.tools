@@ -4,6 +4,7 @@ import path from "node:path"
 export const ROOT_DIR = process.cwd()
 export const FEATURE_TOOLS_DIR = path.join(ROOT_DIR, "src/features/tools")
 export const TOOL_MANIFESTS_PATH = path.join(ROOT_DIR, "src/core/registry/manifests.ts")
+export const TOOL_ORDER_PATH = path.join(ROOT_DIR, "src/core/registry/tool-order.json")
 
 const REQUIRED_FIELDS = ["key", "slug", "category", "relatedTools", "keywords"]
 const NETWORK_ACCESS_VALUES = new Set(["none", "user_requested", "third_party_api"])
@@ -281,24 +282,11 @@ export function loadToolManifestMap() {
 }
 
 export function loadToolManifestOrder() {
-    const source = readText(TOOL_MANIFESTS_PATH)
-    const importAliases = new Map(
-        [...source.matchAll(/import \{ toolManifest as ([A-Za-z0-9_]+) \} from "@\/features\/tools\/([^/]+)\/manifest"/g)].map(
-            (match) => [match[1], match[2]],
-        ),
-    )
-    const block = source.match(/export const TOOL_MANIFESTS = \[([\s\S]*?)\]\s+satisfies ToolMeta\[\]/)
-    if (!block) {
-        throw new Error("[tool-manifest] Unable to parse TOOL_MANIFESTS from src/core/registry/manifests.ts")
+    const parsed = JSON.parse(readText(TOOL_ORDER_PATH))
+    if (!Array.isArray(parsed) || parsed.some((slug) => typeof slug !== "string" || !slug.trim())) {
+        throw new Error("[tool-manifest] src/core/registry/tool-order.json must be an array of non-empty slug strings")
     }
-
-    return [...block[1].matchAll(/([A-Za-z0-9_]+),/g)].map((match) => {
-        const slug = importAliases.get(match[1])
-        if (!slug) {
-            throw new Error(`[tool-manifest] TOOL_MANIFESTS references unknown import alias: ${match[1]}`)
-        }
-        return slug
-    })
+    return parsed
 }
 
 export function loadOrderedToolManifests() {

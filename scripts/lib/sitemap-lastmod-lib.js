@@ -14,6 +14,7 @@ const TOOL_REGISTRY_SHARED_FILES = [
     "src/core/registry/manifests.ts",
     "src/core/registry/registry.ts",
     "src/core/registry/related-tools.ts",
+    "src/core/registry/tool-order.json",
     "src/core/registry/types.ts",
 ];
 const MANIFEST_RELATIVE_PATH = "src/lib/sitemap-lastmod.json";
