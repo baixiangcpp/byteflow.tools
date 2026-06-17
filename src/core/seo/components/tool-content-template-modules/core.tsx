@@ -1,6 +1,7 @@
 import type { Locale } from "@/core/i18n/i18n"
 import { requireTranslationValue } from "@/core/i18n/i18n"
 import { getToolBySlug } from "@/core/registry"
+import { JsonLdScript } from "@/core/seo/components/json-ld-script"
 import { ToolContentTemplateSurface } from "@/core/seo/components/tool-content-template-surface"
 import { getTemplateCopy } from "./template-copy"
 import { resolveFallbackIntentFamily } from "./intent-family"
@@ -99,11 +100,7 @@ export function ToolContentTemplateSection({
 
     return (
         <>
-            <script
-                data-faq-schema="tool"
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
-            />
+            <JsonLdScript data-faq-schema="tool" jsonLd={faqSchema} />
             <ToolContentTemplateSurface source={source}>
                 <div className="mx-auto max-w-4xl space-y-8">
                     <header className="space-y-3">
