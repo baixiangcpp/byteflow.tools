@@ -48,6 +48,10 @@ describe("pipeline foundation", () => {
             "multiple_whitespace_remover",
             "invisible_chars_detector",
             "log_scrubber",
+            "yaml_json_converter",
+            "csv_json_converter",
+            "ndjson_formatter",
+            "slugify_case_converter",
         ])
         expect(getPipelineAdapter("json_formatter")?.version).toBe(1)
     })
@@ -154,6 +158,94 @@ describe("pipeline foundation", () => {
         expect(result.steps).toHaveLength(2)
         expect(result.steps[0].output).toBe('{"name":"byteflow"}')
         expect(result.finalOutput).toBe("eyJuYW1lIjoiYnl0ZWZsb3cifQ")
+    })
+
+    it("runs phase-one data format adapters", async () => {
+        const yamlRecipe = buildRecipe({
+            steps: [{
+                id: "yaml",
+                toolKey: "yaml_json_converter",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { mode: "yaml-to-json" },
+            }],
+            edges: [],
+        })
+        const csvRecipe = buildRecipe({
+            steps: [{
+                id: "csv",
+                toolKey: "csv_json_converter",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { direction: "csv-to-json", delimiter: "auto", hasHeader: true, typeInference: true },
+            }],
+            edges: [],
+        })
+        const ndjsonRecipe = buildRecipe({
+            steps: [{
+                id: "ndjson",
+                toolKey: "ndjson_formatter",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { mode: "to-array" },
+            }],
+            edges: [],
+        })
+        const slugRecipe = buildRecipe({
+            steps: [{
+                id: "slug",
+                toolKey: "slugify_case_converter",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { style: "slug", locale: "en-US", preserveAcronyms: true },
+            }],
+            edges: [],
+        })
+
+        await expect(runRecipe(yamlRecipe, "name: byteflow\nactive: true\n")).resolves.toMatchObject({
+            ok: true,
+            finalOutput: "{\n  \"name\": \"byteflow\",\n  \"active\": true\n}",
+        })
+        await expect(runRecipe(csvRecipe, "id,name\n1,Alice")).resolves.toMatchObject({
+            ok: true,
+            finalOutput: "[\n  {\n    \"id\": 1,\n    \"name\": \"Alice\"\n  }\n]",
+        })
+        await expect(runRecipe(ndjsonRecipe, "{\"id\":1}\n{\"id\":2}")).resolves.toMatchObject({
+            ok: true,
+            finalOutput: "[\n  {\n    \"id\": 1\n  },\n  {\n    \"id\": 2\n  }\n]",
+        })
+        await expect(runRecipe(slugRecipe, "Hello Byteflow Tools")).resolves.toMatchObject({
+            ok: true,
+            finalOutput: "hello-byteflow-tools",
+        })
+    })
+
+    it("returns structured errors for phase-one adapter invalid input and options", async () => {
+        const badYamlOptions = validateRecipe(buildRecipe({
+            steps: [{
+                id: "yaml",
+                toolKey: "yaml_json_converter",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { mode: "xml-to-json" },
+            }],
+            edges: [],
+        }))
+        const badCsv = await runRecipe(buildRecipe({
+            steps: [{
+                id: "csv",
+                toolKey: "csv_json_converter",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { direction: "json-to-csv", delimiter: "auto", hasHeader: true, typeInference: true },
+            }],
+            edges: [],
+        }), "{\"not\":\"array\"}")
+
+        expect(badYamlOptions.ok).toBe(false)
+        expect(badYamlOptions.errors).toContain("yaml: mode must be yaml-to-json or json-to-yaml.")
+        expect(badCsv.ok).toBe(false)
+        expect(badCsv.errors).toContain("csv: JSON input must be an array to convert to CSV.")
     })
 
     it("allows empty edges and executes recipe.steps order", async () => {

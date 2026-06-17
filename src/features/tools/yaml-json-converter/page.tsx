@@ -8,11 +8,11 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
-import YAML from "yaml"
 import { readStorageString, removeStorageKey, writeStorageString } from "@/core/storage/tool-persistence"
 import { buildToolHandoffLink } from "@/core/routing/tool-handoff"
 import { importTextFile, TEXT_FILE_IMPORT_ACCEPT } from "@/core/files/text-file-import"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { convertYamlJson, type YamlJsonMode } from "./utils"
 
 const INPUT_STORAGE_KEY = "byteflow:yaml-json-converter:input"
 const MODE_STORAGE_KEY = "byteflow:yaml-json-converter:mode"
@@ -23,7 +23,7 @@ export function YamlJsonConverterPage() {
     const text = React.useCallback((key: string) => toolT[key], [toolT])
     const [input, setInput] = React.useState("")
     const [output, setOutput] = React.useState("")
-    const [mode, setMode] = React.useState<"yaml-to-json" | "json-to-yaml">("yaml-to-json")
+    const [mode, setMode] = React.useState<YamlJsonMode>("yaml-to-json")
     const [error, setError] = React.useState<string | null>(null)
     const [importError, setImportError] = React.useState<string | null>(null)
     const [isImportDragActive, setIsImportDragActive] = React.useState(false)
@@ -70,13 +70,7 @@ export function YamlJsonConverterPage() {
         }
 
         try {
-            if (mode === "yaml-to-json") {
-                const parsed = YAML.parse(input)
-                setOutput(JSON.stringify(parsed, null, 2))
-            } else {
-                const parsed = JSON.parse(input)
-                setOutput(YAML.stringify(parsed))
-            }
+            setOutput(convertYamlJson(input, mode))
             setError(null)
         } catch {
             setError(mode === "yaml-to-json" ? text("error_yaml_to_json") : text("error_json_to_yaml"))

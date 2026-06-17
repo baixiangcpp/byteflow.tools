@@ -8,6 +8,7 @@ import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/u
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { countNdjsonLines, runNdjsonTransform, type NdjsonMessages, type NdjsonMode } from "./utils"
 
 const NDJSON_BUTTON_BASE_CLASS =
     "inline-flex items-center justify-center gap-1.5 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
@@ -40,64 +41,12 @@ function getButtonClassName(
         .join(" ")
 }
 
-// ─── NDJSON Engine ──────────────────────────────────────────────────────────
-
-type NdjsonMessages = {
-    error_label: string
-    invalid_json_line_label: string
-    input_must_be_array_label: string
-    invalid_json_label: string
-    error_parsing_line_label: string
-}
-
-function formatNdjson(input: string, messages: NdjsonMessages): string {
-    const lines = input.split("\n").filter((l) => l.trim())
-    return lines
-        .map((line) => {
-            try {
-                return JSON.stringify(JSON.parse(line), null, 2)
-            } catch {
-                return `// ${messages.error_label}: ${messages.invalid_json_line_label}\n${line}`
-            }
-        })
-        .join("\n\n---\n\n")
-}
-
-function jsonArrayToNdjson(input: string, messages: NdjsonMessages): string {
-    try {
-        const arr = JSON.parse(input)
-        if (!Array.isArray(arr)) return `// ${messages.error_label}: ${messages.input_must_be_array_label}`
-        return arr.map((item) => JSON.stringify(item)).join("\n")
-    } catch (e) {
-        return `// ${messages.error_label}: ${e instanceof Error ? e.message : messages.invalid_json_label}`
-    }
-}
-
-function ndjsonToArray(input: string, messages: NdjsonMessages): string {
-    const lines = input.split("\n").filter((l) => l.trim())
-    const items: unknown[] = []
-    for (const line of lines) {
-        try {
-            items.push(JSON.parse(line))
-        } catch {
-            return `// ${messages.error_parsing_line_label}: ${line}`
-        }
-    }
-    return JSON.stringify(items, null, 2)
-}
-
-function countLines(input: string): number {
-    return input.split("\n").filter((l) => l.trim()).length
-}
-
-type Mode = "format" | "to-ndjson" | "to-array"
-
 export function NdjsonFormatterPage() {
     const { t } = useLang()
     const toolT = t.tools["ndjson_formatter"] as Record<string, string>
     const [input, setInput] = React.useState("")
     const [output, setOutput] = React.useState("")
-    const [mode, setMode] = React.useState<Mode>("format")
+    const [mode, setMode] = React.useState<NdjsonMode>("format")
     const { resolvedTheme } = useThemePreference()
     const monacoTheme = getByteflowMonacoThemeName(resolvedTheme)
     const messages = React.useMemo<NdjsonMessages>(
@@ -113,11 +62,7 @@ export function NdjsonFormatterPage() {
 
     const process = React.useCallback(() => {
         if (!input.trim()) { setOutput(""); return }
-        switch (mode) {
-            case "format": setOutput(formatNdjson(input, messages)); break
-            case "to-ndjson": setOutput(jsonArrayToNdjson(input, messages)); break
-            case "to-array": setOutput(ndjsonToArray(input, messages)); break
-        }
+        setOutput(runNdjsonTransform(input, mode, messages))
     }, [input, messages, mode])
 
     React.useEffect(() => {
@@ -151,7 +96,7 @@ export function NdjsonFormatterPage() {
         toast.success(t.common.copied)
     }
 
-    const lineCount = input ? countLines(input) : 0
+    const lineCount = input ? countNdjsonLines(input) : 0
 
     return (
         <div className="flex flex-col h-full space-y-6 max-w-[1400px] mx-auto w-full">

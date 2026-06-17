@@ -189,6 +189,10 @@ The current non-public foundation includes only deterministic, low-risk text/dat
 | `multiple_whitespace_remover` | Simple text normalization. |
 | `invisible_chars_detector` | Clean copied config/log text before parsing. |
 | `log_scrubber` | Redact sensitive log content before export. |
+| `yaml_json_converter` | Convert YAML snippets to JSON and JSON snippets back to YAML in local data workflows. |
+| `csv_json_converter` | Bridge tabular CSV data into JSON and convert JSON arrays back to CSV. |
+| `ndjson_formatter` | Convert JSON arrays and newline-delimited JSON records for log/data pipelines. |
+| `slugify_case_converter` | Normalize strings into deterministic slug and case formats. |
 
 ### Phase 3D Target Expansion / Public MVP Candidates
 
@@ -198,7 +202,6 @@ These remain future candidates and are not part of the current foundation adapte
 |----------|--------|
 | `jq_playground` | Existing local JSON transform runtime. |
 | `yq_playground` | Local yq-like YAML/JSON subset. |
-| `yaml_json_converter` | Common bridge between YAML and JSON. |
 | `local_log_parser` | Parse logs before filtering/export. |
 | Other deterministic adapters | Add only after each adapter has explicit validation and public option keys. |
 

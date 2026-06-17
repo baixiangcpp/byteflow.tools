@@ -3,6 +3,11 @@ import { cleanText, analyzeText, type CleanOptions } from "@/core/utils/invisibl
 import { scrubLogs, DEFAULT_SCRUB_OPTIONS, type ScrubOptions } from "@/core/utils/log-scrubber-utils"
 import { encodeUrlByMode, decodeUrlByMode, type UrlEncodingMode } from "@/core/utils/url-codec-utils"
 import { removeExtraWhitespace } from "@/core/utils/whitespace-utils"
+import { csvToJson, jsonToCsv } from "@/features/tools/csv-json-converter/logic"
+import { JSON_ARRAY_REQUIRED_ERROR } from "@/features/tools/csv-json-converter/constants"
+import { runNdjsonTransform, type NdjsonMessages, type NdjsonMode } from "@/features/tools/ndjson-formatter/utils"
+import { convertCase, type CaseStyle } from "@/features/tools/slugify-case-converter/utils"
+import { convertYamlJson, type YamlJsonMode } from "@/features/tools/yaml-json-converter/utils"
 import type { AdapterRunResult, AdapterValidationResult, PipelineToolAdapter } from "./recipe-types"
 
 type Operation = "encode" | "decode"
@@ -263,6 +268,160 @@ const logScrubberAdapter: PipelineToolAdapter = {
     },
 }
 
+const yamlJsonAdapter: PipelineToolAdapter = {
+    toolKey: "yaml_json_converter",
+    slug: "yaml-json-converter",
+    version: 1,
+    inputKind: "text",
+    outputKind: "text",
+    safeForSensitiveInput: true,
+    deterministic: true,
+    mayIncreaseSize: true,
+    warnings: [
+        "YAML to JSON and JSON to YAML conversions can normalize comments, anchors, and formatting.",
+    ],
+    defaultOptions: {
+        mode: "yaml-to-json",
+    },
+    publicOptionKeys: ["mode"],
+    validateOptions(options) {
+        const mode = stringOption(options, "mode", "yaml-to-json")
+        if (!["yaml-to-json", "json-to-yaml"].includes(mode)) return fail("mode must be yaml-to-json or json-to-yaml.")
+        return ok()
+    },
+    run(input, options) {
+        const startedAt = performance.now()
+        try {
+            const mode = stringOption(options, "mode", "yaml-to-json") as YamlJsonMode
+            return success(convertYamlJson(input, mode), startedAt, input)
+        } catch (error) {
+            return failure("yaml_json_conversion_error", error instanceof Error ? error.message : "Unable to convert YAML/JSON.", startedAt, input)
+        }
+    },
+}
+
+const csvJsonAdapter: PipelineToolAdapter = {
+    toolKey: "csv_json_converter",
+    slug: "csv-json-converter",
+    version: 1,
+    inputKind: "text",
+    outputKind: "text",
+    safeForSensitiveInput: true,
+    deterministic: true,
+    mayIncreaseSize: true,
+    warnings: [
+        "CSV conversion can infer primitive types and flatten nested JSON objects depending on options.",
+    ],
+    defaultOptions: {
+        direction: "csv-to-json",
+        delimiter: "auto",
+        hasHeader: true,
+        typeInference: true,
+    },
+    publicOptionKeys: ["direction", "delimiter", "hasHeader", "typeInference"],
+    validateOptions(options) {
+        const direction = stringOption(options, "direction", "csv-to-json")
+        if (!["csv-to-json", "json-to-csv"].includes(direction)) return fail("direction must be csv-to-json or json-to-csv.")
+        const delimiter = stringOption(options, "delimiter", "auto")
+        if (!["auto", ",", ";", "\t", "|"].includes(delimiter)) return fail("delimiter must be auto, comma, semicolon, tab, or pipe.")
+        if (typeof (options.hasHeader ?? true) !== "boolean") return fail("hasHeader must be boolean.")
+        if (typeof (options.typeInference ?? true) !== "boolean") return fail("typeInference must be boolean.")
+        return ok()
+    },
+    run(input, options) {
+        const startedAt = performance.now()
+        try {
+            const direction = stringOption(options, "direction", "csv-to-json")
+            const delimiter = stringOption(options, "delimiter", "auto")
+            const hasHeader = booleanOption(options, "hasHeader", true)
+            const typeInference = booleanOption(options, "typeInference", true)
+            const output = direction === "csv-to-json"
+                ? csvToJson(input, delimiter, hasHeader, typeInference)
+                : jsonToCsv(input, delimiter, hasHeader)
+            return success(output, startedAt, input)
+        } catch (error) {
+            const message = error instanceof Error && error.message === JSON_ARRAY_REQUIRED_ERROR
+                ? "JSON input must be an array to convert to CSV."
+                : error instanceof Error
+                    ? error.message
+                    : "Unable to convert CSV/JSON."
+            return failure("csv_json_conversion_error", message, startedAt, input)
+        }
+    },
+}
+
+const NDJSON_ADAPTER_MESSAGES: NdjsonMessages = {
+    error_label: "Error",
+    invalid_json_line_label: "Invalid JSON line",
+    input_must_be_array_label: "Input must be a JSON array",
+    invalid_json_label: "Invalid JSON",
+    error_parsing_line_label: "Error parsing line",
+}
+
+const ndjsonAdapter: PipelineToolAdapter = {
+    toolKey: "ndjson_formatter",
+    slug: "ndjson-formatter",
+    version: 1,
+    inputKind: "json",
+    outputKind: "json",
+    safeForSensitiveInput: true,
+    deterministic: true,
+    mayIncreaseSize: true,
+    warnings: [
+        "Invalid NDJSON lines are preserved with error comments instead of throwing.",
+    ],
+    defaultOptions: {
+        mode: "format",
+    },
+    publicOptionKeys: ["mode"],
+    validateOptions(options) {
+        const mode = stringOption(options, "mode", "format")
+        if (!["format", "to-ndjson", "to-array"].includes(mode)) return fail("mode must be format, to-ndjson, or to-array.")
+        return ok()
+    },
+    run(input, options) {
+        const startedAt = performance.now()
+        const mode = stringOption(options, "mode", "format") as NdjsonMode
+        return success(runNdjsonTransform(input, mode, NDJSON_ADAPTER_MESSAGES), startedAt, input)
+    },
+}
+
+const slugCaseAdapter: PipelineToolAdapter = {
+    toolKey: "slugify_case_converter",
+    slug: "slugify-case-converter",
+    version: 1,
+    inputKind: "text",
+    outputKind: "text",
+    safeForSensitiveInput: true,
+    deterministic: true,
+    mayIncreaseSize: false,
+    warnings: [
+        "Case conversion normalizes separators and punctuation.",
+    ],
+    defaultOptions: {
+        style: "slug",
+        locale: "en-US",
+        preserveAcronyms: true,
+    },
+    publicOptionKeys: ["style", "locale", "preserveAcronyms"],
+    validateOptions(options) {
+        const style = stringOption(options, "style", "slug")
+        if (!["slug", "camel", "pascal", "snake", "kebab", "constant", "dot", "title", "sentence"].includes(style)) {
+            return fail("style must be a supported case style.")
+        }
+        if (typeof (options.locale ?? "en-US") !== "string") return fail("locale must be a string.")
+        if (typeof (options.preserveAcronyms ?? true) !== "boolean") return fail("preserveAcronyms must be boolean.")
+        return ok()
+    },
+    run(input, options) {
+        const startedAt = performance.now()
+        const style = stringOption(options, "style", "slug") as CaseStyle
+        const locale = stringOption(options, "locale", "en-US")
+        const preserveAcronyms = booleanOption(options, "preserveAcronyms", true)
+        return success(convertCase(input, style, { locale, preserveAcronyms }), startedAt, input)
+    },
+}
+
 export const PIPELINE_TOOL_ADAPTERS = [
     jsonFormatterAdapter,
     base64Adapter,
@@ -270,6 +429,10 @@ export const PIPELINE_TOOL_ADAPTERS = [
     whitespaceAdapter,
     invisibleCharactersAdapter,
     logScrubberAdapter,
+    yamlJsonAdapter,
+    csvJsonAdapter,
+    ndjsonAdapter,
+    slugCaseAdapter,
 ] as const satisfies readonly PipelineToolAdapter[]
 
 export function getPipelineAdapter(toolKey: string): PipelineToolAdapter | undefined {
