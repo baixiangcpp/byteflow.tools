@@ -14,6 +14,9 @@ const DEFAULT_ROUTES = [
     "/zh-CN/json-formatter",
     "/en/javascript-formatter",
     "/zh-CN/javascript-formatter",
+    "/en/base64-encode-decode",
+    "/en/pipeline-builder",
+    "/en/csv-json-converter",
 ];
 
 function parseArgs(argv) {
@@ -277,6 +280,171 @@ async function assertInputProcessCopyJourney(context, baseUrl, locale) {
     await page.close();
 }
 
+async function assertBasicAccessibility(page, routeLabel) {
+    const violations = await page.evaluate(() => {
+        const issues = [];
+        const interactiveSelectors = [
+            "button",
+            "a[href]",
+            "input",
+            "select",
+            "textarea",
+            "[role='button']",
+            "[role='menuitem']",
+            "[role='option']",
+        ];
+
+        for (const element of document.querySelectorAll(interactiveSelectors.join(","))) {
+            const node = element;
+            const ariaHidden = node.getAttribute("aria-hidden") === "true";
+            const disabled = node.hasAttribute("disabled") || node.getAttribute("aria-disabled") === "true";
+            const hiddenInput = node instanceof HTMLInputElement && node.type === "hidden";
+            if (ariaHidden || disabled || hiddenInput) continue;
+
+            const tag = node.tagName.toLowerCase();
+            const role = node.getAttribute("role") || tag;
+            const text = (node.textContent || "").trim();
+            const label = node.getAttribute("aria-label") || node.getAttribute("aria-labelledby") || node.getAttribute("title") || text;
+            if (!label) {
+                issues.push(`${role} lacks an accessible name`);
+            }
+        }
+
+        const hiddenFocusables = Array.from(document.querySelectorAll("[aria-hidden='true'] button, [aria-hidden='true'] a[href], [aria-hidden='true'] input, [aria-hidden='true'] textarea"));
+        if (hiddenFocusables.length > 0) {
+            issues.push(`${hiddenFocusables.length} focusable element(s) are inside aria-hidden content`);
+        }
+
+        return issues;
+    });
+
+    if (violations.length > 0) {
+        throw new Error(`Accessibility smoke failed for ${routeLabel}:\n- ${violations.join("\n- ")}`);
+    }
+}
+
+async function assertBase64PipelineHandoffJourney(context, baseUrl) {
+    const page = await context.newPage();
+    const runtimeErrors = [];
+    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+
+    await page.goto(`${baseUrl}/en/base64-encode-decode`, { waitUntil: "domcontentloaded" });
+    await page.waitForSelector("main", { timeout: 15_000 });
+
+    const input = page.locator("textarea").first();
+    await input.waitFor({ state: "visible", timeout: 15_000 });
+    await input.fill("hello pipeline");
+
+    await page.getByRole("button", { name: /^Run$/ }).first().click();
+    const output = page.locator("textarea").nth(1);
+    await output.waitFor({ state: "visible", timeout: 15_000 });
+    await page.waitForFunction(() => {
+        const textareas = Array.from(document.querySelectorAll("textarea"));
+        return textareas.some((node) => node.value.includes("aGVsbG8gcGlwZWxpbmU="));
+    }, null, { timeout: 15_000 });
+
+    const pipelineLink = page.getByRole("link", { name: /Pipeline Builder/i }).first();
+    await pipelineLink.waitFor({ state: "visible", timeout: 15_000 });
+    await Promise.all([
+        page.waitForURL((url) => url.pathname === "/en/pipeline-builder", { timeout: 15_000 }),
+        pipelineLink.click(),
+    ]);
+
+    await page.waitForSelector("main", { timeout: 15_000 });
+    await expectTextareaValue(page, /aGVsbG8gcGlwZWxpbmU=/, "pipeline handoff initial input");
+    await assertBasicAccessibility(page, "/en/pipeline-builder handoff");
+
+    if (runtimeErrors.length > 0) {
+        throw new Error(`Base64 -> Pipeline Builder handoff triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
+    }
+
+    await page.close();
+}
+
+async function expectTextareaValue(page, pattern, label) {
+    await page.waitForFunction((source) => {
+        const regex = new RegExp(source);
+        return Array.from(document.querySelectorAll("textarea")).some((node) => regex.test(node.value));
+    }, pattern.source, { timeout: 15_000 }).catch(() => {
+        throw new Error(`Expected textarea value matching ${pattern} for ${label}.`);
+    });
+}
+
+async function assertPipelineRecipeJourney(context, baseUrl) {
+    const page = await context.newPage();
+    const runtimeErrors = [];
+    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+
+    await page.goto(`${baseUrl}/en/pipeline-builder`, { waitUntil: "domcontentloaded" });
+    await page.waitForSelector("main", { timeout: 15_000 });
+
+    await page.getByRole("button", { name: /Try Example/i }).first().click();
+    await page.getByRole("button", { name: /Run Recipe/i }).first().click();
+    await page.waitForFunction(() => document.body.innerText.includes("Run succeeded") || document.body.innerText.includes("Step 1"), null, { timeout: 15_000 });
+    await assertBasicAccessibility(page, "/en/pipeline-builder recipe");
+
+    if (runtimeErrors.length > 0) {
+        throw new Error(`Pipeline recipe journey triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
+    }
+
+    await page.close();
+}
+
+async function assertMonacoFallbackJourney(context, baseUrl) {
+    const page = await context.newPage();
+    const runtimeErrors = [];
+    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+
+    await page.goto(`${baseUrl}/en/csv-json-converter`, { waitUntil: "domcontentloaded" });
+    await page.waitForSelector("main", { timeout: 15_000 });
+
+    const textareas = page.locator("textarea");
+    await textareas.first().waitFor({ state: "visible", timeout: 15_000 });
+    await textareas.first().fill("id,name\n1,Ada");
+    await page.getByRole("button", { name: /^Convert$/ }).first().click();
+    await expectTextareaValue(page, /"name": "Ada"/, "csv-json converter output");
+    await assertBasicAccessibility(page, "/en/csv-json-converter");
+
+    if (runtimeErrors.length > 0) {
+        throw new Error(`Monaco fallback journey triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
+    }
+
+    await page.close();
+}
+
+async function assertMobileCommandPaletteJourney(browser, baseUrl) {
+    const context = await browser.newContext({
+        serviceWorkers: "block",
+        viewport: { width: 390, height: 844 },
+        isMobile: true,
+    });
+    const page = await context.newPage();
+    const runtimeErrors = [];
+    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+
+    try {
+        await page.goto(`${baseUrl}/en`, { waitUntil: "domcontentloaded" });
+        await page.waitForSelector("main", { timeout: 15_000 });
+        const commandInput = await openCommandPalette(page);
+        await commandInput.fill("base64");
+        const base64Item = page.locator('[data-slot="command-item"]').filter({ hasText: /Base64/i }).first();
+        await base64Item.waitFor({ state: "visible", timeout: 15_000 });
+        await Promise.all([
+            page.waitForURL(`${baseUrl}/en/base64-encode-decode`, { timeout: 15_000 }),
+            base64Item.click(),
+        ]);
+        await page.waitForSelector("main", { timeout: 15_000 });
+        await assertBasicAccessibility(page, "/en mobile command palette");
+
+        if (runtimeErrors.length > 0) {
+            throw new Error(`Mobile command palette journey triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
+        }
+    } finally {
+        await page.close();
+        await context.close();
+    }
+}
+
 async function assertLocaleSwitchJourney(context, baseUrl) {
     const page = await context.newPage();
     const runtimeErrors = [];
@@ -380,8 +548,20 @@ async function runSmoke(baseUrl) {
         await assertInputProcessCopyJourney(context, baseUrl, "en");
         console.log("[playwright-smoke] PASS journey: /en/list-randomizer input -> process -> copy");
 
+        await assertBase64PipelineHandoffJourney(context, baseUrl);
+        console.log("[playwright-smoke] PASS journey: /en/base64-encode-decode -> /en/pipeline-builder handoff");
+
+        await assertPipelineRecipeJourney(context, baseUrl);
+        console.log("[playwright-smoke] PASS journey: /en/pipeline-builder template -> run");
+
+        await assertMonacoFallbackJourney(context, baseUrl);
+        console.log("[playwright-smoke] PASS journey: /en/csv-json-converter Monaco fallback -> convert");
+
         await assertLocaleSwitchJourney(context, baseUrl);
         console.log("[playwright-smoke] PASS journey: locale switch /en/json-formatter -> /zh-CN/json-formatter");
+
+        await assertMobileCommandPaletteJourney(browser, baseUrl);
+        console.log("[playwright-smoke] PASS mobile journey: command palette -> /en/base64-encode-decode");
     } finally {
         await context.close();
         await browser.close();
