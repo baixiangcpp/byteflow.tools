@@ -56,6 +56,13 @@ const jsonFormatterAdapter: PipelineToolAdapter = {
     version: 1,
     inputKind: "json",
     outputKind: "json",
+    safeForSensitiveInput: true,
+    deterministic: true,
+    mayIncreaseSize: true,
+    warnings: [
+        "Pretty-print mode can increase payload size.",
+        "This adapter preserves input data; place a scrubber step first for secrets.",
+    ],
     defaultOptions: {
         mode: "pretty",
         indent: 2,
@@ -88,6 +95,13 @@ const base64Adapter: PipelineToolAdapter = {
     version: 1,
     inputKind: "text",
     outputKind: "text",
+    safeForSensitiveInput: false,
+    deterministic: true,
+    mayIncreaseSize: true,
+    warnings: [
+        "Encoding is reversible and does not protect sensitive input.",
+        "Encoded output can be larger than the input.",
+    ],
     defaultOptions: {
         operation: "encode",
         urlSafe: false,
@@ -120,6 +134,13 @@ const urlCodecAdapter: PipelineToolAdapter = {
     version: 1,
     inputKind: "text",
     outputKind: "text",
+    safeForSensitiveInput: false,
+    deterministic: true,
+    mayIncreaseSize: true,
+    warnings: [
+        "Encoding is reversible and does not protect sensitive input.",
+        "URL encoding can increase payload size.",
+    ],
     defaultOptions: {
         operation: "encode",
         mode: "component",
@@ -151,6 +172,10 @@ const whitespaceAdapter: PipelineToolAdapter = {
     version: 1,
     inputKind: "text",
     outputKind: "text",
+    safeForSensitiveInput: true,
+    deterministic: true,
+    mayIncreaseSize: false,
+    warnings: [],
     defaultOptions: {},
     publicOptionKeys: [],
     validateOptions() {
@@ -168,6 +193,12 @@ const invisibleCharactersAdapter: PipelineToolAdapter = {
     version: 1,
     inputKind: "text",
     outputKind: "text",
+    safeForSensitiveInput: true,
+    deterministic: true,
+    mayIncreaseSize: false,
+    warnings: [
+        "This adapter normalizes or removes invisible characters and can change text semantics.",
+    ],
     defaultOptions: {
         removeZeroWidth: true,
         normalizeSpaces: true,
@@ -203,6 +234,12 @@ const logScrubberAdapter: PipelineToolAdapter = {
     version: 1,
     inputKind: "text",
     outputKind: "text",
+    safeForSensitiveInput: true,
+    deterministic: true,
+    mayIncreaseSize: false,
+    warnings: [
+        "Redaction patterns are best-effort; review output before sharing.",
+    ],
     defaultOptions: { ...DEFAULT_SCRUB_OPTIONS },
     publicOptionKeys: Object.keys(DEFAULT_SCRUB_OPTIONS),
     validateOptions(options) {

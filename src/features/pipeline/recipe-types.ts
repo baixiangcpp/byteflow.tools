@@ -73,6 +73,10 @@ export interface PipelineToolAdapter<Input = string, Output = string> {
     version: number
     inputKind: PipelineValueKind
     outputKind: PipelineValueKind
+    safeForSensitiveInput: boolean
+    deterministic: boolean
+    mayIncreaseSize: boolean
+    warnings: readonly string[]
     defaultOptions: Record<string, unknown>
     publicOptionKeys: readonly string[]
     validateOptions(options: Record<string, unknown>): AdapterValidationResult

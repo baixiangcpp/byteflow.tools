@@ -135,6 +135,10 @@ export interface PipelineToolAdapter<Input = string, Output = string> {
   version: number
   inputKind: "text" | "json" | "yaml" | "csv" | "bytes"
   outputKind: "text" | "json" | "yaml" | "csv" | "bytes"
+  safeForSensitiveInput: boolean
+  deterministic: boolean
+  mayIncreaseSize: boolean
+  warnings: readonly string[]
   defaultOptions: Record<string, unknown>
   publicOptionKeys: readonly string[]
   validateOptions(options: Record<string, unknown>): AdapterValidationResult
@@ -163,6 +167,10 @@ Adapter rules:
 - Adapters must not import page components.
 - Adapters must not call `fetch` except for same-page static assets already used by an existing local tool.
 - Adapters must not persist payloads.
+- Adapters must be deterministic for the same input and options. Non-deterministic generators, canvas/image editing flows, and external-network tools need a separate design before inclusion.
+- `safeForSensitiveInput` means the adapter is appropriate for local sensitive payloads; it does not imply output is safe to share unless the adapter redacts or removes sensitive content.
+- `mayIncreaseSize` must be true for reversible encoders and pretty-printers that can expand payloads.
+- `warnings` must describe persistent adapter-level caveats shown or available to UI surfaces.
 - Adapters must return structured warnings instead of throwing for expected user errors.
 - Adapters must have unit tests covering success and failure paths.
 - `publicOptionKeys` controls which options are allowed into shared recipe URLs.

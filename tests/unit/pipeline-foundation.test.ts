@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
-import { getPipelineAdapter, getPipelineAdapterKeys } from "@/features/pipeline/adapter-registry"
+import { getPipelineAdapter, getPipelineAdapterKeys, PIPELINE_TOOL_ADAPTERS } from "@/features/pipeline/adapter-registry"
+import { TOOL_MANIFESTS } from "@/core/registry"
 import { decodeRecipeFromUrlParam, encodeRecipeForShareUrl, encodeRecipeForUrl, recipeContainsRuntimeInput } from "@/features/pipeline/recipe-codec"
 import { createEmptyRecipe, runRecipe, validateRecipe } from "@/features/pipeline/executor"
 import { exportRecipeToJson, importRecipeFromJson } from "@/features/pipeline/recipe-import-export"
@@ -49,6 +50,25 @@ describe("pipeline foundation", () => {
             "log_scrubber",
         ])
         expect(getPipelineAdapter("json_formatter")?.version).toBe(1)
+    })
+
+    it("keeps adapter metadata explicit and aligned with canonical tool manifests", () => {
+        const adapterKeys = PIPELINE_TOOL_ADAPTERS.map((adapter) => adapter.toolKey)
+        const manifestKeys = new Set(TOOL_MANIFESTS.map((tool) => tool.key))
+
+        expect(new Set(adapterKeys).size).toBe(adapterKeys.length)
+
+        for (const adapter of PIPELINE_TOOL_ADAPTERS) {
+            expect(manifestKeys.has(adapter.toolKey), `${adapter.toolKey} must map to a canonical tool manifest`).toBe(true)
+            expect(adapter.slug).toBe(TOOL_MANIFESTS.find((tool) => tool.key === adapter.toolKey)?.slug)
+            expect(["text", "json", "yaml", "csv", "bytes"]).toContain(adapter.inputKind)
+            expect(["text", "json", "yaml", "csv", "bytes"]).toContain(adapter.outputKind)
+            expect(adapter.deterministic).toBe(true)
+            expect(typeof adapter.safeForSensitiveInput).toBe("boolean")
+            expect(typeof adapter.mayIncreaseSize).toBe("boolean")
+            expect(Array.isArray(adapter.warnings)).toBe(true)
+            expect(adapter.publicOptionKeys.every((key) => Object.prototype.hasOwnProperty.call(adapter.defaultOptions, key))).toBe(true)
+        }
     })
 
     it("validates a supported MVP recipe", () => {
@@ -274,6 +294,10 @@ describe("pipeline foundation", () => {
             version: 1,
             inputKind: "text",
             outputKind: "text",
+            safeForSensitiveInput: true,
+            deterministic: true,
+            mayIncreaseSize: false,
+            warnings: [],
             defaultOptions: {},
             publicOptionKeys: [],
             validateOptions: () => ({ ok: true, errors: [] }),
