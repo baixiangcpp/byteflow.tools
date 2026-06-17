@@ -17,6 +17,8 @@ describe("next config bundle analyzer wiring", () => {
         const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"))
 
         expect(packageJson.scripts?.analyze).toBe("ANALYZE=true next build --webpack")
+        expect(packageJson.scripts?.["check:bundle-boundaries"]).toBe("node scripts/gates/check-bundle-boundaries.js")
+        expect(packageJson.scripts?.validate).toContain("npm run check:bundle-boundaries")
         expect(packageJson.devDependencies?.["@next/bundle-analyzer"]).toBeTruthy()
     })
 })

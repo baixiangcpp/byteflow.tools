@@ -9,7 +9,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { extractEndpoints } from "@/features/tools/openapi-mock/utils"
-import { buildInputTooLargeMessage, isOverUtf8Budget, LEGACY_INPUT_LIMITS } from "@/core/utils/legacy-input-limits"
+import { buildInputTooLargeMessage, isOverUtf8Budget, TOOL_RUNTIME_BUDGETS } from "@/core/performance/tool-runtime-budgets"
 
 function buildSampleSpec(toolT: Record<string, string>) {
     return JSON.stringify(
@@ -75,18 +75,18 @@ export function OpenApiMockPage() {
     const [selected, setSelected] = React.useState<number | null>(null)
 
     const { endpoints, error } = React.useMemo(() => {
-        if (isOverUtf8Budget(spec, LEGACY_INPUT_LIMITS.maxOpenApiSpecBytes)) {
+        if (isOverUtf8Budget(spec, TOOL_RUNTIME_BUDGETS.maxOpenApiSpecBytes)) {
             return {
                 endpoints: [],
-                error: buildInputTooLargeMessage(t.common.local_input_too_large, LEGACY_INPUT_LIMITS.maxOpenApiSpecBytes),
+                error: buildInputTooLargeMessage(t.common.local_input_too_large, TOOL_RUNTIME_BUDGETS.maxOpenApiSpecBytes),
             }
         }
         try {
             const parsed = JSON.parse(spec)
             return {
                 endpoints: extractEndpoints(parsed, toolT.sample_string_value, {
-                    maxEndpoints: LEGACY_INPUT_LIMITS.maxOpenApiMockEndpoints,
-                    maxSchemaProperties: LEGACY_INPUT_LIMITS.maxOpenApiMockSchemaProperties,
+                    maxEndpoints: TOOL_RUNTIME_BUDGETS.maxOpenApiMockEndpoints,
+                    maxSchemaProperties: TOOL_RUNTIME_BUDGETS.maxOpenApiMockSchemaProperties,
                 }),
                 error: "",
             }

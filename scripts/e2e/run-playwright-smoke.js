@@ -21,11 +21,17 @@ function parseArgs(argv) {
         port: DEFAULT_PORT,
         baseUrl: "",
         skipServer: false,
+        includePwa: false,
     };
 
     for (const arg of argv) {
         if (arg === "--skip-server") {
             args.skipServer = true;
+            continue;
+        }
+
+        if (arg === "--pwa") {
+            args.includePwa = true;
             continue;
         }
 
@@ -302,6 +308,54 @@ async function assertLocaleSwitchJourney(context, baseUrl) {
     await page.close();
 }
 
+async function assertPwaShellJourney(browser, baseUrl) {
+    const context = await browser.newContext({ serviceWorkers: "allow" });
+    const page = await context.newPage();
+    const runtimeErrors = [];
+    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+
+    try {
+        await page.goto(`${baseUrl}/en`, { waitUntil: "networkidle" });
+        await page.waitForSelector("main", { timeout: 15_000 });
+
+        const manifestHref = await page.locator('link[rel="manifest"]').first().getAttribute("href");
+        if (manifestHref !== "/manifest.json") {
+            throw new Error(`Expected default manifest link to be /manifest.json, found ${manifestHref || "none"}`);
+        }
+
+        const registration = await page.evaluate(async () => {
+            if (!("serviceWorker" in navigator)) return null;
+            const ready = await navigator.serviceWorker.ready;
+            return {
+                scope: ready.scope,
+                activeScriptUrl: ready.active?.scriptURL || "",
+            };
+        });
+        if (!registration?.activeScriptUrl.endsWith("/sw.js")) {
+            throw new Error("Service worker did not become active for the PWA shell.");
+        }
+
+        await page.goto(`${baseUrl}/en/json-formatter`, { waitUntil: "networkidle" });
+        await page.waitForSelector("main", { timeout: 15_000 });
+        await page.setOfflineMode(true);
+        const offlineResponse = await page.goto(`${baseUrl}/en/not-cached-for-smoke-${Date.now()}`, {
+            waitUntil: "domcontentloaded",
+        });
+        const bodyText = await page.locator("body").innerText({ timeout: 15_000 });
+        if (!offlineResponse || !offlineResponse.ok() || !/offline/i.test(bodyText)) {
+            throw new Error("Offline navigation did not render the cached offline fallback.");
+        }
+
+        if (runtimeErrors.length > 0) {
+            throw new Error(`PWA smoke triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
+        }
+    } finally {
+        await page.setOfflineMode(false).catch(() => {});
+        await page.close();
+        await context.close();
+    }
+}
+
 async function runSmoke(baseUrl) {
     const browser = await chromium.launch({ headless: true });
     const context = await browser.newContext({ serviceWorkers: "block" });
@@ -334,8 +388,18 @@ async function runSmoke(baseUrl) {
     }
 }
 
+async function runPwaSmoke(baseUrl) {
+    const browser = await chromium.launch({ headless: true });
+    try {
+        await assertPwaShellJourney(browser, baseUrl);
+        console.log("[playwright-smoke] PASS pwa: service worker, manifest, and offline fallback");
+    } finally {
+        await browser.close();
+    }
+}
+
 async function main() {
-    const { baseUrl, port, skipServer } = parseArgs(process.argv.slice(2));
+    const { baseUrl, port, skipServer, includePwa } = parseArgs(process.argv.slice(2));
     let serverHandle = null;
 
     try {
@@ -346,6 +410,9 @@ async function main() {
         }
 
         await runSmoke(baseUrl);
+        if (includePwa) {
+            await runPwaSmoke(baseUrl);
+        }
         console.log("[playwright-smoke] PASS: critical routes render and navigate correctly");
     } catch (error) {
         console.error("[playwright-smoke] FAILED");

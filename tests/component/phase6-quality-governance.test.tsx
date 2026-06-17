@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from "vitest"
 import CsvDiffPage from "@/app/[lang]/csv-diff/page"
 import OpenApiMockPage from "@/app/[lang]/openapi-mock/page"
 import { LangProvider } from "@/core/i18n/lang-provider"
-import { countNonEmptyLines, formatByteLimit, isOverUtf8Budget, LEGACY_INPUT_LIMITS } from "@/core/utils/legacy-input-limits"
+import { countNonEmptyLines, formatByteLimit, isOverUtf8Budget, TOOL_RUNTIME_BUDGETS } from "@/core/performance/tool-runtime-budgets"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 
 vi.mock("next/navigation", () => ({
@@ -29,7 +29,7 @@ describe("phase 6 quality governance", () => {
         renderWithEnglish(<CsvDiffPage />)
 
         const [left] = screen.getAllByRole("textbox")
-        fireEvent.change(left, { target: { value: "A".repeat(LEGACY_INPUT_LIMITS.maxDiffInputBytes + 1) } })
+        fireEvent.change(left, { target: { value: "A".repeat(TOOL_RUNTIME_BUDGETS.maxDiffInputBytes + 1) } })
 
         expect(screen.getByText(/Input is too large for local processing/i)).toBeInTheDocument()
     })
@@ -38,7 +38,7 @@ describe("phase 6 quality governance", () => {
         renderWithEnglish(<OpenApiMockPage />)
 
         fireEvent.change(screen.getByRole("textbox"), {
-            target: { value: "A".repeat(LEGACY_INPUT_LIMITS.maxOpenApiSpecBytes + 1) },
+            target: { value: "A".repeat(TOOL_RUNTIME_BUDGETS.maxOpenApiSpecBytes + 1) },
         })
 
         expect(screen.getByText(/Input is too large for local processing/i)).toBeInTheDocument()

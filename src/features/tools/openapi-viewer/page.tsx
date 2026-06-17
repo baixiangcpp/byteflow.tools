@@ -9,7 +9,7 @@ import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
 import { cn } from "@/core/utils/utils"
-import { buildInputTooLargeMessage, isOverUtf8Budget, LEGACY_INPUT_LIMITS } from "@/core/utils/legacy-input-limits"
+import { buildInputTooLargeMessage, isOverUtf8Budget, TOOL_RUNTIME_BUDGETS } from "@/core/performance/tool-runtime-budgets"
 
 interface OpenAPIInfo {
     title?: string
@@ -111,8 +111,8 @@ export function OpenApiViewerPage() {
         const isJson = trimmedInput.startsWith("{") || trimmedInput.startsWith("[")
         setLanguage(isJson ? "json" : "yaml")
 
-        if (isOverUtf8Budget(trimmedInput, LEGACY_INPUT_LIMITS.maxOpenApiSpecBytes)) {
-            setError(buildInputTooLargeMessage(t.common.local_input_too_large, LEGACY_INPUT_LIMITS.maxOpenApiSpecBytes))
+        if (isOverUtf8Budget(trimmedInput, TOOL_RUNTIME_BUDGETS.maxOpenApiSpecBytes)) {
+            setError(buildInputTooLargeMessage(t.common.local_input_too_large, TOOL_RUNTIME_BUDGETS.maxOpenApiSpecBytes))
             setSpec(null)
             return
         }
@@ -148,8 +148,8 @@ export function OpenApiViewerPage() {
     const allEndpoints = spec?.paths ? Object.entries(spec.paths).flatMap(([path, methods]) =>
         Object.entries(methods).filter(([m]) => ["get", "post", "put", "patch", "delete"].includes(m)).map(([method, detail]) => ({ path, method, ...detail }))
     ) : []
-    const endpointsTruncated = allEndpoints.length > LEGACY_INPUT_LIMITS.maxOpenApiEndpoints
-    const endpoints = endpointsTruncated ? allEndpoints.slice(0, LEGACY_INPUT_LIMITS.maxOpenApiEndpoints) : allEndpoints
+    const endpointsTruncated = allEndpoints.length > TOOL_RUNTIME_BUDGETS.maxOpenApiEndpoints
+    const endpoints = endpointsTruncated ? allEndpoints.slice(0, TOOL_RUNTIME_BUDGETS.maxOpenApiEndpoints) : allEndpoints
 
     const handleCopyInput = async () => {
         if (!input) return
@@ -232,7 +232,7 @@ export function OpenApiViewerPage() {
                         {error && <div className="p-6 text-sm text-destructive bg-destructive/5 border-b border-destructive/10">{error}</div>}
                         {endpointsTruncated && (
                             <div className="p-3 text-sm text-amber-700 bg-amber-500/10 border-b border-amber-500/20 dark:text-amber-300">
-                                {t.common.local_results_truncated.replace("{count}", String(LEGACY_INPUT_LIMITS.maxOpenApiEndpoints))}
+                                {t.common.local_results_truncated.replace("{count}", String(TOOL_RUNTIME_BUDGETS.maxOpenApiEndpoints))}
                             </div>
                         )}
                         {!spec && !error && (

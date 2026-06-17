@@ -6,7 +6,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
 import { MonacoDiffEditor } from "@/features/tool-shell/monaco-editors"
-import { buildInputTooLargeMessage, isOverUtf8Budget, LEGACY_INPUT_LIMITS } from "@/core/utils/legacy-input-limits"
+import { buildInputTooLargeMessage, isOverUtf8Budget, TOOL_RUNTIME_BUDGETS } from "@/core/performance/tool-runtime-budgets"
 
 const ACTION_BUTTON_CLASS =
     "inline-flex h-9 items-center justify-center gap-2 rounded-md border border-border bg-background px-3 text-sm font-medium shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 dark:bg-input/30 dark:border-input dark:hover:bg-input/50"
@@ -27,8 +27,8 @@ export function TextDiffCheckerPage() {
     }
 
     const updateSide = (side: "original" | "modified", value: string) => {
-        if (isOverUtf8Budget(value, LEGACY_INPUT_LIMITS.maxDiffInputBytes)) {
-            setError(buildInputTooLargeMessage(t.common.local_input_too_large, LEGACY_INPUT_LIMITS.maxDiffInputBytes))
+        if (isOverUtf8Budget(value, TOOL_RUNTIME_BUDGETS.maxDiffInputBytes)) {
+            setError(buildInputTooLargeMessage(t.common.local_input_too_large, TOOL_RUNTIME_BUDGETS.maxDiffInputBytes))
             return
         }
         setError(null)
