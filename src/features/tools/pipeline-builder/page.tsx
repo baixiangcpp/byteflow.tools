@@ -2,18 +2,12 @@
 
 import * as React from "react"
 import {
-    ArrowDown,
-    ArrowUp,
-    BookOpen,
     Copy,
     Download,
     FileInput,
-    FolderOpen,
     Link2,
     Play,
-    Plus,
     Save,
-    Trash2,
     Workflow,
 } from "lucide-react"
 import { toast } from "sonner"
@@ -43,6 +37,10 @@ import { StepOptions } from "./components"
 import { downloadText } from "./browser-actions"
 import { FIRST_ADAPTER, SHARE_PARAM } from "./constants"
 import { createId, createRecipe, createStep, updateRecipeTimestamp } from "./logic"
+import { PipelineRunLog } from "./pipeline-run-log"
+import { PipelineSavedRecipes } from "./pipeline-saved-recipes"
+import { PipelineStepList } from "./pipeline-step-list"
+import { PipelineTemplateList } from "./pipeline-template-list"
 import type { OptionValue } from "./types"
 
 export function PipelineBuilderPage() {
@@ -347,153 +345,39 @@ export function PipelineBuilderPage() {
                         </div>
                     </section>
 
-                    <section className="rounded-lg border bg-card p-4">
-                        <div className="flex items-start gap-2">
-                            <BookOpen className="mt-0.5 h-4 w-4 text-primary" />
-                            <div>
-                                <h2 className="text-sm font-semibold">{text("templates_title")}</h2>
-                                <p className="mt-1 text-xs text-muted-foreground">{text("templates_description")}</p>
-                            </div>
-                        </div>
-                        <div className="mt-3 space-y-2">
-                            {PIPELINE_RECIPE_TEMPLATES.map((template) => (
-                                <div key={template.id} className="rounded-md border bg-background p-3">
-                                    <div className="flex items-start justify-between gap-3">
-                                        <div className="min-w-0">
-                                            <p className="text-sm font-medium">{text(template.titleKey)}</p>
-                                            <p className="mt-1 text-xs text-muted-foreground">{text(template.descriptionKey)}</p>
-                                        </div>
-                                        <Button
-                                            type="button"
-                                            size="sm"
-                                            variant="outline"
-                                            className="shrink-0"
-                                            onClick={() => loadTemplate(template)}
-                                        >
-                                            {text("use_template")}
-                                        </Button>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
+                    <PipelineTemplateList
+                        onLoadTemplate={loadTemplate}
+                        templates={PIPELINE_RECIPE_TEMPLATES}
+                        text={text}
+                    />
 
-                    <section className="rounded-lg border bg-card p-4">
-                        <div className="flex items-center justify-between gap-2">
-                            <h2 className="text-sm font-semibold">{text("steps_title")}</h2>
-                            <span className="text-xs text-muted-foreground">{recipe.steps.length}/{recipe.settings.maxSteps}</span>
-                        </div>
-                        <div className="mt-3 flex gap-2">
-                            <select
-                                aria-label={text("adapter_select")}
-                                className="h-9 min-w-0 flex-1 rounded-md border bg-background px-2 text-sm"
-                                value={pendingToolKey}
-                                onChange={(event) => setPendingToolKey(event.target.value)}
-                            >
-                                {PIPELINE_TOOL_ADAPTERS.map((adapter) => (
-                                    <option key={adapter.toolKey} value={adapter.toolKey}>
-                                        {(t.tools[adapter.toolKey] as Record<string, string> | undefined)?.title ?? adapter.toolKey}
-                                    </option>
-                                ))}
-                            </select>
-                            <Button size="sm" onClick={addStep} disabled={recipe.steps.length >= recipe.settings.maxSteps}>
-                                <Plus className="h-4 w-4" />
-                                {text("add_step")}
-                            </Button>
-                        </div>
-                        <div className="mt-4 space-y-2">
-                            {recipe.steps.length === 0 ? (
-                                <div className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">{text("no_steps")}</div>
-                            ) : recipe.steps.map((step, index) => {
-                                const adapterTitle = (t.tools[step.toolKey] as Record<string, string> | undefined)?.title ?? step.toolKey
-                                const active = step.id === selectedStep?.id
-                                return (
-                                    <div
-                                        key={step.id}
-                                        className={`flex w-full items-start justify-between gap-2 rounded-md border p-3 text-sm transition-colors ${active ? "border-primary bg-primary/5" : "bg-background hover:bg-muted/50"}`}
-                                    >
-                                        <button
-                                            type="button"
-                                            className="min-w-0 flex-1 text-left outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-                                            onClick={() => setSelectedStepId(step.id)}
-                                            aria-pressed={active}
-                                        >
-                                            <span className="block min-w-0">
-                                                <span className="block font-medium">{index + 1}. {step.label || adapterTitle}</span>
-                                                <span className="block truncate text-xs text-muted-foreground">{adapterTitle}</span>
-                                            </span>
-                                        </button>
-                                        <div className="flex shrink-0 gap-1">
-                                            <button
-                                                type="button"
-                                                className="rounded p-1 hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
-                                                onClick={(event) => {
-                                                    event.stopPropagation()
-                                                    moveStep(step.id, -1)
-                                                }}
-                                                disabled={index === 0}
-                                                aria-label={text("move_up")}
-                                            >
-                                                <ArrowUp className="h-3.5 w-3.5" />
-                                            </button>
-                                            <button
-                                                type="button"
-                                                className="rounded p-1 hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
-                                                onClick={(event) => {
-                                                    event.stopPropagation()
-                                                    moveStep(step.id, 1)
-                                                }}
-                                                disabled={index === recipe.steps.length - 1}
-                                                aria-label={text("move_down")}
-                                            >
-                                                <ArrowDown className="h-3.5 w-3.5" />
-                                            </button>
-                                            <button
-                                                type="button"
-                                                className="rounded p-1 text-destructive hover:bg-destructive/10"
-                                                onClick={(event) => {
-                                                    event.stopPropagation()
-                                                    removeStep(step.id)
-                                                }}
-                                                aria-label={text("remove_step")}
-                                            >
-                                                <Trash2 className="h-3.5 w-3.5" />
-                                            </button>
-                                        </div>
-                                    </div>
-                                )
-                            })}
-                        </div>
-                    </section>
+                    <PipelineStepList
+                        adapterOptions={PIPELINE_TOOL_ADAPTERS.map((adapter) => ({
+                            title: (t.tools[adapter.toolKey] as Record<string, string> | undefined)?.title ?? adapter.toolKey,
+                            toolKey: adapter.toolKey,
+                        }))}
+                        maxSteps={recipe.settings.maxSteps}
+                        onAddStep={addStep}
+                        onMoveStep={moveStep}
+                        onPendingToolKeyChange={setPendingToolKey}
+                        onRemoveStep={removeStep}
+                        onSelectStep={setSelectedStepId}
+                        pendingToolKey={pendingToolKey}
+                        selectedStepId={selectedStep?.id ?? null}
+                        steps={recipe.steps}
+                        text={text}
+                    />
 
-                    <section className="rounded-lg border bg-card p-4">
-                        <h2 className="text-sm font-semibold">{text("saved_recipes")}</h2>
-                        <div className="mt-3 flex gap-2">
-                            <select
-                                aria-label={text("saved_recipe_select")}
-                                className="h-9 min-w-0 flex-1 rounded-md border bg-background px-2 text-sm"
-                                value={selectedSavedId}
-                                onChange={(event) => setSelectedSavedId(event.target.value)}
-                                disabled={!storageAvailable || savedRecipes.length === 0}
-                            >
-                                <option value="">{text("select_saved_recipe")}</option>
-                                {savedRecipes.map((record) => (
-                                    <option key={record.id} value={record.id}>{record.name}</option>
-                                ))}
-                            </select>
-                        </div>
-                        <div className="mt-2 flex flex-wrap gap-2">
-                            <Button variant="outline" size="sm" onClick={() => void loadRecipe()} disabled={!storageAvailable || !selectedSavedId}>
-                                <FolderOpen className="h-4 w-4" />
-                                {text("load_recipe")}
-                            </Button>
-                            <Button variant="outline" size="sm" onClick={() => void deleteRecipe()} disabled={!storageAvailable || !selectedSavedId}>
-                                <Trash2 className="h-4 w-4" />
-                                {text("delete_recipe")}
-                            </Button>
-                        </div>
-                        {storageMessage ? <p className="mt-2 text-xs text-muted-foreground">{storageMessage}</p> : null}
-                    </section>
+                    <PipelineSavedRecipes
+                        onDeleteRecipe={() => void deleteRecipe()}
+                        onLoadRecipe={() => void loadRecipe()}
+                        onSelectedSavedIdChange={setSelectedSavedId}
+                        savedRecipes={savedRecipes}
+                        selectedSavedId={selectedSavedId}
+                        storageAvailable={storageAvailable}
+                        storageMessage={storageMessage}
+                        text={text}
+                    />
                 </aside>
 
                 <main className="space-y-4">
@@ -529,42 +413,7 @@ export function PipelineBuilderPage() {
                         />
                     </section>
 
-                    <section className="rounded-lg border bg-card p-4">
-                        <h2 className="text-sm font-semibold">{text("run_log")}</h2>
-                        <div className="mt-3 overflow-hidden rounded-md border">
-                            {result ? (
-                                <table className="w-full text-sm">
-                                    <thead className="bg-muted text-xs text-muted-foreground">
-                                        <tr>
-                                            <th className="px-3 py-2 text-left">{text("table_step")}</th>
-                                            <th className="px-3 py-2 text-left">{text("table_status")}</th>
-                                            <th className="px-3 py-2 text-left">{text("table_bytes")}</th>
-                                            <th className="px-3 py-2 text-left">{text("table_message")}</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {result.steps.map((step) => (
-                                            <tr key={step.stepId} className="border-t">
-                                                <td className="px-3 py-2 font-mono text-xs">{step.stepId}</td>
-                                                <td className="px-3 py-2">{step.ok ? text("status_ok") : text("status_failed")}</td>
-                                                <td className="px-3 py-2 text-xs text-muted-foreground">{step.inputBytes} {"->"} {step.outputBytes}</td>
-                                                <td className="px-3 py-2 text-xs text-muted-foreground">
-                                                    {step.error?.message || step.warnings.join("; ") || text("no_message")}
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            ) : (
-                                <div className="p-4 text-sm text-muted-foreground">{text("run_log_empty")}</div>
-                            )}
-                        </div>
-                        {result?.errors.length ? (
-                            <div className="mt-3 rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
-                                {result.errors.join("\n")}
-                            </div>
-                        ) : null}
-                    </section>
+                    <PipelineRunLog result={result} text={text} />
                 </main>
 
                 <aside className="space-y-4">

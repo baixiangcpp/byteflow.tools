@@ -7,7 +7,7 @@ const FEATURE_TOOLS_DIR = path.join(ROOT, "src/features/tools")
 const DEFAULT_PAGE_LINE_LIMIT = 450
 const SPLIT_PAGE_LINE_LIMITS: Record<string, number> = {
     "json-formatter": 720,
-    "pipeline-builder": 700,
+    "pipeline-builder": 540,
     "password-generator": 500,
     "qr-code-generator": 450,
     "base64-encode-decode": 470,
