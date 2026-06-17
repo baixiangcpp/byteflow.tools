@@ -6,6 +6,7 @@ export const toolManifest = {
     category: "generators",
     relatedTools: ["instagram_post_generator", "instagram_story_generator", "instagram_filters", "image_resizer"],
     keywords: ["instagram photo downloader", "download instagram image", "instagram media saver", "authorized ig image download"],
+    networkAccess: "user_requested",
     deprecated: {
         reason: "strategic-refocus",
     },

@@ -6,6 +6,7 @@ export const FEATURE_TOOLS_DIR = path.join(ROOT_DIR, "src/features/tools")
 export const TOOL_MANIFESTS_PATH = path.join(ROOT_DIR, "src/core/registry/manifests.ts")
 
 const REQUIRED_FIELDS = ["key", "slug", "category", "relatedTools", "keywords"]
+const NETWORK_ACCESS_VALUES = new Set(["none", "user_requested", "third_party_api"])
 
 function relative(filePath) {
     return path.relative(ROOT_DIR, filePath).replace(/\\/g, "/")
@@ -236,7 +237,12 @@ export function parseToolManifestFile(manifestPath) {
     const relatedTools = arrayField(body, "relatedTools", manifestPath, true)
     const searchKeywords = arrayField(body, "searchKeywords", manifestPath)
     const updatedAt = stringField(body, "updatedAt", manifestPath)
+    const networkAccess = stringField(body, "networkAccess", manifestPath)
     const deprecated = parseDeprecated(body, manifestPath)
+
+    if (networkAccess && !NETWORK_ACCESS_VALUES.has(networkAccess)) {
+        throw manifestError(manifestPath, "networkAccess", "must be one of none, user_requested, or third_party_api")
+    }
 
     const manifest = {
         key,
@@ -249,6 +255,7 @@ export function parseToolManifestFile(manifestPath) {
 
     if (updatedAt) manifest.updatedAt = updatedAt
     if (searchKeywords.length > 0) manifest.searchKeywords = searchKeywords
+    if (networkAccess) manifest.networkAccess = networkAccess
     if (deprecated) manifest.deprecated = deprecated
 
     return manifest

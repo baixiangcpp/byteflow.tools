@@ -168,6 +168,7 @@ function buildIndexData() {
                 category: tool.category,
                 relatedTools: tool.relatedTools,
                 keywords: tool.keywords,
+                networkAccess: tool.networkAccess || "none",
                 updatedAt: tool.updatedAt || null,
                 sourceFile: tool.sourceFile,
             }
