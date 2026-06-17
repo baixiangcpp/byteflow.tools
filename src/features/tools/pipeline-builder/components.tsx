@@ -95,5 +95,8 @@ function getOptionChoices(toolKey: string, key: string): string[] {
     if (toolKey === "csv_json_converter" && key === "delimiter") return ["auto", ",", ";", "\t", "|"]
     if (toolKey === "ndjson_formatter" && key === "mode") return ["format", "to-ndjson", "to-array"]
     if (toolKey === "slugify_case_converter" && key === "style") return ["slug", "camel", "pascal", "snake", "kebab", "constant", "dot", "title", "sentence"]
+    if (toolKey === "hash_generator" && key === "algorithm") return ["md5", "sha1", "sha224", "sha256", "sha384", "sha512"]
+    if (toolKey === "jwt_decoder" && key === "part") return ["payload", "header", "both"]
+    if (toolKey === "unix_timestamp" && key === "output") return ["iso", "json"]
     return []
 }

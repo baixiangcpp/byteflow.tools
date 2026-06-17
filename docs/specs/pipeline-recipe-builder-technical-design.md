@@ -193,6 +193,10 @@ The current non-public foundation includes only deterministic, low-risk text/dat
 | `csv_json_converter` | Bridge tabular CSV data into JSON and convert JSON arrays back to CSV. |
 | `ndjson_formatter` | Convert JSON arrays and newline-delimited JSON records for log/data pipelines. |
 | `slugify_case_converter` | Normalize strings into deterministic slug and case formats. |
+| `hash_generator` | Produce deterministic text digests for checksum and fixture workflows. |
+| `jwt_decoder` | Decode JWT header and payload JSON without signature verification. |
+| `unix_timestamp` | Convert Unix seconds or milliseconds into ISO or structured JSON output. |
+| `html_to_markdown` | Convert HTML snippets into Markdown text for content cleanup pipelines. |
 
 ### Phase 3D Target Expansion / Public MVP Candidates
 

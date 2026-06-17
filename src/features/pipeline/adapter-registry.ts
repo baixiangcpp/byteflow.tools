@@ -1,12 +1,16 @@
 import { encodeTextToBase64, decodeBase64ToText } from "@/core/utils/base64-utils"
+import { hashTextByAlgorithm, type StandardHashAlgorithm } from "@/core/utils/hash-utils"
 import { cleanText, analyzeText, type CleanOptions } from "@/core/utils/invisible-chars-utils"
 import { scrubLogs, DEFAULT_SCRUB_OPTIONS, type ScrubOptions } from "@/core/utils/log-scrubber-utils"
 import { encodeUrlByMode, decodeUrlByMode, type UrlEncodingMode } from "@/core/utils/url-codec-utils"
 import { removeExtraWhitespace } from "@/core/utils/whitespace-utils"
 import { csvToJson, jsonToCsv } from "@/features/tools/csv-json-converter/logic"
 import { JSON_ARRAY_REQUIRED_ERROR } from "@/features/tools/csv-json-converter/constants"
+import { convertHtmlToMarkdown } from "@/features/tools/html-to-markdown/utils"
+import { decodeJwtParts } from "@/features/tools/jwt-decoder/utils"
 import { runNdjsonTransform, type NdjsonMessages, type NdjsonMode } from "@/features/tools/ndjson-formatter/utils"
 import { convertCase, type CaseStyle } from "@/features/tools/slugify-case-converter/utils"
+import { parseTimestampHeuristic } from "@/features/tools/unix-timestamp/utils"
 import { convertYamlJson, type YamlJsonMode } from "@/features/tools/yaml-json-converter/utils"
 import type { AdapterRunResult, AdapterValidationResult, PipelineToolAdapter } from "./recipe-types"
 
@@ -422,6 +426,136 @@ const slugCaseAdapter: PipelineToolAdapter = {
     },
 }
 
+const hashAdapter: PipelineToolAdapter = {
+    toolKey: "hash_generator",
+    slug: "hash-generator",
+    version: 1,
+    inputKind: "text",
+    outputKind: "text",
+    safeForSensitiveInput: false,
+    deterministic: true,
+    mayIncreaseSize: false,
+    warnings: [
+        "Hashes are one-way digests but can still expose low-entropy or guessable input.",
+    ],
+    defaultOptions: {
+        algorithm: "sha256",
+    },
+    publicOptionKeys: ["algorithm"],
+    validateOptions(options) {
+        const algorithm = stringOption(options, "algorithm", "sha256")
+        if (!["md5", "sha1", "sha224", "sha256", "sha384", "sha512"].includes(algorithm)) {
+            return fail("algorithm must be md5, sha1, sha224, sha256, sha384, or sha512.")
+        }
+        return ok()
+    },
+    run(input, options) {
+        const startedAt = performance.now()
+        const algorithm = stringOption(options, "algorithm", "sha256") as StandardHashAlgorithm
+        return success(hashTextByAlgorithm(input, algorithm), startedAt, input)
+    },
+}
+
+const jwtDecoderAdapter: PipelineToolAdapter = {
+    toolKey: "jwt_decoder",
+    slug: "jwt-decoder",
+    version: 1,
+    inputKind: "text",
+    outputKind: "json",
+    safeForSensitiveInput: false,
+    deterministic: true,
+    mayIncreaseSize: true,
+    warnings: [
+        "JWT decoding does not verify signatures and can expose sensitive claims.",
+    ],
+    defaultOptions: {
+        part: "payload",
+    },
+    publicOptionKeys: ["part"],
+    validateOptions(options) {
+        const part = stringOption(options, "part", "payload")
+        if (!["header", "payload", "both"].includes(part)) return fail("part must be header, payload, or both.")
+        return ok()
+    },
+    run(input, options) {
+        const startedAt = performance.now()
+        try {
+            const decoded = decodeJwtParts(input)
+            const part = stringOption(options, "part", "payload")
+            const output = part === "header"
+                ? decoded.header
+                : part === "both"
+                    ? decoded
+                    : decoded.payload
+            return success(JSON.stringify(output, null, 2), startedAt, input)
+        } catch (error) {
+            return failure("jwt_decode_error", error instanceof Error ? error.message : "Input is not a valid JWT.", startedAt, input)
+        }
+    },
+}
+
+const unixTimestampAdapter: PipelineToolAdapter = {
+    toolKey: "unix_timestamp",
+    slug: "unix-timestamp",
+    version: 1,
+    inputKind: "text",
+    outputKind: "json",
+    safeForSensitiveInput: true,
+    deterministic: true,
+    mayIncreaseSize: true,
+    warnings: [
+        "Timestamp parsing uses the same seconds-versus-milliseconds heuristic as the tool UI.",
+    ],
+    defaultOptions: {
+        output: "iso",
+    },
+    publicOptionKeys: ["output"],
+    validateOptions(options) {
+        const output = stringOption(options, "output", "iso")
+        if (!["iso", "json"].includes(output)) return fail("output must be iso or json.")
+        return ok()
+    },
+    run(input, options) {
+        const startedAt = performance.now()
+        const result = parseTimestampHeuristic(input.trim())
+        if (Number.isNaN(result.date.getTime())) {
+            return failure("timestamp_parse_error", "Input is not a valid Unix timestamp.", startedAt, input)
+        }
+        const output = stringOption(options, "output", "iso") === "json"
+            ? JSON.stringify({
+                iso: result.date.toISOString(),
+                isMilliseconds: result.isMilliseconds,
+                unixSeconds: Math.floor(result.date.getTime() / 1000),
+                unixMilliseconds: result.date.getTime(),
+            }, null, 2)
+            : result.date.toISOString()
+        return success(output, startedAt, input)
+    },
+}
+
+const htmlToMarkdownAdapter: PipelineToolAdapter = {
+    toolKey: "html_to_markdown",
+    slug: "html-to-markdown",
+    version: 1,
+    inputKind: "text",
+    outputKind: "text",
+    safeForSensitiveInput: true,
+    deterministic: true,
+    mayIncreaseSize: false,
+    warnings: [
+        "HTML to Markdown conversion can drop unsupported HTML attributes and layout-only markup.",
+    ],
+    defaultOptions: {},
+    publicOptionKeys: [],
+    validateOptions() {
+        return ok()
+    },
+    run(input) {
+        const startedAt = performance.now()
+        return success(convertHtmlToMarkdown(input), startedAt, input)
+    },
+}
+
 export const PIPELINE_TOOL_ADAPTERS = [
     jsonFormatterAdapter,
     base64Adapter,
@@ -433,6 +567,10 @@ export const PIPELINE_TOOL_ADAPTERS = [
     csvJsonAdapter,
     ndjsonAdapter,
     slugCaseAdapter,
+    hashAdapter,
+    jwtDecoderAdapter,
+    unixTimestampAdapter,
+    htmlToMarkdownAdapter,
 ] as const satisfies readonly PipelineToolAdapter[]
 
 export function getPipelineAdapter(toolKey: string): PipelineToolAdapter | undefined {

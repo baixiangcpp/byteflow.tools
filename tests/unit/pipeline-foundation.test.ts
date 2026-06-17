@@ -52,6 +52,10 @@ describe("pipeline foundation", () => {
             "csv_json_converter",
             "ndjson_formatter",
             "slugify_case_converter",
+            "hash_generator",
+            "jwt_decoder",
+            "unix_timestamp",
+            "html_to_markdown",
         ])
         expect(getPipelineAdapter("json_formatter")?.version).toBe(1)
     })
@@ -246,6 +250,107 @@ describe("pipeline foundation", () => {
         expect(badYamlOptions.errors).toContain("yaml: mode must be yaml-to-json or json-to-yaml.")
         expect(badCsv.ok).toBe(false)
         expect(badCsv.errors).toContain("csv: JSON input must be an array to convert to CSV.")
+    })
+
+    it("runs phase-two text utility adapters", async () => {
+        const hashRecipe = buildRecipe({
+            steps: [{
+                id: "hash",
+                toolKey: "hash_generator",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { algorithm: "sha256" },
+            }],
+            edges: [],
+        })
+        const jwtRecipe = buildRecipe({
+            steps: [{
+                id: "jwt",
+                toolKey: "jwt_decoder",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { part: "payload" },
+            }],
+            edges: [],
+        })
+        const unixRecipe = buildRecipe({
+            steps: [{
+                id: "time",
+                toolKey: "unix_timestamp",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { output: "iso" },
+            }],
+            edges: [],
+        })
+        const htmlRecipe = buildRecipe({
+            steps: [{
+                id: "markdown",
+                toolKey: "html_to_markdown",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: {},
+            }],
+            edges: [],
+        })
+        const sampleJwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjMiLCJuYW1lIjoiQnl0ZWZsb3cifQ.signature"
+
+        await expect(runRecipe(hashRecipe, "hello")).resolves.toMatchObject({
+            ok: true,
+            finalOutput: "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+        })
+        await expect(runRecipe(jwtRecipe, sampleJwt)).resolves.toMatchObject({
+            ok: true,
+            finalOutput: "{\n  \"sub\": \"123\",\n  \"name\": \"Byteflow\"\n}",
+        })
+        await expect(runRecipe(unixRecipe, "1712810000")).resolves.toMatchObject({
+            ok: true,
+            finalOutput: "2024-04-11T04:33:20.000Z",
+        })
+        await expect(runRecipe(htmlRecipe, "<h1>Title</h1><p>Hello</p>")).resolves.toMatchObject({
+            ok: true,
+            finalOutput: "# Title\n\nHello",
+        })
+    })
+
+    it("returns structured errors for phase-two adapter invalid input and options", async () => {
+        const badHashOptions = validateRecipe(buildRecipe({
+            steps: [{
+                id: "hash",
+                toolKey: "hash_generator",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { algorithm: "bcrypt" },
+            }],
+            edges: [],
+        }))
+        const badJwt = await runRecipe(buildRecipe({
+            steps: [{
+                id: "jwt",
+                toolKey: "jwt_decoder",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { part: "payload" },
+            }],
+            edges: [],
+        }), "not-a-jwt")
+        const badTimestamp = await runRecipe(buildRecipe({
+            steps: [{
+                id: "time",
+                toolKey: "unix_timestamp",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { output: "iso" },
+            }],
+            edges: [],
+        }), "not-a-timestamp")
+
+        expect(badHashOptions.ok).toBe(false)
+        expect(badHashOptions.errors).toContain("hash: algorithm must be md5, sha1, sha224, sha256, sha384, or sha512.")
+        expect(badJwt.ok).toBe(false)
+        expect(badJwt.steps[0].error?.code).toBe("jwt_decode_error")
+        expect(badTimestamp.ok).toBe(false)
+        expect(badTimestamp.steps[0].error?.code).toBe("timestamp_parse_error")
     })
 
     it("allows empty edges and executes recipe.steps order", async () => {
