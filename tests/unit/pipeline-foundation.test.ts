@@ -144,6 +144,35 @@ describe("pipeline foundation", () => {
         expect(result.finalOutput).toBe("eyJuYW1lIjoiYnl0ZWZsb3cifQ")
     })
 
+    it("executes explicit linear edges from the only start step instead of array order", async () => {
+        const recipe = buildRecipe({
+            steps: [
+                {
+                    id: "encode",
+                    toolKey: "base64_encode_decode",
+                    adapterVersion: 1,
+                    inputMode: "previous_output",
+                    options: { operation: "encode", urlSafe: true },
+                },
+                {
+                    id: "format",
+                    toolKey: "json_formatter",
+                    adapterVersion: 1,
+                    inputMode: "previous_output",
+                    options: { mode: "minify" },
+                },
+            ],
+            edges: [
+                { fromStepId: "format", toStepId: "encode" },
+            ],
+        })
+        const result = await runRecipe(recipe, '{ "name": "byteflow" }')
+
+        expect(result.ok).toBe(true)
+        expect(result.steps.map((step) => step.stepId)).toEqual(["format", "encode"])
+        expect(result.finalOutput).toBe("eyJuYW1lIjoiYnl0ZWZsb3cifQ")
+    })
+
     it("accepts a valid explicit linear chain", () => {
         const recipe = buildRecipe({
             steps: [
@@ -204,6 +233,19 @@ describe("pipeline foundation", () => {
         expect(result.errors).toContain(expectedError)
     })
 
+    it("rejects edges that reference unknown step ids", () => {
+        const result = validateRecipe(buildRecipe({
+            edges: [
+                { fromStepId: "format", toStepId: "missing" },
+                { fromStepId: "also_missing", toStepId: "encode" },
+            ],
+        }))
+
+        expect(result.ok).toBe(false)
+        expect(result.errors).toContain("Edge references unknown toStepId: missing.")
+        expect(result.errors).toContain("Edge references unknown fromStepId: also_missing.")
+    })
+
     it("stops on error when configured", async () => {
         const result = await runRecipe(buildRecipe(), "{broken json")
 
@@ -255,6 +297,66 @@ describe("pipeline foundation", () => {
         expect(result.errors).toContain("explode: unexpected adapter failure")
         expect(result.steps).toHaveLength(1)
         expect(result.steps[0].error?.code).toBe("adapter_runtime_error")
+    })
+
+    it("rejects oversized initial input before running adapters", async () => {
+        const result = await runRecipe(
+            buildRecipe({
+                settings: {
+                    ...DEFAULT_RECIPE_SETTINGS,
+                    maxInputBytes: 4,
+                },
+            }),
+            "too large",
+        )
+
+        expect(result.ok).toBe(false)
+        expect(result.steps).toEqual([])
+        expect(result.errors).toContain("Initial input exceeds 4 bytes.")
+        expect(result.finalOutput).toBe("too large")
+    })
+
+    it("stops when a step output exceeds the configured output budget", async () => {
+        const result = await runRecipe(
+            buildRecipe({
+                steps: [
+                    {
+                        id: "encode",
+                        toolKey: "base64_encode_decode",
+                        adapterVersion: 1,
+                        inputMode: "previous_output",
+                        options: { operation: "encode", urlSafe: true },
+                    },
+                ],
+                edges: [],
+                settings: {
+                    ...DEFAULT_RECIPE_SETTINGS,
+                    maxOutputBytes: 4,
+                },
+            }),
+            "byteflow",
+        )
+
+        expect(result.ok).toBe(false)
+        expect(result.steps).toHaveLength(1)
+        expect(result.steps[0].error?.code).toBe("output_too_large")
+        expect(result.errors).toContain("Step encode output exceeds 4 bytes.")
+    })
+
+    it("omits intermediate output fields when configured", async () => {
+        const result = await runRecipe(
+            buildRecipe({
+                settings: {
+                    ...DEFAULT_RECIPE_SETTINGS,
+                    keepIntermediateOutputs: false,
+                },
+            }),
+            '{ "name": "byteflow" }',
+        )
+
+        expect(result.ok).toBe(true)
+        expect(result.finalOutput).toBe("eyJuYW1lIjoiYnl0ZWZsb3cifQ")
+        expect(result.steps.every((step) => !Object.prototype.hasOwnProperty.call(step, "output"))).toBe(true)
     })
 
     it("uses constant input without leaking it into default share URLs", () => {

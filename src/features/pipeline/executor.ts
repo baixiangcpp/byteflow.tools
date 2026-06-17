@@ -299,9 +299,11 @@ export async function runRecipe(
                 inputBytes: byteLength(stepInput),
                 outputBytes,
                 durationMs: result.metrics?.durationMs ?? Math.max(0, performance.now() - startedAt),
-                output: settings.keepIntermediateOutputs ? output : undefined,
                 warnings: stepWarnings,
                 error: { code: "output_too_large", message: error },
+            }
+            if (settings.keepIntermediateOutputs) {
+                execution.output = output
             }
             executions.push(execution)
             errors.push(error)
@@ -316,9 +318,11 @@ export async function runRecipe(
             inputBytes: result.metrics?.inputBytes ?? byteLength(stepInput),
             outputBytes: result.metrics?.outputBytes ?? outputBytes,
             durationMs: result.metrics?.durationMs ?? Math.max(0, performance.now() - startedAt),
-            output: settings.keepIntermediateOutputs ? output : undefined,
             warnings: stepWarnings,
             error: result.error,
+        }
+        if (settings.keepIntermediateOutputs) {
+            execution.output = output
         }
         executions.push(execution)
 
