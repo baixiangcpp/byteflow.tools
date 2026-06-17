@@ -6,9 +6,11 @@ import { encodeUrlByMode, decodeUrlByMode, type UrlEncodingMode } from "@/core/u
 import { removeExtraWhitespace } from "@/core/utils/whitespace-utils"
 import { csvToJson, jsonToCsv } from "@/features/tools/csv-json-converter/logic"
 import { JSON_ARRAY_REQUIRED_ERROR } from "@/features/tools/csv-json-converter/constants"
+import { exportEnvVars, parseEnvFile, type EnvExportFormat } from "@/features/tools/env-parser/utils"
 import { convertHtmlToMarkdown } from "@/features/tools/html-to-markdown/utils"
 import { decodeJwtParts } from "@/features/tools/jwt-decoder/utils"
 import { runNdjsonTransform, type NdjsonMessages, type NdjsonMode } from "@/features/tools/ndjson-formatter/utils"
+import { testRegexPattern } from "@/features/tools/regex-tester/utils"
 import { convertCase, type CaseStyle } from "@/features/tools/slugify-case-converter/utils"
 import { parseTimestampHeuristic } from "@/features/tools/unix-timestamp/utils"
 import { convertYamlJson, type YamlJsonMode } from "@/features/tools/yaml-json-converter/utils"
@@ -556,6 +558,83 @@ const htmlToMarkdownAdapter: PipelineToolAdapter = {
     },
 }
 
+const regexTesterAdapter: PipelineToolAdapter = {
+    toolKey: "regex_tester",
+    slug: "regex-tester",
+    version: 1,
+    inputKind: "text",
+    outputKind: "json",
+    safeForSensitiveInput: true,
+    deterministic: true,
+    mayIncreaseSize: true,
+    warnings: [
+        "Regex summaries include matched text and capture groups from the input.",
+    ],
+    defaultOptions: {
+        pattern: "",
+        flags: "g",
+        maxMatches: 100,
+    },
+    publicOptionKeys: ["pattern", "flags", "maxMatches"],
+    validateOptions(options) {
+        const pattern = stringOption(options, "pattern", "")
+        const flags = stringOption(options, "flags", "g")
+        const maxMatches = Number(options.maxMatches ?? 100)
+        if (!pattern.trim()) return fail("pattern is required.")
+        if (!/^[gimsuy]*$/.test(flags)) return fail("flags must contain only g, i, m, s, u, or y.")
+        if (new Set(flags).size !== flags.length) return fail("flags must not contain duplicates.")
+        if (!Number.isFinite(maxMatches) || maxMatches < 1 || maxMatches > 5000) return fail("maxMatches must be between 1 and 5000.")
+        const validation = testRegexPattern(pattern, flags, "")
+        if (!validation.ok) return fail("pattern must be a valid JavaScript regular expression.")
+        return ok()
+    },
+    run(input, options) {
+        const startedAt = performance.now()
+        const pattern = stringOption(options, "pattern", "")
+        const flags = stringOption(options, "flags", "g")
+        const maxMatches = Math.max(1, Math.min(5000, Math.floor(Number(options.maxMatches ?? 100))))
+        const result = testRegexPattern(pattern, flags, input, maxMatches)
+        if (!result.ok) {
+            return failure("regex_error", result.error, startedAt, input)
+        }
+        const output = JSON.stringify({
+            count: result.matches.length,
+            limited: result.limited,
+            matches: result.matches,
+        }, null, 2)
+        return success(output, startedAt, input, result.limited ? [`Match limit reached at ${maxMatches}.`] : [])
+    },
+}
+
+const envParserAdapter: PipelineToolAdapter = {
+    toolKey: "env_parser",
+    slug: "env-parser",
+    version: 1,
+    inputKind: "text",
+    outputKind: "text",
+    safeForSensitiveInput: false,
+    deterministic: true,
+    mayIncreaseSize: true,
+    warnings: [
+        "ENV parsing can expose secrets in structured output. Scrub or remove secrets before sharing.",
+    ],
+    defaultOptions: {
+        format: "json",
+    },
+    publicOptionKeys: ["format"],
+    validateOptions(options) {
+        const format = stringOption(options, "format", "json")
+        if (!["json", "yaml", "docker-args"].includes(format)) return fail("format must be json, yaml, or docker-args.")
+        return ok()
+    },
+    run(input, options) {
+        const startedAt = performance.now()
+        const format = stringOption(options, "format", "json") as EnvExportFormat
+        const vars = parseEnvFile(input)
+        return success(exportEnvVars(vars, format), startedAt, input)
+    },
+}
+
 export const PIPELINE_TOOL_ADAPTERS = [
     jsonFormatterAdapter,
     base64Adapter,
@@ -571,6 +650,8 @@ export const PIPELINE_TOOL_ADAPTERS = [
     jwtDecoderAdapter,
     unixTimestampAdapter,
     htmlToMarkdownAdapter,
+    regexTesterAdapter,
+    envParserAdapter,
 ] as const satisfies readonly PipelineToolAdapter[]
 
 export function getPipelineAdapter(toolKey: string): PipelineToolAdapter | undefined {

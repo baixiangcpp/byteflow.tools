@@ -98,5 +98,6 @@ function getOptionChoices(toolKey: string, key: string): string[] {
     if (toolKey === "hash_generator" && key === "algorithm") return ["md5", "sha1", "sha224", "sha256", "sha384", "sha512"]
     if (toolKey === "jwt_decoder" && key === "part") return ["payload", "header", "both"]
     if (toolKey === "unix_timestamp" && key === "output") return ["iso", "json"]
+    if (toolKey === "env_parser" && key === "format") return ["json", "yaml", "docker-args"]
     return []
 }

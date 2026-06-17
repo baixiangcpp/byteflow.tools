@@ -6,52 +6,7 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
-
-interface EnvVar {
-    key: string
-    value: string
-    comment?: string
-    isComment: boolean
-    isEmpty: boolean
-    line: number
-}
-
-function parseEnvFile(content: string): EnvVar[] {
-    return content.split("\n").map((raw, i) => {
-        const trimmed = raw.trim()
-        if (!trimmed) return { key: "", value: "", isComment: false, isEmpty: true, line: i + 1 }
-        if (trimmed.startsWith("#")) return { key: "", value: "", comment: trimmed.slice(1).trim(), isComment: true, isEmpty: false, line: i + 1 }
-
-        const eqIdx = trimmed.indexOf("=")
-        if (eqIdx === -1) return { key: trimmed, value: "", isComment: false, isEmpty: false, line: i + 1 }
-
-        const key = trimmed.slice(0, eqIdx).trim()
-        let value = trimmed.slice(eqIdx + 1).trim()
-        // Remove surrounding quotes
-        if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
-            value = value.slice(1, -1)
-        }
-        return { key, value, isComment: false, isEmpty: false, line: i + 1 }
-    })
-}
-
-function envToJson(vars: EnvVar[]): string {
-    const obj: Record<string, string> = {}
-    vars.filter(v => !v.isComment && !v.isEmpty && v.key).forEach(v => { obj[v.key] = v.value })
-    return JSON.stringify(obj, null, 2)
-}
-
-function envToYaml(vars: EnvVar[]): string {
-    return vars.filter(v => !v.isComment && !v.isEmpty && v.key)
-        .map(v => `${v.key}: "${v.value.replace(/"/g, '\\"')}"`)
-        .join("\n")
-}
-
-function envToDockerArgs(vars: EnvVar[]): string {
-    return vars.filter(v => !v.isComment && !v.isEmpty && v.key)
-        .map(v => `-e ${v.key}="${v.value}"`)
-        .join(" \\\n  ")
-}
+import { exportEnvVars, parseEnvFile, type EnvExportFormat } from "./utils"
 
 const SAMPLE_ENV = `# Application Config
 NODE_ENV=production
@@ -80,17 +35,16 @@ ENABLE_RATE_LIMITING=false
 DEBUG=false`
 
 const EXPORT_FORMATS = ["json", "yaml", "docker-args"] as const
-type ExportFormat = typeof EXPORT_FORMATS[number]
 
 export function EnvVariableParserPage() {
     const { t } = useLang()
     const toolT = t.tools["env_parser"] as Record<string, string>
     const [input, setInput] = React.useState(toolT.sample_input || SAMPLE_ENV)
-    const [exportFormat, setExportFormat] = React.useState<ExportFormat>("json")
+    const [exportFormat, setExportFormat] = React.useState<EnvExportFormat>("json")
 
     const parsed = React.useMemo(() => parseEnvFile(input), [input])
     const vars = parsed.filter(v => !v.isComment && !v.isEmpty && v.key)
-    const exportFormatLabels: Record<ExportFormat, string> = React.useMemo(
+    const exportFormatLabels: Record<EnvExportFormat, string> = React.useMemo(
         () => ({
             json: toolT.export_format_json_label,
             yaml: toolT.export_format_yaml_label,
@@ -99,13 +53,7 @@ export function EnvVariableParserPage() {
         [toolT],
     )
 
-    const exported = React.useMemo(() => {
-        switch (exportFormat) {
-            case "json": return envToJson(parsed)
-            case "yaml": return envToYaml(parsed)
-            case "docker-args": return envToDockerArgs(parsed)
-        }
-    }, [parsed, exportFormat])
+    const exported = React.useMemo(() => exportEnvVars(parsed, exportFormat), [parsed, exportFormat])
 
     const handleCopyExport = async () => {
         const result = await safeClipboardWrite(exported)

@@ -197,6 +197,8 @@ The current non-public foundation includes only deterministic, low-risk text/dat
 | `jwt_decoder` | Decode JWT header and payload JSON without signature verification. |
 | `unix_timestamp` | Convert Unix seconds or milliseconds into ISO or structured JSON output. |
 | `html_to_markdown` | Convert HTML snippets into Markdown text for content cleanup pipelines. |
+| `regex_tester` | Produce JSON match summaries for deterministic pattern checks. |
+| `env_parser` | Parse `.env` content into JSON, YAML, or docker argument text. |
 
 ### Phase 3D Target Expansion / Public MVP Candidates
 

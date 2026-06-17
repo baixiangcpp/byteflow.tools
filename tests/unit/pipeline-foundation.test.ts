@@ -56,6 +56,8 @@ describe("pipeline foundation", () => {
             "jwt_decoder",
             "unix_timestamp",
             "html_to_markdown",
+            "regex_tester",
+            "env_parser",
         ])
         expect(getPipelineAdapter("json_formatter")?.version).toBe(1)
     })
@@ -351,6 +353,74 @@ describe("pipeline foundation", () => {
         expect(badJwt.steps[0].error?.code).toBe("jwt_decode_error")
         expect(badTimestamp.ok).toBe(false)
         expect(badTimestamp.steps[0].error?.code).toBe("timestamp_parse_error")
+    })
+
+    it("runs regex summary and env parser adapters", async () => {
+        const regexRecipe = buildRecipe({
+            steps: [{
+                id: "regex",
+                toolKey: "regex_tester",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { pattern: "([A-Z][a-z]+)(\\d)", flags: "g", maxMatches: 10 },
+            }],
+            edges: [],
+        })
+        const envRecipe = buildRecipe({
+            steps: [{
+                id: "env",
+                toolKey: "env_parser",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { format: "json" },
+            }],
+            edges: [],
+        })
+
+        const regexResult = await runRecipe(regexRecipe, "Ab1 Cd2")
+        const envResult = await runRecipe(envRecipe, "PORT=3000\nSECRET=\"quoted value\"")
+
+        expect(regexResult.ok).toBe(true)
+        expect(JSON.parse(regexResult.finalOutput)).toMatchObject({
+            count: 2,
+            limited: false,
+            matches: [
+                { match: "Ab1", index: 0, groupIndex: 0, groups: ["Ab", "1"] },
+                { match: "Cd2", index: 4, groupIndex: 1, groups: ["Cd", "2"] },
+            ],
+        })
+        expect(envResult).toMatchObject({
+            ok: true,
+            finalOutput: "{\n  \"PORT\": \"3000\",\n  \"SECRET\": \"quoted value\"\n}",
+        })
+    })
+
+    it("rejects invalid regex and env adapter options", () => {
+        const badRegex = validateRecipe(buildRecipe({
+            steps: [{
+                id: "regex",
+                toolKey: "regex_tester",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { pattern: "", flags: "g", maxMatches: 10 },
+            }],
+            edges: [],
+        }))
+        const badEnv = validateRecipe(buildRecipe({
+            steps: [{
+                id: "env",
+                toolKey: "env_parser",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { format: "xml" },
+            }],
+            edges: [],
+        }))
+
+        expect(badRegex.ok).toBe(false)
+        expect(badRegex.errors).toContain("regex: pattern is required.")
+        expect(badEnv.ok).toBe(false)
+        expect(badEnv.errors).toContain("env: format must be json, yaml, or docker-args.")
     })
 
     it("allows empty edges and executes recipe.steps order", async () => {

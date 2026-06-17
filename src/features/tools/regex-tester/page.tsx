@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { useLang } from "@/core/i18n/lang-provider"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { testRegexPattern, type RegexMatchSummary } from "./utils"
 
 export function RegexTesterPage() {
     const { t } = useLang()
@@ -13,7 +14,7 @@ export function RegexTesterPage() {
     const [pattern, setPattern] = React.useState("[A-Z][a-z]+")
     const [flags, setFlags] = React.useState("g")
     const [testString, setTestString] = React.useState("Ab1 Cd2 Ef3 Gh4.")
-    const [matches, setMatches] = React.useState<{ match: string; index: number; groupIndex: number; groups: unknown[] }[]>([])
+    const [matches, setMatches] = React.useState<RegexMatchSummary[]>([])
     const [error, setError] = React.useState<string | null>(null)
 
     React.useEffect(() => {
@@ -23,52 +24,11 @@ export function RegexTesterPage() {
             return
         }
 
-        try {
-            // Create RegExp intelligently. If 'g' is not present, matchAll throws an error.
-            // We will handle single matches or global matches gracefully.
-            const isGlobal = flags.includes("g")
-            const safeFlags = isGlobal ? flags : `${flags}g` // For matchAll to work, 'g' must be present, but we will limit results if not global
-
-            const regex = new RegExp(pattern, safeFlags)
-
-            const results = []
-            let matchCount = 0
-
-            // Edge case for empty strings to prevent infinite loops if regex matches empty
-            if (testString === "") {
-                setMatches([])
-                setError(null)
-                return
-            }
-
-            for (const match of testString.matchAll(regex)) {
-                if (!isGlobal && matchCount > 0) break // stop if not global
-
-                results.push({
-                    match: match[0],
-                    index: match.index ?? 0,
-                    groupIndex: matchCount,
-                    groups: match.slice(1) // capture groups
-                })
-
-                matchCount++
-
-                // Safety limit to prevent infinite loops/browser freezing on bad regex like `.*` repeatedly matching `""`
-                if (matchCount > 5000) {
-                    setError(toolT.error_match_limit)
-                    break
-                }
-                if (match[0].length === 0) {
-                    // if it matches an empty string, force advance lastIndex to prevent infinite loop
-                    regex.lastIndex++
-                }
-            }
-
-            setMatches(results)
-            setError(null)
-
-        } catch (e: unknown) {
-            void e
+        const result = testRegexPattern(pattern, flags, testString)
+        if (result.ok) {
+            setMatches(result.matches)
+            setError(result.limited ? toolT.error_match_limit : null)
+        } else {
             setError(toolT.error_invalid_regex)
             setMatches([])
         }
