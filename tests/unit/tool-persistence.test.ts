@@ -6,6 +6,7 @@ import {
     writeStorageJson,
     writeStorageString,
 } from "@/core/storage/tool-persistence"
+import { enforceToolInputPersistencePolicy, shouldPersistToolInput } from "@/core/storage/tool-persistence-policy"
 
 describe("tool-persistence", () => {
     beforeEach(() => {
@@ -48,6 +49,24 @@ describe("tool-persistence", () => {
         const key = "byteflow:test:remove"
         writeStorageString(key, "will-delete")
         removeStorageKey(key)
+        expect(readStorageString(key)).toBeNull()
+    })
+
+    it("enforces input persistence policy", () => {
+        const key = "byteflow:test:policy"
+
+        expect(shouldPersistToolInput({ persistInput: false })).toBe(false)
+        expect(shouldPersistToolInput({ persistInput: "opt-in" })).toBe(false)
+        expect(shouldPersistToolInput({ persistInput: true })).toBe(true)
+
+        enforceToolInputPersistencePolicy({ persistInput: true, inputStorageKey: key, maxInputChars: 10 }, "payload")
+        expect(readStorageString(key)).toBe("payload")
+
+        enforceToolInputPersistencePolicy({ persistInput: true, inputStorageKey: key, maxInputChars: 3 }, "payload")
+        expect(readStorageString(key)).toBeNull()
+
+        writeStorageString(key, "old")
+        enforceToolInputPersistencePolicy({ persistInput: false, inputStorageKey: key }, "payload")
         expect(readStorageString(key)).toBeNull()
     })
 })

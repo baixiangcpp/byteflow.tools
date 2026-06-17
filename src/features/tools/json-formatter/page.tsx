@@ -29,13 +29,14 @@ import { ToolEmptyState } from "@/features/tool-shell/tool-empty-state"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
 import { readStorageString, writeStorageString, removeStorageKey } from "@/core/storage/tool-persistence"
+import { enforceToolInputPersistencePolicy } from "@/core/storage/tool-persistence-policy"
 import { importTextFile, TEXT_FILE_IMPORT_ACCEPT } from "@/core/files/text-file-import"
 import { buildToolHandoffLink, getToolHandoffFromSearchParams } from "@/core/routing/tool-handoff"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildJsonParseErrorMessage } from "@/features/tools/json-formatter/error-utils"
 import { PrivacyBadge } from "@/features/tool-shell/privacy-badge"
 import { PrivacyFAQ } from "@/features/tool-shell/privacy-faq"
-import { INPUT_STORAGE_DEBOUNCE_MS, INPUT_STORAGE_KEY, INPUT_STORAGE_MAX_CHARS, VIEW_MODE_STORAGE_KEY } from "./constants"
+import { INPUT_STORAGE_DEBOUNCE_MS, INPUT_STORAGE_KEY, JSON_FORMATTER_PERSISTENCE_POLICY, VIEW_MODE_STORAGE_KEY } from "./constants"
 import {
     findMatchingPaths,
     getAllPaths,
@@ -91,10 +92,7 @@ export function JsonFormatterPage() {
             setViewMode(savedMode)
         }
 
-        const savedInput = readStorageString(INPUT_STORAGE_KEY)
-        if (savedInput !== null) {
-            setInput(savedInput)
-        }
+        removeStorageKey(INPUT_STORAGE_KEY)
     }, [])
 
     React.useEffect(() => {
@@ -116,15 +114,7 @@ export function JsonFormatterPage() {
 
     React.useEffect(() => {
         const timeoutId = window.setTimeout(() => {
-            if (!input.trim()) {
-                removeStorageKey(INPUT_STORAGE_KEY)
-                return
-            }
-            if (input.length > INPUT_STORAGE_MAX_CHARS) {
-                removeStorageKey(INPUT_STORAGE_KEY)
-                return
-            }
-            writeStorageString(INPUT_STORAGE_KEY, input)
+            enforceToolInputPersistencePolicy(JSON_FORMATTER_PERSISTENCE_POLICY, input)
         }, INPUT_STORAGE_DEBOUNCE_MS)
 
         return () => window.clearTimeout(timeoutId)
