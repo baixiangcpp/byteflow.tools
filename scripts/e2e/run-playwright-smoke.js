@@ -280,7 +280,38 @@ async function assertInputProcessCopyJourney(context, baseUrl, locale) {
     await page.close();
 }
 
+async function waitForAriaHiddenFocusablesToSettle(page, routeLabel) {
+    await page.waitForFunction(() => {
+        const isHiddenByStyle = (node) => {
+            const style = window.getComputedStyle(node);
+            const rect = node.getBoundingClientRect();
+            return (
+                style.display === "none" ||
+                style.visibility === "hidden" ||
+                Number(style.opacity) === 0 ||
+                (rect.width === 0 && rect.height === 0)
+            );
+        };
+
+        const shouldSkipInteractive = (node) => {
+            const ariaHidden = node.getAttribute("aria-hidden") === "true";
+            const disabled = node.hasAttribute("disabled") || node.getAttribute("aria-disabled") === "true";
+            const hiddenInput = node instanceof HTMLInputElement && node.type === "hidden";
+            return ariaHidden || disabled || hiddenInput || isHiddenByStyle(node);
+        };
+
+        const hiddenFocusables = Array.from(document.querySelectorAll("[aria-hidden='true'] button, [aria-hidden='true'] a[href], [aria-hidden='true'] input, [aria-hidden='true'] textarea"))
+            .filter((element) => !shouldSkipInteractive(element));
+
+        return hiddenFocusables.length === 0;
+    }, null, { timeout: 5_000 }).catch(() => {
+        throw new Error(`Timed out waiting for aria-hidden focus guards to settle for ${routeLabel}.`);
+    });
+}
+
 async function assertBasicAccessibility(page, routeLabel) {
+    await waitForAriaHiddenFocusablesToSettle(page, routeLabel);
+
     const violations = await page.evaluate(() => {
         const issues = [];
         const interactiveSelectors = [
@@ -294,23 +325,52 @@ async function assertBasicAccessibility(page, routeLabel) {
             "[role='option']",
         ];
 
-        for (const element of document.querySelectorAll(interactiveSelectors.join(","))) {
-            const node = element;
+        const isHiddenByStyle = (node) => {
+            const style = window.getComputedStyle(node);
+            const rect = node.getBoundingClientRect();
+            return (
+                style.display === "none" ||
+                style.visibility === "hidden" ||
+                Number(style.opacity) === 0 ||
+                (rect.width === 0 && rect.height === 0)
+            );
+        };
+
+        const shouldSkipInteractive = (node) => {
             const ariaHidden = node.getAttribute("aria-hidden") === "true";
             const disabled = node.hasAttribute("disabled") || node.getAttribute("aria-disabled") === "true";
             const hiddenInput = node instanceof HTMLInputElement && node.type === "hidden";
-            if (ariaHidden || disabled || hiddenInput) continue;
+            return ariaHidden || disabled || hiddenInput || isHiddenByStyle(node);
+        };
+
+        for (const element of document.querySelectorAll(interactiveSelectors.join(","))) {
+            const node = element;
+            if (shouldSkipInteractive(node)) continue;
 
             const tag = node.tagName.toLowerCase();
             const role = node.getAttribute("role") || tag;
             const text = (node.textContent || "").trim();
-            const label = node.getAttribute("aria-label") || node.getAttribute("aria-labelledby") || node.getAttribute("title") || text;
+            const labelFor =
+                node.id && typeof CSS !== "undefined" && typeof CSS.escape === "function"
+                    ? document.querySelector(`label[for="${CSS.escape(node.id)}"]`)?.textContent?.trim()
+                    : "";
+            const wrappingLabel = node.closest("label")?.textContent?.trim();
+            const placeholder = "placeholder" in node ? node.getAttribute("placeholder") : "";
+            const label =
+                node.getAttribute("aria-label") ||
+                node.getAttribute("aria-labelledby") ||
+                node.getAttribute("title") ||
+                labelFor ||
+                wrappingLabel ||
+                placeholder ||
+                text;
             if (!label) {
                 issues.push(`${role} lacks an accessible name`);
             }
         }
 
-        const hiddenFocusables = Array.from(document.querySelectorAll("[aria-hidden='true'] button, [aria-hidden='true'] a[href], [aria-hidden='true'] input, [aria-hidden='true'] textarea"));
+        const hiddenFocusables = Array.from(document.querySelectorAll("[aria-hidden='true'] button, [aria-hidden='true'] a[href], [aria-hidden='true'] input, [aria-hidden='true'] textarea"))
+            .filter((element) => !shouldSkipInteractive(element));
         if (hiddenFocusables.length > 0) {
             issues.push(`${hiddenFocusables.length} focusable element(s) are inside aria-hidden content`);
         }
@@ -335,7 +395,7 @@ async function assertBase64PipelineHandoffJourney(context, baseUrl) {
     await input.waitFor({ state: "visible", timeout: 15_000 });
     await input.fill("hello pipeline");
 
-    await page.getByRole("button", { name: /^Run$/ }).first().click();
+    await page.getByRole("button", { name: /^Encode Base64$/ }).first().click();
     const output = page.locator("textarea").nth(1);
     await output.waitFor({ state: "visible", timeout: 15_000 });
     await page.waitForFunction(() => {
@@ -343,7 +403,11 @@ async function assertBase64PipelineHandoffJourney(context, baseUrl) {
         return textareas.some((node) => node.value.includes("aGVsbG8gcGlwZWxpbmU="));
     }, null, { timeout: 15_000 });
 
-    const pipelineLink = page.getByRole("link", { name: /Pipeline Builder/i }).first();
+    const handoffMenu = page.getByRole("button", { name: /Send to/i }).first();
+    await handoffMenu.waitFor({ state: "visible", timeout: 15_000 });
+    await handoffMenu.click();
+
+    const pipelineLink = page.locator('a[data-analytics-id="to_pipeline_builder"]').first();
     await pipelineLink.waitFor({ state: "visible", timeout: 15_000 });
     await Promise.all([
         page.waitForURL((url) => url.pathname === "/en/pipeline-builder", { timeout: 15_000 }),
@@ -380,7 +444,10 @@ async function assertPipelineRecipeJourney(context, baseUrl) {
 
     await page.getByRole("button", { name: /Try Example/i }).first().click();
     await page.getByRole("button", { name: /Run Recipe/i }).first().click();
-    await page.waitForFunction(() => document.body.innerText.includes("Run succeeded") || document.body.innerText.includes("Step 1"), null, { timeout: 15_000 });
+    await page.waitForFunction(() => {
+        const readonlyOutput = Array.from(document.querySelectorAll("textarea")).find((node) => node.readOnly);
+        return Boolean(readonlyOutput?.value.trim()) && document.body.innerText.includes("OK");
+    }, null, { timeout: 15_000 });
     await assertBasicAccessibility(page, "/en/pipeline-builder recipe");
 
     if (runtimeErrors.length > 0) {
@@ -476,10 +543,11 @@ async function assertLocaleSwitchJourney(context, baseUrl) {
     await page.close();
 }
 
-async function assertPwaShellJourney(browser, baseUrl) {
+async function assertPwaShellJourney(browser, baseUrl, goOffline) {
     const context = await browser.newContext({ serviceWorkers: "allow" });
     const page = await context.newPage();
     const runtimeErrors = [];
+    let contextOffline = false;
     page.on("pageerror", (error) => runtimeErrors.push(error.message));
 
     try {
@@ -503,14 +571,78 @@ async function assertPwaShellJourney(browser, baseUrl) {
             throw new Error("Service worker did not become active for the PWA shell.");
         }
 
+        const waitForController = async () => {
+            const deadline = Date.now() + 15_000;
+
+            while (Date.now() < deadline) {
+                try {
+                    const isControlled = await page.evaluate(() =>
+                        "serviceWorker" in navigator && Boolean(navigator.serviceWorker.controller),
+                    );
+                    if (isControlled) return true;
+                } catch {
+                    // The app reloads on controllerchange; retry after navigation settles.
+                    await page.waitForLoadState("domcontentloaded").catch(() => {});
+                }
+
+                await wait(250);
+            }
+
+            return false;
+        };
+
+        let isControlled = await waitForController();
+        if (!isControlled) {
+            await page.reload({ waitUntil: "networkidle" });
+            isControlled = await waitForController();
+        }
+        if (!isControlled) {
+            throw new Error("Service worker is active but did not control the PWA smoke page.");
+        }
+
         await page.goto(`${baseUrl}/en/json-formatter`, { waitUntil: "networkidle" });
         await page.waitForSelector("main", { timeout: 15_000 });
-        await page.setOfflineMode(true);
-        const offlineResponse = await page.goto(`${baseUrl}/en/not-cached-for-smoke-${Date.now()}`, {
+        isControlled = await waitForController();
+        if (!isControlled) {
+            throw new Error("Service worker stopped controlling the PWA smoke page before offline navigation.");
+        }
+
+        if (goOffline) {
+            await goOffline();
+        } else {
+            await context.setOffline(true);
+            contextOffline = true;
+        }
+        const offlineResult = await page.evaluate(async (targetUrl) => {
+            try {
+                const response = await fetch(targetUrl, {
+                    headers: { accept: "text/html" },
+                });
+                const bodyText = await response.text();
+                return {
+                    ok: response.ok,
+                    status: response.status,
+                    bodyText,
+                    error: "",
+                };
+            } catch (error) {
+                return {
+                    ok: false,
+                    status: 0,
+                    bodyText: "",
+                    error: error instanceof Error ? error.message : String(error),
+                };
+            }
+        }, `${baseUrl}/en/not-cached-for-smoke-${Date.now()}`);
+        if (!offlineResult.ok || !/offline/i.test(offlineResult.bodyText)) {
+            throw new Error(`Offline fetch did not render the cached offline fallback. Status: ${offlineResult.status}; error: ${offlineResult.error || "none"}`);
+        }
+
+        await page.setContent(offlineResult.bodyText, {
             waitUntil: "domcontentloaded",
         });
         const bodyText = await page.locator("body").innerText({ timeout: 15_000 });
-        if (!offlineResponse || !offlineResponse.ok() || !/offline/i.test(bodyText)) {
+        if (!/offline/i.test(bodyText)) {
             throw new Error("Offline navigation did not render the cached offline fallback.");
         }
 
@@ -518,7 +650,9 @@ async function assertPwaShellJourney(browser, baseUrl) {
             throw new Error(`PWA smoke triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
         }
     } finally {
-        await page.setOfflineMode(false).catch(() => {});
+        if (contextOffline) {
+            await context.setOffline(false).catch(() => {});
+        }
         await page.close();
         await context.close();
     }
@@ -568,10 +702,10 @@ async function runSmoke(baseUrl) {
     }
 }
 
-async function runPwaSmoke(baseUrl) {
+async function runPwaSmoke(baseUrl, goOffline) {
     const browser = await chromium.launch({ headless: true });
     try {
-        await assertPwaShellJourney(browser, baseUrl);
+        await assertPwaShellJourney(browser, baseUrl, goOffline);
         console.log("[playwright-smoke] PASS pwa: service worker, manifest, and offline fallback");
     } finally {
         await browser.close();
@@ -591,7 +725,15 @@ async function main() {
 
         await runSmoke(baseUrl);
         if (includePwa) {
-            await runPwaSmoke(baseUrl);
+            await runPwaSmoke(
+                baseUrl,
+                serverHandle
+                    ? async () => {
+                        await stopServer(serverHandle.server);
+                        serverHandle = null;
+                    }
+                    : null,
+            );
         }
         console.log("[playwright-smoke] PASS: critical routes render and navigate correctly");
     } catch (error) {
