@@ -34,6 +34,8 @@ const TRANSLATION_FILES = {
     de: "src/core/i18n/translations/de.json",
     fr: "src/core/i18n/translations/fr.json",
 };
+const NETWORK_ACCESS_VALUES = new Set(["none", "user_requested", "third_party_api"]);
+const PERSIST_INPUT_VALUES = new Set(["true", "false", "opt-in"]);
 
 function parseArgs(argv) {
     const args = {};
@@ -84,12 +86,30 @@ function assertCategory(category) {
     }
 }
 
+function assertEnumArg(name, value, allowedValues) {
+    if (!value || allowedValues.has(value)) return;
+    throw new Error(`--${name} must be one of: ${Array.from(allowedValues).join(", ")}`);
+}
+
 function parseList(raw, fallback) {
     if (!raw) return [...fallback];
     return raw
         .split(",")
         .map((item) => item.trim())
         .filter(Boolean);
+}
+
+function parsePersistInput(raw) {
+    if (!raw) return undefined;
+    if (raw === "true") return true;
+    if (raw === "false") return false;
+    if (raw === "opt-in") return "opt-in";
+    throw new Error("--persist-input must be one of: true, false, opt-in");
+}
+
+function asTsValue(value) {
+    if (typeof value === "string") return `"${value}"`;
+    return String(value);
 }
 
 function asTsStringArray(items) {
@@ -333,6 +353,18 @@ export function runTool(input: string): ToolRunResult {
 `;
 }
 
+function createLogicTestTemplate(slug) {
+    return `import { describe, expect, it } from "vitest"
+import { runTool } from "./logic"
+
+describe("${slug} logic", () => {
+    it("transforms sample input deterministically", () => {
+        expect(runTool("Sample input")).toBe("Sample input")
+    })
+})
+`;
+}
+
 function createSamplesTemplate() {
     return `export const SAMPLE_INPUT = "Sample input"
 `;
@@ -343,7 +375,14 @@ function createBrowserActionsTemplate() {
 `;
 }
 
-function createManifestTemplate({ key, slug, category, relatedTools, keywords }) {
+function createManifestTemplate({ key, slug, category, relatedTools, keywords, searchKeywords, networkAccess, persistInput, pipelineAdapter }) {
+    const optionalFields = [
+        searchKeywords.length > 0 ? `    searchKeywords: ${asTsStringArray(searchKeywords)},` : "",
+        networkAccess && networkAccess !== "none" ? `    networkAccess: "${networkAccess}",` : "",
+        persistInput !== undefined ? `    persistInput: ${asTsValue(persistInput)},` : "",
+        pipelineAdapter ? `    // Add a matching adapter in src/features/pipeline/adapter-registry.ts before exposing this as pipeline-ready.` : "",
+    ].filter(Boolean)
+
     return `import type { ToolMeta } from "@/core/registry/types"
 
 export const toolManifest = {
@@ -352,7 +391,7 @@ export const toolManifest = {
     category: "${category}",
     relatedTools: ${asTsStringArray(relatedTools)},
     keywords: ${asTsStringArray(keywords)},
-} satisfies ToolMeta
+${optionalFields.length > 0 ? `${optionalFields.join("\n")}\n` : ""}} satisfies ToolMeta
 `;
 }
 
@@ -368,7 +407,7 @@ export default function Page() {
 `;
 }
 
-function createRouteFiles({ slug, toolKey, category, relatedTools, keywords }) {
+function createRouteFiles({ slug, toolKey, category, relatedTools, keywords, searchKeywords, networkAccess, persistInput, pipelineAdapter }) {
     const dirPath = path.join(ROOT_DIR, ROUTE_ROOT, slug);
     const featureDirPath = path.join(ROOT_DIR, FEATURE_TOOL_ROOT, slug);
     fs.mkdirSync(dirPath, { recursive: true });
@@ -379,6 +418,7 @@ function createRouteFiles({ slug, toolKey, category, relatedTools, keywords }) {
     fs.writeFileSync(path.join(featureDirPath, "types.ts"), createTypesTemplate(), "utf8");
     fs.writeFileSync(path.join(featureDirPath, "constants.ts"), createConstantsTemplate(), "utf8");
     fs.writeFileSync(path.join(featureDirPath, "logic.ts"), createLogicTemplate(), "utf8");
+    fs.writeFileSync(path.join(featureDirPath, "logic.test.ts"), createLogicTestTemplate(slug), "utf8");
     fs.writeFileSync(path.join(featureDirPath, "samples.ts"), createSamplesTemplate(), "utf8");
     fs.writeFileSync(path.join(featureDirPath, "browser-actions.ts"), createBrowserActionsTemplate(), "utf8");
     fs.writeFileSync(path.join(featureDirPath, "manifest.ts"), createManifestTemplate({
@@ -387,6 +427,10 @@ function createRouteFiles({ slug, toolKey, category, relatedTools, keywords }) {
         category,
         relatedTools,
         keywords,
+        searchKeywords,
+        networkAccess,
+        persistInput,
+        pipelineAdapter,
     }), "utf8");
 }
 
@@ -406,7 +450,7 @@ function main() {
     const args = parseArgs(process.argv.slice(2));
 
     if (args.help === "true" || args.h === "true") {
-        console.log("Usage: node scripts/scaffolding/create-tool.js --slug my-new-tool --category formatters [--related key1,key2] [--keywords a,b,c]");
+        console.log("Usage: node scripts/scaffolding/create-tool.js --slug my-new-tool --category formatters [--related key1,key2] [--keywords a,b,c] [--search-keywords x,y] [--network-access none|user_requested|third_party_api] [--persist-input true|false|opt-in] [--pipeline-adapter]");
         process.exit(0);
     }
 
@@ -414,9 +458,14 @@ function main() {
     const category = args.category;
     assertSlug(slug);
     assertCategory(category);
+    assertEnumArg("network-access", args["network-access"], NETWORK_ACCESS_VALUES);
+    assertEnumArg("persist-input", args["persist-input"], PERSIST_INPUT_VALUES);
 
     const key = args.key ? args.key : kebabToSnake(slug);
     const title = args.title ? args.title : kebabToTitle(slug);
+    const networkAccess = args["network-access"] || "none";
+    const persistInput = parsePersistInput(args["persist-input"]);
+    const pipelineAdapter = args["pipeline-adapter"] === "true";
 
     ensureNotExistsInMeta(key, slug);
 
@@ -431,6 +480,7 @@ function main() {
             `${slug} helper`,
         ],
     );
+    const searchKeywords = parseList(args["search-keywords"], pipelineAdapter ? ["pipeline-ready"] : []);
 
     createRouteFiles({
         toolKey: key,
@@ -438,6 +488,10 @@ function main() {
         category,
         relatedTools,
         keywords,
+        searchKeywords,
+        networkAccess,
+        persistInput,
+        pipelineAdapter,
     });
 
     updateToolOrder(slug);
@@ -446,12 +500,13 @@ function main() {
     console.log(`[create-tool] Created route: ${path.join(ROUTE_ROOT, slug)}`);
     console.log(`[create-tool] Created feature page: ${path.join(FEATURE_TOOL_ROOT, slug, "page.tsx")}`);
     console.log(`[create-tool] Created manifest: ${path.join(FEATURE_TOOL_ROOT, slug, "manifest.ts")}`);
-    console.log(`[create-tool] Created feature modules: ${path.join(FEATURE_TOOL_ROOT, slug, "{logic,samples,types}.ts")}`);
+    console.log(`[create-tool] Created feature modules: ${path.join(FEATURE_TOOL_ROOT, slug, "{logic,logic.test,samples,types}.ts")}`);
     console.log(`[create-tool] Updated tool order: ${TOOL_ORDER_PATH}`);
     console.log("[create-tool] Updated translations: en, zh-CN, zh-TW, ja, ko, de, fr");
     console.log("[create-tool] Next steps:");
-    console.log("  1) npm run generate:registry-manifests && npm run generate:tool-index");
-    console.log("  2) npm run lint && npm run test && npm run check:i18n && npm run build");
+    console.log("  1) npm run generate:registry-manifests && npm run generate:tool-index && npm run generate:client-tool-lookup");
+    console.log("  2) Fill in logic.test.ts with edge cases, malformed input, and round-trip coverage when applicable");
+    console.log("  3) npm run lint && npm run test && npm run check:i18n && npm run build");
 }
 
 try {
