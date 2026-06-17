@@ -3,6 +3,7 @@ import type { ToolCategory } from "./categories"
 export type { ToolCategory } from "./categories"
 
 export type ToolNetworkAccess = "none" | "user_requested" | "third_party_api"
+export type ToolInputPersistenceMode = true | false | "opt-in"
 
 /**
  * Tool metadata used by registry, sitemap, SEO, breadcrumbs, and related tools.
@@ -24,6 +25,8 @@ export interface ToolMeta {
     searchKeywords?: string[]
     /** Browser network behavior used by privacy UI and CI guards */
     networkAccess?: ToolNetworkAccess
+    /** Input payload persistence behavior used by privacy UI and CI guards */
+    persistInput?: ToolInputPersistenceMode
     /** Optional deprecation metadata - marks tool as deprecated with message and alternatives */
     deprecated?: {
         /** Translation key for deprecation message (optional, falls back to generic message) */

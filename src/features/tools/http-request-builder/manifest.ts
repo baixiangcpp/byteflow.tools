@@ -6,4 +6,5 @@ export const toolManifest = {
     category: "network-web",
     relatedTools: ["url_parser", "http_status_codes", "url_encode_decode", "user_agent_parser"],
     keywords: ["http request builder", "curl generator", "api request builder", "rest client online"],
+    persistInput: false,
 } satisfies ToolMeta

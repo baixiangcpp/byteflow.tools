@@ -169,6 +169,7 @@ function buildIndexData() {
                 relatedTools: tool.relatedTools,
                 keywords: tool.keywords,
                 networkAccess: tool.networkAccess || "none",
+                persistInput: tool.persistInput ?? null,
                 updatedAt: tool.updatedAt || null,
                 sourceFile: tool.sourceFile,
             }

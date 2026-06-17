@@ -6,4 +6,5 @@ export const toolManifest = {
     category: "network-web",
     relatedTools: ["http_status_codes", "http_request_builder", "csp_parser", "text_diff_checker"],
     keywords: ["header diff", "http header compare", "request diff", "header comparison"],
+    persistInput: false,
 } satisfies ToolMeta

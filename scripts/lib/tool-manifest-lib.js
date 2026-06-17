@@ -7,6 +7,7 @@ export const TOOL_MANIFESTS_PATH = path.join(ROOT_DIR, "src/core/registry/manife
 
 const REQUIRED_FIELDS = ["key", "slug", "category", "relatedTools", "keywords"]
 const NETWORK_ACCESS_VALUES = new Set(["none", "user_requested", "third_party_api"])
+const PERSIST_INPUT_VALUES = new Set(["true", "false", "\"opt-in\"", "'opt-in'"])
 
 function relative(filePath) {
     return path.relative(ROOT_DIR, filePath).replace(/\\/g, "/")
@@ -195,6 +196,17 @@ function objectField(source, fieldName) {
     return match ? match[1] : null
 }
 
+function booleanOrOptInField(source, fieldName, manifestPath) {
+    const match = new RegExp(`(?:^|[,\\n])\\s*${fieldName}:\\s*(true|false|["']opt-in["'])`, "s").exec(source)
+    if (!match) return undefined
+    if (!PERSIST_INPUT_VALUES.has(match[1])) {
+        throw manifestError(manifestPath, fieldName, "must be true, false, or \"opt-in\"")
+    }
+    if (match[1] === "true") return true
+    if (match[1] === "false") return false
+    return "opt-in"
+}
+
 function parseDeprecated(source, manifestPath) {
     const block = objectField(source, "deprecated")
     if (!block) return undefined
@@ -238,6 +250,7 @@ export function parseToolManifestFile(manifestPath) {
     const searchKeywords = arrayField(body, "searchKeywords", manifestPath)
     const updatedAt = stringField(body, "updatedAt", manifestPath)
     const networkAccess = stringField(body, "networkAccess", manifestPath)
+    const persistInput = booleanOrOptInField(body, "persistInput", manifestPath)
     const deprecated = parseDeprecated(body, manifestPath)
 
     if (networkAccess && !NETWORK_ACCESS_VALUES.has(networkAccess)) {
@@ -256,6 +269,7 @@ export function parseToolManifestFile(manifestPath) {
     if (updatedAt) manifest.updatedAt = updatedAt
     if (searchKeywords.length > 0) manifest.searchKeywords = searchKeywords
     if (networkAccess) manifest.networkAccess = networkAccess
+    if (persistInput !== undefined) manifest.persistInput = persistInput
     if (deprecated) manifest.deprecated = deprecated
 
     return manifest

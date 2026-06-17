@@ -10,6 +10,7 @@ export type ClientToolLookupEntry = {
     aliases: readonly string[]
     relatedToolKeys: readonly string[]
     networkAccess: "none" | "user_requested" | "third_party_api"
+    persistInput: true | false | "opt-in" | null
     searchKeywords?: readonly string[]
 }
 
@@ -38,6 +39,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "yaml_json_converter"
         ],
         "networkAccess": "none",
+        "persistInput": false,
         "searchKeywords": [
             "beautify",
             "pretty print",
@@ -68,6 +70,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "sql_formatter"
         ],
         "networkAccess": "none",
+        "persistInput": null,
         "searchKeywords": [
             "beautify xml",
             "format xml",
@@ -94,6 +97,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "html_css_beautifier"
         ],
         "networkAccess": "none",
+        "persistInput": null,
         "searchKeywords": [
             "beautify sql",
             "format sql",
@@ -121,6 +125,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "markdown_preview"
         ],
         "networkAccess": "none",
+        "persistInput": null,
         "searchKeywords": [
             "beautify js",
             "format javascript",
@@ -147,7 +152,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "html_formatter",
             "json_formatter"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "html_minifier": {
         "key": "html_minifier",
@@ -165,7 +171,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_minifier",
             "javascript_minifier"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "html_encoder_decoder": {
         "key": "html_encoder_decoder",
@@ -183,7 +190,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_encode_decode",
             "base64_encode_decode"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "html_css_beautifier": {
         "key": "html_css_beautifier",
@@ -201,7 +209,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_optimizer",
             "xml_formatter"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "html_formatter": {
         "key": "html_formatter",
@@ -220,6 +229,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "markdown_preview"
         ],
         "networkAccess": "none",
+        "persistInput": null,
         "searchKeywords": [
             "beautify html",
             "format html",
@@ -247,6 +257,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "xml_formatter"
         ],
         "networkAccess": "none",
+        "persistInput": null,
         "searchKeywords": [
             "convert yaml",
             "yaml parser",
@@ -274,6 +285,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "lorem_ipsum"
         ],
         "networkAccess": "none",
+        "persistInput": null,
         "searchKeywords": [
             "preview markdown",
             "markdown viewer",
@@ -300,7 +312,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "html_encoder_decoder",
             "text_diff_checker"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "json_to_typescript": {
         "key": "json_to_typescript",
@@ -318,6 +331,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jsonpath_playground"
         ],
         "networkAccess": "none",
+        "persistInput": null,
         "searchKeywords": [
             "generate types",
             "interface",
@@ -343,7 +357,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_optimizer",
             "json_formatter"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "svg_optimizer": {
         "key": "svg_optimizer",
@@ -360,7 +375,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "html_css_beautifier",
             "image_base64"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "jsonpath_playground": {
         "key": "jsonpath_playground",
@@ -378,7 +394,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_to_typescript",
             "yaml_json_converter"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "openapi_viewer": {
         "key": "openapi_viewer",
@@ -395,7 +412,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "yaml_json_converter",
             "jsonpath_playground"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "json_diff_viewer": {
         "key": "json_diff_viewer",
@@ -412,7 +430,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker",
             "jsonpath_playground"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "csv_json_converter": {
         "key": "csv_json_converter",
@@ -430,7 +449,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_to_typescript",
             "text_diff_checker"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "base64_encode_decode": {
         "key": "base64_encode_decode",
@@ -448,6 +468,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_base64"
         ],
         "networkAccess": "none",
+        "persistInput": null,
         "searchKeywords": [
             "encode base64",
             "decode base64",
@@ -480,6 +501,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "user_agent_parser"
         ],
         "networkAccess": "none",
+        "persistInput": null,
         "searchKeywords": [
             "encode url",
             "decode url",
@@ -511,6 +533,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_encode_decode"
         ],
         "networkAccess": "none",
+        "persistInput": false,
         "searchKeywords": [
             "decode token",
             "parse jwt",
@@ -538,7 +561,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "base64_encode_decode",
             "hash_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": false
     },
     "hash_generator": {
         "key": "hash_generator",
@@ -557,6 +581,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "password_generator"
         ],
         "networkAccess": "none",
+        "persistInput": null,
         "searchKeywords": [
             "generate hash",
             "checksum",
@@ -584,7 +609,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker",
             "password_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "text_diff_checker": {
         "key": "text_diff_checker",
@@ -601,7 +627,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "markdown_preview",
             "base64_encode_decode"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "multiple_whitespace_remover": {
         "key": "multiple_whitespace_remover",
@@ -619,7 +646,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "markdown_preview",
             "lorem_ipsum"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "letter_counter": {
         "key": "letter_counter",
@@ -637,7 +665,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "lorem_ipsum",
             "slugify_case_converter"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "bionic_reading_converter": {
         "key": "bionic_reading_converter",
@@ -655,7 +684,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "markdown_preview",
             "text_diff_checker"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "google_fonts_pair_finder": {
         "key": "google_fonts_pair_finder",
@@ -673,7 +703,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "code_to_image_converter",
             "open_graph_meta_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "text_to_handwriting_converter": {
         "key": "text_to_handwriting_converter",
@@ -691,7 +722,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_caption_generator",
             "instagram_post_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "code_to_image_converter": {
         "key": "code_to_image_converter",
@@ -709,7 +741,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_formatter",
             "html_formatter"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "image_base64": {
         "key": "image_base64",
@@ -725,7 +758,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_optimizer",
             "qr_code_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "unix_timestamp": {
         "key": "unix_timestamp",
@@ -742,7 +776,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "cron_visualizer",
             "crontab_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "uuid_generator": {
         "key": "uuid_generator",
@@ -760,6 +795,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "lorem_ipsum"
         ],
         "networkAccess": "none",
+        "persistInput": null,
         "searchKeywords": [
             "generate uuid",
             "unique id",
@@ -785,7 +821,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "uuid_generator",
             "markdown_preview"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "password_generator": {
         "key": "password_generator",
@@ -801,7 +838,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "uuid_generator",
             "lorem_ipsum"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "color_converter": {
         "key": "color_converter",
@@ -818,7 +856,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "html_css_beautifier",
             "svg_optimizer"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "react_native_shadow_generator": {
         "key": "react_native_shadow_generator",
@@ -836,7 +875,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_border_radius_generator",
             "color_converter"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "ai_color_palette_generator": {
         "key": "ai_color_palette_generator",
@@ -854,7 +894,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter",
             "css_gradient_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "color_mixer": {
         "key": "color_mixer",
@@ -872,7 +913,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "ai_color_palette_generator",
             "css_gradient_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "color_shades_generator": {
         "key": "color_shades_generator",
@@ -890,7 +932,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter",
             "css_gradient_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "image_average_color_finder": {
         "key": "image_average_color_finder",
@@ -908,7 +951,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_shades_generator",
             "color_converter"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "image_caption_generator": {
         "key": "image_caption_generator",
@@ -926,7 +970,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_average_color_finder",
             "color_mixer"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "image_color_extractor": {
         "key": "image_color_extractor",
@@ -944,7 +989,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "ai_color_palette_generator",
             "color_mixer"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "image_color_picker": {
         "key": "image_color_picker",
@@ -962,7 +1008,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter",
             "color_mixer"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "image_cropper": {
         "key": "image_cropper",
@@ -980,7 +1027,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "code_to_image_converter",
             "image_base64"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "image_filters": {
         "key": "image_filters",
@@ -998,7 +1046,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_caption_generator",
             "image_color_extractor"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "instagram_filters": {
         "key": "instagram_filters",
@@ -1016,7 +1065,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_filters",
             "instagram_photo_downloader"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "instagram_post_generator": {
         "key": "instagram_post_generator",
@@ -1034,7 +1084,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "instagram_filters",
             "open_graph_meta_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "instagram_story_generator": {
         "key": "instagram_story_generator",
@@ -1052,7 +1103,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "instagram_filters",
             "open_graph_meta_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "open_graph_meta_generator": {
         "key": "open_graph_meta_generator",
@@ -1070,7 +1122,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "instagram_post_generator",
             "instagram_story_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "tweet_generator": {
         "key": "tweet_generator",
@@ -1088,7 +1141,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "twitter_ad_revenue_generator",
             "instagram_post_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "tweet_to_image_converter": {
         "key": "tweet_to_image_converter",
@@ -1106,7 +1160,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "instagram_post_generator",
             "code_to_image_converter"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "twitter_ad_revenue_generator": {
         "key": "twitter_ad_revenue_generator",
@@ -1124,7 +1179,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "open_graph_meta_generator",
             "id_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "instagram_photo_downloader": {
         "key": "instagram_photo_downloader",
@@ -1142,7 +1198,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "instagram_filters",
             "image_resizer"
         ],
-        "networkAccess": "user_requested"
+        "networkAccess": "user_requested",
+        "persistInput": null
     },
     "vimeo_thumbnail_grabber": {
         "key": "vimeo_thumbnail_grabber",
@@ -1160,7 +1217,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "open_graph_meta_generator",
             "image_resizer"
         ],
-        "networkAccess": "user_requested"
+        "networkAccess": "user_requested",
+        "persistInput": null
     },
     "youtube_thumbnail_grabber": {
         "key": "youtube_thumbnail_grabber",
@@ -1178,7 +1236,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "open_graph_meta_generator",
             "image_resizer"
         ],
-        "networkAccess": "user_requested"
+        "networkAccess": "user_requested",
+        "persistInput": null
     },
     "image_resizer": {
         "key": "image_resizer",
@@ -1196,7 +1255,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_base64",
             "code_to_image_converter"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "photo_censor": {
         "key": "photo_censor",
@@ -1214,7 +1274,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_resizer",
             "scanned_pdf_converter"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "scanned_pdf_converter": {
         "key": "scanned_pdf_converter",
@@ -1232,7 +1293,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_resizer",
             "image_base64"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "svg_blob_generator": {
         "key": "svg_blob_generator",
@@ -1250,7 +1312,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_optimizer",
             "css_clip_path_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "svg_pattern_generator": {
         "key": "svg_pattern_generator",
@@ -1268,7 +1331,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_background_pattern_generator",
             "css_gradient_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "svg_stroke_to_fill_converter": {
         "key": "svg_stroke_to_fill_converter",
@@ -1286,7 +1350,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_pattern_generator",
             "svg_to_png_converter"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "svg_to_png_converter": {
         "key": "svg_to_png_converter",
@@ -1304,7 +1369,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_blob_generator",
             "svg_stroke_to_fill_converter"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "css_background_pattern_generator": {
         "key": "css_background_pattern_generator",
@@ -1322,7 +1388,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter",
             "css_minifier"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "css_border_radius_generator": {
         "key": "css_border_radius_generator",
@@ -1340,7 +1407,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter",
             "css_minifier"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "css_box_shadow_generator": {
         "key": "css_box_shadow_generator",
@@ -1358,7 +1426,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter",
             "css_minifier"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "css_checkbox_generator": {
         "key": "css_checkbox_generator",
@@ -1376,7 +1445,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_background_pattern_generator",
             "color_converter"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "css_clip_path_generator": {
         "key": "css_clip_path_generator",
@@ -1394,7 +1464,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter",
             "svg_optimizer"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "css_cubic_bezier_generator": {
         "key": "css_cubic_bezier_generator",
@@ -1412,7 +1483,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_checkbox_generator",
             "css_minifier"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "css_glassmorphism_generator": {
         "key": "css_glassmorphism_generator",
@@ -1430,7 +1502,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_border_radius_generator",
             "color_converter"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "css_gradient_generator": {
         "key": "css_gradient_generator",
@@ -1448,7 +1521,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_background_pattern_generator",
             "css_minifier"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "css_loader_generator": {
         "key": "css_loader_generator",
@@ -1466,7 +1540,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_box_shadow_generator",
             "css_minifier"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "css_switch_generator": {
         "key": "css_switch_generator",
@@ -1484,7 +1559,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_glassmorphism_generator",
             "color_converter"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "css_text_glitch_effect_generator": {
         "key": "css_text_glitch_effect_generator",
@@ -1502,7 +1578,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "code_to_image_converter",
             "css_minifier"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "css_triangle_generator": {
         "key": "css_triangle_generator",
@@ -1520,7 +1597,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_border_radius_generator",
             "css_minifier"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "qr_code_generator": {
         "key": "qr_code_generator",
@@ -1536,7 +1614,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "password_generator",
             "url_encode_decode"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "barcode_generator": {
         "key": "barcode_generator",
@@ -1554,7 +1633,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "fake_iban_generator",
             "list_randomizer"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "fake_iban_generator": {
         "key": "fake_iban_generator",
@@ -1572,7 +1652,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "id_generator",
             "password_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "list_randomizer": {
         "key": "list_randomizer",
@@ -1590,7 +1671,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "lorem_ipsum",
             "password_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "ascii_art_generator": {
         "key": "ascii_art_generator",
@@ -1606,7 +1688,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "markdown_preview",
             "text_diff_checker"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "env_parser": {
         "key": "env_parser",
@@ -1623,7 +1706,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "yaml_json_converter",
             "base64_encode_decode"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": false
     },
     "id_generator": {
         "key": "id_generator",
@@ -1641,7 +1725,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "unix_timestamp",
             "hash_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "regex_tester": {
         "key": "regex_tester",
@@ -1659,6 +1744,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_encode_decode"
         ],
         "networkAccess": "none",
+        "persistInput": null,
         "searchKeywords": [
             "regex",
             "regexp",
@@ -1689,7 +1775,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jsonpath_playground",
             "url_encode_decode"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "crontab_generator": {
         "key": "crontab_generator",
@@ -1706,6 +1793,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "regex_tester"
         ],
         "networkAccess": "none",
+        "persistInput": null,
         "searchKeywords": [
             "cron",
             "crontab",
@@ -1737,7 +1825,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_parser",
             "chmod_calculator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "cron_visualizer": {
         "key": "cron_visualizer",
@@ -1753,7 +1842,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "unix_timestamp",
             "regex_tester"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "http_status_codes": {
         "key": "http_status_codes",
@@ -1770,7 +1860,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_parser",
             "http_request_builder"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "chmod_calculator": {
         "key": "chmod_calculator",
@@ -1787,7 +1878,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "user_agent_parser",
             "cidr_subnet_calculator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "cidr_subnet_calculator": {
         "key": "cidr_subnet_calculator",
@@ -1805,7 +1897,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "chmod_calculator",
             "http_status_codes"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "url_parser": {
         "key": "url_parser",
@@ -1823,7 +1916,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "user_agent_parser",
             "http_request_builder"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "certificate_decoder": {
         "key": "certificate_decoder",
@@ -1841,7 +1935,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_status_codes",
             "security_header_analyzer"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": false
     },
     "http_request_builder": {
         "key": "http_request_builder",
@@ -1859,7 +1954,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_encode_decode",
             "user_agent_parser"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": false
     },
     "curl_to_code": {
         "key": "curl_to_code",
@@ -1877,7 +1973,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_status_codes",
             "jwt_decoder"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "ndjson_formatter": {
         "key": "ndjson_formatter",
@@ -1895,7 +1992,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_diff_viewer",
             "jsonpath_playground"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "jwt_verifier": {
         "key": "jwt_verifier",
@@ -1914,7 +2012,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "base64_encode_decode",
             "certificate_decoder"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": false
     },
     "slugify_case_converter": {
         "key": "slugify_case_converter",
@@ -1932,7 +2031,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hash_generator",
             "text_diff_checker"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "invisible_chars_detector": {
         "key": "invisible_chars_detector",
@@ -1952,6 +2052,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_encode_decode"
         ],
         "networkAccess": "none",
+        "persistInput": null,
         "searchKeywords": [
             "invisible chars",
             "zero width",
@@ -1980,7 +2081,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_parser",
             "csp_parser"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "csp_parser": {
         "key": "csp_parser",
@@ -1998,7 +2100,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "header_diff",
             "robots_txt_tester"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "csv_diff": {
         "key": "csv_diff",
@@ -2016,7 +2119,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_diff_viewer",
             "header_diff"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "header_diff": {
         "key": "header_diff",
@@ -2034,7 +2138,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "csp_parser",
             "text_diff_checker"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": false
     },
     "security_header_analyzer": {
         "key": "security_header_analyzer",
@@ -2052,7 +2157,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_status_codes",
             "certificate_decoder"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": false
     },
     "totp_generator": {
         "key": "totp_generator",
@@ -2070,7 +2176,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "uuid_generator",
             "id_generator"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": false
     },
     "openapi_mock": {
         "key": "openapi_mock",
@@ -2088,7 +2195,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_formatter",
             "curl_to_code"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "docker_run_to_compose": {
         "key": "docker_run_to_compose",
@@ -2107,6 +2215,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "curl_to_code"
         ],
         "networkAccess": "none",
+        "persistInput": null,
         "searchKeywords": [
             "docker",
             "compose",
@@ -2136,6 +2245,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker"
         ],
         "networkAccess": "none",
+        "persistInput": false,
         "searchKeywords": [
             "parse logs",
             "analyze logs",
@@ -2164,6 +2274,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "yaml_json_converter"
         ],
         "networkAccess": "none",
+        "persistInput": null,
         "searchKeywords": [
             "jq",
             "json query",
@@ -2191,7 +2302,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jwt_decoder",
             "text_diff_checker"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": false
     },
     "gzip_brotli_lab": {
         "key": "gzip_brotli_lab",
@@ -2209,7 +2321,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_request_builder",
             "local_log_parser"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "yaml_merge_patch_explorer": {
         "key": "yaml_merge_patch_explorer",
@@ -2227,7 +2340,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "openapi_viewer",
             "docker_run_to_compose"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "yq_playground": {
         "key": "yq_playground",
@@ -2246,7 +2360,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jq_playground",
             "jsonpath_playground"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "structured_data_visualizer": {
         "key": "structured_data_visualizer",
@@ -2265,7 +2380,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "xml_formatter",
             "jsonpath_playground"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "har_viewer_sanitizer": {
         "key": "har_viewer_sanitizer",
@@ -2284,7 +2400,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_status_codes",
             "security_header_analyzer"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": false
     },
     "pipeline_builder": {
         "key": "pipeline_builder",
@@ -2304,6 +2421,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "log_scrubber"
         ],
         "networkAccess": "none",
+        "persistInput": null,
         "searchKeywords": [
             "pipeline",
             "recipe builder",
@@ -2330,7 +2448,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "base64_encode_decode",
             "security_header_analyzer"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": false
     },
     "asn1_der_inspector": {
         "key": "asn1_der_inspector",
@@ -2348,7 +2467,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hex_bytes_workbench",
             "jwt_decoder"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "hex_bytes_workbench": {
         "key": "hex_bytes_workbench",
@@ -2366,7 +2486,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hash_generator",
             "unicode_inspector"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     },
     "unicode_inspector": {
         "key": "unicode_inspector",
@@ -2384,7 +2505,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hex_bytes_workbench",
             "multiple_whitespace_remover"
         ],
-        "networkAccess": "none"
+        "networkAccess": "none",
+        "persistInput": null
     }
 }
 

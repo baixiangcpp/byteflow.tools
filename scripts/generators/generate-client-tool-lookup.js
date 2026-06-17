@@ -67,6 +67,7 @@ function buildClientLookupSource() {
                 aliases: aliasesByKey.get(tool.key) || [],
                 relatedToolKeys: tool.relatedTools,
                 networkAccess: tool.networkAccess || "none",
+                persistInput: tool.persistInput ?? null,
             }
             if (tool.searchKeywords) {
                 entry.searchKeywords = tool.searchKeywords
@@ -98,6 +99,7 @@ export type ClientToolLookupEntry = {
     aliases: readonly string[]
     relatedToolKeys: readonly string[]
     networkAccess: "none" | "user_requested" | "third_party_api"
+    persistInput: true | false | "opt-in" | null
     searchKeywords?: readonly string[]
 }
 

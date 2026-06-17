@@ -6,4 +6,5 @@ export const toolManifest = {
     category: "generators",
     relatedTools: ["password_generator", "hash_generator", "uuid_generator", "id_generator"],
     keywords: ["totp generator", "hotp generator", "2fa code", "authenticator code generator"],
+    persistInput: false,
 } satisfies ToolMeta

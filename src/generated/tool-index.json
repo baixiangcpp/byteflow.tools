@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-17T14:42:53.061Z",
+  "generatedAt": "2026-06-17T14:58:43.146Z",
   "counts": {
     "canonicalTools": 121,
     "aliasRoutes": 1,
@@ -25,6 +25,7 @@
         "format json online"
       ],
       "networkAccess": "none",
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/json-formatter/manifest.ts"
     },
@@ -46,6 +47,7 @@
         "xml pretty print"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/xml-formatter/manifest.ts"
     },
@@ -66,6 +68,7 @@
         "sql pretty print"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/sql-formatter/manifest.ts"
     },
@@ -87,6 +90,7 @@
         "format javascript online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/javascript-formatter/manifest.ts"
     },
@@ -108,6 +112,7 @@
         "compress javascript online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/javascript-minifier/manifest.ts"
     },
@@ -129,6 +134,7 @@
         "compress html online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/html-minifier/manifest.ts"
     },
@@ -150,6 +156,7 @@
         "html entities decode"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/html-encoder-decoder/manifest.ts"
     },
@@ -171,6 +178,7 @@
         "beautify html css"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/html-css-beautifier/manifest.ts"
     },
@@ -192,6 +200,7 @@
         "html pretty print"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/html-formatter/manifest.ts"
     },
@@ -213,6 +222,7 @@
         "yaml json transform"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/yaml-json-converter/manifest.ts"
     },
@@ -234,6 +244,7 @@
         "gfm preview"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/markdown-preview/manifest.ts"
     },
@@ -255,6 +266,7 @@
         "html2md online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/html-to-markdown/manifest.ts"
     },
@@ -275,6 +287,7 @@
         "json to ts"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/json-to-typescript/manifest.ts"
     },
@@ -295,6 +308,7 @@
         "css optimize"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-minifier/manifest.ts"
     },
@@ -315,6 +329,7 @@
         "compress svg"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/svg-optimizer/manifest.ts"
     },
@@ -336,6 +351,7 @@
         "json path online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/jsonpath-playground/manifest.ts"
     },
@@ -356,6 +372,7 @@
         "api spec viewer"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/openapi-viewer/manifest.ts"
     },
@@ -376,6 +393,7 @@
         "json compare tool"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/json-diff-viewer/manifest.ts"
     },
@@ -397,6 +415,7 @@
         "csv json transform"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/csv-json-converter/manifest.ts"
     },
@@ -417,6 +436,7 @@
         "base64 converter online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/base64-encode-decode/manifest.ts"
     },
@@ -437,6 +457,7 @@
         "url encoder online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/url-encode-decode/manifest.ts"
     },
@@ -458,6 +479,7 @@
         "json web token decoder"
       ],
       "networkAccess": "none",
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/jwt-decoder/manifest.ts"
     },
@@ -479,6 +501,7 @@
         "jwt all in one tool"
       ],
       "networkAccess": "none",
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/jwt-workbench/manifest.ts"
     },
@@ -500,6 +523,7 @@
         "sha512 generator"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/hash-generator/manifest.ts"
     },
@@ -521,6 +545,7 @@
         "md5 encoder"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/md5-generator/manifest.ts"
     },
@@ -541,6 +566,7 @@
         "text comparison tool"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/text-diff-checker/manifest.ts"
     },
@@ -562,6 +588,7 @@
         "trim text online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/multiple-whitespace-remover/manifest.ts"
     },
@@ -583,6 +610,7 @@
         "text analyzer"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/letter-counter/manifest.ts"
     },
@@ -604,6 +632,7 @@
         "focus reading tool"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/bionic-reading-converter/manifest.ts"
     },
@@ -625,6 +654,7 @@
         "font combination tool"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/google-fonts-pair-finder/manifest.ts"
     },
@@ -646,6 +676,7 @@
         "handwriting png"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/text-to-handwriting-converter/manifest.ts"
     },
@@ -667,6 +698,7 @@
         "code image generator"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/code-to-image-converter/manifest.ts"
     },
@@ -686,6 +718,7 @@
         "convert image base64 online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/image-base64/manifest.ts"
     },
@@ -706,6 +739,7 @@
         "unix time online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/unix-timestamp/manifest.ts"
     },
@@ -726,6 +760,7 @@
         "guid generator"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/uuid-generator/manifest.ts"
     },
@@ -745,6 +780,7 @@
         "placeholder text"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/lorem-ipsum/manifest.ts"
     },
@@ -764,6 +800,7 @@
         "strong password generator online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/password-generator/manifest.ts"
     },
@@ -784,6 +821,7 @@
         "color picker online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/color-converter/manifest.ts"
     },
@@ -805,6 +843,7 @@
         "react native style shadow"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/react-native-shadow-generator/manifest.ts"
     },
@@ -826,6 +865,7 @@
         "palette maker online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/ai-color-palette-generator/manifest.ts"
     },
@@ -847,6 +887,7 @@
         "hsl color blend"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/color-mixer/manifest.ts"
     },
@@ -868,6 +909,7 @@
         "generate color tokens"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/color-shades-generator/manifest.ts"
     },
@@ -889,6 +931,7 @@
         "image color analyzer"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/image-average-color-finder/manifest.ts"
     },
@@ -910,6 +953,7 @@
         "image quote generator"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/image-caption-generator/manifest.ts"
     },
@@ -931,6 +975,7 @@
         "dominant colors from photo"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/image-color-extractor/manifest.ts"
     },
@@ -952,6 +997,7 @@
         "sample image color"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/image-color-picker/manifest.ts"
     },
@@ -973,6 +1019,7 @@
         "crop png jpg"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/image-cropper/manifest.ts"
     },
@@ -994,6 +1041,7 @@
         "image effects online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/image-filters/manifest.ts"
     },
@@ -1015,6 +1063,7 @@
         "photo preset filters"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/instagram-filters/manifest.ts"
     },
@@ -1036,6 +1085,7 @@
         "instagram post template"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/instagram-post-generator/manifest.ts"
     },
@@ -1057,6 +1107,7 @@
         "social story maker"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/instagram-story-generator/manifest.ts"
     },
@@ -1078,6 +1129,7 @@
         "social preview meta"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/open-graph-meta-generator/manifest.ts"
     },
@@ -1099,6 +1151,7 @@
         "social tweet mockup"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/tweet-generator/manifest.ts"
     },
@@ -1120,6 +1173,7 @@
         "x post image maker"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/tweet-to-image-converter/manifest.ts"
     },
@@ -1141,6 +1195,7 @@
         "cpm ctr calculator"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/twitter-ad-revenue-generator/manifest.ts"
     },
@@ -1162,6 +1217,7 @@
         "authorized ig image download"
       ],
       "networkAccess": "user_requested",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/instagram-photo-downloader/manifest.ts"
     },
@@ -1183,6 +1239,7 @@
         "get vimeo video thumbnail"
       ],
       "networkAccess": "user_requested",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/vimeo-thumbnail-grabber/manifest.ts"
     },
@@ -1204,6 +1261,7 @@
         "get youtube thumbnail url"
       ],
       "networkAccess": "user_requested",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/youtube-thumbnail-grabber/manifest.ts"
     },
@@ -1225,6 +1283,7 @@
         "image resize tool"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/image-resizer/manifest.ts"
     },
@@ -1246,6 +1305,7 @@
         "hide sensitive info image"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/photo-censor/manifest.ts"
     },
@@ -1267,6 +1327,7 @@
         "multi page pdf exporter"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/scanned-pdf-converter/manifest.ts"
     },
@@ -1288,6 +1349,7 @@
         "random blob svg"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/svg-blob-generator/manifest.ts"
     },
@@ -1309,6 +1371,7 @@
         "svg texture generator"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/svg-pattern-generator/manifest.ts"
     },
@@ -1330,6 +1393,7 @@
         "svg path converter"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/svg-stroke-to-fill-converter/manifest.ts"
     },
@@ -1351,6 +1415,7 @@
         "export svg as png"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/svg-to-png-converter/manifest.ts"
     },
@@ -1372,6 +1437,7 @@
         "pattern css online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-background-pattern-generator/manifest.ts"
     },
@@ -1393,6 +1459,7 @@
         "radius generator online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-border-radius-generator/manifest.ts"
     },
@@ -1414,6 +1481,7 @@
         "box shadow css online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-box-shadow-generator/manifest.ts"
     },
@@ -1435,6 +1503,7 @@
         "checkbox ui generator"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-checkbox-generator/manifest.ts"
     },
@@ -1456,6 +1525,7 @@
         "shape generator css"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-clip-path-generator/manifest.ts"
     },
@@ -1477,6 +1547,7 @@
         "cubic bezier tool"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-cubic-bezier-generator/manifest.ts"
     },
@@ -1498,6 +1569,7 @@
         "backdrop filter generator"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-glassmorphism-generator/manifest.ts"
     },
@@ -1519,6 +1591,7 @@
         "gradient maker online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-gradient-generator/manifest.ts"
     },
@@ -1540,6 +1613,7 @@
         "css preloaders"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-loader-generator/manifest.ts"
     },
@@ -1561,6 +1635,7 @@
         "switch ui generator"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-switch-generator/manifest.ts"
     },
@@ -1582,6 +1657,7 @@
         "animated text effect css"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-text-glitch-effect-generator/manifest.ts"
     },
@@ -1603,6 +1679,7 @@
         "directional triangle css"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-triangle-generator/manifest.ts"
     },
@@ -1622,6 +1699,7 @@
         "qr code maker"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/qr-code-generator/manifest.ts"
     },
@@ -1643,6 +1721,7 @@
         "barcode png svg export"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/barcode-generator/manifest.ts"
     },
@@ -1664,6 +1743,7 @@
         "dummy bank iban"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/fake-iban-generator/manifest.ts"
     },
@@ -1685,6 +1765,7 @@
         "seeded random list"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/list-randomizer/manifest.ts"
     },
@@ -1704,6 +1785,7 @@
         "figlet online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/ascii-art-generator/manifest.ts"
     },
@@ -1724,6 +1806,7 @@
         "environment variable viewer"
       ],
       "networkAccess": "none",
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/env-parser/manifest.ts"
     },
@@ -1745,6 +1828,7 @@
         "unique id generator online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/id-generator/manifest.ts"
     },
@@ -1765,6 +1849,7 @@
         "regex debugger"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/regex-tester/manifest.ts"
     },
@@ -1786,6 +1871,7 @@
         "regular expression generator"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/regex-generator/manifest.ts"
     },
@@ -1805,6 +1891,7 @@
         "cron maker online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/crontab-generator/manifest.ts"
     },
@@ -1825,6 +1912,7 @@
         "ua string analyzer online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/user-agent-parser/manifest.ts"
     },
@@ -1844,6 +1932,7 @@
         "visualize cron expression"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/cron-visualizer/manifest.ts"
     },
@@ -1864,6 +1953,7 @@
         "status code reference"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/http-status-codes/manifest.ts"
     },
@@ -1884,6 +1974,7 @@
         "file permissions chmod"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/chmod-calculator/manifest.ts"
     },
@@ -1905,6 +1996,7 @@
         "network broadcast calculator"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/cidr-subnet-calculator/manifest.ts"
     },
@@ -1926,6 +2018,7 @@
         "url components breakdown"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/url-parser/manifest.ts"
     },
@@ -1947,6 +2040,7 @@
         "certificate parser"
       ],
       "networkAccess": "none",
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/certificate-decoder/manifest.ts"
     },
@@ -1968,6 +2062,7 @@
         "rest client online"
       ],
       "networkAccess": "none",
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/http-request-builder/manifest.ts"
     },
@@ -1989,6 +2084,7 @@
         "curl converter online"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/curl-to-code/manifest.ts"
     },
@@ -2010,6 +2106,7 @@
         "ndjson to json array"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/ndjson-formatter/manifest.ts"
     },
@@ -2032,6 +2129,7 @@
         "jwt validator online"
       ],
       "networkAccess": "none",
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/jwt-verifier/manifest.ts"
     },
@@ -2053,6 +2151,7 @@
         "snake case to camel case"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/slugify-case-converter/manifest.ts"
     },
@@ -2075,6 +2174,7 @@
         "hidden characters finder"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/invisible-characters-detector/manifest.ts"
     },
@@ -2096,6 +2196,7 @@
         "crawler access tester"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/robots-txt-tester/manifest.ts"
     },
@@ -2117,6 +2218,7 @@
         "csp checker"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/csp-parser/manifest.ts"
     },
@@ -2138,6 +2240,7 @@
         "spreadsheet diff"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/csv-diff/manifest.ts"
     },
@@ -2159,6 +2262,7 @@
         "header comparison"
       ],
       "networkAccess": "none",
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/header-diff/manifest.ts"
     },
@@ -2180,6 +2284,7 @@
         "header security audit"
       ],
       "networkAccess": "none",
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/security-header-analyzer/manifest.ts"
     },
@@ -2201,6 +2306,7 @@
         "authenticator code generator"
       ],
       "networkAccess": "none",
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/totp-generator/manifest.ts"
     },
@@ -2222,6 +2328,7 @@
         "mock response generator"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/openapi-mock/manifest.ts"
     },
@@ -2243,6 +2350,7 @@
         "containerize"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/docker-run-to-compose/manifest.ts"
     },
@@ -2265,6 +2373,7 @@
         "log viewer"
       ],
       "networkAccess": "none",
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/local-log-parser/manifest.ts"
     },
@@ -2287,6 +2396,7 @@
         "json transform"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/jq-playground/manifest.ts"
     },
@@ -2308,6 +2418,7 @@
         "pii remover"
       ],
       "networkAccess": "none",
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/log-scrubber/manifest.ts"
     },
@@ -2329,6 +2440,7 @@
         "http compression"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/gzip-brotli-lab/manifest.ts"
     },
@@ -2350,6 +2462,7 @@
         "kubernetes yaml"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/yaml-merge-patch-explorer/manifest.ts"
     },
@@ -2372,6 +2485,7 @@
         "yaml transform"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/yq-playground/manifest.ts"
     },
@@ -2394,6 +2508,7 @@
         "data graph"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/structured-data-visualizer/manifest.ts"
     },
@@ -2416,6 +2531,7 @@
         "har redaction"
       ],
       "networkAccess": "none",
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/har-viewer-sanitizer/manifest.ts"
     },
@@ -2438,6 +2554,7 @@
         "developer workbench"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/pipeline-builder/manifest.ts"
     },
@@ -2459,6 +2576,7 @@
         "saml assertion viewer"
       ],
       "networkAccess": "none",
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/saml-decoder/manifest.ts"
     },
@@ -2480,6 +2598,7 @@
         "certificate der decoder"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/asn1-der-inspector/manifest.ts"
     },
@@ -2501,6 +2620,7 @@
         "utf8 hex converter"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/hex-bytes-workbench/manifest.ts"
     },
@@ -2522,6 +2642,7 @@
         "utf8 inspector"
       ],
       "networkAccess": "none",
+      "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/unicode-inspector/manifest.ts"
     }
