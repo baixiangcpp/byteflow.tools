@@ -1,16 +1,15 @@
 import fs from "node:fs"
 import path from "node:path"
 import { describe, expect, it } from "vitest"
+import { INLINE_SCRIPT_POLICY } from "@/core/security/inline-script-policy"
 
 const SRC_ROOT = path.join(process.cwd(), "src")
 const TEXT_FILE_PATTERN = /\.(ts|tsx|js|jsx)$/
 const DANGEROUS_HTML_CALL = "dangerouslySetInnerHTML"
 
 const ALLOWED_DANGEROUS_HTML_FILES = [
-    "src/app/layout.tsx",
-    "src/app/page.tsx",
+    ...INLINE_SCRIPT_POLICY.map((entry) => entry.file),
     "src/core/seo/components/json-ld-script.tsx",
-    "src/core/seo/components/legacy-tool-redirect-page.tsx",
     "src/features/tools/svg-optimizer/page.tsx",
 ]
 
@@ -81,5 +80,16 @@ describe("HTML injection surface guard", () => {
 
         expect(layoutSource).toContain("var locales = ${JSON.stringify(LOCALES)};")
         expect(countMatches(layoutSource, /dangerouslySetInnerHTML=\{\{/g)).toBe(1)
+    })
+
+    it("documents each remaining inline runtime script with a CSP migration path", () => {
+        expect(INLINE_SCRIPT_POLICY).toHaveLength(3)
+
+        for (const entry of INLINE_SCRIPT_POLICY) {
+            expect(fs.existsSync(path.join(process.cwd(), entry.file)), entry.file).toBe(true)
+            expect(entry.purpose).toMatch(/\S/)
+            expect(entry.migrationPath).toMatch(/\S/)
+            expect(entry.requiresUnsafeInline).toBe(true)
+        }
     })
 })
