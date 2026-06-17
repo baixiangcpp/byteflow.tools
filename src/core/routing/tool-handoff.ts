@@ -1,7 +1,6 @@
 const HANDOFF_PARAM = "handoff"
 const HANDOFF_REF_PARAM = "handoff_ref"
 const HANDOFF_STORAGE_PREFIX = "byteflow:handoff:"
-const HANDOFF_QUERY_MAX_CHARS = 3800
 const STORAGE_PROBE_KEY = `${HANDOFF_STORAGE_PREFIX}probe`
 
 let sessionStorageAvailable: boolean | null = null
@@ -50,7 +49,7 @@ function fromBase64Url(value: string): string | null {
     }
 }
 
-export function buildToolHandoffHref(lang: string, slug: string, payload: string): string {
+export function buildShareableToolHandoffHref(lang: string, slug: string, payload: string): string {
     const basePath = buildBasePath(lang, slug)
     const text = payload.trim()
     if (!text) return basePath
@@ -58,6 +57,8 @@ export function buildToolHandoffHref(lang: string, slug: string, payload: string
     const encoded = toBase64Url(text)
     return `${basePath}?${HANDOFF_PARAM}=${encodeURIComponent(encoded)}`
 }
+
+export const buildToolHandoffHref = buildShareableToolHandoffHref
 
 function canUseSessionStorage(): boolean {
     if (sessionStorageAvailable !== null) return sessionStorageAvailable
@@ -113,11 +114,9 @@ export function buildToolHandoffLink(lang: string, slug: string, payload: string
         }
     }
 
-    const encodedPayload = encodeURIComponent(toBase64Url(text))
-    const queryHref = `${basePath}?${HANDOFF_PARAM}=${encodedPayload}`
-    if (encodedPayload.length <= HANDOFF_QUERY_MAX_CHARS || !canUseSessionStorage()) {
+    if (!canUseSessionStorage()) {
         return {
-            href: queryHref,
+            href: buildShareableToolHandoffHref(lang, slug, text),
             prime: () => undefined,
         }
     }
