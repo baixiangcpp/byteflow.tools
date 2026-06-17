@@ -7,6 +7,7 @@ import { exportRecipeToJson, importRecipeFromJson } from "@/features/pipeline/re
 import { createRecipeFromTemplate, PIPELINE_RECIPE_TEMPLATES } from "@/features/pipeline/recipe-templates"
 import { isRecipeStoreAvailable } from "@/features/pipeline/recipe-store"
 import { DEFAULT_RECIPE_SETTINGS, type PipelineToolAdapter, type RecipeDocument } from "@/features/pipeline/recipe-types"
+import { getStepCompatibilityHints } from "@/features/tools/pipeline-builder/logic"
 
 function buildRecipe(overrides: Partial<RecipeDocument> = {}): RecipeDocument {
     const base: RecipeDocument = {
@@ -676,6 +677,29 @@ describe("pipeline foundation", () => {
         }
     })
 
+    it("keeps constant input only when share URLs explicitly include runtime input", () => {
+        const recipe = buildRecipe({
+            steps: [
+                {
+                    id: "secret_sample",
+                    toolKey: "log_scrubber",
+                    adapterVersion: 1,
+                    inputMode: "constant",
+                    constantInput: "Authorization: Bearer secret-token-value",
+                    options: {},
+                },
+            ],
+            edges: [],
+        })
+        const decoded = decodeRecipeFromUrlParam(encodeRecipeForShareUrl(recipe, { includeRuntimeInput: true }))
+
+        expect(decoded.ok).toBe(true)
+        if (decoded.ok) {
+            expect(decoded.recipe.steps[0].inputMode).toBe("constant")
+            expect(decoded.recipe.steps[0].constantInput).toBe("Authorization: Bearer secret-token-value")
+        }
+    })
+
     it("removes non-public options from share URLs", () => {
         const recipe = buildRecipe({
             steps: [
@@ -705,6 +729,45 @@ describe("pipeline foundation", () => {
             expect(decoded.recipe.steps[0].options).not.toHaveProperty("apiKey")
             expect(decoded.recipe.steps[0].options).not.toHaveProperty("token")
         }
+    })
+
+    it("reports adjacent pipeline step compatibility hints", () => {
+        const recipe = buildRecipe({
+            steps: [
+                {
+                    id: "encode",
+                    toolKey: "base64_encode_decode",
+                    adapterVersion: 1,
+                    inputMode: "previous_output",
+                    options: { operation: "encode" },
+                },
+                {
+                    id: "format",
+                    toolKey: "json_formatter",
+                    adapterVersion: 1,
+                    inputMode: "previous_output",
+                    options: { mode: "pretty", indent: 2 },
+                },
+                {
+                    id: "constant_json",
+                    toolKey: "json_formatter",
+                    adapterVersion: 1,
+                    inputMode: "constant",
+                    constantInput: "{\"ok\":true}",
+                    options: { mode: "minify" },
+                },
+            ],
+            edges: [],
+        })
+
+        expect(getStepCompatibilityHints(recipe.steps)).toEqual([
+            {
+                fromKind: "text",
+                fromStepId: "encode",
+                toKind: "json",
+                toStepId: "format",
+            },
+        ])
     })
 
     it("round trips recipe URL encoding", () => {

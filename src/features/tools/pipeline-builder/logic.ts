@@ -1,6 +1,6 @@
 import { getPipelineAdapter } from "@/features/pipeline/adapter-registry"
 import { createEmptyRecipe } from "@/features/pipeline/executor"
-import type { RecipeDocument, RecipeStep } from "@/features/pipeline/recipe-types"
+import type { PipelineValueKind, RecipeDocument, RecipeStep } from "@/features/pipeline/recipe-types"
 import { FIRST_ADAPTER } from "./constants"
 import type { OptionValue } from "./types"
 
@@ -37,4 +37,40 @@ export function updateRecipeTimestamp(recipe: RecipeDocument): RecipeDocument {
 export function getOptionValue(value: unknown): OptionValue {
     if (typeof value === "boolean" || typeof value === "number" || typeof value === "string") return value
     return ""
+}
+
+export type StepCompatibilityHint = {
+    fromKind: PipelineValueKind
+    fromStepId: string
+    toKind: PipelineValueKind
+    toStepId: string
+}
+
+function canPipeOutputToInput(outputKind: PipelineValueKind, inputKind: PipelineValueKind): boolean {
+    if (outputKind === inputKind) return true
+    return inputKind === "text"
+}
+
+export function getStepCompatibilityHints(steps: RecipeStep[]): StepCompatibilityHint[] {
+    const hints: StepCompatibilityHint[] = []
+
+    for (let index = 1; index < steps.length; index += 1) {
+        const previousStep = steps[index - 1]
+        const step = steps[index]
+        if (step.inputMode === "constant") continue
+
+        const previousAdapter = getPipelineAdapter(previousStep.toolKey)
+        const adapter = getPipelineAdapter(step.toolKey)
+        if (!previousAdapter || !adapter) continue
+        if (canPipeOutputToInput(previousAdapter.outputKind, adapter.inputKind)) continue
+
+        hints.push({
+            fromKind: previousAdapter.outputKind,
+            fromStepId: previousStep.id,
+            toKind: adapter.inputKind,
+            toStepId: step.id,
+        })
+    }
+
+    return hints
 }

@@ -1,6 +1,7 @@
 import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { RecipeStep } from "@/features/pipeline/recipe-types"
+import type { StepCompatibilityHint } from "./logic"
 
 type AdapterOption = {
     title: string
@@ -9,6 +10,7 @@ type AdapterOption = {
 
 type PipelineStepListProps = {
     adapterOptions: AdapterOption[]
+    compatibilityHints: StepCompatibilityHint[]
     maxSteps: number
     onAddStep: () => void
     onMoveStep: (stepId: string, direction: -1 | 1) => void
@@ -23,6 +25,7 @@ type PipelineStepListProps = {
 
 export function PipelineStepList({
     adapterOptions,
+    compatibilityHints,
     maxSteps,
     onAddStep,
     onMoveStep,
@@ -35,6 +38,7 @@ export function PipelineStepList({
     text,
 }: PipelineStepListProps) {
     const adapterTitleByKey = new Map(adapterOptions.map((adapter) => [adapter.toolKey, adapter.title]))
+    const hintByStepId = new Map(compatibilityHints.map((hint) => [hint.toStepId, hint]))
 
     return (
         <section className="rounded-lg border bg-card p-4">
@@ -66,6 +70,7 @@ export function PipelineStepList({
                 ) : steps.map((step, index) => {
                     const adapterTitle = adapterTitleByKey.get(step.toolKey) ?? step.toolKey
                     const active = step.id === selectedStepId
+                    const hint = hintByStepId.get(step.id)
                     return (
                         <div
                             key={step.id}
@@ -80,6 +85,11 @@ export function PipelineStepList({
                                 <span className="block min-w-0">
                                     <span className="block font-medium">{index + 1}. {step.label || adapterTitle}</span>
                                     <span className="block truncate text-xs text-muted-foreground">{adapterTitle}</span>
+                                    {hint ? (
+                                        <span className="mt-1 block text-xs text-amber-700 dark:text-amber-300">
+                                            {text("compatibility_hint").replace("{from}", hint.fromKind).replace("{to}", hint.toKind)}
+                                        </span>
+                                    ) : null}
                                 </span>
                             </button>
                             <div className="flex shrink-0 gap-1">

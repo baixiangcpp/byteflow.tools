@@ -14,13 +14,14 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { getToolHandoffFromSearchParams } from "@/core/routing/tool-handoff"
 import { PIPELINE_TOOL_ADAPTERS } from "@/features/pipeline/adapter-registry"
-import { decodeRecipeFromUrlParam, encodeRecipeForShareUrl } from "@/features/pipeline/recipe-codec"
+import { decodeRecipeFromUrlParam, encodeRecipeForShareUrl, recipeContainsRuntimeInput } from "@/features/pipeline/recipe-codec"
 import { runRecipe, validateRecipe } from "@/features/pipeline/executor"
 import { exportRecipeToJson, importRecipeFromJson } from "@/features/pipeline/recipe-import-export"
 import { createRecipeFromTemplate, PIPELINE_RECIPE_TEMPLATES, type PipelineRecipeTemplate } from "@/features/pipeline/recipe-templates"
@@ -36,7 +37,7 @@ import type { PipelineExecutionResult, RecipeDocument, RecipeStep } from "@/feat
 import { StepOptions } from "./components"
 import { downloadText } from "./browser-actions"
 import { FIRST_ADAPTER, SHARE_PARAM } from "./constants"
-import { createId, createRecipe, createStep, updateRecipeTimestamp } from "./logic"
+import { createId, createRecipe, createStep, getStepCompatibilityHints, updateRecipeTimestamp } from "./logic"
 import { PipelineRunLog } from "./pipeline-run-log"
 import { PipelineSavedRecipes } from "./pipeline-saved-recipes"
 import { PipelineStepList } from "./pipeline-step-list"
@@ -63,6 +64,7 @@ export function PipelineBuilderPage() {
 
     const selectedStep = recipe.steps.find((step) => step.id === selectedStepId) ?? recipe.steps[0] ?? null
     const validation = React.useMemo(() => validateRecipe(recipe), [recipe])
+    const compatibilityHints = React.useMemo(() => getStepCompatibilityHints(recipe.steps), [recipe.steps])
     const finalOutput = result?.finalOutput ?? ""
 
     const refreshSavedRecipes = React.useCallback(async () => {
@@ -264,7 +266,7 @@ export function PipelineBuilderPage() {
             toast.error(t.common.copy_failed)
             return
         }
-        toast.success(text("share_copied"))
+        toast.success(recipeContainsRuntimeInput(recipe) ? text("share_copied_without_runtime_input") : text("share_copied"))
     }, [lang, recipe, t.common.copy_failed, text])
 
     const copyOutput = React.useCallback(async () => {
@@ -356,6 +358,7 @@ export function PipelineBuilderPage() {
                             title: (t.tools[adapter.toolKey] as Record<string, string> | undefined)?.title ?? adapter.toolKey,
                             toolKey: adapter.toolKey,
                         }))}
+                        compatibilityHints={compatibilityHints}
                         maxSteps={recipe.settings.maxSteps}
                         onAddStep={addStep}
                         onMoveStep={moveStep}
@@ -417,6 +420,30 @@ export function PipelineBuilderPage() {
                 </main>
 
                 <aside className="space-y-4">
+                    <section className="rounded-lg border bg-card p-4">
+                        <h2 className="text-sm font-semibold">{text("recipe_settings")}</h2>
+                        <div className="mt-3 space-y-3">
+                            <label className="flex items-center justify-between gap-3 rounded-md border p-3 text-sm">
+                                <span className="min-w-0">
+                                    <span className="block font-medium">{text("stop_on_error")}</span>
+                                    <span className="mt-1 block text-xs text-muted-foreground">{text("stop_on_error_hint")}</span>
+                                </span>
+                                <Switch
+                                    aria-label={text("stop_on_error")}
+                                    checked={recipe.settings.stopOnError}
+                                    onCheckedChange={(checked) => updateRecipe((current) => ({
+                                        ...current,
+                                        settings: {
+                                            ...current.settings,
+                                            stopOnError: checked === true,
+                                        },
+                                    }))}
+                                />
+                            </label>
+                            <p className="text-xs text-muted-foreground">{text("share_runtime_input_hint")}</p>
+                        </div>
+                    </section>
+
                     <section className="rounded-lg border bg-card p-4">
                         <h2 className="text-sm font-semibold">{text("selected_step")}</h2>
                         {selectedStep ? (
