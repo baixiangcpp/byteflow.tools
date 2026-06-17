@@ -1,5 +1,6 @@
 import fs from "node:fs"
 import path from "node:path"
+import ts from "typescript"
 import { describe, expect, it } from "vitest"
 import { TOOL_MANIFESTS } from "@/core/registry"
 import type { ToolMeta } from "@/core/registry/types"
@@ -7,11 +8,8 @@ import type { ToolMeta } from "@/core/registry/types"
 const ROOT = process.cwd()
 const FEATURE_TOOLS_DIR = path.join(ROOT, "src/features/tools")
 const SOURCE_EXTENSIONS = new Set([".ts", ".tsx"])
-const EXECUTABLE_NETWORK_PATTERNS = [
-    /\bfetch\s*\(/,
-    /\bwindow\.open\s*\(/,
-    /\bnavigator\.sendBeacon\s*\(/,
-]
+const EXECUTABLE_NETWORK_CALLS = new Set(["fetch", "openExternalUrl"])
+const EXECUTABLE_NETWORK_PROPERTY_CALLS = new Set(["window.open", "navigator.sendBeacon"])
 const EXTERNAL_TARGET_PATTERNS = [
     /\btarget\s*=\s*["']_blank["']/,
     /\.\s*target\s*=\s*["']_blank["']/,
@@ -29,19 +27,37 @@ function walkFiles(dir: string): string[] {
     })
 }
 
-function stripCommentsAndStrings(source: string): string {
-    return source
-        .replace(/\/\*[\s\S]*?\*\//g, " ")
-        .replace(/\/\/.*$/gm, " ")
-        .replace(/`(?:\\.|[^`\\])*`/g, "\"\"")
-        .replace(/"((?:\\.|[^"\\])*)"/g, "\"\"")
-        .replace(/'((?:\\.|[^'\\])*)'/g, "''")
+function hasExecutableNetworkCall(source: string): boolean {
+    const sourceFile = ts.createSourceFile("tool-source.tsx", source, ts.ScriptTarget.Latest, true, ts.ScriptKind.TSX)
+    let found = false
+
+    function visit(node: ts.Node) {
+        if (found) return
+        if (ts.isCallExpression(node)) {
+            const expression = node.expression
+            if (ts.isIdentifier(expression) && EXECUTABLE_NETWORK_CALLS.has(expression.text)) {
+                found = true
+                return
+            }
+            if (ts.isPropertyAccessExpression(expression)) {
+                const receiver = expression.expression.getText(sourceFile)
+                const callName = `${receiver}.${expression.name.text}`
+                if (EXECUTABLE_NETWORK_PROPERTY_CALLS.has(callName)) {
+                    found = true
+                    return
+                }
+            }
+        }
+        ts.forEachChild(node, visit)
+    }
+
+    visit(sourceFile)
+    return found
 }
 
 function hasNetworkBehavior(source: string): boolean {
-    const executableSource = stripCommentsAndStrings(source)
     return (
-        EXECUTABLE_NETWORK_PATTERNS.some((pattern) => pattern.test(executableSource)) ||
+        hasExecutableNetworkCall(source) ||
         EXTERNAL_TARGET_PATTERNS.some((pattern) => pattern.test(source))
     )
 }
