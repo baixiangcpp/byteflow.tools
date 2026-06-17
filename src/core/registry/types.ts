@@ -1,6 +1,8 @@
 import type { ToolCategory } from "./categories"
+import type { ToolCapability, ToolFamily } from "./tool-taxonomy"
 
 export type { ToolCategory } from "./categories"
+export type { ToolCapability, ToolFamily } from "./tool-taxonomy"
 
 export type ToolNetworkAccess = "none" | "user_requested" | "third_party_api"
 export type ToolInputPersistenceMode = true | false | "opt-in"
@@ -27,6 +29,12 @@ export interface ToolMeta {
     networkAccess?: ToolNetworkAccess
     /** Input payload persistence behavior used by privacy UI and CI guards */
     persistInput?: ToolInputPersistenceMode
+    /** Practical discovery family derived from manifest metadata */
+    family?: ToolFamily
+    /** Generated discovery tags used by all-tools and command palette search */
+    tags?: string[]
+    /** Generated capability badges used by discovery surfaces */
+    capabilities?: ToolCapability[]
     /** Optional deprecation metadata - marks tool as deprecated with message and alternatives */
     deprecated?: {
         /** Translation key for deprecation message (optional, falls back to generic message) */

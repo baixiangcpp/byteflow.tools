@@ -43,6 +43,18 @@ describe("all-tools route guard", () => {
         expect(fs.existsSync(path.join(PROJECT_ROOT, "src/app/[lang]/all-tools/layout.tsx"))).toBe(true)
     })
 
+    it("keeps all-tools discovery on generated taxonomy and local recent history", () => {
+        const pageSource = readSource("src/app/[lang]/all-tools/page.tsx")
+        const discoverySource = readSource("src/features/tool-discovery/all-tools-discovery.tsx")
+
+        expect(pageSource).toContain("TOOL_FAMILY_LABELS")
+        expect(pageSource).toContain("AllToolsDiscovery")
+        expect(discoverySource).toContain("readRecentToolKeys")
+        expect(discoverySource).toContain("selectedTags")
+        expect(discoverySource).toContain("selectedFamily")
+        expect(discoverySource).toContain("capabilities")
+    })
+
     it("keeps home all-tools section id aligned to shared constant", () => {
         const source = readSource("src/app/[lang]/page.tsx")
         expect(source).toContain("ALL_TOOLS_SECTION_ID")

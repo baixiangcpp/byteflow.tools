@@ -1,9 +1,49 @@
-import Link from "next/link"
 import { notFound } from "next/navigation"
-import { ArrowRight } from "lucide-react"
 import { isValidLocale, requireTranslationValue } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { getMenuGroups } from "@/core/registry/menu-groups"
+import { TOOL_CAPABILITY_LABELS, TOOL_FAMILY_LABELS, type ToolCapability, type ToolFamily } from "@/core/registry"
+import { AllToolsDiscovery } from "@/features/tool-discovery/all-tools-discovery"
+
+const POPULAR_DISCOVERY_TAGS = [
+    "json",
+    "base64",
+    "security",
+    "http",
+    "image",
+    "css",
+    "logs",
+    "pipeline-ready",
+]
+
+const COMMON_WORKFLOWS = [
+    {
+        id: "api-payload-cleanup",
+        titleKey: "workflow_api_payload_cleanup",
+        hrefSlug: "pipeline-builder",
+        tags: ["json", "base64", "pipeline-ready"],
+    },
+    {
+        id: "security-token-review",
+        titleKey: "workflow_security_token_review",
+        hrefSlug: "jwt-workbench",
+        tags: ["jwt", "security", "browser-local"],
+    },
+    {
+        id: "image-social-export",
+        titleKey: "workflow_image_social_export",
+        hrefSlug: "open-graph-meta-generator",
+        tags: ["image", "social-metadata", "visual-output"],
+    },
+]
+
+function familyTranslationKey(family: ToolFamily): string {
+    return `family_${family.replace(/-/g, "_")}`
+}
+
+function capabilityTranslationKey(capability: ToolCapability): string {
+    return `capability_${capability.replace(/-/g, "_")}`
+}
 
 export default async function AllToolsPage({ params }: { params: Promise<{ lang: string }> }) {
     const { lang } = await params
@@ -15,6 +55,43 @@ export default async function AllToolsPage({ params }: { params: Promise<{ lang:
     const t = getTranslation(locale)
     const groups = getMenuGroups()
     const toolTranslations = t.tools as Record<string, { title?: string; description?: string }>
+    const commonTranslations = t.common as unknown as Record<string, string>
+    const familyLabels = Object.fromEntries(
+        (Object.keys(TOOL_FAMILY_LABELS) as ToolFamily[]).map((family) => [
+            family,
+            requireTranslationValue(commonTranslations[familyTranslationKey(family)], `common.${familyTranslationKey(family)}`),
+        ]),
+    ) as Record<ToolFamily, string>
+    const capabilityLabels = Object.fromEntries(
+        (Object.keys(TOOL_CAPABILITY_LABELS) as ToolCapability[]).map((capability) => [
+            capability,
+            requireTranslationValue(commonTranslations[capabilityTranslationKey(capability)], `common.${capabilityTranslationKey(capability)}`),
+        ]),
+    )
+    const discoveryGroups = groups.map((group) => ({
+        key: group.key,
+        title: requireTranslationValue(t.nav[group.navKey], `nav.${group.navKey}`),
+        description: requireTranslationValue(t.categories[group.descriptionKey], `categories.${group.descriptionKey}`),
+        href: `/${group.slug}`,
+        tools: group.items.map((tool) => {
+            const toolT = toolTranslations[tool.key]
+            const family = tool.family ?? ("text-strings" as ToolFamily)
+            return {
+                key: tool.key,
+                slug: tool.slug,
+                title: requireTranslationValue(toolT?.title, `tools.${tool.key}.title`),
+                description: requireTranslationValue(toolT?.description, `tools.${tool.key}.description`),
+                family,
+                familyLabel: familyLabels[family],
+                tags: tool.tags ?? [],
+                capabilities: tool.capabilities ?? [],
+            }
+        }),
+    }))
+    const families = (Object.keys(TOOL_FAMILY_LABELS) as ToolFamily[]).map((family) => ({
+        key: family,
+        label: familyLabels[family],
+    }))
 
     return (
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-7 pb-8">
@@ -30,55 +107,32 @@ export default async function AllToolsPage({ params }: { params: Promise<{ lang:
                 </p>
             </header>
 
-            <div className="grid gap-5">
-                {groups.map((group) => {
-                    const title = requireTranslationValue(t.nav[group.navKey], `nav.${group.navKey}`)
-                    const description = requireTranslationValue(t.categories[group.descriptionKey], `categories.${group.descriptionKey}`)
-
-                    return (
-                        <section key={group.key} className="rounded-2xl border border-border/70 bg-card/55 p-5 backdrop-blur-sm">
-                            <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-                                <div>
-                                    <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
-                                    <p className="mt-1 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-                                        {description}
-                                    </p>
-                                </div>
-                                <Link
-                                    href={`/${locale}/${group.slug}`}
-                                    className="inline-flex min-h-9 items-center gap-1 rounded-full border border-border/75 bg-background/55 px-3 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/35 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
-                                >
-                                    {t.common.open}
-                                    <ArrowRight className="h-3.5 w-3.5" />
-                                </Link>
-                            </div>
-
-                            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                                {group.items.map((tool) => {
-                                    const toolT = toolTranslations[tool.key]
-                                    const toolTitle = requireTranslationValue(toolT?.title, `tools.${tool.key}.title`)
-                                    const toolDesc = requireTranslationValue(toolT?.description, `tools.${tool.key}.description`)
-
-                                    return (
-                                        <Link
-                                            key={tool.key}
-                                            href={`/${locale}/${tool.slug}`}
-                                            className="group flex min-h-32 flex-col rounded-xl border border-border/70 bg-background/45 p-4 transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-lg hover:shadow-black/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45 dark:hover:shadow-black/35"
-                                        >
-                                            <h3 className="text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
-                                                {toolTitle}
-                                            </h3>
-                                            <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
-                                                {toolDesc}
-                                            </p>
-                                        </Link>
-                                    )
-                                })}
-                            </div>
-                        </section>
-                    )
-                })}
-            </div>
+            <AllToolsDiscovery
+                capabilityLabels={capabilityLabels}
+                families={families}
+                groups={discoveryGroups}
+                labels={{
+                    allFamilies: requireTranslationValue(t.common.all_families, "common.all_families"),
+                    clearFilters: requireTranslationValue(t.common.clear_filters, "common.clear_filters"),
+                    commonWorkflows: requireTranslationValue(t.common.common_workflows, "common.common_workflows"),
+                    filterByFamily: requireTranslationValue(t.common.filter_by_family, "common.filter_by_family"),
+                    noResults: requireTranslationValue(t.common.no_results, "common.no_results"),
+                    noResultsSuggestion: requireTranslationValue(t.common.no_results_suggestion, "common.no_results_suggestion"),
+                    open: requireTranslationValue(t.common.open, "common.open"),
+                    popularTags: requireTranslationValue(t.common.popular_tags, "common.popular_tags"),
+                    recentTools: requireTranslationValue(t.common.recent_tools, "common.recent_tools"),
+                    searchPlaceholder: requireTranslationValue(t.nav.search, "nav.search"),
+                    toolsLabel: requireTranslationValue(t.common.tools, "common.tools"),
+                }}
+                locale={locale}
+                tags={POPULAR_DISCOVERY_TAGS}
+                workflows={COMMON_WORKFLOWS.map((workflow) => ({
+                    id: workflow.id,
+                    title: requireTranslationValue(commonTranslations[workflow.titleKey], `common.${workflow.titleKey}`),
+                    href: `/${locale}/${workflow.hrefSlug}`,
+                    tags: workflow.tags,
+                }))}
+            />
         </div>
     )
 }
