@@ -24,6 +24,88 @@ const BROWSER_API_PATTERNS = [
     /\bnew Blob\b/,
     /\bURL\.createObjectURL\b/,
 ]
+const LEGACY_PAGE_BROWSER_SIDE_EFFECT_ALLOWLIST = [
+    "ai-color-palette-generator",
+    "ascii-art-generator",
+    "barcode-generator",
+    "base64-encode-decode",
+    "bionic-reading-converter",
+    "certificate-decoder",
+    "code-to-image-converter",
+    "color-mixer",
+    "color-shades-generator",
+    "css-background-pattern-generator",
+    "css-border-radius-generator",
+    "css-box-shadow-generator",
+    "css-checkbox-generator",
+    "css-clip-path-generator",
+    "css-cubic-bezier-generator",
+    "css-glassmorphism-generator",
+    "css-gradient-generator",
+    "css-loader-generator",
+    "css-minifier",
+    "css-switch-generator",
+    "css-text-glitch-effect-generator",
+    "css-triangle-generator",
+    "csv-json-converter",
+    "fake-iban-generator",
+    "html-encoder-decoder",
+    "html-minifier",
+    "html-to-markdown",
+    "image-average-color-finder",
+    "image-base64",
+    "image-caption-generator",
+    "image-color-extractor",
+    "image-color-picker",
+    "image-cropper",
+    "image-filters",
+    "image-resizer",
+    "instagram-filters",
+    "instagram-photo-downloader",
+    "instagram-post-generator",
+    "instagram-story-generator",
+    "javascript-formatter",
+    "javascript-minifier",
+    "jq-playground",
+    "json-formatter",
+    "json-to-typescript",
+    "letter-counter",
+    "list-randomizer",
+    "local-log-parser",
+    "markdown-preview",
+    "multiple-whitespace-remover",
+    "ndjson-formatter",
+    "open-graph-meta-generator",
+    "photo-censor",
+    "pipeline-builder",
+    "regex-generator",
+    "scanned-pdf-converter",
+    "sql-formatter",
+    "svg-blob-generator",
+    "svg-optimizer",
+    "svg-pattern-generator",
+    "svg-stroke-to-fill-converter",
+    "svg-to-png-converter",
+    "text-to-handwriting-converter",
+    "tweet-generator",
+    "tweet-to-image-converter",
+    "twitter-ad-revenue-generator",
+    "user-agent-parser",
+    "vimeo-thumbnail-grabber",
+    "xml-formatter",
+    "yaml-json-converter",
+    "youtube-thumbnail-grabber",
+]
+const PAGE_BROWSER_SIDE_EFFECT_PATTERNS = [
+    /\bdocument\./,
+    /\bwindow\./,
+    /\blocalStorage\b/,
+    /\bsessionStorage\b/,
+    /\bnew Blob\b/,
+    /\bURL\.createObjectURL\b/,
+    /\bFileReader\b/,
+    /\bnavigator\.clipboard\b/,
+]
 
 function read(relativePath: string) {
     return fs.readFileSync(path.join(ROOT, relativePath), "utf8")
@@ -120,6 +202,19 @@ describe("feature tool module boundaries", () => {
                     )
                 }),
         )
+
+        expect(offenders).toEqual([])
+    })
+
+    it("prevents new browser side effects from being added directly to tool page files", () => {
+        const allowlist = new Set(LEGACY_PAGE_BROWSER_SIDE_EFFECT_ALLOWLIST)
+        const offenders = featureToolSlugs().flatMap((slug) => {
+            const source = read(`src/features/tools/${slug}/page.tsx`)
+            const hasBrowserSideEffect = PAGE_BROWSER_SIDE_EFFECT_PATTERNS.some((pattern) => pattern.test(source))
+            return hasBrowserSideEffect && !allowlist.has(slug)
+                ? [`${slug}: move browser side effects to browser-actions.ts or explicitly justify an allowlist entry`]
+                : []
+        })
 
         expect(offenders).toEqual([])
     })
