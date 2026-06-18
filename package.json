@@ -33,7 +33,7 @@
     "npm": ">=10 <11"
   },
   "overrides": {
-    "dompurify": "3.4.10",
+    "dompurify": "3.4.11",
     "editorconfig": {
       ".": "3.0.2",
       "minimatch": "10.2.4"
@@ -44,7 +44,9 @@
     },
     "glob": {
       "minimatch": "9.0.9"
-    }
+    },
+    "undici": "7.28.0",
+    "ws": "7.5.11"
   },
   "scripts": {
     "dev": "next dev",
@@ -113,7 +115,8 @@
     "check:export-html-lang": "node scripts/gates/check-export-html-lang.js",
     "postprocess:export-robots-meta": "node scripts/postprocess/fix-export-robots-meta.js",
     "check:export-robots-meta": "node scripts/gates/check-export-robots-meta.js",
-    "create:tool": "node scripts/scaffolding/create-tool.js"
+    "create:tool": "node scripts/scaffolding/create-tool.js",
+    "check:audit:prod-high": "npm audit --omit=dev --audit-level=high"
   },
   "dependencies": {
     "@monaco-editor/react": "^4.7.0",
@@ -149,7 +152,7 @@
     "tailwindcss-animate": "^1.0.7",
     "terser": "^5.46.0",
     "turndown": "^7.2.2",
-    "ua-parser-js": "^2.0.9",
+    "ua-parser-js": "2.0.10",
     "uuid": "^13.0.0",
     "xml-formatter": "^3.6.7",
     "yaml": "^2.8.2"

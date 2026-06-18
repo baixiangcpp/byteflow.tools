@@ -21,6 +21,7 @@
 - [ ] No secrets, private payloads, local reports, or process files committed
 
 ## Commands Run
+- [ ] `npm run check:audit:prod-high`
 - [ ] `npm run generate:tool-index`
 - [ ] `npm run check:tool-index`
 - [ ] `npm run generate:client-tool-lookup`
