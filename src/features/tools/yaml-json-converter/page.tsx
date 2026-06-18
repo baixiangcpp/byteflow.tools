@@ -12,10 +12,17 @@ import { readStorageString, removeStorageKey, writeStorageString } from "@/core/
 import { buildToolHandoffLink } from "@/core/routing/tool-handoff"
 import { importTextFile, TEXT_FILE_IMPORT_ACCEPT } from "@/core/files/text-file-import"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
-import { convertYamlJson, type YamlJsonMode } from "./utils"
+import { convertStructuredData, type StructuredDataFormat } from "./utils"
 
 const INPUT_STORAGE_KEY = "byteflow:yaml-json-converter:input"
 const MODE_STORAGE_KEY = "byteflow:yaml-json-converter:mode"
+const FROM_FORMAT_STORAGE_KEY = "byteflow:yaml-json-converter:from-format"
+const TO_FORMAT_STORAGE_KEY = "byteflow:yaml-json-converter:to-format"
+const FORMAT_OPTIONS: StructuredDataFormat[] = ["yaml", "json", "toml"]
+
+function monacoLanguage(format: StructuredDataFormat) {
+    return format === "toml" ? "ini" : format
+}
 
 export function YamlJsonConverterPage() {
     const { t, lang } = useLang()
@@ -23,7 +30,8 @@ export function YamlJsonConverterPage() {
     const text = React.useCallback((key: string) => toolT[key], [toolT])
     const [input, setInput] = React.useState("")
     const [output, setOutput] = React.useState("")
-    const [mode, setMode] = React.useState<YamlJsonMode>("yaml-to-json")
+    const [fromFormat, setFromFormat] = React.useState<StructuredDataFormat>("yaml")
+    const [toFormat, setToFormat] = React.useState<StructuredDataFormat>("json")
     const [error, setError] = React.useState<string | null>(null)
     const [importError, setImportError] = React.useState<string | null>(null)
     const [isImportDragActive, setIsImportDragActive] = React.useState(false)
@@ -37,9 +45,23 @@ export function YamlJsonConverterPage() {
             setInput(savedInput)
         }
 
+        const savedFromFormat = readStorageString(FROM_FORMAT_STORAGE_KEY)
+        const savedToFormat = readStorageString(TO_FORMAT_STORAGE_KEY)
+        if (savedFromFormat && FORMAT_OPTIONS.includes(savedFromFormat as StructuredDataFormat)) {
+            setFromFormat(savedFromFormat as StructuredDataFormat)
+        }
+        if (savedToFormat && FORMAT_OPTIONS.includes(savedToFormat as StructuredDataFormat)) {
+            setToFormat(savedToFormat as StructuredDataFormat)
+            return
+        }
+
         const savedMode = readStorageString(MODE_STORAGE_KEY)
-        if (savedMode === "yaml-to-json" || savedMode === "json-to-yaml") {
-            setMode(savedMode)
+        if (savedMode === "yaml-to-json") {
+            setFromFormat("yaml")
+            setToFormat("json")
+        } else if (savedMode === "json-to-yaml") {
+            setFromFormat("json")
+            setToFormat("yaml")
         }
     }, [])
 
@@ -49,12 +71,13 @@ export function YamlJsonConverterPage() {
     }, [input])
 
     React.useEffect(() => {
-        writeStorageString(MODE_STORAGE_KEY, mode)
-    }, [mode])
+        writeStorageString(FROM_FORMAT_STORAGE_KEY, fromFormat)
+        writeStorageString(TO_FORMAT_STORAGE_KEY, toFormat)
+    }, [fromFormat, toFormat])
 
-    const toggleMode = () => {
-        setMode(prev => prev === "yaml-to-json" ? "json-to-yaml" : "yaml-to-json")
-        // Optionally swap input/output contents
+    const swapFormats = () => {
+        setFromFormat(toFormat)
+        setToFormat(fromFormat)
         const temp = input
         setInput(output)
         setOutput(temp)
@@ -70,12 +93,12 @@ export function YamlJsonConverterPage() {
         }
 
         try {
-            setOutput(convertYamlJson(input, mode))
+            setOutput(convertStructuredData(input, { from: fromFormat, to: toFormat }))
             setError(null)
         } catch {
-            setError(mode === "yaml-to-json" ? text("error_yaml_to_json") : text("error_json_to_yaml"))
+            setError(text("error_convert"))
         }
-    }, [input, mode, text])
+    }, [fromFormat, input, text, toFormat])
 
     const openImportPicker = () => {
         fileInputRef.current?.click()
@@ -134,9 +157,9 @@ export function YamlJsonConverterPage() {
         return () => window.removeEventListener("keydown", handleKeyDown)
     }, [output, handleCopy, doConvert])
 
-    const inputLang = mode === "yaml-to-json" ? "yaml" : "json"
-    const outputLang = mode === "yaml-to-json" ? "json" : "yaml"
-    const jsonFormatterHandoffPayload = mode === "yaml-to-json" ? output : ""
+    const inputLang = monacoLanguage(fromFormat)
+    const outputLang = monacoLanguage(toFormat)
+    const jsonFormatterHandoffPayload = toFormat === "json" ? output : ""
     const jsonFormatterHandoff = React.useMemo(
         () => buildToolHandoffLink(lang, "json-formatter", jsonFormatterHandoffPayload),
         [jsonFormatterHandoffPayload, lang],
@@ -161,11 +184,47 @@ export function YamlJsonConverterPage() {
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                    <Button variant="outline" size="sm" onClick={toggleMode} className="gap-2">
-                        <span className="font-mono">{inputLang.toUpperCase()}</span>
+                    <div className="inline-flex rounded-lg border border-border/70 bg-background/60 p-1">
+                        {FORMAT_OPTIONS.map((format) => (
+                            <button
+                                key={`from-${format}`}
+                                type="button"
+                                onClick={() => {
+                                    setFromFormat(format)
+                                    if (format === toFormat) {
+                                        setToFormat(FORMAT_OPTIONS.find((item) => item !== format) ?? "json")
+                                    }
+                                    setOutput("")
+                                    setError(null)
+                                }}
+                                className={`rounded-md px-3 py-1.5 text-xs font-semibold ${fromFormat === format ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                            >
+                                {format.toUpperCase()}
+                            </button>
+                        ))}
+                    </div>
+                    <Button variant="outline" size="sm" onClick={swapFormats} className="gap-2">
                         <ArrowRightLeft className="h-4 w-4" />
-                        <span className="font-mono">{outputLang.toUpperCase()}</span>
                     </Button>
+                    <div className="inline-flex rounded-lg border border-border/70 bg-background/60 p-1">
+                        {FORMAT_OPTIONS.map((format) => (
+                            <button
+                                key={`to-${format}`}
+                                type="button"
+                                onClick={() => {
+                                    setToFormat(format)
+                                    if (format === fromFormat) {
+                                        setFromFormat(FORMAT_OPTIONS.find((item) => item !== format) ?? "yaml")
+                                    }
+                                    setOutput("")
+                                    setError(null)
+                                }}
+                                className={`rounded-md px-3 py-1.5 text-xs font-semibold ${toFormat === format ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                            >
+                                {format.toUpperCase()}
+                            </button>
+                        ))}
+                    </div>
                     <Button variant="outline" size="sm" onClick={handleClear}>
                         <Eraser className="mr-2 h-4 w-4" />{t.common.clear}</Button>
                     <Button variant="outline" size="sm" onClick={openImportPicker}>
@@ -176,7 +235,7 @@ export function YamlJsonConverterPage() {
                         variant="outline"
                         size="sm"
                         onClick={openJsonFormatter}
-                        disabled={mode !== "yaml-to-json" || !jsonFormatterHandoffPayload.trim()}
+                        disabled={toFormat !== "json" || !jsonFormatterHandoffPayload.trim()}
                     >
                         <ArrowRightLeft className="mr-2 h-4 w-4" />
                         {jsonFormatterLabel}

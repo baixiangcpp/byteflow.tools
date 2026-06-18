@@ -406,15 +406,16 @@
       "error_minify_css": "CSS 壓縮失敗，請檢查語法後重試。"
     },
     "yaml_json_converter": {
-      "title": "YAML/JSON 轉換器",
-      "description": "在 YAML 和 JSON 格式之間互相轉換。",
+      "title": "JSON/YAML/TOML 轉換器",
+      "description": "在瀏覽器本機轉換 JSON、YAML 和 TOML 設定資料。",
       "import_file": "匯入檔案",
       "convert_action": "轉換",
       "drag_drop_import_hint": "將文字檔拖到這裡，或選擇檔案匯入。",
       "import_failed": "無法匯入檔案。",
       "copied_desc": "轉換結果已複製。",
       "error_yaml_to_json": "無法將 YAML 轉為 JSON。請檢查輸入後再試。",
-      "error_json_to_yaml": "無法將 JSON 轉為 YAML。請檢查輸入後再試。"
+      "error_json_to_yaml": "無法將 JSON 轉為 YAML。請檢查輸入後再試。",
+      "error_convert": "無法在所選格式之間轉換。請檢查語法後再試。"
     },
     "markdown_preview": {
       "title": "Markdown 預覽",
@@ -2540,6 +2541,17 @@
       "category": "類別",
       "flags": "標記",
       "truncated_warning": "輸入超過本機檢查預算。字元列、統計和複製的 JSON 僅基於已檢查的子集。"
+    },
+    "base_encoding_converter": {
+      "title": "Base32/Base58 轉換器",
+      "description": "在本機編碼與解碼 Base32、Base58 文字，無需上傳資料。",
+      "encoding_label": "編碼",
+      "operation_label": "操作",
+      "encode": "編碼",
+      "decode": "解碼",
+      "convert": "轉換",
+      "invalid_base32": "Base32 輸入無效。請檢查字元與填充。",
+      "invalid_base58": "Base58 輸入無效。Base58 不包含 0、O、I 和 l。"
     }
   },
   "categories": {
