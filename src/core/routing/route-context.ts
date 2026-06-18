@@ -4,7 +4,19 @@ import { CLIENT_MENU_GROUPS, getClientToolBySlug } from "@/generated/client-tool
 export type RouteType = "home" | "tool" | "hub" | "content" | "other"
 
 const CATEGORY_HUB_SLUGS = ["formatters", "text-tools", "generators", "network-tools"] as const
-const HUB_SLUGS = new Set([...CATEGORY_HUB_SLUGS, ...CLIENT_MENU_GROUPS.map((group) => group.hubSlug)])
+const LEGACY_MENU_GROUP_HUB_SLUGS = [
+    "format-validate",
+    "convert-encode",
+    "text-content",
+    "web-api",
+    "generators-ids",
+    "design-media",
+] as const
+const HUB_SLUGS = new Set([
+    ...CATEGORY_HUB_SLUGS,
+    ...CLIENT_MENU_GROUPS.map((group) => group.hubSlug),
+    ...LEGACY_MENU_GROUP_HUB_SLUGS,
+])
 const CONTENT_ROUTE_SLUGS = new Set(["about", "pricing", "contact", "privacy", "terms"])
 
 export function getRouteContext(pathname: string): {

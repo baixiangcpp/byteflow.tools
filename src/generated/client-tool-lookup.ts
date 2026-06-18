@@ -2045,14 +2045,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "networkAccess": "none",
         "persistInput": null,
-        "family": "generators",
+        "family": "svg-css-visual",
         "tags": [
             "css",
-            "generators"
+            "svg-css-visual"
         ],
         "capabilities": [
             "browser-local",
-            "offline-capable"
+            "offline-capable",
+            "visual-output"
         ]
     },
     "css_border_radius_generator": {
@@ -2073,14 +2074,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "networkAccess": "none",
         "persistInput": null,
-        "family": "generators",
+        "family": "svg-css-visual",
         "tags": [
             "css",
-            "generators"
+            "svg-css-visual"
         ],
         "capabilities": [
             "browser-local",
-            "offline-capable"
+            "offline-capable",
+            "visual-output"
         ]
     },
     "css_box_shadow_generator": {
@@ -2101,15 +2103,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "networkAccess": "none",
         "persistInput": null,
-        "family": "generators",
+        "family": "svg-css-visual",
         "tags": [
             "css",
-            "generators",
-            "hash"
+            "hash",
+            "svg-css-visual"
         ],
         "capabilities": [
             "browser-local",
-            "offline-capable"
+            "offline-capable",
+            "visual-output"
         ]
     },
     "css_checkbox_generator": {
@@ -2130,14 +2133,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "networkAccess": "none",
         "persistInput": null,
-        "family": "generators",
+        "family": "svg-css-visual",
         "tags": [
             "css",
-            "generators"
+            "svg-css-visual"
         ],
         "capabilities": [
             "browser-local",
-            "offline-capable"
+            "offline-capable",
+            "visual-output"
         ]
     },
     "css_clip_path_generator": {
@@ -2158,15 +2162,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "networkAccess": "none",
         "persistInput": null,
-        "family": "generators",
+        "family": "svg-css-visual",
         "tags": [
             "css",
-            "generators",
-            "hash"
+            "hash",
+            "svg-css-visual"
         ],
         "capabilities": [
             "browser-local",
-            "offline-capable"
+            "offline-capable",
+            "visual-output"
         ]
     },
     "css_cubic_bezier_generator": {
@@ -2187,14 +2192,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "networkAccess": "none",
         "persistInput": null,
-        "family": "generators",
+        "family": "svg-css-visual",
         "tags": [
             "css",
-            "generators"
+            "svg-css-visual"
         ],
         "capabilities": [
             "browser-local",
-            "offline-capable"
+            "offline-capable",
+            "visual-output"
         ]
     },
     "css_glassmorphism_generator": {
@@ -2215,14 +2221,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "networkAccess": "none",
         "persistInput": null,
-        "family": "generators",
+        "family": "svg-css-visual",
         "tags": [
             "css",
-            "generators"
+            "svg-css-visual"
         ],
         "capabilities": [
             "browser-local",
-            "offline-capable"
+            "offline-capable",
+            "visual-output"
         ]
     },
     "css_gradient_generator": {
@@ -2243,15 +2250,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "networkAccess": "none",
         "persistInput": null,
-        "family": "generators",
+        "family": "svg-css-visual",
         "tags": [
             "color",
             "css",
-            "generators"
+            "svg-css-visual"
         ],
         "capabilities": [
             "browser-local",
-            "offline-capable"
+            "offline-capable",
+            "visual-output"
         ]
     },
     "css_loader_generator": {
@@ -2272,14 +2280,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "networkAccess": "none",
         "persistInput": null,
-        "family": "generators",
+        "family": "svg-css-visual",
         "tags": [
             "css",
-            "generators"
+            "svg-css-visual"
         ],
         "capabilities": [
             "browser-local",
-            "offline-capable"
+            "offline-capable",
+            "visual-output"
         ]
     },
     "css_switch_generator": {
@@ -2300,14 +2309,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "networkAccess": "none",
         "persistInput": null,
-        "family": "generators",
+        "family": "svg-css-visual",
         "tags": [
             "css",
-            "generators"
+            "svg-css-visual"
         ],
         "capabilities": [
             "browser-local",
-            "offline-capable"
+            "offline-capable",
+            "visual-output"
         ]
     },
     "css_text_glitch_effect_generator": {
@@ -2328,14 +2338,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "networkAccess": "none",
         "persistInput": null,
-        "family": "generators",
+        "family": "svg-css-visual",
         "tags": [
             "css",
-            "generators"
+            "svg-css-visual"
         ],
         "capabilities": [
             "browser-local",
-            "offline-capable"
+            "offline-capable",
+            "visual-output"
         ]
     },
     "css_triangle_generator": {
@@ -2356,14 +2367,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "networkAccess": "none",
         "persistInput": null,
-        "family": "generators",
+        "family": "svg-css-visual",
         "tags": [
             "css",
-            "generators"
+            "svg-css-visual"
         ],
         "capabilities": [
             "browser-local",
-            "offline-capable"
+            "offline-capable",
+            "visual-output"
         ]
     },
     "qr_code_generator": {
@@ -3834,9 +3846,9 @@ const CLIENT_TOOL_KEY_BY_SLUG: Record<string, string> = {
 
 export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
     {
-        "key": "format_validate",
-        "navKey": "format_validate",
-        "hubSlug": "format-validate",
+        "key": "data_code_formats",
+        "navKey": "data_code_formats",
+        "hubSlug": "data-code-formats",
         "items": [
             {
                 "key": "json_formatter",
@@ -3871,8 +3883,12 @@ export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
                 "slug": "html-formatter"
             },
             {
-                "key": "html_to_markdown",
-                "slug": "html-to-markdown"
+                "key": "yaml_json_converter",
+                "slug": "yaml-json-converter"
+            },
+            {
+                "key": "json_to_typescript",
+                "slug": "json-to-typescript"
             },
             {
                 "key": "css_minifier",
@@ -3887,6 +3903,10 @@ export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
                 "slug": "json-diff-viewer"
             },
             {
+                "key": "csv_json_converter",
+                "slug": "csv-json-converter"
+            },
+            {
                 "key": "ndjson_formatter",
                 "slug": "ndjson-formatter"
             },
@@ -3895,8 +3915,16 @@ export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
                 "slug": "csv-diff"
             },
             {
+                "key": "jq_playground",
+                "slug": "jq-playground"
+            },
+            {
                 "key": "yaml_merge_patch_explorer",
                 "slug": "yaml-merge-patch-explorer"
+            },
+            {
+                "key": "yq_playground",
+                "slug": "yq-playground"
             },
             {
                 "key": "structured_data_visualizer",
@@ -3905,25 +3933,13 @@ export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
         ]
     },
     {
-        "key": "convert_encode",
-        "navKey": "convert_encode",
-        "hubSlug": "convert-encode",
+        "key": "encoding_crypto",
+        "navKey": "encoding_crypto",
+        "hubSlug": "encoding-crypto",
         "items": [
             {
                 "key": "html_encoder_decoder",
                 "slug": "html-encoder-decoder"
-            },
-            {
-                "key": "yaml_json_converter",
-                "slug": "yaml-json-converter"
-            },
-            {
-                "key": "json_to_typescript",
-                "slug": "json-to-typescript"
-            },
-            {
-                "key": "csv_json_converter",
-                "slug": "csv-json-converter"
             },
             {
                 "key": "base64_encode_decode",
@@ -3932,76 +3948,6 @@ export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
             {
                 "key": "url_encode_decode",
                 "slug": "url-encode-decode"
-            },
-            {
-                "key": "image_base64",
-                "slug": "image-base64"
-            },
-            {
-                "key": "gzip_brotli_lab",
-                "slug": "gzip-brotli-lab"
-            },
-            {
-                "key": "hex_bytes_workbench",
-                "slug": "hex-bytes-workbench"
-            }
-        ]
-    },
-    {
-        "key": "text_content",
-        "navKey": "text_content",
-        "hubSlug": "text-content",
-        "items": [
-            {
-                "key": "markdown_preview",
-                "slug": "markdown-preview"
-            },
-            {
-                "key": "text_diff_checker",
-                "slug": "text-diff-checker"
-            },
-            {
-                "key": "multiple_whitespace_remover",
-                "slug": "multiple-whitespace-remover"
-            },
-            {
-                "key": "letter_counter",
-                "slug": "letter-counter"
-            },
-            {
-                "key": "bionic_reading_converter",
-                "slug": "bionic-reading-converter"
-            },
-            {
-                "key": "lorem_ipsum",
-                "slug": "lorem-ipsum"
-            },
-            {
-                "key": "ascii_art_generator",
-                "slug": "ascii-art-generator"
-            },
-            {
-                "key": "slugify_case_converter",
-                "slug": "slugify-case-converter"
-            },
-            {
-                "key": "invisible_chars_detector",
-                "slug": "invisible-characters-detector"
-            },
-            {
-                "key": "unicode_inspector",
-                "slug": "unicode-inspector"
-            }
-        ]
-    },
-    {
-        "key": "web_api",
-        "navKey": "web_api",
-        "hubSlug": "web-api",
-        "items": [
-            {
-                "key": "openapi_viewer",
-                "slug": "openapi-viewer"
             },
             {
                 "key": "jwt_decoder",
@@ -4020,32 +3966,63 @@ export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
                 "slug": "md5-generator"
             },
             {
-                "key": "regex_tester",
-                "slug": "regex-tester"
+                "key": "image_base64",
+                "slug": "image-base64"
             },
             {
-                "key": "regex_generator",
-                "slug": "regex-generator"
+                "key": "certificate_decoder",
+                "slug": "certificate-decoder"
             },
             {
-                "key": "crontab_generator",
-                "slug": "crontab-generator"
+                "key": "jwt_verifier",
+                "slug": "jwt-verifier"
+            },
+            {
+                "key": "csp_parser",
+                "slug": "csp-parser"
+            },
+            {
+                "key": "security_header_analyzer",
+                "slug": "security-header-analyzer"
+            },
+            {
+                "key": "totp_generator",
+                "slug": "totp-generator"
+            },
+            {
+                "key": "gzip_brotli_lab",
+                "slug": "gzip-brotli-lab"
+            },
+            {
+                "key": "saml_decoder",
+                "slug": "saml-decoder"
+            },
+            {
+                "key": "asn1_der_inspector",
+                "slug": "asn1-der-inspector"
+            },
+            {
+                "key": "hex_bytes_workbench",
+                "slug": "hex-bytes-workbench"
+            }
+        ]
+    },
+    {
+        "key": "web_api_network",
+        "navKey": "web_api_network",
+        "hubSlug": "web-api-network",
+        "items": [
+            {
+                "key": "openapi_viewer",
+                "slug": "openapi-viewer"
             },
             {
                 "key": "user_agent_parser",
                 "slug": "user-agent-parser"
             },
             {
-                "key": "cron_visualizer",
-                "slug": "cron-visualizer"
-            },
-            {
                 "key": "http_status_codes",
                 "slug": "http-status-codes"
-            },
-            {
-                "key": "chmod_calculator",
-                "slug": "chmod-calculator"
             },
             {
                 "key": "cidr_subnet_calculator",
@@ -4056,10 +4033,6 @@ export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
                 "slug": "url-parser"
             },
             {
-                "key": "certificate_decoder",
-                "slug": "certificate-decoder"
-            },
-            {
                 "key": "http_request_builder",
                 "slug": "http-request-builder"
             },
@@ -4068,28 +4041,43 @@ export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
                 "slug": "curl-to-code"
             },
             {
-                "key": "jwt_verifier",
-                "slug": "jwt-verifier"
-            },
-            {
                 "key": "robots_txt_tester",
                 "slug": "robots-txt-tester"
-            },
-            {
-                "key": "csp_parser",
-                "slug": "csp-parser"
             },
             {
                 "key": "header_diff",
                 "slug": "header-diff"
             },
             {
-                "key": "security_header_analyzer",
-                "slug": "security-header-analyzer"
-            },
-            {
                 "key": "openapi_mock",
                 "slug": "openapi-mock"
+            },
+            {
+                "key": "har_viewer_sanitizer",
+                "slug": "har-viewer-sanitizer"
+            }
+        ]
+    },
+    {
+        "key": "devops_logs",
+        "navKey": "devops_logs",
+        "hubSlug": "devops-logs",
+        "items": [
+            {
+                "key": "env_parser",
+                "slug": "env-parser"
+            },
+            {
+                "key": "crontab_generator",
+                "slug": "crontab-generator"
+            },
+            {
+                "key": "cron_visualizer",
+                "slug": "cron-visualizer"
+            },
+            {
+                "key": "chmod_calculator",
+                "slug": "chmod-calculator"
             },
             {
                 "key": "docker_run_to_compose",
@@ -4100,82 +4088,70 @@ export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
                 "slug": "local-log-parser"
             },
             {
-                "key": "jq_playground",
-                "slug": "jq-playground"
-            },
-            {
                 "key": "log_scrubber",
                 "slug": "log-scrubber"
             },
             {
-                "key": "yq_playground",
-                "slug": "yq-playground"
-            },
-            {
-                "key": "har_viewer_sanitizer",
-                "slug": "har-viewer-sanitizer"
-            },
-            {
                 "key": "pipeline_builder",
                 "slug": "pipeline-builder"
-            },
-            {
-                "key": "saml_decoder",
-                "slug": "saml-decoder"
-            },
-            {
-                "key": "asn1_der_inspector",
-                "slug": "asn1-der-inspector"
             }
         ]
     },
     {
-        "key": "generators_ids",
-        "navKey": "generators_ids",
-        "hubSlug": "generators-ids",
+        "key": "text_regex",
+        "navKey": "text_regex",
+        "hubSlug": "text-regex",
         "items": [
             {
-                "key": "unix_timestamp",
-                "slug": "unix-timestamp"
+                "key": "markdown_preview",
+                "slug": "markdown-preview"
             },
             {
-                "key": "uuid_generator",
-                "slug": "uuid-generator"
+                "key": "html_to_markdown",
+                "slug": "html-to-markdown"
             },
             {
-                "key": "password_generator",
-                "slug": "password-generator"
+                "key": "text_diff_checker",
+                "slug": "text-diff-checker"
             },
             {
-                "key": "barcode_generator",
-                "slug": "barcode-generator"
+                "key": "multiple_whitespace_remover",
+                "slug": "multiple-whitespace-remover"
             },
             {
-                "key": "fake_iban_generator",
-                "slug": "fake-iban-generator"
+                "key": "letter_counter",
+                "slug": "letter-counter"
             },
             {
-                "key": "list_randomizer",
-                "slug": "list-randomizer"
+                "key": "bionic_reading_converter",
+                "slug": "bionic-reading-converter"
             },
             {
-                "key": "env_parser",
-                "slug": "env-parser"
+                "key": "regex_tester",
+                "slug": "regex-tester"
             },
             {
-                "key": "id_generator",
-                "slug": "id-generator"
+                "key": "regex_generator",
+                "slug": "regex-generator"
             },
             {
-                "key": "totp_generator",
-                "slug": "totp-generator"
+                "key": "slugify_case_converter",
+                "slug": "slugify-case-converter"
+            },
+            {
+                "key": "invisible_chars_detector",
+                "slug": "invisible-characters-detector"
+            },
+            {
+                "key": "unicode_inspector",
+                "slug": "unicode-inspector"
             }
         ]
     },
     {
-        "key": "design_media",
-        "navKey": "design_media",
-        "hubSlug": "design-media",
+        "key": "images_svg_css",
+        "navKey": "images_svg_css",
+        "hubSlug": "images-svg-css",
         "items": [
             {
                 "key": "svg_optimizer",
@@ -4236,46 +4212,6 @@ export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
             {
                 "key": "image_filters",
                 "slug": "image-filters"
-            },
-            {
-                "key": "instagram_filters",
-                "slug": "instagram-filters"
-            },
-            {
-                "key": "instagram_post_generator",
-                "slug": "instagram-post-generator"
-            },
-            {
-                "key": "instagram_story_generator",
-                "slug": "instagram-story-generator"
-            },
-            {
-                "key": "open_graph_meta_generator",
-                "slug": "open-graph-meta-generator"
-            },
-            {
-                "key": "tweet_generator",
-                "slug": "tweet-generator"
-            },
-            {
-                "key": "tweet_to_image_converter",
-                "slug": "tweet-to-image-converter"
-            },
-            {
-                "key": "twitter_ad_revenue_generator",
-                "slug": "twitter-ad-revenue-generator"
-            },
-            {
-                "key": "instagram_photo_downloader",
-                "slug": "instagram-photo-downloader"
-            },
-            {
-                "key": "vimeo_thumbnail_grabber",
-                "slug": "vimeo-thumbnail-grabber"
-            },
-            {
-                "key": "youtube_thumbnail_grabber",
-                "slug": "youtube-thumbnail-grabber"
             },
             {
                 "key": "image_resizer",
@@ -4352,10 +4288,100 @@ export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
             {
                 "key": "css_triangle_generator",
                 "slug": "css-triangle-generator"
+            }
+        ]
+    },
+    {
+        "key": "generators_calculators",
+        "navKey": "generators_calculators",
+        "hubSlug": "generators-calculators",
+        "items": [
+            {
+                "key": "unix_timestamp",
+                "slug": "unix-timestamp"
+            },
+            {
+                "key": "uuid_generator",
+                "slug": "uuid-generator"
+            },
+            {
+                "key": "lorem_ipsum",
+                "slug": "lorem-ipsum"
+            },
+            {
+                "key": "password_generator",
+                "slug": "password-generator"
             },
             {
                 "key": "qr_code_generator",
                 "slug": "qr-code-generator"
+            },
+            {
+                "key": "barcode_generator",
+                "slug": "barcode-generator"
+            },
+            {
+                "key": "fake_iban_generator",
+                "slug": "fake-iban-generator"
+            },
+            {
+                "key": "list_randomizer",
+                "slug": "list-randomizer"
+            },
+            {
+                "key": "ascii_art_generator",
+                "slug": "ascii-art-generator"
+            },
+            {
+                "key": "id_generator",
+                "slug": "id-generator"
+            }
+        ]
+    },
+    {
+        "key": "social_metadata",
+        "navKey": "social_metadata",
+        "hubSlug": "social-metadata",
+        "items": [
+            {
+                "key": "instagram_filters",
+                "slug": "instagram-filters"
+            },
+            {
+                "key": "instagram_post_generator",
+                "slug": "instagram-post-generator"
+            },
+            {
+                "key": "instagram_story_generator",
+                "slug": "instagram-story-generator"
+            },
+            {
+                "key": "open_graph_meta_generator",
+                "slug": "open-graph-meta-generator"
+            },
+            {
+                "key": "tweet_generator",
+                "slug": "tweet-generator"
+            },
+            {
+                "key": "tweet_to_image_converter",
+                "slug": "tweet-to-image-converter"
+            },
+            {
+                "key": "twitter_ad_revenue_generator",
+                "slug": "twitter-ad-revenue-generator"
+            },
+            {
+                "key": "instagram_photo_downloader",
+                "slug": "instagram-photo-downloader"
+            },
+            {
+                "key": "vimeo_thumbnail_grabber",
+                "slug": "vimeo-thumbnail-grabber"
+            },
+            {
+                "key": "youtube_thumbnail_grabber",
+                "slug": "youtube-thumbnail-grabber"
             }
         ]
     }

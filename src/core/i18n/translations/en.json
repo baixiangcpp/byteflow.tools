@@ -30,7 +30,15 @@
     "text_content": "Text & Content",
     "web_api": "Web & API",
     "generators_ids": "Generators & IDs",
-    "design_media": "Design & Media"
+    "design_media": "Design & Media",
+    "data_code_formats": "Data & Code Formats",
+    "encoding_crypto": "Encoding & Crypto",
+    "web_api_network": "Web, API & Network",
+    "devops_logs": "DevOps & Logs",
+    "text_regex": "Text & Regex",
+    "images_svg_css": "Images, SVG & CSS",
+    "generators_calculators": "Generators & Calculators",
+    "social_metadata": "Social & Metadata"
   },
   "features": {
     "privacy_title": "100% Privacy by Design",
@@ -325,7 +333,15 @@
     "text_content_desc": "Refine text content with counting, cleanup, casing, diffing, and writing-focused helper utilities.",
     "web_api_desc": "Debug web protocols and API flows with JWT, hashing, headers, HTTP, OpenAPI, and request builders.",
     "generators_ids_desc": "Generate IDs, passwords, timestamps, secrets, and utility payloads for development and testing workflows.",
-    "design_media_desc": "Create visual and media assets such as code images, color outputs, SVG assets, and share-ready design snippets."
+    "design_media_desc": "Create visual and media assets such as code images, color outputs, SVG assets, and share-ready design snippets.",
+    "data_code_formats_desc": "Format, inspect, and convert JSON, YAML, XML, CSV, schemas, and code-oriented data formats.",
+    "encoding_crypto_desc": "Encode, decode, hash, inspect tokens, and work with certificate and key material locally.",
+    "web_api_network_desc": "Build, inspect, and debug HTTP, OpenAPI, URLs, user agents, headers, robots rules, and network data.",
+    "devops_logs_desc": "Parse environment files, scrub logs, inspect HAR files, build cron expressions, and prepare operations snippets.",
+    "text_regex_desc": "Clean, compare, count, transform, and test text, Unicode, slugs, regular expressions, and markdown content.",
+    "images_svg_css_desc": "Edit images, extract colors, optimize SVG, generate CSS visuals, and create local design assets.",
+    "generators_calculators_desc": "Generate IDs, passwords, timestamps, QR codes, barcodes, random lists, and test data.",
+    "social_metadata_desc": "Create open graph metadata, social previews, thumbnails, and share-ready social media assets."
   },
   "tools": {
     "json_formatter": {

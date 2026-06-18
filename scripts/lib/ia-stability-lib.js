@@ -23,8 +23,11 @@ function stableSort(values) {
 
 function extractMenuGroupHubs() {
     const source = fs.readFileSync(MENU_GROUPS_PATH, "utf8")
-    const matches = [...source.matchAll(/slug:\s*"([^"]+)"/g)].map((m) => m[1])
-    return unique(matches).slice(0, 6)
+    const defsBlock = source.match(/export const MENU_GROUP_DEFS:[\s\S]*?=\s*\[([\s\S]*?)\]/)
+    if (!defsBlock) return []
+
+    const matches = [...defsBlock[1].matchAll(/slug:\s*"([^"]+)"/g)].map((m) => m[1])
+    return unique(matches)
 }
 
 function extractToolCategoryHubs() {

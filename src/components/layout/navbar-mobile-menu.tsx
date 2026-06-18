@@ -15,12 +15,14 @@ type PageLink = {
 }
 
 const CATEGORY_LINKS = [
-    { slug: "format-validate", key: "format_validate" },
-    { slug: "convert-encode", key: "convert_encode" },
-    { slug: "text-content", key: "text_content" },
-    { slug: "web-api", key: "web_api" },
-    { slug: "generators-ids", key: "generators_ids" },
-    { slug: "design-media", key: "design_media" },
+    { slug: "data-code-formats", key: "data_code_formats" },
+    { slug: "encoding-crypto", key: "encoding_crypto" },
+    { slug: "web-api-network", key: "web_api_network" },
+    { slug: "devops-logs", key: "devops_logs" },
+    { slug: "text-regex", key: "text_regex" },
+    { slug: "images-svg-css", key: "images_svg_css" },
+    { slug: "generators-calculators", key: "generators_calculators" },
+    { slug: "social-metadata", key: "social_metadata" },
 ] as const
 
 const PAGE_LINKS: PageLink[] = [

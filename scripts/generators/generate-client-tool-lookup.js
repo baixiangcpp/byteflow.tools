@@ -12,7 +12,7 @@ const OUTPUT_PATH = path.join(ROOT, "src/generated/client-tool-lookup.ts")
 const TOOL_INDEX_PATH = path.join(ROOT, "src/generated/tool-index.json")
 
 const MENU_GROUP_DEF_RE = /{ key: "([^"]+)", navKey: "([^"]+)", slug: "([^"]+)", descriptionKey: "([^"]+)" }/g
-const KEY_VALUE_RE = /^\s*([a-z0-9_]+):\s*"([^"]+)",?\s*$/gm
+const FAMILY_GROUP_RE = /^\s*"([^"]+)":\s*"([^"]+)",?\s*$/gm
 const FAMILY_BY_TOOL_KEY = {
     ai_color_palette_generator: "images-media",
     asn1_der_inspector: "security-tokens",
@@ -27,6 +27,18 @@ const FAMILY_BY_TOOL_KEY = {
     color_shades_generator: "svg-css-visual",
     cron_visualizer: "devops-logs",
     crontab_generator: "devops-logs",
+    css_background_pattern_generator: "svg-css-visual",
+    css_border_radius_generator: "svg-css-visual",
+    css_box_shadow_generator: "svg-css-visual",
+    css_checkbox_generator: "svg-css-visual",
+    css_clip_path_generator: "svg-css-visual",
+    css_cubic_bezier_generator: "svg-css-visual",
+    css_glassmorphism_generator: "svg-css-visual",
+    css_gradient_generator: "svg-css-visual",
+    css_loader_generator: "svg-css-visual",
+    css_switch_generator: "svg-css-visual",
+    css_text_glitch_effect_generator: "svg-css-visual",
+    css_triangle_generator: "svg-css-visual",
     csp_parser: "security-tokens",
     csv_diff: "data-formats",
     csv_json_converter: "data-formats",
@@ -144,25 +156,27 @@ function parseMenuGroups() {
         slug: match[3],
     }))
 
-    const overridesBlock = source.match(/const OVERRIDE_GROUP_BY_TOOL_KEY: Record<string, MenuGroupKey> = {([\s\S]*?)}/)
-    if (!overridesBlock) {
-        throw new Error("Unable to parse OVERRIDE_GROUP_BY_TOOL_KEY from src/core/registry/menu-groups.ts")
+    const familyBlock = source.match(/const PRIMARY_GROUP_BY_FAMILY:[\s\S]*?=\s*{([\s\S]*?)}/)
+    if (!familyBlock) {
+        throw new Error("Unable to parse PRIMARY_GROUP_BY_FAMILY from src/core/registry/menu-groups.ts")
     }
 
-    const overrides = Object.fromEntries(
-        [...overridesBlock[1].matchAll(KEY_VALUE_RE)].map((match) => [match[1], match[2]]),
+    const primaryGroupByFamily = Object.fromEntries(
+        [...familyBlock[1].matchAll(FAMILY_GROUP_RE)].map((match) => [match[1], match[2]]),
     )
 
-    return { defs, overrides }
+    return { defs, primaryGroupByFamily }
 }
 
-function classifyToolToMenuGroup(tool, overrides) {
-    const overridden = overrides[tool.key]
-    if (overridden) return overridden
-    if (tool.category === "network-web") return "web_api"
-    if (tool.category === "formatters") return "format_validate"
-    if (tool.category === "generators") return "generators_ids"
-    return "text_content"
+function classifyToolToMenuGroup(tool, primaryGroupByFamily) {
+    const taxonomy = getToolTaxonomy(tool)
+    const familyGroup = primaryGroupByFamily[taxonomy.family]
+    if (familyGroup) return familyGroup
+
+    if (tool.category === "network-web") return "web_api_network"
+    if (tool.category === "formatters") return "data_code_formats"
+    if (tool.category === "generators") return "generators_calculators"
+    return "text_regex"
 }
 
 function fallbackFamily(tool) {
@@ -263,13 +277,13 @@ function buildClientLookupSource() {
     )
 
     const bySlug = Object.fromEntries(orderedTools.map((tool) => [tool.slug, tool.key]))
-    const { defs, overrides } = parseMenuGroups()
+    const { defs, primaryGroupByFamily } = parseMenuGroups()
     const menuGroups = defs.map((group) => ({
         key: group.key,
         navKey: group.navKey,
         hubSlug: group.slug,
         items: orderedTools
-            .filter((tool) => classifyToolToMenuGroup(tool, overrides) === group.key)
+            .filter((tool) => classifyToolToMenuGroup(tool, primaryGroupByFamily) === group.key)
             .map((tool) => ({ key: tool.key, slug: tool.slug })),
     }))
 

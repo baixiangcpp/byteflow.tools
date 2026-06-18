@@ -30,7 +30,15 @@
     "text_content": "文字與內容",
     "web_api": "Web 與 API",
     "generators_ids": "產生器與 ID",
-    "design_media": "設計與媒體"
+    "design_media": "設計與媒體",
+    "data_code_formats": "資料與程式碼格式",
+    "encoding_crypto": "編碼與加密",
+    "web_api_network": "Web、API 與網路",
+    "devops_logs": "DevOps 與日誌",
+    "text_regex": "文字與正則",
+    "images_svg_css": "圖片、SVG 與 CSS",
+    "generators_calculators": "產生器與計算器",
+    "social_metadata": "社群與中繼資料"
   },
   "features": {
     "privacy_title": "100% 隱私設計",
@@ -2544,7 +2552,15 @@
     "text_content_desc": "提供文字統計、空白清理、大小寫轉換、差異比對等內容處理工具。",
     "web_api_desc": "聚焦 JWT、雜湊、標頭、HTTP、OpenAPI 與請求建構的 Web/API 除錯。",
     "generators_ids_desc": "產生 ID、密碼、時間戳、密鑰與開發測試常用資料。",
-    "design_media_desc": "產生程式碼圖片、色彩輸出、SVG 資產等可分享的設計與媒體內容。"
+    "design_media_desc": "產生程式碼圖片、色彩輸出、SVG 資產等可分享的設計與媒體內容。",
+    "data_code_formats_desc": "格式化、檢查並轉換 JSON、YAML、XML、CSV、Schema 與程式碼相關資料格式。",
+    "encoding_crypto_desc": "在本機完成編碼、解碼、雜湊、權杖檢查以及憑證和金鑰資料處理。",
+    "web_api_network_desc": "建構、檢查並除錯 HTTP、OpenAPI、URL、User-Agent、標頭、robots 規則與網路資料。",
+    "devops_logs_desc": "解析環境檔、清理日誌、檢查 HAR、建立 cron 表達式並準備維運片段。",
+    "text_regex_desc": "清理、比較、統計、轉換並測試文字、Unicode、slug、正則表達式與 Markdown 內容。",
+    "images_svg_css_desc": "編輯圖片、擷取色彩、最佳化 SVG、產生 CSS 視覺效果並建立本機設計資產。",
+    "generators_calculators_desc": "產生 ID、密碼、時間戳、QR 碼、條碼、隨機清單與測試資料。",
+    "social_metadata_desc": "建立 Open Graph 中繼資料、社群預覽、縮圖和可分享的社群媒體素材。"
   },
   "pages": {
     "about_title": "關於 byteflow.tools",

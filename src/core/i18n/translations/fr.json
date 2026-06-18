@@ -30,7 +30,15 @@
     "text_content": "Texte & Contenu",
     "web_api": "Web & API",
     "generators_ids": "Générateurs & IDs",
-    "design_media": "Design & Médias"
+    "design_media": "Design & Médias",
+    "data_code_formats": "Formats données & code",
+    "encoding_crypto": "Encodage & Crypto",
+    "web_api_network": "Web, API & Réseau",
+    "devops_logs": "DevOps & journaux",
+    "text_regex": "Texte & Regex",
+    "images_svg_css": "Images, SVG et CSS",
+    "generators_calculators": "Générateurs & Calculateurs",
+    "social_metadata": "Social & Métadonnées"
   },
   "features": {
     "privacy_title": "100% Confidentialité dès la conception",
@@ -2544,7 +2552,15 @@
     "text_content_desc": "Améliorez vos textes avec comptage, nettoyage, conversion de casse et comparaison de contenu.",
     "web_api_desc": "Déboguez les flux Web/API avec JWT, hash, en-têtes, HTTP, OpenAPI et constructeurs de requêtes.",
     "generators_ids_desc": "Générez IDs, mots de passe, timestamps, secrets et données utilitaires pour le développement.",
-    "design_media_desc": "Créez des assets visuels comme images de code, sorties couleur et ressources SVG prêtes au partage."
+    "design_media_desc": "Créez des assets visuels comme images de code, sorties couleur et ressources SVG prêtes au partage.",
+    "data_code_formats_desc": "Formatez, inspectez et convertissez JSON, YAML, XML, CSV, schémas et formats orientés code.",
+    "encoding_crypto_desc": "Encodez, décodez, hachez, inspectez les jetons et manipulez certificats et clés localement.",
+    "web_api_network_desc": "Construisez, inspectez et déboguez HTTP, OpenAPI, URL, User-Agents, en-têtes, règles robots et données réseau.",
+    "devops_logs_desc": "Analysez les fichiers env, nettoyez les logs, inspectez les HAR, créez des expressions cron et préparez des snippets ops.",
+    "text_regex_desc": "Nettoyez, comparez, comptez, transformez et testez texte, Unicode, slugs, expressions régulières et Markdown.",
+    "images_svg_css_desc": "Modifiez des images, extrayez des couleurs, optimisez SVG, générez des visuels CSS et créez des assets locaux.",
+    "generators_calculators_desc": "Générez IDs, mots de passe, timestamps, QR codes, codes-barres, listes aléatoires et données de test.",
+    "social_metadata_desc": "Créez des métadonnées Open Graph, aperçus sociaux, miniatures et assets prêts à partager."
   },
   "pages": {
     "about_title": "À propos de byteflow.tools",

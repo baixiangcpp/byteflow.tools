@@ -30,7 +30,15 @@
     "text_content": "Text & Inhalt",
     "web_api": "Web & API",
     "generators_ids": "Generatoren & IDs",
-    "design_media": "Design & Medien"
+    "design_media": "Design & Medien",
+    "data_code_formats": "Daten- & Codeformate",
+    "encoding_crypto": "Kodierung & Kryptografie",
+    "web_api_network": "Web, API & Netzwerk",
+    "devops_logs": "DevOps & Protokolle",
+    "text_regex": "Text & reguläre Ausdrücke",
+    "images_svg_css": "Bilder, SVG & CSS",
+    "generators_calculators": "Generatoren & Rechner",
+    "social_metadata": "Social & Metadaten"
   },
   "features": {
     "privacy_title": "100% Datenschutz von Anfang an",
@@ -2544,7 +2552,15 @@
     "text_content_desc": "Texte mit Zählung, Bereinigung, Case-Konvertierung und Diff-Werkzeugen bearbeiten.",
     "web_api_desc": "Web- und API-Flows mit JWT, Hashing, Headern, HTTP, OpenAPI und Request-Buildern debuggen.",
     "generators_ids_desc": "IDs, Passwörter, Zeitstempel, Secrets und Testdaten für Entwicklung erzeugen.",
-    "design_media_desc": "Visuelle Assets wie Code-Bilder, Farbausgaben und SVG-Material für Sharing erzeugen."
+    "design_media_desc": "Visuelle Assets wie Code-Bilder, Farbausgaben und SVG-Material für Sharing erzeugen.",
+    "data_code_formats_desc": "JSON, YAML, XML, CSV, Schemas und codeorientierte Datenformate formatieren, prüfen und konvertieren.",
+    "encoding_crypto_desc": "Lokal kodieren, dekodieren, hashen, Token prüfen und Zertifikats- sowie Schlüsselmaterial verarbeiten.",
+    "web_api_network_desc": "HTTP, OpenAPI, URLs, User-Agents, Header, robots-Regeln und Netzwerkdaten erstellen, prüfen und debuggen.",
+    "devops_logs_desc": "Env-Dateien parsen, Logs bereinigen, HAR-Dateien prüfen, Cron-Ausdrücke bauen und Ops-Snippets vorbereiten.",
+    "text_regex_desc": "Text, Unicode, Slugs, reguläre Ausdrücke und Markdown bereinigen, vergleichen, zählen, transformieren und testen.",
+    "images_svg_css_desc": "Bilder bearbeiten, Farben extrahieren, SVG optimieren, CSS-Visuals erzeugen und lokale Design-Assets erstellen.",
+    "generators_calculators_desc": "IDs, Passwörter, Zeitstempel, QR-Codes, Barcodes, Zufallslisten und Testdaten generieren.",
+    "social_metadata_desc": "Open-Graph-Metadaten, Social Previews, Thumbnails und teilbare Social-Media-Assets erstellen."
   },
   "pages": {
     "about_title": "Über byteflow.tools",
