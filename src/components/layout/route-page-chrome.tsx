@@ -11,6 +11,7 @@ import { getRouteIntentCopy } from "@/core/seo/route-intent-copy"
 import { getRouteContext } from "@/core/routing/route-context"
 import { recordRecentToolKey } from "@/core/storage/tool-discovery-state"
 import { getClientToolBySlug } from "@/generated/client-tool-lookup"
+import { ExternalNetworkNotice } from "@/features/tool-shell/external-network-notice"
 
 const EXCLUDED_CONTENT_INTRO_SLUGS = new Set(["about", "pricing", "contact", "privacy", "terms", "install-app"])
 
@@ -27,7 +28,7 @@ function RoutePageChromeContent({ children, pathname }: RoutePageChromeProps) {
         if (routeContext.routeType !== "tool" || !routeContext.slug) return null
         const tool = getClientToolBySlug(routeContext.slug)
         if (!tool) return null
-        return { key: tool.key, slug: tool.slug }
+        return { key: tool.key, slug: tool.slug, networkAccess: tool.networkAccess }
     }, [routeContext])
 
     useEffect(() => {
@@ -61,6 +62,9 @@ function RoutePageChromeContent({ children, pathname }: RoutePageChromeProps) {
                 <div className="mb-4 rounded-xl border border-primary/25 bg-primary/8 px-4 py-2.5 text-sm text-muted-foreground">
                     {routeIntentCopy}
                 </div>
+            ) : null}
+            {activeTool?.networkAccess && activeTool.networkAccess !== "none" ? (
+                <ExternalNetworkNotice networkAccess={activeTool.networkAccess} />
             ) : null}
             {children}
             {routeContext.routeType === "tool" ? (

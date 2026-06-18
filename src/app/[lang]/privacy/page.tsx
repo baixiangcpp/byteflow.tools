@@ -1,6 +1,7 @@
 "use client"
 
 import { useLang } from "@/core/i18n/lang-provider"
+import { LocalDataControls } from "@/features/privacy/local-data-controls"
 
 export default function PrivacyPage() {
     const { t } = useLang()
@@ -28,6 +29,7 @@ export default function PrivacyPage() {
                         <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{section.desc}</p>
                     </article>
                 ))}
+                <LocalDataControls />
             </section>
         </div>
     )

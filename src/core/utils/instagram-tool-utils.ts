@@ -1,4 +1,5 @@
 import { buildCssFilterString, type ImageFilterConfig } from "@/core/utils/image-edit-utils"
+import { parseSafeExternalUrl, sanitizeDownloadFilename } from "@/core/security/external-url"
 
 export type InstagramFilterPreset = {
     id: string
@@ -87,12 +88,11 @@ export function parseInstagramMediaInput(rawInput: string): ParsedInstagramInput
     const trimmed = rawInput.trim()
     if (!trimmed) return null
 
-    let parsed: URL
-    try {
-        parsed = new URL(trimmed)
-    } catch {
+    const safeUrl = parseSafeExternalUrl(trimmed, { requireHttps: false })
+    if (!safeUrl.ok) {
         return null
     }
+    const parsed = safeUrl.url
 
     const hostname = parsed.hostname.toLowerCase()
     const pathname = parsed.pathname || "/"
@@ -124,13 +124,16 @@ export function canDownloadAuthorizedInstagramMedia(parsed: ParsedInstagramInput
 }
 
 export function getInstagramMediaFilename(rawUrl: string, fallback = "instagram-photo.jpg"): string {
+    const parsed = parseSafeExternalUrl(rawUrl, { requireHttps: false })
+    if (!parsed.ok) {
+        return fallback
+    }
+    let lastSegment: string
     try {
-        const parsed = new URL(rawUrl)
-        const lastSegment = decodeURIComponent(parsed.pathname.split("/").filter(Boolean).pop() || "")
-        if (!lastSegment) return fallback
-        const safe = lastSegment.replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/-+/g, "-")
-        return safe || fallback
+        lastSegment = decodeURIComponent(parsed.url.pathname.split("/").filter(Boolean).pop() || "")
     } catch {
         return fallback
     }
+    if (!lastSegment) return fallback
+    return sanitizeDownloadFilename(lastSegment, fallback)
 }

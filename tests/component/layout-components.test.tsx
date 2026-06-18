@@ -229,6 +229,8 @@ describe("layout components", () => {
 
         expect(searchValue).toContain("desc-json_formatter")
         expect(searchValue).toContain("json-formatter")
+        expect(searchValue).toContain("data-formats")
+        expect(searchValue).toContain("pipeline-ready")
     })
 
     it("keeps English tool names as search aliases without replacing localized labels", () => {

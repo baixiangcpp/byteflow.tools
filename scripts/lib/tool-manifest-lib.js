@@ -4,8 +4,11 @@ import path from "node:path"
 export const ROOT_DIR = process.cwd()
 export const FEATURE_TOOLS_DIR = path.join(ROOT_DIR, "src/features/tools")
 export const TOOL_MANIFESTS_PATH = path.join(ROOT_DIR, "src/core/registry/manifests.ts")
+export const TOOL_ORDER_PATH = path.join(ROOT_DIR, "src/core/registry/tool-order.json")
 
 const REQUIRED_FIELDS = ["key", "slug", "category", "relatedTools", "keywords"]
+const NETWORK_ACCESS_VALUES = new Set(["none", "user_requested", "third_party_api"])
+const PERSIST_INPUT_VALUES = new Set(["true", "false", "\"opt-in\"", "'opt-in'"])
 
 function relative(filePath) {
     return path.relative(ROOT_DIR, filePath).replace(/\\/g, "/")
@@ -194,6 +197,17 @@ function objectField(source, fieldName) {
     return match ? match[1] : null
 }
 
+function booleanOrOptInField(source, fieldName, manifestPath) {
+    const match = new RegExp(`(?:^|[,\\n])\\s*${fieldName}:\\s*(true|false|["']opt-in["'])`, "s").exec(source)
+    if (!match) return undefined
+    if (!PERSIST_INPUT_VALUES.has(match[1])) {
+        throw manifestError(manifestPath, fieldName, "must be true, false, or \"opt-in\"")
+    }
+    if (match[1] === "true") return true
+    if (match[1] === "false") return false
+    return "opt-in"
+}
+
 function parseDeprecated(source, manifestPath) {
     const block = objectField(source, "deprecated")
     if (!block) return undefined
@@ -236,7 +250,13 @@ export function parseToolManifestFile(manifestPath) {
     const relatedTools = arrayField(body, "relatedTools", manifestPath, true)
     const searchKeywords = arrayField(body, "searchKeywords", manifestPath)
     const updatedAt = stringField(body, "updatedAt", manifestPath)
+    const networkAccess = stringField(body, "networkAccess", manifestPath)
+    const persistInput = booleanOrOptInField(body, "persistInput", manifestPath)
     const deprecated = parseDeprecated(body, manifestPath)
+
+    if (networkAccess && !NETWORK_ACCESS_VALUES.has(networkAccess)) {
+        throw manifestError(manifestPath, "networkAccess", "must be one of none, user_requested, or third_party_api")
+    }
 
     const manifest = {
         key,
@@ -249,6 +269,8 @@ export function parseToolManifestFile(manifestPath) {
 
     if (updatedAt) manifest.updatedAt = updatedAt
     if (searchKeywords.length > 0) manifest.searchKeywords = searchKeywords
+    if (networkAccess) manifest.networkAccess = networkAccess
+    if (persistInput !== undefined) manifest.persistInput = persistInput
     if (deprecated) manifest.deprecated = deprecated
 
     return manifest
@@ -260,24 +282,11 @@ export function loadToolManifestMap() {
 }
 
 export function loadToolManifestOrder() {
-    const source = readText(TOOL_MANIFESTS_PATH)
-    const importAliases = new Map(
-        [...source.matchAll(/import \{ toolManifest as ([A-Za-z0-9_]+) \} from "@\/features\/tools\/([^/]+)\/manifest"/g)].map(
-            (match) => [match[1], match[2]],
-        ),
-    )
-    const block = source.match(/export const TOOL_MANIFESTS = \[([\s\S]*?)\]\s+satisfies ToolMeta\[\]/)
-    if (!block) {
-        throw new Error("[tool-manifest] Unable to parse TOOL_MANIFESTS from src/core/registry/manifests.ts")
+    const parsed = JSON.parse(readText(TOOL_ORDER_PATH))
+    if (!Array.isArray(parsed) || parsed.some((slug) => typeof slug !== "string" || !slug.trim())) {
+        throw new Error("[tool-manifest] src/core/registry/tool-order.json must be an array of non-empty slug strings")
     }
-
-    return [...block[1].matchAll(/([A-Za-z0-9_]+),/g)].map((match) => {
-        const slug = importAliases.get(match[1])
-        if (!slug) {
-            throw new Error(`[tool-manifest] TOOL_MANIFESTS references unknown import alias: ${match[1]}`)
-        }
-        return slug
-    })
+    return parsed
 }
 
 export function loadOrderedToolManifests() {

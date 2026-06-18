@@ -2,6 +2,7 @@ import fs from "node:fs"
 import path from "node:path"
 
 const CONFIG_PATH = path.join(process.cwd(), "public", "_headers")
+const INLINE_SCRIPT_POLICY_PATH = path.join(process.cwd(), "src", "core", "security", "inline-script-policy.ts")
 const REQUIRED_HEADERS = {
     "content-security-policy": {
         requiredTokens: [
@@ -47,6 +48,23 @@ function normalizeHeaderEntries(entries) {
     }
 
     return headerMap
+}
+
+function inlineScriptPolicyRequiresUnsafeInline() {
+    if (!fs.existsSync(INLINE_SCRIPT_POLICY_PATH)) {
+        fail(`Missing inline script policy: ${path.relative(process.cwd(), INLINE_SCRIPT_POLICY_PATH)}`)
+    }
+
+    const source = fs.readFileSync(INLINE_SCRIPT_POLICY_PATH, "utf8")
+    const trueCount = (source.match(/requiresUnsafeInline:\s*true/g) || []).length
+    const falseCount = (source.match(/requiresUnsafeInline:\s*false/g) || []).length
+    if (trueCount + falseCount === 0) {
+        fail("Inline script policy does not declare any requiresUnsafeInline entries")
+    }
+    if (!source.includes("migrationPath:")) {
+        fail("Inline script policy entries must include migrationPath rationale")
+    }
+    return trueCount > 0
 }
 
 function parseCloudflareHeadersConfig(fileContent) {
@@ -115,6 +133,7 @@ function main() {
 
     const headerMap = normalizeHeaderEntries(globalRule.headers)
     const failures = []
+    const cspValue = headerMap.get("content-security-policy") || ""
 
     for (const [headerName, requirement] of Object.entries(REQUIRED_HEADERS)) {
         const value = headerMap.get(headerName)
@@ -134,6 +153,14 @@ function main() {
                 }
             }
         }
+    }
+
+    const hasUnsafeInlineScript = /(?:^|;)\s*script-src\b[^;]*'unsafe-inline'/.test(cspValue)
+    if (hasUnsafeInlineScript && !inlineScriptPolicyRequiresUnsafeInline()) {
+        failures.push("content-security-policy: script-src contains 'unsafe-inline' but inline policy has no active rationale")
+    }
+    if (!hasUnsafeInlineScript && inlineScriptPolicyRequiresUnsafeInline()) {
+        failures.push("content-security-policy: inline script policy still requires 'unsafe-inline' but script-src does not include it")
     }
 
     if (failures.length > 0) {

@@ -9,6 +9,11 @@ export type ClientToolLookupEntry = {
     keywords: readonly string[]
     aliases: readonly string[]
     relatedToolKeys: readonly string[]
+    networkAccess: "none" | "user_requested" | "third_party_api"
+    persistInput: true | false | "opt-in" | null
+    family: string
+    tags: readonly string[]
+    capabilities: readonly string[]
     searchKeywords?: readonly string[]
 }
 
@@ -35,6 +40,20 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_diff_viewer",
             "json_to_typescript",
             "yaml_json_converter"
+        ],
+        "networkAccess": "none",
+        "persistInput": false,
+        "family": "data-formats",
+        "tags": [
+            "data-formats",
+            "json"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "pipeline-ready",
+            "sensitive-input"
         ],
         "searchKeywords": [
             "beautify",
@@ -65,6 +84,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "yaml_json_converter",
             "sql_formatter"
         ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "formatters-validators",
+        "tags": [
+            "formatters-validators",
+            "xml"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
+        ],
         "searchKeywords": [
             "beautify xml",
             "format xml",
@@ -89,6 +119,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_formatter",
             "xml_formatter",
             "html_css_beautifier"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "formatters-validators",
+        "tags": [
+            "formatters-validators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ],
         "searchKeywords": [
             "beautify sql",
@@ -116,6 +156,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "sql_formatter",
             "markdown_preview"
         ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "formatters-validators",
+        "tags": [
+            "formatters-validators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
+        ],
         "searchKeywords": [
             "beautify js",
             "format javascript",
@@ -141,6 +191,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_minifier",
             "html_formatter",
             "json_formatter"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "formatters-validators",
+        "tags": [
+            "formatters-validators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "html_minifier": {
@@ -158,6 +218,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "html_css_beautifier",
             "css_minifier",
             "javascript_minifier"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "formatters-validators",
+        "tags": [
+            "formatters-validators",
+            "html"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "html_encoder_decoder": {
@@ -175,6 +246,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "html_minifier",
             "url_encode_decode",
             "base64_encode_decode"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "encoders-decoders",
+        "tags": [
+            "encoders-decoders",
+            "html"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "html_css_beautifier": {
@@ -192,6 +274,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_minifier",
             "svg_optimizer",
             "xml_formatter"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "formatters-validators",
+        "tags": [
+            "css",
+            "formatters-validators",
+            "html"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "html_formatter": {
@@ -209,6 +303,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "xml_formatter",
             "css_minifier",
             "markdown_preview"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "formatters-validators",
+        "tags": [
+            "formatters-validators",
+            "html"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ],
         "searchKeywords": [
             "beautify html",
@@ -236,6 +341,20 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jsonpath_playground",
             "xml_formatter"
         ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "data-formats",
+        "tags": [
+            "data-formats",
+            "json",
+            "yaml"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "pipeline-ready"
+        ],
         "searchKeywords": [
             "convert yaml",
             "yaml parser",
@@ -262,6 +381,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker",
             "lorem_ipsum"
         ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "text-strings",
+        "tags": [
+            "html",
+            "markdown",
+            "text-strings"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
+        ],
         "searchKeywords": [
             "preview markdown",
             "markdown viewer",
@@ -287,6 +418,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "html_formatter",
             "html_encoder_decoder",
             "text_diff_checker"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "text-strings",
+        "tags": [
+            "html",
+            "markdown",
+            "text-strings"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "pipeline-ready"
         ]
     },
     "json_to_typescript": {
@@ -303,6 +447,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_formatter",
             "yaml_json_converter",
             "jsonpath_playground"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "data-formats",
+        "tags": [
+            "data-formats",
+            "json"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable"
         ],
         "searchKeywords": [
             "generate types",
@@ -328,6 +484,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "html_css_beautifier",
             "svg_optimizer",
             "json_formatter"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "formatters-validators",
+        "tags": [
+            "css",
+            "formatters-validators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "svg_optimizer": {
@@ -344,6 +511,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_minifier",
             "html_css_beautifier",
             "image_base64"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "svg-css-visual",
+        "tags": [
+            "svg",
+            "svg-css-visual"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "jsonpath_playground": {
@@ -361,6 +540,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_diff_viewer",
             "json_to_typescript",
             "yaml_json_converter"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "data-formats",
+        "tags": [
+            "data-formats",
+            "json"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable"
         ]
     },
     "openapi_viewer": {
@@ -377,6 +568,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_formatter",
             "yaml_json_converter",
             "jsonpath_playground"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "network-http",
+        "tags": [
+            "http",
+            "network-http"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "json_diff_viewer": {
@@ -393,6 +595,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_formatter",
             "text_diff_checker",
             "jsonpath_playground"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "data-formats",
+        "tags": [
+            "data-formats",
+            "json"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable"
         ]
     },
     "csv_json_converter": {
@@ -410,6 +624,20 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "yaml_json_converter",
             "json_to_typescript",
             "text_diff_checker"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "data-formats",
+        "tags": [
+            "csv",
+            "data-formats",
+            "json"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "pipeline-ready"
         ]
     },
     "base64_encode_decode": {
@@ -426,6 +654,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jwt_decoder",
             "hash_generator",
             "image_base64"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "encoders-decoders",
+        "tags": [
+            "base64",
+            "encoders-decoders"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "pipeline-ready"
         ],
         "searchKeywords": [
             "encode base64",
@@ -458,6 +698,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jwt_decoder",
             "user_agent_parser"
         ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "encoders-decoders",
+        "tags": [
+            "encoders-decoders",
+            "url"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "pipeline-ready"
+        ],
         "searchKeywords": [
             "encode url",
             "decode url",
@@ -488,6 +740,21 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hash_generator",
             "url_encode_decode"
         ],
+        "networkAccess": "none",
+        "persistInput": false,
+        "family": "security-tokens",
+        "tags": [
+            "json",
+            "jwt",
+            "security",
+            "security-tokens"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "pipeline-ready",
+            "sensitive-input"
+        ],
         "searchKeywords": [
             "decode token",
             "parse jwt",
@@ -514,6 +781,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jwt_verifier",
             "base64_encode_decode",
             "hash_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": false,
+        "family": "security-tokens",
+        "tags": [
+            "jwt",
+            "security-tokens"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
         ]
     },
     "hash_generator": {
@@ -531,6 +810,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "base64_encode_decode",
             "jwt_decoder",
             "password_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "security-tokens",
+        "tags": [
+            "hash",
+            "security-tokens"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "pipeline-ready",
+            "sensitive-input"
         ],
         "searchKeywords": [
             "generate hash",
@@ -558,6 +850,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "base64_encode_decode",
             "text_diff_checker",
             "password_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "security-tokens",
+        "tags": [
+            "hash",
+            "security-tokens"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
         ]
     },
     "text_diff_checker": {
@@ -574,6 +878,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_diff_viewer",
             "markdown_preview",
             "base64_encode_decode"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "text-strings",
+        "tags": [
+            "text-strings"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "multiple_whitespace_remover": {
@@ -591,6 +905,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "slugify_case_converter",
             "markdown_preview",
             "lorem_ipsum"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "text-strings",
+        "tags": [
+            "text-strings"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "pipeline-ready"
         ]
     },
     "letter_counter": {
@@ -608,6 +933,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker",
             "lorem_ipsum",
             "slugify_case_converter"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "text-strings",
+        "tags": [
+            "logs",
+            "text-strings"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "bionic_reading_converter": {
@@ -625,6 +961,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "multiple_whitespace_remover",
             "markdown_preview",
             "text_diff_checker"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "text-strings",
+        "tags": [
+            "text-strings"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "google_fonts_pair_finder": {
@@ -642,6 +988,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "ai_color_palette_generator",
             "code_to_image_converter",
             "open_graph_meta_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "svg-css-visual",
+        "tags": [
+            "svg-css-visual"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "text_to_handwriting_converter": {
@@ -659,6 +1016,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "google_fonts_pair_finder",
             "image_caption_generator",
             "instagram_post_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "images-media",
+        "tags": [
+            "image",
+            "images-media"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "code_to_image_converter": {
@@ -676,6 +1046,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "ascii_art_generator",
             "json_formatter",
             "html_formatter"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "images-media",
+        "tags": [
+            "image",
+            "images-media"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "image_base64": {
@@ -691,6 +1074,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "base64_encode_decode",
             "svg_optimizer",
             "qr_code_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "encoders-decoders",
+        "tags": [
+            "base64",
+            "encoders-decoders",
+            "image"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "unix_timestamp": {
@@ -707,6 +1102,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "uuid_generator",
             "cron_visualizer",
             "crontab_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "generators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "pipeline-ready"
         ]
     },
     "uuid_generator": {
@@ -723,6 +1129,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "password_generator",
             "unix_timestamp",
             "lorem_ipsum"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "generators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ],
         "searchKeywords": [
             "generate uuid",
@@ -748,6 +1164,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "password_generator",
             "uuid_generator",
             "markdown_preview"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "generators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "password_generator": {
@@ -763,6 +1189,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hash_generator",
             "uuid_generator",
             "lorem_ipsum"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "generators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "color_converter": {
@@ -779,6 +1215,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_minifier",
             "html_css_beautifier",
             "svg_optimizer"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "svg-css-visual",
+        "tags": [
+            "color",
+            "svg-css-visual"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "react_native_shadow_generator": {
@@ -796,6 +1244,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_glassmorphism_generator",
             "css_border_radius_generator",
             "color_converter"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "svg-css-visual",
+        "tags": [
+            "hash",
+            "svg-css-visual"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "ai_color_palette_generator": {
@@ -813,6 +1273,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_shades_generator",
             "color_converter",
             "css_gradient_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "images-media",
+        "tags": [
+            "color",
+            "images-media"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "color_mixer": {
@@ -830,6 +1303,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter",
             "ai_color_palette_generator",
             "css_gradient_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "svg-css-visual",
+        "tags": [
+            "color",
+            "svg-css-visual"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "color_shades_generator": {
@@ -847,6 +1332,20 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_mixer",
             "color_converter",
             "css_gradient_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "svg-css-visual",
+        "tags": [
+            "color",
+            "hash",
+            "security",
+            "svg-css-visual"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "image_average_color_finder": {
@@ -864,6 +1363,20 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "ai_color_palette_generator",
             "color_shades_generator",
             "color_converter"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "images-media",
+        "tags": [
+            "color",
+            "image",
+            "images-media"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "image_caption_generator": {
@@ -881,6 +1394,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "code_to_image_converter",
             "image_average_color_finder",
             "color_mixer"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "images-media",
+        "tags": [
+            "image",
+            "images-media"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "image_color_extractor": {
@@ -898,6 +1424,20 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_shades_generator",
             "ai_color_palette_generator",
             "color_mixer"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "images-media",
+        "tags": [
+            "color",
+            "image",
+            "images-media"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "image_color_picker": {
@@ -915,6 +1455,20 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_average_color_finder",
             "color_converter",
             "color_mixer"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "images-media",
+        "tags": [
+            "color",
+            "image",
+            "images-media"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "image_cropper": {
@@ -932,6 +1486,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_caption_generator",
             "code_to_image_converter",
             "image_base64"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "images-media",
+        "tags": [
+            "image",
+            "images-media"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "image_filters": {
@@ -949,6 +1516,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_cropper",
             "image_caption_generator",
             "image_color_extractor"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "images-media",
+        "tags": [
+            "image",
+            "images-media"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "instagram_filters": {
@@ -966,6 +1546,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "instagram_story_generator",
             "image_filters",
             "instagram_photo_downloader"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "social-metadata",
+        "tags": [
+            "image",
+            "social-metadata"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "instagram_post_generator": {
@@ -983,6 +1575,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "tweet_generator",
             "instagram_filters",
             "open_graph_meta_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "social-metadata",
+        "tags": [
+            "social-metadata"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "instagram_story_generator": {
@@ -1000,6 +1603,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "tweet_generator",
             "instagram_filters",
             "open_graph_meta_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "social-metadata",
+        "tags": [
+            "social-metadata"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "open_graph_meta_generator": {
@@ -1017,6 +1631,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "tweet_to_image_converter",
             "instagram_post_generator",
             "instagram_story_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "social-metadata",
+        "tags": [
+            "social-metadata"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "tweet_generator": {
@@ -1034,6 +1659,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "open_graph_meta_generator",
             "twitter_ad_revenue_generator",
             "instagram_post_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "social-metadata",
+        "tags": [
+            "image",
+            "social-metadata"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "tweet_to_image_converter": {
@@ -1051,6 +1688,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "open_graph_meta_generator",
             "instagram_post_generator",
             "code_to_image_converter"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "social-metadata",
+        "tags": [
+            "image",
+            "social-metadata"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "twitter_ad_revenue_generator": {
@@ -1068,6 +1717,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "tweet_to_image_converter",
             "open_graph_meta_generator",
             "id_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "social-metadata",
+        "tags": [
+            "social-metadata"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "instagram_photo_downloader": {
@@ -1085,6 +1745,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "instagram_story_generator",
             "instagram_filters",
             "image_resizer"
+        ],
+        "networkAccess": "user_requested",
+        "persistInput": null,
+        "family": "social-metadata",
+        "tags": [
+            "image",
+            "social-metadata"
+        ],
+        "capabilities": [
+            "browser-local",
+            "external-request",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "vimeo_thumbnail_grabber": {
@@ -1102,6 +1775,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "tweet_to_image_converter",
             "open_graph_meta_generator",
             "image_resizer"
+        ],
+        "networkAccess": "user_requested",
+        "persistInput": null,
+        "family": "social-metadata",
+        "tags": [
+            "image",
+            "social-metadata"
+        ],
+        "capabilities": [
+            "browser-local",
+            "external-request",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "youtube_thumbnail_grabber": {
@@ -1119,6 +1805,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "tweet_to_image_converter",
             "open_graph_meta_generator",
             "image_resizer"
+        ],
+        "networkAccess": "user_requested",
+        "persistInput": null,
+        "family": "social-metadata",
+        "tags": [
+            "social-metadata",
+            "url"
+        ],
+        "capabilities": [
+            "browser-local",
+            "external-request",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "image_resizer": {
@@ -1136,6 +1835,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_filters",
             "image_base64",
             "code_to_image_converter"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "images-media",
+        "tags": [
+            "image",
+            "images-media"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "photo_censor": {
@@ -1153,6 +1865,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_cropper",
             "image_resizer",
             "scanned_pdf_converter"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "images-media",
+        "tags": [
+            "image",
+            "images-media"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "scanned_pdf_converter": {
@@ -1170,6 +1895,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_filters",
             "image_resizer",
             "image_base64"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "images-media",
+        "tags": [
+            "images-media"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "svg_blob_generator": {
@@ -1187,6 +1924,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_stroke_to_fill_converter",
             "svg_optimizer",
             "css_clip_path_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "svg-css-visual",
+        "tags": [
+            "hash",
+            "svg",
+            "svg-css-visual"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "svg_pattern_generator": {
@@ -1204,6 +1954,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_optimizer",
             "css_background_pattern_generator",
             "css_gradient_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "svg-css-visual",
+        "tags": [
+            "svg",
+            "svg-css-visual"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "svg_stroke_to_fill_converter": {
@@ -1221,6 +1983,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_blob_generator",
             "svg_pattern_generator",
             "svg_to_png_converter"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "svg-css-visual",
+        "tags": [
+            "svg",
+            "svg-css-visual"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "svg_to_png_converter": {
@@ -1238,6 +2012,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_pattern_generator",
             "svg_blob_generator",
             "svg_stroke_to_fill_converter"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "svg-css-visual",
+        "tags": [
+            "image",
+            "svg",
+            "svg-css-visual"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "visual-output"
         ]
     },
     "css_background_pattern_generator": {
@@ -1255,6 +2042,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_box_shadow_generator",
             "color_converter",
             "css_minifier"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "css",
+            "generators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "css_border_radius_generator": {
@@ -1272,6 +2070,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_box_shadow_generator",
             "color_converter",
             "css_minifier"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "css",
+            "generators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "css_box_shadow_generator": {
@@ -1289,6 +2098,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_background_pattern_generator",
             "color_converter",
             "css_minifier"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "css",
+            "generators",
+            "hash"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "css_checkbox_generator": {
@@ -1306,6 +2127,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_box_shadow_generator",
             "css_background_pattern_generator",
             "color_converter"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "css",
+            "generators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "css_clip_path_generator": {
@@ -1323,6 +2155,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_box_shadow_generator",
             "color_converter",
             "svg_optimizer"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "css",
+            "generators",
+            "hash"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "css_cubic_bezier_generator": {
@@ -1340,6 +2184,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_clip_path_generator",
             "css_checkbox_generator",
             "css_minifier"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "css",
+            "generators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "css_glassmorphism_generator": {
@@ -1357,6 +2212,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_box_shadow_generator",
             "css_border_radius_generator",
             "color_converter"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "css",
+            "generators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "css_gradient_generator": {
@@ -1374,6 +2240,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter",
             "css_background_pattern_generator",
             "css_minifier"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "color",
+            "css",
+            "generators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "css_loader_generator": {
@@ -1391,6 +2269,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_gradient_generator",
             "css_box_shadow_generator",
             "css_minifier"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "css",
+            "generators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "css_switch_generator": {
@@ -1408,6 +2297,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_border_radius_generator",
             "css_glassmorphism_generator",
             "color_converter"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "css",
+            "generators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "css_text_glitch_effect_generator": {
@@ -1425,6 +2325,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_loader_generator",
             "code_to_image_converter",
             "css_minifier"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "css",
+            "generators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "css_triangle_generator": {
@@ -1442,6 +2353,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_switch_generator",
             "css_border_radius_generator",
             "css_minifier"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "css",
+            "generators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "qr_code_generator": {
@@ -1457,6 +2379,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "uuid_generator",
             "password_generator",
             "url_encode_decode"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "generators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "barcode_generator": {
@@ -1474,6 +2406,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "id_generator",
             "fake_iban_generator",
             "list_randomizer"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "generators",
+            "image",
+            "svg"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "fake_iban_generator": {
@@ -1491,6 +2435,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "list_randomizer",
             "id_generator",
             "password_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "generators",
+            "hash"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "list_randomizer": {
@@ -1508,6 +2463,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "id_generator",
             "lorem_ipsum",
             "password_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "generators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "ascii_art_generator": {
@@ -1523,6 +2488,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "lorem_ipsum",
             "markdown_preview",
             "text_diff_checker"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "generators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "env_parser": {
@@ -1539,6 +2514,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_formatter",
             "yaml_json_converter",
             "base64_encode_decode"
+        ],
+        "networkAccess": "none",
+        "persistInput": false,
+        "family": "devops-logs",
+        "tags": [
+            "devops-logs"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "pipeline-ready",
+            "sensitive-input"
         ]
     },
     "id_generator": {
@@ -1556,6 +2544,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "password_generator",
             "unix_timestamp",
             "hash_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "generators",
+        "tags": [
+            "generators"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "regex_tester": {
@@ -1572,6 +2570,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jsonpath_playground",
             "text_diff_checker",
             "url_encode_decode"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "text-strings",
+        "tags": [
+            "regex",
+            "text-strings"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "pipeline-ready"
         ],
         "searchKeywords": [
             "regex",
@@ -1602,6 +2612,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker",
             "jsonpath_playground",
             "url_encode_decode"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "text-strings",
+        "tags": [
+            "regex",
+            "text-strings"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "crontab_generator": {
@@ -1617,6 +2638,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "cron_visualizer",
             "unix_timestamp",
             "regex_tester"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "devops-logs",
+        "tags": [
+            "devops-logs"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "sensitive-input"
         ],
         "searchKeywords": [
             "cron",
@@ -1648,6 +2681,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_status_codes",
             "url_parser",
             "chmod_calculator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "network-http",
+        "tags": [
+            "network-http"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "cron_visualizer": {
@@ -1663,6 +2706,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "crontab_generator",
             "unix_timestamp",
             "regex_tester"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "devops-logs",
+        "tags": [
+            "devops-logs"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "sensitive-input"
         ]
     },
     "http_status_codes": {
@@ -1679,6 +2734,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_encode_decode",
             "url_parser",
             "http_request_builder"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "network-http",
+        "tags": [
+            "http",
+            "network-http"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "chmod_calculator": {
@@ -1695,6 +2761,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "regex_tester",
             "user_agent_parser",
             "cidr_subnet_calculator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "devops-logs",
+        "tags": [
+            "devops-logs"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "sensitive-input"
         ]
     },
     "cidr_subnet_calculator": {
@@ -1712,6 +2790,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_request_builder",
             "chmod_calculator",
             "http_status_codes"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "network-http",
+        "tags": [
+            "network-http"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "url_parser": {
@@ -1729,6 +2817,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_status_codes",
             "user_agent_parser",
             "http_request_builder"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "network-http",
+        "tags": [
+            "network-http",
+            "url"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "certificate_decoder": {
@@ -1746,6 +2845,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "base64_encode_decode",
             "http_status_codes",
             "security_header_analyzer"
+        ],
+        "networkAccess": "none",
+        "persistInput": false,
+        "family": "security-tokens",
+        "tags": [
+            "security",
+            "security-tokens"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
         ]
     },
     "http_request_builder": {
@@ -1763,6 +2874,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_status_codes",
             "url_encode_decode",
             "user_agent_parser"
+        ],
+        "networkAccess": "none",
+        "persistInput": false,
+        "family": "network-http",
+        "tags": [
+            "http",
+            "network-http",
+            "url"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
         ]
     },
     "curl_to_code": {
@@ -1780,6 +2904,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_parser",
             "http_status_codes",
             "jwt_decoder"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "network-http",
+        "tags": [
+            "http",
+            "network-http",
+            "url"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "ndjson_formatter": {
@@ -1797,6 +2933,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "csv_json_converter",
             "json_diff_viewer",
             "jsonpath_playground"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "data-formats",
+        "tags": [
+            "data-formats",
+            "json"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "pipeline-ready"
         ]
     },
     "jwt_verifier": {
@@ -1815,6 +2964,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hash_generator",
             "base64_encode_decode",
             "certificate_decoder"
+        ],
+        "networkAccess": "none",
+        "persistInput": false,
+        "family": "security-tokens",
+        "tags": [
+            "jwt",
+            "security-tokens"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
         ]
     },
     "slugify_case_converter": {
@@ -1832,6 +2993,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "base64_encode_decode",
             "hash_generator",
             "text_diff_checker"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "text-strings",
+        "tags": [
+            "text-strings"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "pipeline-ready"
         ]
     },
     "invisible_chars_detector": {
@@ -1850,6 +3022,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "multiple_whitespace_remover",
             "base64_encode_decode",
             "url_encode_decode"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "text-strings",
+        "tags": [
+            "logs",
+            "text-strings"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "pipeline-ready"
         ],
         "searchKeywords": [
             "invisible chars",
@@ -1878,6 +3062,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_status_codes",
             "url_parser",
             "csp_parser"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "network-http",
+        "tags": [
+            "network-http"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "csp_parser": {
@@ -1895,6 +3089,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "certificate_decoder",
             "header_diff",
             "robots_txt_tester"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "security-tokens",
+        "tags": [
+            "security",
+            "security-tokens",
+            "url"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
         ]
     },
     "csv_diff": {
@@ -1912,6 +3119,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker",
             "json_diff_viewer",
             "header_diff"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "data-formats",
+        "tags": [
+            "csv",
+            "data-formats"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable"
         ]
     },
     "header_diff": {
@@ -1929,6 +3148,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_request_builder",
             "csp_parser",
             "text_diff_checker"
+        ],
+        "networkAccess": "none",
+        "persistInput": false,
+        "family": "network-http",
+        "tags": [
+            "http",
+            "network-http"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
         ]
     },
     "security_header_analyzer": {
@@ -1946,6 +3177,20 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "header_diff",
             "http_status_codes",
             "certificate_decoder"
+        ],
+        "networkAccess": "none",
+        "persistInput": false,
+        "family": "security-tokens",
+        "tags": [
+            "http",
+            "security",
+            "security-tokens",
+            "url"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
         ]
     },
     "totp_generator": {
@@ -1963,6 +3208,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hash_generator",
             "uuid_generator",
             "id_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": false,
+        "family": "security-tokens",
+        "tags": [
+            "security",
+            "security-tokens"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
         ]
     },
     "openapi_mock": {
@@ -1980,6 +3237,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_request_builder",
             "json_formatter",
             "curl_to_code"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "network-http",
+        "tags": [
+            "http",
+            "network-http"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "docker_run_to_compose": {
@@ -1997,6 +3265,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "yaml_json_converter",
             "chmod_calculator",
             "curl_to_code"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "devops-logs",
+        "tags": [
+            "devops-logs",
+            "yaml"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "sensitive-input"
         ],
         "searchKeywords": [
             "docker",
@@ -2026,6 +3307,20 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "regex_tester",
             "text_diff_checker"
         ],
+        "networkAccess": "none",
+        "persistInput": false,
+        "family": "devops-logs",
+        "tags": [
+            "devops-logs",
+            "json",
+            "logs"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "sensitive-input"
+        ],
         "searchKeywords": [
             "parse logs",
             "analyze logs",
@@ -2053,6 +3348,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_to_typescript",
             "yaml_json_converter"
         ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "data-formats",
+        "tags": [
+            "data-formats",
+            "json"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable"
+        ],
         "searchKeywords": [
             "jq",
             "json query",
@@ -2079,6 +3386,21 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "security_header_analyzer",
             "jwt_decoder",
             "text_diff_checker"
+        ],
+        "networkAccess": "none",
+        "persistInput": false,
+        "family": "devops-logs",
+        "tags": [
+            "devops-logs",
+            "logs",
+            "security"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable",
+            "pipeline-ready",
+            "sensitive-input"
         ]
     },
     "gzip_brotli_lab": {
@@ -2096,6 +3418,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_encode_decode",
             "http_request_builder",
             "local_log_parser"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "encoders-decoders",
+        "tags": [
+            "encoders-decoders",
+            "http"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "yaml_merge_patch_explorer": {
@@ -2113,6 +3446,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_diff_viewer",
             "openapi_viewer",
             "docker_run_to_compose"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "data-formats",
+        "tags": [
+            "data-formats",
+            "json",
+            "yaml"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable"
         ]
     },
     "yq_playground": {
@@ -2131,6 +3477,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_formatter",
             "jq_playground",
             "jsonpath_playground"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "data-formats",
+        "tags": [
+            "data-formats",
+            "yaml"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable"
         ]
     },
     "structured_data_visualizer": {
@@ -2149,6 +3507,20 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "yaml_json_converter",
             "xml_formatter",
             "jsonpath_playground"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "data-formats",
+        "tags": [
+            "data-formats",
+            "json",
+            "xml",
+            "yaml"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable"
         ]
     },
     "har_viewer_sanitizer": {
@@ -2167,6 +3539,19 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "log_scrubber",
             "http_status_codes",
             "security_header_analyzer"
+        ],
+        "networkAccess": "none",
+        "persistInput": false,
+        "family": "network-http",
+        "tags": [
+            "http",
+            "logs",
+            "network-http"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
         ]
     },
     "pipeline_builder": {
@@ -2185,6 +3570,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "base64_encode_decode",
             "url_encode_decode",
             "log_scrubber"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "workbench-pipeline",
+        "tags": [
+            "workbench-pipeline"
+        ],
+        "capabilities": [
+            "browser-local",
+            "file-input",
+            "offline-capable"
         ],
         "searchKeywords": [
             "pipeline",
@@ -2211,6 +3607,20 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "certificate_decoder",
             "base64_encode_decode",
             "security_header_analyzer"
+        ],
+        "networkAccess": "none",
+        "persistInput": false,
+        "family": "security-tokens",
+        "tags": [
+            "http",
+            "security",
+            "security-tokens",
+            "xml"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
         ]
     },
     "asn1_der_inspector": {
@@ -2228,6 +3638,18 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "base64_encode_decode",
             "hex_bytes_workbench",
             "jwt_decoder"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "security-tokens",
+        "tags": [
+            "security",
+            "security-tokens"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
         ]
     },
     "hex_bytes_workbench": {
@@ -2245,6 +3667,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_encode_decode",
             "hash_generator",
             "unicode_inspector"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "encoders-decoders",
+        "tags": [
+            "encoders-decoders"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     },
     "unicode_inspector": {
@@ -2262,6 +3694,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker",
             "hex_bytes_workbench",
             "multiple_whitespace_remover"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "text-strings",
+        "tags": [
+            "text-strings"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
         ]
     }
 }

@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import dynamic from "next/dynamic"
-import { loader, type DiffEditorProps, type EditorProps } from "@monaco-editor/react"
+import type { DiffEditorProps, EditorProps } from "@monaco-editor/react"
 import { useLang } from "@/core/i18n/lang-provider"
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
@@ -18,9 +18,12 @@ function ensureMonacoLoaderConfigured() {
     if (typeof window === "undefined") return Promise.resolve()
     if (monacoLoaderConfigPromise) return monacoLoaderConfigPromise
 
-    monacoLoaderConfigPromise = import("monaco-editor").then((monaco) => {
+    monacoLoaderConfigPromise = Promise.all([
+        import("monaco-editor"),
+        import("@monaco-editor/react"),
+    ]).then(([monaco, monacoReact]) => {
         // Force Monaco to use bundled local assets instead of remote CDN loader scripts.
-        loader.config({ monaco })
+        monacoReact.loader.config({ monaco })
     })
 
     return monacoLoaderConfigPromise

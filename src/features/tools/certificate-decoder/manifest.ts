@@ -6,4 +6,5 @@ export const toolManifest = {
     category: "network-web",
     relatedTools: ["jwt_decoder", "base64_encode_decode", "http_status_codes", "security_header_analyzer"],
     keywords: ["pem decoder", "x509 certificate viewer", "ssl certificate decoder online", "certificate parser"],
+    persistInput: false,
 } satisfies ToolMeta

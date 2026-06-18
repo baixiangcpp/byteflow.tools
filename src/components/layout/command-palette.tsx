@@ -138,6 +138,9 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
                         ...(tool?.keywords ?? []),
                         ...(tool?.aliases ?? []),
                         ...(tool?.searchKeywords ?? []),
+                        tool?.family,
+                        ...(tool?.tags ?? []),
+                        ...(tool?.capabilities ?? []),
                     ]),
                 )
             }

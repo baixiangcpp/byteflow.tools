@@ -6,4 +6,5 @@ export const toolManifest = {
     category: "generators",
     relatedTools: ["json_formatter", "yaml_json_converter", "base64_encode_decode"],
     keywords: ["env parser", "dotenv parser", "parse .env file online", "environment variable viewer"],
+    persistInput: false,
 } satisfies ToolMeta

@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
-import { buildInputTooLargeMessage, countNonEmptyLines, isOverUtf8Budget, LEGACY_INPUT_LIMITS } from "@/core/utils/legacy-input-limits"
+import { buildInputTooLargeMessage, countNonEmptyLines, isOverUtf8Budget, TOOL_RUNTIME_BUDGETS } from "@/core/performance/tool-runtime-budgets"
 
 function parseCsv(text: string): string[][] {
     const rows: string[][] = []
@@ -52,14 +52,14 @@ export function CsvDiffPage() {
     const [error, setError] = React.useState<string | null>(null)
 
     const compare = () => {
-        if (isOverUtf8Budget(leftCsv, LEGACY_INPUT_LIMITS.maxDiffInputBytes) || isOverUtf8Budget(rightCsv, LEGACY_INPUT_LIMITS.maxDiffInputBytes)) {
+        if (isOverUtf8Budget(leftCsv, TOOL_RUNTIME_BUDGETS.maxDiffInputBytes) || isOverUtf8Budget(rightCsv, TOOL_RUNTIME_BUDGETS.maxDiffInputBytes)) {
             setDiff([])
-            setError(buildInputTooLargeMessage(t.common.local_input_too_large, LEGACY_INPUT_LIMITS.maxDiffInputBytes))
+            setError(buildInputTooLargeMessage(t.common.local_input_too_large, TOOL_RUNTIME_BUDGETS.maxDiffInputBytes))
             return
         }
-        if (countNonEmptyLines(leftCsv, LEGACY_INPUT_LIMITS.maxDiffRows).exceeded || countNonEmptyLines(rightCsv, LEGACY_INPUT_LIMITS.maxDiffRows).exceeded) {
+        if (countNonEmptyLines(leftCsv, TOOL_RUNTIME_BUDGETS.maxDiffRows).exceeded || countNonEmptyLines(rightCsv, TOOL_RUNTIME_BUDGETS.maxDiffRows).exceeded) {
             setDiff([])
-            setError(t.common.local_row_limit_exceeded.replace("{count}", String(LEGACY_INPUT_LIMITS.maxDiffRows)))
+            setError(t.common.local_row_limit_exceeded.replace("{count}", String(TOOL_RUNTIME_BUDGETS.maxDiffRows)))
             return
         }
         const left = parseCsv(leftCsv)

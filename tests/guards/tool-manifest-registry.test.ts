@@ -1,7 +1,8 @@
 import fs from "node:fs"
 import path from "node:path"
 import { describe, expect, it } from "vitest"
-import { CATEGORIES, TOOL_MANIFESTS, TOOL_REGISTRY } from "@/core/registry"
+import { CATEGORIES, TOOL_FAMILY_LABELS, TOOL_MANIFESTS, TOOL_REGISTRY } from "@/core/registry"
+import { getClientToolByKey } from "@/generated/client-tool-lookup"
 import {
     assertSimpleToolManifestSource,
     listManifestFiles,
@@ -115,6 +116,41 @@ describe("tool manifests", () => {
     it("builds the public registry from feature manifests without count drift", () => {
         expect(TOOL_REGISTRY).toHaveLength(TOOL_MANIFESTS.length)
         expect(TOOL_REGISTRY.map((tool) => tool.key)).toEqual(TOOL_MANIFESTS.map((tool) => tool.key))
+    })
+
+    it("adds practical discovery taxonomy without replacing stable category routes", () => {
+        const validFamilies = new Set(Object.keys(TOOL_FAMILY_LABELS))
+        const missingTaxonomy = TOOL_REGISTRY
+            .filter((tool) => !tool.family || !validFamilies.has(tool.family) || !Array.isArray(tool.tags) || tool.tags.length === 0 || !Array.isArray(tool.capabilities))
+            .map((tool) => tool.key)
+        const familiesInUse = new Set(TOOL_REGISTRY.map((tool) => tool.family))
+
+        expect(missingTaxonomy).toEqual([])
+        expect(familiesInUse.size).toBeGreaterThan(Object.keys(CATEGORIES).length)
+        expect(TOOL_REGISTRY.find((tool) => tool.key === "json_formatter")).toMatchObject({
+            category: "formatters",
+            family: "data-formats",
+        })
+        expect(TOOL_REGISTRY.find((tool) => tool.key === "pipeline_builder")?.capabilities).toContain("file-input")
+    })
+
+    it("keeps server and client taxonomy metadata aligned", () => {
+        const drift = TOOL_REGISTRY.flatMap((tool) => {
+            const clientTool = getClientToolByKey(tool.key)
+            if (!clientTool) return [`${tool.key}:missing-client-entry`]
+            const serverTags = tool.tags ?? []
+            const serverCapabilities = tool.capabilities ?? []
+            if (
+                clientTool.family !== tool.family ||
+                JSON.stringify(clientTool.tags) !== JSON.stringify(serverTags) ||
+                JSON.stringify(clientTool.capabilities) !== JSON.stringify(serverCapabilities)
+            ) {
+                return [`${tool.key}:taxonomy-drift`]
+            }
+            return []
+        })
+
+        expect(drift).toEqual([])
     })
 
     it("keeps canonical route wrappers aligned with feature manifests", () => {

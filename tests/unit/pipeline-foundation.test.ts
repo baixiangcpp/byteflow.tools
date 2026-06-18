@@ -1,11 +1,13 @@
 import { describe, expect, it } from "vitest"
-import { getPipelineAdapter, getPipelineAdapterKeys } from "@/features/pipeline/adapter-registry"
+import { getPipelineAdapter, getPipelineAdapterKeys, PIPELINE_TOOL_ADAPTERS } from "@/features/pipeline/adapter-registry"
+import { TOOL_MANIFESTS } from "@/core/registry"
 import { decodeRecipeFromUrlParam, encodeRecipeForShareUrl, encodeRecipeForUrl, recipeContainsRuntimeInput } from "@/features/pipeline/recipe-codec"
 import { createEmptyRecipe, runRecipe, validateRecipe } from "@/features/pipeline/executor"
 import { exportRecipeToJson, importRecipeFromJson } from "@/features/pipeline/recipe-import-export"
 import { createRecipeFromTemplate, PIPELINE_RECIPE_TEMPLATES } from "@/features/pipeline/recipe-templates"
 import { isRecipeStoreAvailable } from "@/features/pipeline/recipe-store"
 import { DEFAULT_RECIPE_SETTINGS, type PipelineToolAdapter, type RecipeDocument } from "@/features/pipeline/recipe-types"
+import { getStepCompatibilityHints } from "@/features/tools/pipeline-builder/logic"
 
 function buildRecipe(overrides: Partial<RecipeDocument> = {}): RecipeDocument {
     const base: RecipeDocument = {
@@ -47,8 +49,37 @@ describe("pipeline foundation", () => {
             "multiple_whitespace_remover",
             "invisible_chars_detector",
             "log_scrubber",
+            "yaml_json_converter",
+            "csv_json_converter",
+            "ndjson_formatter",
+            "slugify_case_converter",
+            "hash_generator",
+            "jwt_decoder",
+            "unix_timestamp",
+            "html_to_markdown",
+            "regex_tester",
+            "env_parser",
         ])
         expect(getPipelineAdapter("json_formatter")?.version).toBe(1)
+    })
+
+    it("keeps adapter metadata explicit and aligned with canonical tool manifests", () => {
+        const adapterKeys = PIPELINE_TOOL_ADAPTERS.map((adapter) => adapter.toolKey)
+        const manifestKeys = new Set(TOOL_MANIFESTS.map((tool) => tool.key))
+
+        expect(new Set(adapterKeys).size).toBe(adapterKeys.length)
+
+        for (const adapter of PIPELINE_TOOL_ADAPTERS) {
+            expect(manifestKeys.has(adapter.toolKey), `${adapter.toolKey} must map to a canonical tool manifest`).toBe(true)
+            expect(adapter.slug).toBe(TOOL_MANIFESTS.find((tool) => tool.key === adapter.toolKey)?.slug)
+            expect(["text", "json", "yaml", "csv", "bytes"]).toContain(adapter.inputKind)
+            expect(["text", "json", "yaml", "csv", "bytes"]).toContain(adapter.outputKind)
+            expect(adapter.deterministic).toBe(true)
+            expect(typeof adapter.safeForSensitiveInput).toBe("boolean")
+            expect(typeof adapter.mayIncreaseSize).toBe("boolean")
+            expect(Array.isArray(adapter.warnings)).toBe(true)
+            expect(adapter.publicOptionKeys.every((key) => Object.prototype.hasOwnProperty.call(adapter.defaultOptions, key))).toBe(true)
+        }
     })
 
     it("validates a supported MVP recipe", () => {
@@ -136,8 +167,294 @@ describe("pipeline foundation", () => {
         expect(result.finalOutput).toBe("eyJuYW1lIjoiYnl0ZWZsb3cifQ")
     })
 
+    it("runs phase-one data format adapters", async () => {
+        const yamlRecipe = buildRecipe({
+            steps: [{
+                id: "yaml",
+                toolKey: "yaml_json_converter",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { mode: "yaml-to-json" },
+            }],
+            edges: [],
+        })
+        const csvRecipe = buildRecipe({
+            steps: [{
+                id: "csv",
+                toolKey: "csv_json_converter",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { direction: "csv-to-json", delimiter: "auto", hasHeader: true, typeInference: true },
+            }],
+            edges: [],
+        })
+        const ndjsonRecipe = buildRecipe({
+            steps: [{
+                id: "ndjson",
+                toolKey: "ndjson_formatter",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { mode: "to-array" },
+            }],
+            edges: [],
+        })
+        const slugRecipe = buildRecipe({
+            steps: [{
+                id: "slug",
+                toolKey: "slugify_case_converter",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { style: "slug", locale: "en-US", preserveAcronyms: true },
+            }],
+            edges: [],
+        })
+
+        await expect(runRecipe(yamlRecipe, "name: byteflow\nactive: true\n")).resolves.toMatchObject({
+            ok: true,
+            finalOutput: "{\n  \"name\": \"byteflow\",\n  \"active\": true\n}",
+        })
+        await expect(runRecipe(csvRecipe, "id,name\n1,Alice")).resolves.toMatchObject({
+            ok: true,
+            finalOutput: "[\n  {\n    \"id\": 1,\n    \"name\": \"Alice\"\n  }\n]",
+        })
+        await expect(runRecipe(ndjsonRecipe, "{\"id\":1}\n{\"id\":2}")).resolves.toMatchObject({
+            ok: true,
+            finalOutput: "[\n  {\n    \"id\": 1\n  },\n  {\n    \"id\": 2\n  }\n]",
+        })
+        await expect(runRecipe(slugRecipe, "Hello Byteflow Tools")).resolves.toMatchObject({
+            ok: true,
+            finalOutput: "hello-byteflow-tools",
+        })
+    })
+
+    it("returns structured errors for phase-one adapter invalid input and options", async () => {
+        const badYamlOptions = validateRecipe(buildRecipe({
+            steps: [{
+                id: "yaml",
+                toolKey: "yaml_json_converter",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { mode: "xml-to-json" },
+            }],
+            edges: [],
+        }))
+        const badCsv = await runRecipe(buildRecipe({
+            steps: [{
+                id: "csv",
+                toolKey: "csv_json_converter",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { direction: "json-to-csv", delimiter: "auto", hasHeader: true, typeInference: true },
+            }],
+            edges: [],
+        }), "{\"not\":\"array\"}")
+
+        expect(badYamlOptions.ok).toBe(false)
+        expect(badYamlOptions.errors).toContain("yaml: mode must be yaml-to-json or json-to-yaml.")
+        expect(badCsv.ok).toBe(false)
+        expect(badCsv.errors).toContain("csv: JSON input must be an array to convert to CSV.")
+    })
+
+    it("runs phase-two text utility adapters", async () => {
+        const hashRecipe = buildRecipe({
+            steps: [{
+                id: "hash",
+                toolKey: "hash_generator",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { algorithm: "sha256" },
+            }],
+            edges: [],
+        })
+        const jwtRecipe = buildRecipe({
+            steps: [{
+                id: "jwt",
+                toolKey: "jwt_decoder",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { part: "payload" },
+            }],
+            edges: [],
+        })
+        const unixRecipe = buildRecipe({
+            steps: [{
+                id: "time",
+                toolKey: "unix_timestamp",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { output: "iso" },
+            }],
+            edges: [],
+        })
+        const htmlRecipe = buildRecipe({
+            steps: [{
+                id: "markdown",
+                toolKey: "html_to_markdown",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: {},
+            }],
+            edges: [],
+        })
+        const sampleJwt = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjMiLCJuYW1lIjoiQnl0ZWZsb3cifQ.signature"
+
+        await expect(runRecipe(hashRecipe, "hello")).resolves.toMatchObject({
+            ok: true,
+            finalOutput: "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824",
+        })
+        await expect(runRecipe(jwtRecipe, sampleJwt)).resolves.toMatchObject({
+            ok: true,
+            finalOutput: "{\n  \"sub\": \"123\",\n  \"name\": \"Byteflow\"\n}",
+        })
+        await expect(runRecipe(unixRecipe, "1712810000")).resolves.toMatchObject({
+            ok: true,
+            finalOutput: "2024-04-11T04:33:20.000Z",
+        })
+        await expect(runRecipe(htmlRecipe, "<h1>Title</h1><p>Hello</p>")).resolves.toMatchObject({
+            ok: true,
+            finalOutput: "# Title\n\nHello",
+        })
+    })
+
+    it("returns structured errors for phase-two adapter invalid input and options", async () => {
+        const badHashOptions = validateRecipe(buildRecipe({
+            steps: [{
+                id: "hash",
+                toolKey: "hash_generator",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { algorithm: "bcrypt" },
+            }],
+            edges: [],
+        }))
+        const badJwt = await runRecipe(buildRecipe({
+            steps: [{
+                id: "jwt",
+                toolKey: "jwt_decoder",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { part: "payload" },
+            }],
+            edges: [],
+        }), "not-a-jwt")
+        const badTimestamp = await runRecipe(buildRecipe({
+            steps: [{
+                id: "time",
+                toolKey: "unix_timestamp",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { output: "iso" },
+            }],
+            edges: [],
+        }), "not-a-timestamp")
+
+        expect(badHashOptions.ok).toBe(false)
+        expect(badHashOptions.errors).toContain("hash: algorithm must be md5, sha1, sha224, sha256, sha384, or sha512.")
+        expect(badJwt.ok).toBe(false)
+        expect(badJwt.steps[0].error?.code).toBe("jwt_decode_error")
+        expect(badTimestamp.ok).toBe(false)
+        expect(badTimestamp.steps[0].error?.code).toBe("timestamp_parse_error")
+    })
+
+    it("runs regex summary and env parser adapters", async () => {
+        const regexRecipe = buildRecipe({
+            steps: [{
+                id: "regex",
+                toolKey: "regex_tester",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { pattern: "([A-Z][a-z]+)(\\d)", flags: "g", maxMatches: 10 },
+            }],
+            edges: [],
+        })
+        const envRecipe = buildRecipe({
+            steps: [{
+                id: "env",
+                toolKey: "env_parser",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { format: "json" },
+            }],
+            edges: [],
+        })
+
+        const regexResult = await runRecipe(regexRecipe, "Ab1 Cd2")
+        const envResult = await runRecipe(envRecipe, "PORT=3000\nSECRET=\"quoted value\"")
+
+        expect(regexResult.ok).toBe(true)
+        expect(JSON.parse(regexResult.finalOutput)).toMatchObject({
+            count: 2,
+            limited: false,
+            matches: [
+                { match: "Ab1", index: 0, groupIndex: 0, groups: ["Ab", "1"] },
+                { match: "Cd2", index: 4, groupIndex: 1, groups: ["Cd", "2"] },
+            ],
+        })
+        expect(envResult).toMatchObject({
+            ok: true,
+            finalOutput: "{\n  \"PORT\": \"3000\",\n  \"SECRET\": \"quoted value\"\n}",
+        })
+    })
+
+    it("rejects invalid regex and env adapter options", () => {
+        const badRegex = validateRecipe(buildRecipe({
+            steps: [{
+                id: "regex",
+                toolKey: "regex_tester",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { pattern: "", flags: "g", maxMatches: 10 },
+            }],
+            edges: [],
+        }))
+        const badEnv = validateRecipe(buildRecipe({
+            steps: [{
+                id: "env",
+                toolKey: "env_parser",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { format: "xml" },
+            }],
+            edges: [],
+        }))
+
+        expect(badRegex.ok).toBe(false)
+        expect(badRegex.errors).toContain("regex: pattern is required.")
+        expect(badEnv.ok).toBe(false)
+        expect(badEnv.errors).toContain("env: format must be json, yaml, or docker-args.")
+    })
+
     it("allows empty edges and executes recipe.steps order", async () => {
         const result = await runRecipe(buildRecipe({ edges: [] }), '{ "name": "byteflow" }')
+
+        expect(result.ok).toBe(true)
+        expect(result.steps.map((step) => step.stepId)).toEqual(["format", "encode"])
+        expect(result.finalOutput).toBe("eyJuYW1lIjoiYnl0ZWZsb3cifQ")
+    })
+
+    it("executes explicit linear edges from the only start step instead of array order", async () => {
+        const recipe = buildRecipe({
+            steps: [
+                {
+                    id: "encode",
+                    toolKey: "base64_encode_decode",
+                    adapterVersion: 1,
+                    inputMode: "previous_output",
+                    options: { operation: "encode", urlSafe: true },
+                },
+                {
+                    id: "format",
+                    toolKey: "json_formatter",
+                    adapterVersion: 1,
+                    inputMode: "previous_output",
+                    options: { mode: "minify" },
+                },
+            ],
+            edges: [
+                { fromStepId: "format", toStepId: "encode" },
+            ],
+        })
+        const result = await runRecipe(recipe, '{ "name": "byteflow" }')
 
         expect(result.ok).toBe(true)
         expect(result.steps.map((step) => step.stepId)).toEqual(["format", "encode"])
@@ -204,6 +521,19 @@ describe("pipeline foundation", () => {
         expect(result.errors).toContain(expectedError)
     })
 
+    it("rejects edges that reference unknown step ids", () => {
+        const result = validateRecipe(buildRecipe({
+            edges: [
+                { fromStepId: "format", toStepId: "missing" },
+                { fromStepId: "also_missing", toStepId: "encode" },
+            ],
+        }))
+
+        expect(result.ok).toBe(false)
+        expect(result.errors).toContain("Edge references unknown toStepId: missing.")
+        expect(result.errors).toContain("Edge references unknown fromStepId: also_missing.")
+    })
+
     it("stops on error when configured", async () => {
         const result = await runRecipe(buildRecipe(), "{broken json")
 
@@ -232,6 +562,10 @@ describe("pipeline foundation", () => {
             version: 1,
             inputKind: "text",
             outputKind: "text",
+            safeForSensitiveInput: true,
+            deterministic: true,
+            mayIncreaseSize: false,
+            warnings: [],
             defaultOptions: {},
             publicOptionKeys: [],
             validateOptions: () => ({ ok: true, errors: [] }),
@@ -257,6 +591,66 @@ describe("pipeline foundation", () => {
         expect(result.steps[0].error?.code).toBe("adapter_runtime_error")
     })
 
+    it("rejects oversized initial input before running adapters", async () => {
+        const result = await runRecipe(
+            buildRecipe({
+                settings: {
+                    ...DEFAULT_RECIPE_SETTINGS,
+                    maxInputBytes: 4,
+                },
+            }),
+            "too large",
+        )
+
+        expect(result.ok).toBe(false)
+        expect(result.steps).toEqual([])
+        expect(result.errors).toContain("Initial input exceeds 4 bytes.")
+        expect(result.finalOutput).toBe("too large")
+    })
+
+    it("stops when a step output exceeds the configured output budget", async () => {
+        const result = await runRecipe(
+            buildRecipe({
+                steps: [
+                    {
+                        id: "encode",
+                        toolKey: "base64_encode_decode",
+                        adapterVersion: 1,
+                        inputMode: "previous_output",
+                        options: { operation: "encode", urlSafe: true },
+                    },
+                ],
+                edges: [],
+                settings: {
+                    ...DEFAULT_RECIPE_SETTINGS,
+                    maxOutputBytes: 4,
+                },
+            }),
+            "byteflow",
+        )
+
+        expect(result.ok).toBe(false)
+        expect(result.steps).toHaveLength(1)
+        expect(result.steps[0].error?.code).toBe("output_too_large")
+        expect(result.errors).toContain("Step encode output exceeds 4 bytes.")
+    })
+
+    it("omits intermediate output fields when configured", async () => {
+        const result = await runRecipe(
+            buildRecipe({
+                settings: {
+                    ...DEFAULT_RECIPE_SETTINGS,
+                    keepIntermediateOutputs: false,
+                },
+            }),
+            '{ "name": "byteflow" }',
+        )
+
+        expect(result.ok).toBe(true)
+        expect(result.finalOutput).toBe("eyJuYW1lIjoiYnl0ZWZsb3cifQ")
+        expect(result.steps.every((step) => !Object.prototype.hasOwnProperty.call(step, "output"))).toBe(true)
+    })
+
     it("uses constant input without leaking it into default share URLs", () => {
         const recipe = buildRecipe({
             steps: [
@@ -280,6 +674,29 @@ describe("pipeline foundation", () => {
         if (decoded.ok) {
             expect(decoded.recipe.steps[0].inputMode).toBe("previous_output")
             expect(decoded.recipe.steps[0].constantInput).toBeUndefined()
+        }
+    })
+
+    it("keeps constant input only when share URLs explicitly include runtime input", () => {
+        const recipe = buildRecipe({
+            steps: [
+                {
+                    id: "secret_sample",
+                    toolKey: "log_scrubber",
+                    adapterVersion: 1,
+                    inputMode: "constant",
+                    constantInput: "Authorization: Bearer secret-token-value",
+                    options: {},
+                },
+            ],
+            edges: [],
+        })
+        const decoded = decodeRecipeFromUrlParam(encodeRecipeForShareUrl(recipe, { includeRuntimeInput: true }))
+
+        expect(decoded.ok).toBe(true)
+        if (decoded.ok) {
+            expect(decoded.recipe.steps[0].inputMode).toBe("constant")
+            expect(decoded.recipe.steps[0].constantInput).toBe("Authorization: Bearer secret-token-value")
         }
     })
 
@@ -312,6 +729,45 @@ describe("pipeline foundation", () => {
             expect(decoded.recipe.steps[0].options).not.toHaveProperty("apiKey")
             expect(decoded.recipe.steps[0].options).not.toHaveProperty("token")
         }
+    })
+
+    it("reports adjacent pipeline step compatibility hints", () => {
+        const recipe = buildRecipe({
+            steps: [
+                {
+                    id: "encode",
+                    toolKey: "base64_encode_decode",
+                    adapterVersion: 1,
+                    inputMode: "previous_output",
+                    options: { operation: "encode" },
+                },
+                {
+                    id: "format",
+                    toolKey: "json_formatter",
+                    adapterVersion: 1,
+                    inputMode: "previous_output",
+                    options: { mode: "pretty", indent: 2 },
+                },
+                {
+                    id: "constant_json",
+                    toolKey: "json_formatter",
+                    adapterVersion: 1,
+                    inputMode: "constant",
+                    constantInput: "{\"ok\":true}",
+                    options: { mode: "minify" },
+                },
+            ],
+            edges: [],
+        })
+
+        expect(getStepCompatibilityHints(recipe.steps)).toEqual([
+            {
+                fromKind: "text",
+                fromStepId: "encode",
+                toKind: "json",
+                toStepId: "format",
+            },
+        ])
     })
 
     it("round trips recipe URL encoding", () => {

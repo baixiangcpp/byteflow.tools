@@ -63,6 +63,21 @@ describe("phase 3 pipeline builder page", () => {
         expect(screen.getByText("Step options")).toBeInTheDocument()
     })
 
+    it("shows recipe safety settings and adjacent compatibility hints", () => {
+        renderWithEnglish(<PipelineBuilderPage />)
+
+        const adapterSelect = screen.getByLabelText("Select tool adapter")
+        fireEvent.change(adapterSelect, { target: { value: "base64_encode_decode" } })
+        fireEvent.click(screen.getByRole("button", { name: /Add/i }))
+        fireEvent.change(adapterSelect, { target: { value: "json_formatter" } })
+        fireEvent.click(screen.getByRole("button", { name: /Add/i }))
+
+        expect(screen.getByRole("heading", { name: "Recipe settings" })).toBeInTheDocument()
+        expect(screen.getByRole("switch", { name: "Stop on error" })).toBeChecked()
+        expect(screen.getByText("Check handoff: text output into json input.")).toBeInTheDocument()
+        expect(screen.getByText(/Constant step inputs stay local unless exported as JSON/i)).toBeInTheDocument()
+    })
+
     it("renders without IndexedDB and keeps non-storage actions available", async () => {
         const originalDescriptor = Object.getOwnPropertyDescriptor(window, "indexedDB")
         Object.defineProperty(window, "indexedDB", { configurable: true, value: undefined })

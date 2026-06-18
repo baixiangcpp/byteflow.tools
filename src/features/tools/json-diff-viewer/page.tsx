@@ -9,11 +9,11 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { MonacoDiffEditor } from "@/features/tool-shell/monaco-editors"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
 import { useThemePreference } from "@/hooks/use-theme-preference"
-import { buildInputTooLargeMessage, isOverUtf8Budget, LEGACY_INPUT_LIMITS } from "@/core/utils/legacy-input-limits"
+import { buildInputTooLargeMessage, isOverUtf8Budget, TOOL_RUNTIME_BUDGETS } from "@/core/performance/tool-runtime-budgets"
 
 function flattenJson(obj: unknown, prefix = "", context = { nodes: 0, truncated: false }): Record<string, string> {
     const result: Record<string, string> = {}
-    if (context.nodes >= LEGACY_INPUT_LIMITS.maxJsonDiffFlattenedNodes) {
+    if (context.nodes >= TOOL_RUNTIME_BUDGETS.maxJsonDiffFlattenedNodes) {
         context.truncated = true
         return result
     }
@@ -69,7 +69,7 @@ export function JsonDiffViewerPage() {
     const monacoTheme = getByteflowMonacoThemeName(resolvedTheme)
 
     const formattedLeft = React.useMemo(() => {
-        if (isOverUtf8Budget(left, LEGACY_INPUT_LIMITS.maxDiffInputBytes)) return left
+        if (isOverUtf8Budget(left, TOOL_RUNTIME_BUDGETS.maxDiffInputBytes)) return left
         try {
             return JSON.stringify(JSON.parse(left), null, 2)
         } catch {
@@ -78,7 +78,7 @@ export function JsonDiffViewerPage() {
     }, [left])
 
     const formattedRight = React.useMemo(() => {
-        if (isOverUtf8Budget(right, LEGACY_INPUT_LIMITS.maxDiffInputBytes)) return right
+        if (isOverUtf8Budget(right, TOOL_RUNTIME_BUDGETS.maxDiffInputBytes)) return right
         try {
             return JSON.stringify(JSON.parse(right), null, 2)
         } catch {
@@ -87,7 +87,7 @@ export function JsonDiffViewerPage() {
     }, [right])
 
     const keyDiff = React.useMemo(() => {
-        if (isOverUtf8Budget(left, LEGACY_INPUT_LIMITS.maxDiffInputBytes) || isOverUtf8Budget(right, LEGACY_INPUT_LIMITS.maxDiffInputBytes)) {
+        if (isOverUtf8Budget(left, TOOL_RUNTIME_BUDGETS.maxDiffInputBytes) || isOverUtf8Budget(right, TOOL_RUNTIME_BUDGETS.maxDiffInputBytes)) {
             return []
         }
         try {
@@ -122,8 +122,8 @@ export function JsonDiffViewerPage() {
             label: t.common.format || "Format",
             icon: FileJson,
             onClick: () => {
-                if (isOverUtf8Budget(left, LEGACY_INPUT_LIMITS.maxDiffInputBytes) || isOverUtf8Budget(right, LEGACY_INPUT_LIMITS.maxDiffInputBytes)) {
-                    setError(buildInputTooLargeMessage(t.common.local_input_too_large, LEGACY_INPUT_LIMITS.maxDiffInputBytes))
+                if (isOverUtf8Budget(left, TOOL_RUNTIME_BUDGETS.maxDiffInputBytes) || isOverUtf8Budget(right, TOOL_RUNTIME_BUDGETS.maxDiffInputBytes)) {
+                    setError(buildInputTooLargeMessage(t.common.local_input_too_large, TOOL_RUNTIME_BUDGETS.maxDiffInputBytes))
                     return
                 }
                 try {
@@ -160,9 +160,9 @@ export function JsonDiffViewerPage() {
         }
     ]
 
-    const overBudget = isOverUtf8Budget(left, LEGACY_INPUT_LIMITS.maxDiffInputBytes) || isOverUtf8Budget(right, LEGACY_INPUT_LIMITS.maxDiffInputBytes)
+    const overBudget = isOverUtf8Budget(left, TOOL_RUNTIME_BUDGETS.maxDiffInputBytes) || isOverUtf8Budget(right, TOOL_RUNTIME_BUDGETS.maxDiffInputBytes)
     const budgetMessage = overBudget
-        ? buildInputTooLargeMessage(t.common.local_input_too_large, LEGACY_INPUT_LIMITS.maxDiffInputBytes)
+        ? buildInputTooLargeMessage(t.common.local_input_too_large, TOOL_RUNTIME_BUDGETS.maxDiffInputBytes)
         : error
 
     return (

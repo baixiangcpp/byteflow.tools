@@ -1,6 +1,7 @@
 import { buildBreadcrumbJsonLd } from "@/core/seo/seo";
 import { getToolBySlug, type ToolMeta } from "@/core/registry";
 import type { Locale } from "@/core/i18n/i18n";
+import { JsonLdScript } from "./json-ld-script";
 
 /**
  * Renders BreadcrumbList JSON-LD structured data for a tool page.
@@ -12,12 +13,7 @@ export function ToolBreadcrumbJsonLd({ lang, slug }: { lang: Locale; slug: strin
 
     const jsonLd = buildBreadcrumbJsonLd({ lang, tool });
 
-    return (
-        <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-        />
-    );
+    return <JsonLdScript jsonLd={jsonLd} />;
 }
 
 /**

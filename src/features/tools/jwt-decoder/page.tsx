@@ -9,10 +9,10 @@ import { useThemePreference } from "@/hooks/use-theme-preference"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
-import { jwtDecode } from "jwt-decode"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { decodeJwtParts } from "./utils"
 
 export function JwtDecoderPage() {
     const { t, lang } = useLang()
@@ -34,11 +34,10 @@ export function JwtDecoderPage() {
         }
 
         try {
-            const decodedHeader = jwtDecode(input, { header: true })
-            const decodedPayload = jwtDecode(input)
+            const decoded = decodeJwtParts(input)
 
-            setHeader(JSON.stringify(decodedHeader, null, 2))
-            setPayload(JSON.stringify(decodedPayload, null, 2))
+            setHeader(JSON.stringify(decoded.header, null, 2))
+            setPayload(JSON.stringify(decoded.payload, null, 2))
             setError(null)
         } catch {
             setHeader("")

@@ -2,6 +2,7 @@ import fs from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import { loadOrderedToolManifests } from "../lib/tool-manifest-lib.js"
+import { buildRegistryManifestSource, runCheck as runRegistryManifestCheck } from "./generate-registry-manifests.js"
 
 const TOOL_ROUTE_ROOT = "src/app/[lang]"
 const SITEMAP_ROUTE_GROUPS_PATH = "src/lib/sitemap-route-groups.json"
@@ -168,6 +169,8 @@ function buildIndexData() {
                 category: tool.category,
                 relatedTools: tool.relatedTools,
                 keywords: tool.keywords,
+                networkAccess: tool.networkAccess || "none",
+                persistInput: tool.persistInput ?? null,
                 updatedAt: tool.updatedAt || null,
                 sourceFile: tool.sourceFile,
             }
@@ -227,6 +230,9 @@ function runCheck(data) {
 }
 
 function main() {
+    if (CHECK_ONLY) {
+        runRegistryManifestCheck(buildRegistryManifestSource())
+    }
     const data = buildIndexData()
     if (!CHECK_ONLY) {
         writeOutputs(data)

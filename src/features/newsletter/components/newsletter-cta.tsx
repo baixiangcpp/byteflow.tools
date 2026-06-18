@@ -5,6 +5,7 @@ import { Sparkles, X } from "lucide-react"
 import { trackCTA } from "@/core/analytics/analytics"
 import { requireTranslationValue } from "@/core/i18n/i18n"
 import { useLang } from "@/core/i18n/lang-provider"
+import { openExternalUrl } from "@/core/security/external-url"
 import { readStorageString, writeStorageString } from "@/core/storage/tool-persistence"
 
 const STORAGE_KEY = "byteflow_newsletter_dismissed"
@@ -31,7 +32,7 @@ export function NewsletterCTA() {
 
     const handleClick = () => {
         trackCTA("newsletter", "click")
-        window.open("https://github.com/baixiangcpp/byteflow.tools", "_blank")
+        openExternalUrl("https://github.com/baixiangcpp/byteflow.tools")
         setVisible(false)
         writeStorageString(STORAGE_KEY, "1")
     }

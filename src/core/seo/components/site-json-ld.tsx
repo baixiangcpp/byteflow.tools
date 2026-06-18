@@ -1,5 +1,6 @@
 import { buildSiteJsonLd } from "@/core/seo/seo";
 import type { Locale } from "@/core/i18n/i18n";
+import { JsonLdScript } from "./json-ld-script";
 
 /**
  * Renders site-level JSON-LD (Organization + WebSite) for the homepage.
@@ -8,10 +9,5 @@ import type { Locale } from "@/core/i18n/i18n";
 export function SiteJsonLd({ lang }: { lang: Locale }) {
     const schema = buildSiteJsonLd(lang);
 
-    return (
-        <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-        />
-    );
+    return <JsonLdScript jsonLd={schema} />;
 }

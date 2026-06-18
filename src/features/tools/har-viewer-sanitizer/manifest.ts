@@ -6,4 +6,5 @@ export const toolManifest = {
     category: "network-web",
     relatedTools: ["local_log_parser", "log_scrubber", "http_status_codes", "security_header_analyzer"],
     keywords: ["har viewer", "har sanitizer", "http archive", "network log sanitizer", "har redaction"],
+    persistInput: false,
 } satisfies ToolMeta

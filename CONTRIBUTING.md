@@ -131,23 +131,35 @@ Manifests:
 - Tool manifests must export `toolManifest = { ... } satisfies ToolMeta`.
 - Keep manifest fields literal and statically parseable.
 - Do not use spreads, computed keys, functions, template literals, dynamic imports, React imports, or client-only imports in manifests.
+- Set `networkAccess` when a tool opens external pages, fetches user-provided URLs, or relies on third-party APIs.
+- Set `persistInput` deliberately. Sensitive payload tools should use `false`; tools that save payloads should explain that behavior in UI copy.
+- Discovery `family`, `tags`, and `capabilities` are generated from manifest metadata and taxonomy rules. Do not hand-edit generated taxonomy fields.
 
 ## Adding a Tool
 
 Use the scaffolder when possible:
 
 ```bash
-npm run create:tool
+npm run create:tool -- --slug my-new-tool --category formatters
 ```
+
+Useful scaffolder flags:
+
+- `--network-access none|user_requested|third_party_api`
+- `--persist-input true|false|opt-in`
+- `--pipeline-adapter` to mark that the tool needs a matching adapter design before it should appear as pipeline-ready
+- `--search-keywords term1,term2` for additional command palette and discovery matching
 
 The expected shape is:
 
 - `src/features/tools/{slug}/manifest.ts`
 - `src/features/tools/{slug}/page.tsx`
+- `src/features/tools/{slug}/logic.ts` and `logic.test.ts`
 - `src/app/[lang]/{slug}/page.tsx`
 - Optional feature-local `logic.ts`, `types.ts`, `samples.ts`, `constants.ts`, `browser-actions.ts`, `hooks.ts`, or `components.tsx`
 - Translation entries in every supported locale
 - Tests for pure logic and any important UI or routing behavior
+- Runtime budgets, external URL validation, and accessibility coverage when the tool parses large payloads, fetches URLs, renders previews, or uses icon-only controls
 
 After changing tool manifests, run:
 

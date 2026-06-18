@@ -6,6 +6,7 @@ export const toolManifest = {
     category: "generators",
     relatedTools: ["vimeo_thumbnail_grabber", "tweet_to_image_converter", "open_graph_meta_generator", "image_resizer"],
     keywords: ["youtube thumbnail grabber", "youtube thumbnail downloader", "youtube video thumbnail", "get youtube thumbnail url"],
+    networkAccess: "user_requested",
     deprecated: {
         alternatives: ["image_resizer"],
         reason: "strategic-refocus",

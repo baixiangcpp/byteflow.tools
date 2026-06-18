@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { openExternalUrl } from "@/core/security/external-url"
 import {
     canDownloadAuthorizedInstagramMedia,
     getInstagramMediaFilename,
@@ -162,11 +163,7 @@ export function InstagramPhotoDownloaderPage() {
             URL.revokeObjectURL(objectUrl)
             toast.success((t.common.downloaded_file).replace("{filename}", filename))
         } catch {
-            const anchor = document.createElement("a")
-            anchor.href = parsed.normalizedUrl
-            anchor.target = "_blank"
-            anchor.rel = "noopener noreferrer"
-            anchor.click()
+            openExternalUrl(parsed.normalizedUrl)
             toast.info(
                 t.common.direct_download_blocked_opened_new_tab,
             )

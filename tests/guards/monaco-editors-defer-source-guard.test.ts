@@ -8,6 +8,8 @@ describe("monaco editors defer source guard", () => {
 
         expect(source).toContain("useDesktopMonacoActivation")
         expect(source).toContain("desktopActivation !== \"deferred\"")
+        expect(source).toContain('import type { DiffEditorProps, EditorProps } from "@monaco-editor/react"')
+        expect(source).not.toContain("import { loader")
         expect(source).toContain("onPointerDown={activateDesktopMonaco}")
         expect(source).toContain("onFocus={activateDesktopMonaco}")
     })

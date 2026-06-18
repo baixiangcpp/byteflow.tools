@@ -135,6 +135,10 @@ export interface PipelineToolAdapter<Input = string, Output = string> {
   version: number
   inputKind: "text" | "json" | "yaml" | "csv" | "bytes"
   outputKind: "text" | "json" | "yaml" | "csv" | "bytes"
+  safeForSensitiveInput: boolean
+  deterministic: boolean
+  mayIncreaseSize: boolean
+  warnings: readonly string[]
   defaultOptions: Record<string, unknown>
   publicOptionKeys: readonly string[]
   validateOptions(options: Record<string, unknown>): AdapterValidationResult
@@ -163,6 +167,10 @@ Adapter rules:
 - Adapters must not import page components.
 - Adapters must not call `fetch` except for same-page static assets already used by an existing local tool.
 - Adapters must not persist payloads.
+- Adapters must be deterministic for the same input and options. Non-deterministic generators, canvas/image editing flows, and external-network tools need a separate design before inclusion.
+- `safeForSensitiveInput` means the adapter is appropriate for local sensitive payloads; it does not imply output is safe to share unless the adapter redacts or removes sensitive content.
+- `mayIncreaseSize` must be true for reversible encoders and pretty-printers that can expand payloads.
+- `warnings` must describe persistent adapter-level caveats shown or available to UI surfaces.
 - Adapters must return structured warnings instead of throwing for expected user errors.
 - Adapters must have unit tests covering success and failure paths.
 - `publicOptionKeys` controls which options are allowed into shared recipe URLs.
@@ -181,6 +189,16 @@ The current non-public foundation includes only deterministic, low-risk text/dat
 | `multiple_whitespace_remover` | Simple text normalization. |
 | `invisible_chars_detector` | Clean copied config/log text before parsing. |
 | `log_scrubber` | Redact sensitive log content before export. |
+| `yaml_json_converter` | Convert YAML snippets to JSON and JSON snippets back to YAML in local data workflows. |
+| `csv_json_converter` | Bridge tabular CSV data into JSON and convert JSON arrays back to CSV. |
+| `ndjson_formatter` | Convert JSON arrays and newline-delimited JSON records for log/data pipelines. |
+| `slugify_case_converter` | Normalize strings into deterministic slug and case formats. |
+| `hash_generator` | Produce deterministic text digests for checksum and fixture workflows. |
+| `jwt_decoder` | Decode JWT header and payload JSON without signature verification. |
+| `unix_timestamp` | Convert Unix seconds or milliseconds into ISO or structured JSON output. |
+| `html_to_markdown` | Convert HTML snippets into Markdown text for content cleanup pipelines. |
+| `regex_tester` | Produce JSON match summaries for deterministic pattern checks. |
+| `env_parser` | Parse `.env` content into JSON, YAML, or docker argument text. |
 
 ### Phase 3D Target Expansion / Public MVP Candidates
 
@@ -190,7 +208,6 @@ These remain future candidates and are not part of the current foundation adapte
 |----------|--------|
 | `jq_playground` | Existing local JSON transform runtime. |
 | `yq_playground` | Local yq-like YAML/JSON subset. |
-| `yaml_json_converter` | Common bridge between YAML and JSON. |
 | `local_log_parser` | Parse logs before filtering/export. |
 | Other deterministic adapters | Add only after each adapter has explicit validation and public option keys. |
 

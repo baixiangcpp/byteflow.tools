@@ -8,6 +8,7 @@ import { trackEvent } from "@/core/analytics/analytics"
 import { Button } from "@/components/ui/button"
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
 import type { Locale } from "@/core/i18n/i18n"
+import { JsonLdScript } from "@/core/seo/components/json-ld-script"
 import type { GuidePlatform, InstallPageCopy } from "@/core/utils/install-app-copy"
 
 type BeforeInstallPromptEvent = Event & {
@@ -126,7 +127,7 @@ export function InstallAppClient({ locale, copy, allToolsLabel }: InstallAppClie
 
     return (
         <div className="mx-auto w-full max-w-5xl space-y-8">
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
+            <JsonLdScript jsonLd={faqJsonLd} />
 
             <section className="relative overflow-hidden rounded-3xl border border-border/70 bg-card/60 p-6 sm:p-8">
                 <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,hsl(189_94%_46%/0.14),transparent_55%,hsl(37_95%_55%/0.12))]" />

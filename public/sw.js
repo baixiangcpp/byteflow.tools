@@ -8,6 +8,7 @@
 const APP_VERSION = '__BUILD_ID__';
 const CACHE_NAME = `byteflow-v${APP_VERSION}`;
 const OFFLINE_FALLBACK_URL = '/offline.html';
+const OFFLINE_FALLBACK_CANDIDATES = [OFFLINE_FALLBACK_URL, '/offline'];
 
 const STATIC_ASSETS = [
     '/manifest.json',
@@ -24,8 +25,17 @@ const STATIC_ASSETS = [
     '/icon-maskable-512.png',
     '/icon.png',
     '/apple-icon.png',
-    OFFLINE_FALLBACK_URL,
+    ...OFFLINE_FALLBACK_CANDIDATES,
 ];
+
+function matchOfflineFallback() {
+    return caches.match(OFFLINE_FALLBACK_URL)
+        .then((cached) => cached || caches.match('/offline'))
+        .then((cached) => cached || new Response(
+            '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Offline | byteflow.tools</title></head><body><main><h1>You are offline</h1><p>Reconnect and refresh, or open a page you have visited before.</p></main></body></html>',
+            { headers: { 'Content-Type': 'text/html; charset=utf-8' } },
+        ));
+}
 
 // Install: cache critical static assets; waiting/activation is user-triggered from the app shell.
 self.addEventListener('install', (event) => {
@@ -86,7 +96,7 @@ self.addEventListener('fetch', (event) => {
                     return response;
                 })
                 .catch(() =>
-                    caches.match(event.request).then((cached) => cached || caches.match(OFFLINE_FALLBACK_URL))
+                    caches.match(event.request).then((cached) => cached || matchOfflineFallback())
                 )
         );
         return;
@@ -119,6 +129,8 @@ self.addEventListener('fetch', (event) => {
                 }
                 return response;
             })
-            .catch(() => caches.match(event.request))
+            .catch(() =>
+                caches.match(event.request).then((cached) => cached || matchOfflineFallback())
+            )
     );
 });

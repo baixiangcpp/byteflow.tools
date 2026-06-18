@@ -9,7 +9,7 @@ import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildToolHandoffLink } from "@/core/routing/tool-handoff"
-import { buildInputTooLargeMessage, countNonEmptyLines, isOverUtf8Budget, LEGACY_INPUT_LIMITS } from "@/core/utils/legacy-input-limits"
+import { buildInputTooLargeMessage, countNonEmptyLines, isOverUtf8Budget, TOOL_RUNTIME_BUDGETS } from "@/core/performance/tool-runtime-budgets"
 import { readStorageString, removeStorageKey, writeStorageString } from "@/core/storage/tool-persistence"
 import {
     Select,
@@ -60,7 +60,7 @@ export function CsvJsonConverterPage() {
     }, [])
     React.useEffect(() => {
         const savedInput = readStorageString(INPUT_STORAGE_KEY)
-        if (savedInput !== null && !isOverUtf8Budget(savedInput, LEGACY_INPUT_LIMITS.maxCsvJsonInputBytes)) {
+        if (savedInput !== null && !isOverUtf8Budget(savedInput, TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes)) {
             setInput(savedInput)
         }
 
@@ -90,7 +90,7 @@ export function CsvJsonConverterPage() {
             removeStorageKey(INPUT_STORAGE_KEY)
             return
         }
-        if (isOverUtf8Budget(input, LEGACY_INPUT_LIMITS.maxCsvJsonInputBytes)) {
+        if (isOverUtf8Budget(input, TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes)) {
             removeStorageKey(INPUT_STORAGE_KEY)
             return
         }
@@ -120,15 +120,15 @@ export function CsvJsonConverterPage() {
             return
         }
 
-        if (isOverUtf8Budget(input, LEGACY_INPUT_LIMITS.maxCsvJsonInputBytes)) {
+        if (isOverUtf8Budget(input, TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes)) {
             setOutput("")
-            setError(buildInputTooLargeMessage(t.common.local_input_too_large, LEGACY_INPUT_LIMITS.maxCsvJsonInputBytes))
+            setError(buildInputTooLargeMessage(t.common.local_input_too_large, TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes))
             return
         }
 
-        if (direction === "csv-to-json" && countNonEmptyLines(input, LEGACY_INPUT_LIMITS.maxCsvJsonRows).exceeded) {
+        if (direction === "csv-to-json" && countNonEmptyLines(input, TOOL_RUNTIME_BUDGETS.maxCsvJsonRows).exceeded) {
             setOutput("")
-            setError(t.common.local_row_limit_exceeded.replace("{count}", String(LEGACY_INPUT_LIMITS.maxCsvJsonRows)))
+            setError(t.common.local_row_limit_exceeded.replace("{count}", String(TOOL_RUNTIME_BUDGETS.maxCsvJsonRows)))
             return
         }
 
@@ -188,8 +188,8 @@ export function CsvJsonConverterPage() {
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (!file) return
-        if (file.size > LEGACY_INPUT_LIMITS.maxCsvJsonInputBytes) {
-            setError(buildInputTooLargeMessage(t.common.local_input_too_large, LEGACY_INPUT_LIMITS.maxCsvJsonInputBytes))
+        if (file.size > TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes) {
+            setError(buildInputTooLargeMessage(t.common.local_input_too_large, TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes))
             e.target.value = ""
             return
         }
