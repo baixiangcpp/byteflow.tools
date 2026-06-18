@@ -55,7 +55,7 @@ export function buildShareableToolHandoffHref(lang: string, slug: string, payloa
     if (!text) return basePath
 
     const encoded = toBase64Url(text)
-    return `${basePath}?${HANDOFF_PARAM}=${encodeURIComponent(encoded)}`
+    return `${basePath}#${HANDOFF_PARAM}=${encodeURIComponent(encoded)}`
 }
 
 export const buildToolHandoffHref = buildShareableToolHandoffHref
@@ -123,16 +123,23 @@ export function buildToolHandoffLink(lang: string, slug: string, payload: string
 
     const handoffRef = createHandoffRef()
     return {
-        href: `${basePath}?${HANDOFF_REF_PARAM}=${encodeURIComponent(handoffRef)}`,
+        href: `${basePath}#${HANDOFF_REF_PARAM}=${encodeURIComponent(handoffRef)}`,
         prime: () => storeHandoffPayload(handoffRef, text),
     }
 }
 
-export function getToolHandoffFromSearchParams(searchParams: URLSearchParams): string | null {
-    const raw = searchParams.get(HANDOFF_PARAM)
+function normalizeFragmentParams(fragment?: string): URLSearchParams {
+    if (!fragment) return new URLSearchParams()
+    const normalized = fragment.startsWith("#") ? fragment.slice(1) : fragment
+    return new URLSearchParams(normalized)
+}
+
+export function getToolHandoffFromSearchParams(searchParams: URLSearchParams, fragment?: string): string | null {
+    const fragmentParams = normalizeFragmentParams(fragment)
+    const raw = fragmentParams.get(HANDOFF_PARAM) ?? searchParams.get(HANDOFF_PARAM)
     if (raw) return fromBase64Url(raw)
 
-    const handoffRef = searchParams.get(HANDOFF_REF_PARAM)
+    const handoffRef = fragmentParams.get(HANDOFF_REF_PARAM) ?? searchParams.get(HANDOFF_REF_PARAM)
     if (!handoffRef) return null
     return readHandoffPayload(handoffRef)
 }

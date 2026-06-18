@@ -110,7 +110,7 @@ export function PipelineBuilderPage() {
             }
         }
 
-        const handoff = getToolHandoffFromSearchParams(params)
+        const handoff = getToolHandoffFromSearchParams(params, window.location.hash)
         if (handoff) {
             setInitialInput(handoff)
             toast.success(text("handoff_loaded"))

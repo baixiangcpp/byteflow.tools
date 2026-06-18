@@ -24,13 +24,12 @@ export const INLINE_SCRIPT_POLICY: readonly InlineScriptPolicyEntry[] = [
     {
         id: "legacy-tool-redirect",
         file: "src/core/seo/components/legacy-tool-redirect-page.tsx",
-        purpose: "Client-side redirect for statically exported legacy tool aliases.",
-        requiresUnsafeInline: true,
-        migrationPath: "Replace with static redirect artifacts or a hashed redirect bootstrap per alias.",
+        purpose: "Fallback content for statically exported legacy tool aliases after deployment-level redirects.",
+        requiresUnsafeInline: false,
+        migrationPath: "Keep alias redirects in public/_redirects and remove this fallback when old exports can be dropped.",
     },
 ]
 
 export function inlineScriptPolicyRequiresUnsafeInline(): boolean {
     return INLINE_SCRIPT_POLICY.some((entry) => entry.requiresUnsafeInline)
 }
-

@@ -4,6 +4,7 @@ import { loadToolSlugs as loadToolSlugsFromManifests } from "../lib/tool-manifes
 
 const DEFAULT_SCAN_DIRS = [".next/server/app", "out"]
 const SUPPORTED_LOCALES = new Set(["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr"])
+const ALLOWED_FAQ_SCHEMA_SLUGS = new Set(["json-formatter", "base64-encode-decode", "jwt-decoder"])
 
 function parseLocale() {
     const localeArgIndex = process.argv.indexOf("--locale")
@@ -71,6 +72,13 @@ function main() {
         }
 
         const html = fs.readFileSync(htmlPath, "utf8")
+        if (!ALLOWED_FAQ_SCHEMA_SLUGS.has(slug)) {
+            if (html.includes("data-faq-schema=\"tool\"") || html.includes("\"@type\":\"FAQPage\"")) {
+                failures.push(`${slug}: unexpected FAQPage schema on non-allowlisted tool`)
+            }
+            continue
+        }
+
         if (!html.includes("data-faq-schema=\"tool\"")) {
             failures.push(`${slug}: FAQ schema marker not found`)
             continue
@@ -95,7 +103,7 @@ function main() {
         process.exit(1)
     }
 
-    console.log(`[check:faq-schema] OK (${locale}): ${targetSlugs.length}/${targetSlugs.length} tool pages include valid FAQPage schema blocks`)
+    console.log(`[check:faq-schema] OK (${locale}): ${ALLOWED_FAQ_SCHEMA_SLUGS.size} allowlisted tool pages include valid FAQPage schema blocks`)
 }
 
 main()

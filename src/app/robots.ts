@@ -6,6 +6,10 @@ export default function robots(): MetadataRoute.Robots {
         rules: {
             userAgent: '*',
             allow: '/',
+            disallow: [
+                '*?handoff=',
+                '*?handoff_ref=',
+            ],
         },
         sitemap: 'https://byteflow.tools/sitemap.xml',
     }
