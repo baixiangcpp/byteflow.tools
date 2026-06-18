@@ -93,6 +93,52 @@ export const TOP_TOOL_CONTENT_TEMPLATES: Record<string, ToolContentTemplateData>
             { q: "How do I verify correctness for files?", a: "Decode the output and compare hashes of original and restored files to confirm byte-level parity." },
         ],
     },
+    "base-encoding-converter": {
+        toolKey: "base_encoding_converter",
+        intro: "Convert text through Base32 and Base58 locally, with predictable alphabets, padding behavior, and round-trip checks for tokens, identifiers, fixtures, and blockchain-adjacent data that must stay readable across systems.",
+        whatThisToolDoes: [
+            "It encodes UTF-8 text into RFC 4648 Base32 with padding so output works with systems that expect fixed alphabet and block sizing.",
+            "It decodes Base32 back to text while rejecting malformed characters and padding shapes that would hide copy or transport errors.",
+            "It encodes and decodes Bitcoin-style Base58, preserving leading zero bytes and excluding ambiguous characters such as 0, O, I, and l.",
+            "It keeps the conversion in the browser, which is useful when testing identifiers, wallet-adjacent samples, provisioning codes, and support fixtures without sending data to an API.",
+        ],
+        useCases: [
+            "Check whether a Base32 recovery code or provisioning value round-trips cleanly before documenting it.",
+            "Decode a Base58 identifier sample during wallet, key, or distributed-system integration debugging.",
+            "Create compact text fixtures for tests where Base64 punctuation would be awkward in URLs, shells, or docs.",
+            "Verify that copied encoded strings do not contain ambiguous characters or whitespace introduced by email or chat tools.",
+            "Compare Base32, Base58, Base64, and hex outputs when choosing the safest representation for a local workflow.",
+        ],
+        inputExamples: [
+            { label: "Plain text", value: "byteflow tools" },
+            { label: "Base32 input", value: "MZXW6YTBOI======" },
+            { label: "Base58 input", value: "2NEpo7TZRRrLZSi2U" },
+        ],
+        outputExamples: [
+            { label: "Base32 output", value: "MJ4XI2DGN5XWIZLTMF2A====" },
+            { label: "Base58 output", value: "2NEpo7TZRRrLZSi2U" },
+            { label: "Validation note", value: "Reject values containing 0, O, I, or l when decoding Base58 samples." },
+        ],
+        commonErrors: [
+            { error: "Base32 padding is missing or placed in the middle", fix: "Use '=' padding only at the end, or regenerate the value from the source text." },
+            { error: "Base58 input contains ambiguous characters", fix: "Replace the source with a verified Base58 value; the alphabet intentionally excludes 0, O, I, and l." },
+            { error: "Whitespace copied from email or chat", fix: "Trim line breaks and spaces before decoding, then run a round-trip check." },
+            { error: "Wrong alphabet selected", fix: "Switch between Base32 and Base58 to match the producing system before debugging the payload itself." },
+            { error: "Encoding treated as security", fix: "Remember that Base encodings are reversible; use encryption or signing separately for protection." },
+        ],
+        privacyNotes: [
+            "Base32 and Base58 conversions run locally in the browser and do not require network requests.",
+            "Encoded values can still expose secrets because encoding is reversible, so mask credentials before sharing examples.",
+            "Clear copied identifiers from shared clipboards after finishing debugging or documentation work.",
+        ],
+        faqs: [
+            { q: "When should I choose Base32 over Base58?", a: "Use Base32 when a system expects RFC 4648 output with a limited uppercase alphabet and optional padding." },
+            { q: "Why does Base58 exclude some letters and numbers?", a: "Base58 removes visually ambiguous characters to reduce copy mistakes in identifiers and wallet-style values." },
+            { q: "Is Base58 the same as Base64URL?", a: "No. Base58 uses a different alphabet and conversion process; Base64URL is still Base64 with URL-safe characters." },
+            { q: "Can this validate production secrets?", a: "It can check syntax locally, but encoded secrets should still be rotated or masked before sharing." },
+            { q: "How should I confirm a conversion is correct?", a: "Encode, decode back to text, and compare the result with the original input before using the value in docs or tests." },
+        ],
+    },
     "jwt-decoder": {
         toolKey: "jwt_decoder",
         intro: "Decode JWT headers and payload claims to inspect token structure during authentication and authorization debugging with a repeatable, privacy-first review workflow that helps teams isolate claim issues before escalating to signature, key-distribution, or policy-layer analysis.",

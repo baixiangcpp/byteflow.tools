@@ -10935,5 +10935,114 @@
       "Kontrollieren Sie die Darstellung sowohl auf Desktop als auch mobil."
     ],
     "operationalNote": "Unicode-Inspektor sollte als schneller Prüfschritt im Ablauf vor Übergabe, Veröffentlichung und Weitergabe genutzt werden."
+  },
+  "base-encoding-converter": {
+    "content": {
+      "toolKey": "base_encoding_converter",
+      "intro": "Konvertieren Sie Text lokal zwischen Base32 und Base58, um Alphabete, Padding und Roundtrips für Tokens, Kennungen, Testdaten und blockchainbezogene Beispieldaten zuverlässig zu prüfen.",
+      "whatThisToolDoes": [
+        "Es kodiert UTF-8-Text als RFC-4648-Base32 mit Padding, passend für Systeme mit Großbuchstabenalphabet und fester Blockgröße.",
+        "Es dekodiert Base32 zurück zu Text und weist ungültige Zeichen oder falsches Padding zurück, damit Kopier- und Transportfehler sichtbar werden.",
+        "Es unterstützt Bitcoin-artiges Base58, erhält führende Nullbytes und schließt verwechselbare Zeichen wie 0, O, I und l aus.",
+        "Die Konvertierung bleibt im Browser und eignet sich für Kennungen, Wallet-bezogene Beispiele, Bereitstellungscodes und Support-Fixtures ohne API-Upload."
+      ],
+      "useCases": [
+        "Prüfen, ob ein Base32-Recovery-Code oder Bereitstellungswert sauber hin und zurück konvertiert.",
+        "Ein Base58-Kennungsbeispiel beim Debugging von Wallet-, Schlüssel- oder verteilten Systemen dekodieren.",
+        "Kompakte Kompakte Testdaten erstellen, wenn Base64-Zeichen in URLs, Shells oder Dokumentation stören.",
+        "Kontrollieren, ob kopierte Werte durch E-Mail oder Chat Leerzeichen oder verwechselbare Zeichen enthalten.",
+        "Base32, Base58, Base64 und Hex vergleichen, bevor eine Darstellung für einen lokalen Workflow festgelegt wird."
+      ],
+      "inputExamples": [
+        {
+          "label": "Klartext",
+          "value": "byteflow tools"
+        },
+        {
+          "label": "Base32-Eingabe",
+          "value": "MZXW6YTBOI======"
+        },
+        {
+          "label": "Base58-Eingabe",
+          "value": "2NEpo7TZRRrLZSi2U"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Base32-Ausgabe",
+          "value": "MJ4XI2DGN5XWIZLTMF2A===="
+        },
+        {
+          "label": "Base58-Ausgabe",
+          "value": "2NEpo7TZRRrLZSi2U"
+        },
+        {
+          "label": "Prüfhinweis",
+          "value": "Beim Dekodieren von Base58 sollten Werte mit 0, O, I oder l abgelehnt werden."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Base32-Padding fehlt oder steht in der Mitte",
+          "fix": "Verwenden Sie = nur am Ende oder erzeugen Sie den Wert erneut aus dem Quelltext."
+        },
+        {
+          "error": "Base58-Eingabe enthält verwechselbare Zeichen",
+          "fix": "Nutzen Sie einen verifizierten Base58-Wert; das Alphabet schließt 0, O, I und l bewusst aus."
+        },
+        {
+          "error": "Aus E-Mail oder Chat wurden Leerzeichen mitkopiert",
+          "fix": "Entfernen Sie Zeilenumbrüche und Leerzeichen vor dem Dekodieren und führen Sie einen Roundtrip-Test aus."
+        },
+        {
+          "error": "Falsches Alphabet gewählt",
+          "fix": "Wählen Sie Base32 oder Base58 passend zum erzeugenden System, bevor Sie den Inhalt debuggen."
+        },
+        {
+          "error": "Encoding wird als Sicherheit betrachtet",
+          "fix": "Base-Encoding ist umkehrbar; verwenden Sie zusätzlich Verschlüsselung oder Signaturen für Schutz."
+        }
+      ],
+      "privacyNotes": [
+        "Base32- und Base58-Konvertierung laufen lokal im Browser und benötigen keine Netzwerkabfrage.",
+        "Kodierte Werte können weiterhin Geheimnisse offenlegen, weil Encoding umkehrbar ist; maskieren Sie Beispiele vor dem Teilen.",
+        "Leeren Sie gemeinsam genutzte Zwischenablagen nach Debugging oder Dokumentation von Kennungen und Beispielwerten."
+      ],
+      "faqs": [
+        {
+          "q": "Wann sollte ich Base32 statt Base58 wählen?",
+          "a": "Base32 passt, wenn ein System RFC-4648-Ausgabe mit begrenztem Großbuchstabenalphabet und optionalem Padding erwartet."
+        },
+        {
+          "q": "Warum entfernt Base58 manche Zeichen?",
+          "a": "Base58 reduziert visuelle Verwechslungen beim Kopieren von Kennungen und walletbezogenen Werten."
+        },
+        {
+          "q": "Ist Base58 dasselbe wie Base64URL?",
+          "a": "Nein. Base58 verwendet ein anderes Alphabet und Verfahren; Base64URL bleibt Base64 mit URL-sicheren Zeichen."
+        },
+        {
+          "q": "Kann ich damit Produktionsgeheimnisse validieren?",
+          "a": "Sie können die Syntax lokal prüfen, sollten Geheimnisse vor dem Teilen aber rotieren oder maskieren."
+        },
+        {
+          "q": "Wie prüfe ich die Korrektheit?",
+          "a": "Kodieren Sie, dekodieren Sie zurück zu Text und vergleichen Sie mit der ursprünglichen Eingabe, bevor Sie den Wert verwenden."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "Wählen Sie Base32 oder Base58 und bestätigen Sie das Alphabet des Quellsystems.",
+      "Fügen Sie ein Beispiel ein und prüfen Sie zuerst auf ungültige Zeichen oder Paddingfehler.",
+      "Konvertieren Sie die Ausgabe zurück und vergleichen Sie sie mit dem Ursprungstext.",
+      "Entfernen Sie sensible Werte, bevor Sie Dokumentation, Fixtures oder Tickets aktualisieren."
+    ],
+    "qualityChecklist": [
+      "Kodier- und Dekodierrichtung sind korrekt gewählt.",
+      "Base32-Padding mit = steht nur am Ende.",
+      "Base58-Beispiele enthalten keine Zeichen 0, O, I oder l.",
+      "Ausgaben enthalten vor dem Teilen keine echten Tokens, Schlüssel oder personenbezogenen Daten."
+    ],
+    "operationalNote": "Der Base32/Base58-Konverter eignet sich für Kennungsdebugging, Testdaten und Dokumentationsprüfung, ersetzt aber keine Verschlüsselung, Signaturen oder automatisierte Tests."
   }
 }

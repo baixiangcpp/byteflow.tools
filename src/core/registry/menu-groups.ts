@@ -79,6 +79,7 @@ const PRIMARY_GROUP_BY_FAMILY: Record<NonNullable<ToolMeta["family"]>, PrimaryMe
 }
 
 const LEGACY_OVERRIDE_GROUP_BY_TOOL_KEY: Record<string, LegacyMenuGroupKey> = {
+    base_encoding_converter: "convert_encode",
     base64_encode_decode: "convert_encode",
     url_encode_decode: "convert_encode",
     image_base64: "convert_encode",

@@ -17,6 +17,7 @@ const FAMILY_BY_TOOL_KEY = {
     ai_color_palette_generator: "images-media",
     asn1_der_inspector: "security-tokens",
     barcode_generator: "generators",
+    base_encoding_converter: "encoders-decoders",
     base64_encode_decode: "encoders-decoders",
     certificate_decoder: "security-tokens",
     chmod_calculator: "devops-logs",

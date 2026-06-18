@@ -331,14 +331,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "keywords": [
             "yaml to json",
             "json to yaml",
-            "yaml converter online",
-            "yaml json transform"
+            "toml to json",
+            "json to toml",
+            "yaml json toml converter"
         ],
         "aliases": [],
         "relatedToolKeys": [
             "json_formatter",
             "json_to_typescript",
-            "jsonpath_playground",
+            "structured_data_visualizer",
             "xml_formatter"
         ],
         "networkAccess": "none",
@@ -357,11 +358,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "searchKeywords": [
             "convert yaml",
-            "yaml parser",
+            "convert toml",
+            "toml parser",
             "json converter",
             "YAML转换",
+            "TOML转换",
             "YAML変換",
+            "TOML変換",
             "YAML 변환",
+            "TOML 변환",
             "配置转换"
         ]
     },
@@ -681,6 +686,44 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "Base64エンコード",
             "Base64 디코딩",
             "Base64 인코딩"
+        ]
+    },
+    "base_encoding_converter": {
+        "key": "base_encoding_converter",
+        "slug": "base-encoding-converter",
+        "keywords": [
+            "base32 encoder",
+            "base32 decoder",
+            "base58 encoder",
+            "base58 decoder",
+            "base encoding converter"
+        ],
+        "aliases": [],
+        "relatedToolKeys": [
+            "base64_encode_decode",
+            "hex_bytes_workbench",
+            "url_encode_decode",
+            "hash_generator"
+        ],
+        "networkAccess": "none",
+        "persistInput": null,
+        "family": "encoders-decoders",
+        "tags": [
+            "encoders-decoders"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable"
+        ],
+        "searchKeywords": [
+            "base32",
+            "base58",
+            "bitcoin base58",
+            "encoding converter",
+            "base encode",
+            "base decode",
+            "编码",
+            "解码"
         ]
     },
     "url_encode_decode": {
@@ -3741,6 +3784,7 @@ const CLIENT_TOOL_KEY_BY_SLUG: Record<string, string> = {
     "json-diff-viewer": "json_diff_viewer",
     "csv-json-converter": "csv_json_converter",
     "base64-encode-decode": "base64_encode_decode",
+    "base-encoding-converter": "base_encoding_converter",
     "url-encode-decode": "url_encode_decode",
     "jwt-decoder": "jwt_decoder",
     "jwt-workbench": "jwt_workbench",
@@ -3944,6 +3988,10 @@ export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
             {
                 "key": "base64_encode_decode",
                 "slug": "base64-encode-decode"
+            },
+            {
+                "key": "base_encoding_converter",
+                "slug": "base-encoding-converter"
             },
             {
                 "key": "url_encode_decode",

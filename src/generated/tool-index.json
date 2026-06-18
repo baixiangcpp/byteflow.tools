@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-06-18T17:14:32.292Z",
+  "generatedAt": "2026-06-18T17:54:14.868Z",
   "counts": {
-    "canonicalTools": 121,
+    "canonicalTools": 122,
     "aliasRoutes": 1,
-    "routeDirs": 178,
+    "routeDirs": 179,
     "unknownRouteDirs": 0
   },
   "canonicalTools": [
@@ -212,14 +212,15 @@
       "relatedTools": [
         "json_formatter",
         "json_to_typescript",
-        "jsonpath_playground",
+        "structured_data_visualizer",
         "xml_formatter"
       ],
       "keywords": [
         "yaml to json",
         "json to yaml",
-        "yaml converter online",
-        "yaml json transform"
+        "toml to json",
+        "json to toml",
+        "yaml json toml converter"
       ],
       "networkAccess": "none",
       "persistInput": null,
@@ -442,6 +443,29 @@
     },
     {
       "index": 21,
+      "key": "base_encoding_converter",
+      "slug": "base-encoding-converter",
+      "category": "text-string",
+      "relatedTools": [
+        "base64_encode_decode",
+        "hex_bytes_workbench",
+        "url_encode_decode",
+        "hash_generator"
+      ],
+      "keywords": [
+        "base32 encoder",
+        "base32 decoder",
+        "base58 encoder",
+        "base58 decoder",
+        "base encoding converter"
+      ],
+      "networkAccess": "none",
+      "persistInput": null,
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/base-encoding-converter/manifest.ts"
+    },
+    {
+      "index": 22,
       "key": "url_encode_decode",
       "slug": "url-encode-decode",
       "category": "text-string",
@@ -462,7 +486,7 @@
       "sourceFile": "src/features/tools/url-encode-decode/manifest.ts"
     },
     {
-      "index": 22,
+      "index": 23,
       "key": "jwt_decoder",
       "slug": "jwt-decoder",
       "category": "text-string",
@@ -484,7 +508,7 @@
       "sourceFile": "src/features/tools/jwt-decoder/manifest.ts"
     },
     {
-      "index": 23,
+      "index": 24,
       "key": "jwt_workbench",
       "slug": "jwt-workbench",
       "category": "text-string",
@@ -506,7 +530,7 @@
       "sourceFile": "src/features/tools/jwt-workbench/manifest.ts"
     },
     {
-      "index": 24,
+      "index": 25,
       "key": "hash_generator",
       "slug": "hash-generator",
       "category": "text-string",
@@ -528,7 +552,7 @@
       "sourceFile": "src/features/tools/hash-generator/manifest.ts"
     },
     {
-      "index": 25,
+      "index": 26,
       "key": "md5_generator",
       "slug": "md5-generator",
       "category": "text-string",
@@ -550,7 +574,7 @@
       "sourceFile": "src/features/tools/md5-generator/manifest.ts"
     },
     {
-      "index": 26,
+      "index": 27,
       "key": "text_diff_checker",
       "slug": "text-diff-checker",
       "category": "text-string",
@@ -571,7 +595,7 @@
       "sourceFile": "src/features/tools/text-diff-checker/manifest.ts"
     },
     {
-      "index": 27,
+      "index": 28,
       "key": "multiple_whitespace_remover",
       "slug": "multiple-whitespace-remover",
       "category": "text-string",
@@ -593,7 +617,7 @@
       "sourceFile": "src/features/tools/multiple-whitespace-remover/manifest.ts"
     },
     {
-      "index": 28,
+      "index": 29,
       "key": "letter_counter",
       "slug": "letter-counter",
       "category": "text-string",
@@ -615,7 +639,7 @@
       "sourceFile": "src/features/tools/letter-counter/manifest.ts"
     },
     {
-      "index": 29,
+      "index": 30,
       "key": "bionic_reading_converter",
       "slug": "bionic-reading-converter",
       "category": "text-string",
@@ -637,7 +661,7 @@
       "sourceFile": "src/features/tools/bionic-reading-converter/manifest.ts"
     },
     {
-      "index": 30,
+      "index": 31,
       "key": "google_fonts_pair_finder",
       "slug": "google-fonts-pair-finder",
       "category": "text-string",
@@ -659,7 +683,7 @@
       "sourceFile": "src/features/tools/google-fonts-pair-finder/manifest.ts"
     },
     {
-      "index": 31,
+      "index": 32,
       "key": "text_to_handwriting_converter",
       "slug": "text-to-handwriting-converter",
       "category": "text-string",
@@ -681,7 +705,7 @@
       "sourceFile": "src/features/tools/text-to-handwriting-converter/manifest.ts"
     },
     {
-      "index": 32,
+      "index": 33,
       "key": "code_to_image_converter",
       "slug": "code-to-image-converter",
       "category": "text-string",
@@ -703,7 +727,7 @@
       "sourceFile": "src/features/tools/code-to-image-converter/manifest.ts"
     },
     {
-      "index": 33,
+      "index": 34,
       "key": "image_base64",
       "slug": "image-base64",
       "category": "text-string",
@@ -723,7 +747,7 @@
       "sourceFile": "src/features/tools/image-base64/manifest.ts"
     },
     {
-      "index": 34,
+      "index": 35,
       "key": "unix_timestamp",
       "slug": "unix-timestamp",
       "category": "generators",
@@ -744,7 +768,7 @@
       "sourceFile": "src/features/tools/unix-timestamp/manifest.ts"
     },
     {
-      "index": 35,
+      "index": 36,
       "key": "uuid_generator",
       "slug": "uuid-generator",
       "category": "generators",
@@ -765,7 +789,7 @@
       "sourceFile": "src/features/tools/uuid-generator/manifest.ts"
     },
     {
-      "index": 36,
+      "index": 37,
       "key": "lorem_ipsum",
       "slug": "lorem-ipsum",
       "category": "generators",
@@ -785,7 +809,7 @@
       "sourceFile": "src/features/tools/lorem-ipsum/manifest.ts"
     },
     {
-      "index": 37,
+      "index": 38,
       "key": "password_generator",
       "slug": "password-generator",
       "category": "generators",
@@ -805,7 +829,7 @@
       "sourceFile": "src/features/tools/password-generator/manifest.ts"
     },
     {
-      "index": 38,
+      "index": 39,
       "key": "color_converter",
       "slug": "color-converter",
       "category": "generators",
@@ -826,7 +850,7 @@
       "sourceFile": "src/features/tools/color-converter/manifest.ts"
     },
     {
-      "index": 39,
+      "index": 40,
       "key": "react_native_shadow_generator",
       "slug": "react-native-shadow-generator",
       "category": "generators",
@@ -848,7 +872,7 @@
       "sourceFile": "src/features/tools/react-native-shadow-generator/manifest.ts"
     },
     {
-      "index": 40,
+      "index": 41,
       "key": "ai_color_palette_generator",
       "slug": "ai-color-palette-generator",
       "category": "generators",
@@ -870,7 +894,7 @@
       "sourceFile": "src/features/tools/ai-color-palette-generator/manifest.ts"
     },
     {
-      "index": 41,
+      "index": 42,
       "key": "color_mixer",
       "slug": "color-mixer",
       "category": "generators",
@@ -892,7 +916,7 @@
       "sourceFile": "src/features/tools/color-mixer/manifest.ts"
     },
     {
-      "index": 42,
+      "index": 43,
       "key": "color_shades_generator",
       "slug": "color-shades-generator",
       "category": "generators",
@@ -914,7 +938,7 @@
       "sourceFile": "src/features/tools/color-shades-generator/manifest.ts"
     },
     {
-      "index": 43,
+      "index": 44,
       "key": "image_average_color_finder",
       "slug": "image-average-color-finder",
       "category": "generators",
@@ -936,7 +960,7 @@
       "sourceFile": "src/features/tools/image-average-color-finder/manifest.ts"
     },
     {
-      "index": 44,
+      "index": 45,
       "key": "image_caption_generator",
       "slug": "image-caption-generator",
       "category": "generators",
@@ -958,7 +982,7 @@
       "sourceFile": "src/features/tools/image-caption-generator/manifest.ts"
     },
     {
-      "index": 45,
+      "index": 46,
       "key": "image_color_extractor",
       "slug": "image-color-extractor",
       "category": "generators",
@@ -980,7 +1004,7 @@
       "sourceFile": "src/features/tools/image-color-extractor/manifest.ts"
     },
     {
-      "index": 46,
+      "index": 47,
       "key": "image_color_picker",
       "slug": "image-color-picker",
       "category": "generators",
@@ -1002,7 +1026,7 @@
       "sourceFile": "src/features/tools/image-color-picker/manifest.ts"
     },
     {
-      "index": 47,
+      "index": 48,
       "key": "image_cropper",
       "slug": "image-cropper",
       "category": "generators",
@@ -1024,7 +1048,7 @@
       "sourceFile": "src/features/tools/image-cropper/manifest.ts"
     },
     {
-      "index": 48,
+      "index": 49,
       "key": "image_filters",
       "slug": "image-filters",
       "category": "generators",
@@ -1046,7 +1070,7 @@
       "sourceFile": "src/features/tools/image-filters/manifest.ts"
     },
     {
-      "index": 49,
+      "index": 50,
       "key": "instagram_filters",
       "slug": "instagram-filters",
       "category": "generators",
@@ -1068,7 +1092,7 @@
       "sourceFile": "src/features/tools/instagram-filters/manifest.ts"
     },
     {
-      "index": 50,
+      "index": 51,
       "key": "instagram_post_generator",
       "slug": "instagram-post-generator",
       "category": "generators",
@@ -1090,7 +1114,7 @@
       "sourceFile": "src/features/tools/instagram-post-generator/manifest.ts"
     },
     {
-      "index": 51,
+      "index": 52,
       "key": "instagram_story_generator",
       "slug": "instagram-story-generator",
       "category": "generators",
@@ -1112,7 +1136,7 @@
       "sourceFile": "src/features/tools/instagram-story-generator/manifest.ts"
     },
     {
-      "index": 52,
+      "index": 53,
       "key": "open_graph_meta_generator",
       "slug": "open-graph-meta-generator",
       "category": "generators",
@@ -1134,7 +1158,7 @@
       "sourceFile": "src/features/tools/open-graph-meta-generator/manifest.ts"
     },
     {
-      "index": 53,
+      "index": 54,
       "key": "tweet_generator",
       "slug": "tweet-generator",
       "category": "generators",
@@ -1156,7 +1180,7 @@
       "sourceFile": "src/features/tools/tweet-generator/manifest.ts"
     },
     {
-      "index": 54,
+      "index": 55,
       "key": "tweet_to_image_converter",
       "slug": "tweet-to-image-converter",
       "category": "generators",
@@ -1178,7 +1202,7 @@
       "sourceFile": "src/features/tools/tweet-to-image-converter/manifest.ts"
     },
     {
-      "index": 55,
+      "index": 56,
       "key": "twitter_ad_revenue_generator",
       "slug": "twitter-ad-revenue-generator",
       "category": "generators",
@@ -1200,7 +1224,7 @@
       "sourceFile": "src/features/tools/twitter-ad-revenue-generator/manifest.ts"
     },
     {
-      "index": 56,
+      "index": 57,
       "key": "instagram_photo_downloader",
       "slug": "instagram-photo-downloader",
       "category": "generators",
@@ -1222,7 +1246,7 @@
       "sourceFile": "src/features/tools/instagram-photo-downloader/manifest.ts"
     },
     {
-      "index": 57,
+      "index": 58,
       "key": "vimeo_thumbnail_grabber",
       "slug": "vimeo-thumbnail-grabber",
       "category": "generators",
@@ -1244,7 +1268,7 @@
       "sourceFile": "src/features/tools/vimeo-thumbnail-grabber/manifest.ts"
     },
     {
-      "index": 58,
+      "index": 59,
       "key": "youtube_thumbnail_grabber",
       "slug": "youtube-thumbnail-grabber",
       "category": "generators",
@@ -1266,7 +1290,7 @@
       "sourceFile": "src/features/tools/youtube-thumbnail-grabber/manifest.ts"
     },
     {
-      "index": 59,
+      "index": 60,
       "key": "image_resizer",
       "slug": "image-resizer",
       "category": "generators",
@@ -1288,7 +1312,7 @@
       "sourceFile": "src/features/tools/image-resizer/manifest.ts"
     },
     {
-      "index": 60,
+      "index": 61,
       "key": "photo_censor",
       "slug": "photo-censor",
       "category": "generators",
@@ -1310,7 +1334,7 @@
       "sourceFile": "src/features/tools/photo-censor/manifest.ts"
     },
     {
-      "index": 61,
+      "index": 62,
       "key": "scanned_pdf_converter",
       "slug": "scanned-pdf-converter",
       "category": "generators",
@@ -1332,7 +1356,7 @@
       "sourceFile": "src/features/tools/scanned-pdf-converter/manifest.ts"
     },
     {
-      "index": 62,
+      "index": 63,
       "key": "svg_blob_generator",
       "slug": "svg-blob-generator",
       "category": "generators",
@@ -1354,7 +1378,7 @@
       "sourceFile": "src/features/tools/svg-blob-generator/manifest.ts"
     },
     {
-      "index": 63,
+      "index": 64,
       "key": "svg_pattern_generator",
       "slug": "svg-pattern-generator",
       "category": "generators",
@@ -1376,7 +1400,7 @@
       "sourceFile": "src/features/tools/svg-pattern-generator/manifest.ts"
     },
     {
-      "index": 64,
+      "index": 65,
       "key": "svg_stroke_to_fill_converter",
       "slug": "svg-stroke-to-fill-converter",
       "category": "generators",
@@ -1398,7 +1422,7 @@
       "sourceFile": "src/features/tools/svg-stroke-to-fill-converter/manifest.ts"
     },
     {
-      "index": 65,
+      "index": 66,
       "key": "svg_to_png_converter",
       "slug": "svg-to-png-converter",
       "category": "generators",
@@ -1420,7 +1444,7 @@
       "sourceFile": "src/features/tools/svg-to-png-converter/manifest.ts"
     },
     {
-      "index": 66,
+      "index": 67,
       "key": "css_background_pattern_generator",
       "slug": "css-background-pattern-generator",
       "category": "generators",
@@ -1442,7 +1466,7 @@
       "sourceFile": "src/features/tools/css-background-pattern-generator/manifest.ts"
     },
     {
-      "index": 67,
+      "index": 68,
       "key": "css_border_radius_generator",
       "slug": "css-border-radius-generator",
       "category": "generators",
@@ -1464,7 +1488,7 @@
       "sourceFile": "src/features/tools/css-border-radius-generator/manifest.ts"
     },
     {
-      "index": 68,
+      "index": 69,
       "key": "css_box_shadow_generator",
       "slug": "css-box-shadow-generator",
       "category": "generators",
@@ -1486,7 +1510,7 @@
       "sourceFile": "src/features/tools/css-box-shadow-generator/manifest.ts"
     },
     {
-      "index": 69,
+      "index": 70,
       "key": "css_checkbox_generator",
       "slug": "css-checkbox-generator",
       "category": "generators",
@@ -1508,7 +1532,7 @@
       "sourceFile": "src/features/tools/css-checkbox-generator/manifest.ts"
     },
     {
-      "index": 70,
+      "index": 71,
       "key": "css_clip_path_generator",
       "slug": "css-clip-path-generator",
       "category": "generators",
@@ -1530,7 +1554,7 @@
       "sourceFile": "src/features/tools/css-clip-path-generator/manifest.ts"
     },
     {
-      "index": 71,
+      "index": 72,
       "key": "css_cubic_bezier_generator",
       "slug": "css-cubic-bezier-generator",
       "category": "generators",
@@ -1552,7 +1576,7 @@
       "sourceFile": "src/features/tools/css-cubic-bezier-generator/manifest.ts"
     },
     {
-      "index": 72,
+      "index": 73,
       "key": "css_glassmorphism_generator",
       "slug": "css-glassmorphism-generator",
       "category": "generators",
@@ -1574,7 +1598,7 @@
       "sourceFile": "src/features/tools/css-glassmorphism-generator/manifest.ts"
     },
     {
-      "index": 73,
+      "index": 74,
       "key": "css_gradient_generator",
       "slug": "css-gradient-generator",
       "category": "generators",
@@ -1596,7 +1620,7 @@
       "sourceFile": "src/features/tools/css-gradient-generator/manifest.ts"
     },
     {
-      "index": 74,
+      "index": 75,
       "key": "css_loader_generator",
       "slug": "css-loader-generator",
       "category": "generators",
@@ -1618,7 +1642,7 @@
       "sourceFile": "src/features/tools/css-loader-generator/manifest.ts"
     },
     {
-      "index": 75,
+      "index": 76,
       "key": "css_switch_generator",
       "slug": "css-switch-generator",
       "category": "generators",
@@ -1640,7 +1664,7 @@
       "sourceFile": "src/features/tools/css-switch-generator/manifest.ts"
     },
     {
-      "index": 76,
+      "index": 77,
       "key": "css_text_glitch_effect_generator",
       "slug": "css-text-glitch-effect-generator",
       "category": "generators",
@@ -1662,7 +1686,7 @@
       "sourceFile": "src/features/tools/css-text-glitch-effect-generator/manifest.ts"
     },
     {
-      "index": 77,
+      "index": 78,
       "key": "css_triangle_generator",
       "slug": "css-triangle-generator",
       "category": "generators",
@@ -1684,7 +1708,7 @@
       "sourceFile": "src/features/tools/css-triangle-generator/manifest.ts"
     },
     {
-      "index": 78,
+      "index": 79,
       "key": "qr_code_generator",
       "slug": "qr-code-generator",
       "category": "generators",
@@ -1704,7 +1728,7 @@
       "sourceFile": "src/features/tools/qr-code-generator/manifest.ts"
     },
     {
-      "index": 79,
+      "index": 80,
       "key": "barcode_generator",
       "slug": "barcode-generator",
       "category": "generators",
@@ -1726,7 +1750,7 @@
       "sourceFile": "src/features/tools/barcode-generator/manifest.ts"
     },
     {
-      "index": 80,
+      "index": 81,
       "key": "fake_iban_generator",
       "slug": "fake-iban-generator",
       "category": "generators",
@@ -1748,7 +1772,7 @@
       "sourceFile": "src/features/tools/fake-iban-generator/manifest.ts"
     },
     {
-      "index": 81,
+      "index": 82,
       "key": "list_randomizer",
       "slug": "list-randomizer",
       "category": "generators",
@@ -1770,7 +1794,7 @@
       "sourceFile": "src/features/tools/list-randomizer/manifest.ts"
     },
     {
-      "index": 82,
+      "index": 83,
       "key": "ascii_art_generator",
       "slug": "ascii-art-generator",
       "category": "generators",
@@ -1790,7 +1814,7 @@
       "sourceFile": "src/features/tools/ascii-art-generator/manifest.ts"
     },
     {
-      "index": 83,
+      "index": 84,
       "key": "env_parser",
       "slug": "env-parser",
       "category": "generators",
@@ -1811,7 +1835,7 @@
       "sourceFile": "src/features/tools/env-parser/manifest.ts"
     },
     {
-      "index": 84,
+      "index": 85,
       "key": "id_generator",
       "slug": "id-generator",
       "category": "generators",
@@ -1833,7 +1857,7 @@
       "sourceFile": "src/features/tools/id-generator/manifest.ts"
     },
     {
-      "index": 85,
+      "index": 86,
       "key": "regex_tester",
       "slug": "regex-tester",
       "category": "network-web",
@@ -1854,7 +1878,7 @@
       "sourceFile": "src/features/tools/regex-tester/manifest.ts"
     },
     {
-      "index": 86,
+      "index": 87,
       "key": "regex_generator",
       "slug": "regex-generator",
       "category": "network-web",
@@ -1876,7 +1900,7 @@
       "sourceFile": "src/features/tools/regex-generator/manifest.ts"
     },
     {
-      "index": 87,
+      "index": 88,
       "key": "crontab_generator",
       "slug": "crontab-generator",
       "category": "network-web",
@@ -1896,7 +1920,7 @@
       "sourceFile": "src/features/tools/crontab-generator/manifest.ts"
     },
     {
-      "index": 88,
+      "index": 89,
       "key": "user_agent_parser",
       "slug": "user-agent-parser",
       "category": "network-web",
@@ -1917,7 +1941,7 @@
       "sourceFile": "src/features/tools/user-agent-parser/manifest.ts"
     },
     {
-      "index": 89,
+      "index": 90,
       "key": "cron_visualizer",
       "slug": "cron-visualizer",
       "category": "network-web",
@@ -1937,7 +1961,7 @@
       "sourceFile": "src/features/tools/cron-visualizer/manifest.ts"
     },
     {
-      "index": 90,
+      "index": 91,
       "key": "http_status_codes",
       "slug": "http-status-codes",
       "category": "network-web",
@@ -1958,7 +1982,7 @@
       "sourceFile": "src/features/tools/http-status-codes/manifest.ts"
     },
     {
-      "index": 91,
+      "index": 92,
       "key": "chmod_calculator",
       "slug": "chmod-calculator",
       "category": "network-web",
@@ -1979,7 +2003,7 @@
       "sourceFile": "src/features/tools/chmod-calculator/manifest.ts"
     },
     {
-      "index": 92,
+      "index": 93,
       "key": "cidr_subnet_calculator",
       "slug": "cidr-subnet-calculator",
       "category": "network-web",
@@ -2001,7 +2025,7 @@
       "sourceFile": "src/features/tools/cidr-subnet-calculator/manifest.ts"
     },
     {
-      "index": 93,
+      "index": 94,
       "key": "url_parser",
       "slug": "url-parser",
       "category": "network-web",
@@ -2023,7 +2047,7 @@
       "sourceFile": "src/features/tools/url-parser/manifest.ts"
     },
     {
-      "index": 94,
+      "index": 95,
       "key": "certificate_decoder",
       "slug": "certificate-decoder",
       "category": "network-web",
@@ -2045,7 +2069,7 @@
       "sourceFile": "src/features/tools/certificate-decoder/manifest.ts"
     },
     {
-      "index": 95,
+      "index": 96,
       "key": "http_request_builder",
       "slug": "http-request-builder",
       "category": "network-web",
@@ -2067,7 +2091,7 @@
       "sourceFile": "src/features/tools/http-request-builder/manifest.ts"
     },
     {
-      "index": 96,
+      "index": 97,
       "key": "curl_to_code",
       "slug": "curl-to-code",
       "category": "network-web",
@@ -2089,7 +2113,7 @@
       "sourceFile": "src/features/tools/curl-to-code/manifest.ts"
     },
     {
-      "index": 97,
+      "index": 98,
       "key": "ndjson_formatter",
       "slug": "ndjson-formatter",
       "category": "formatters",
@@ -2111,7 +2135,7 @@
       "sourceFile": "src/features/tools/ndjson-formatter/manifest.ts"
     },
     {
-      "index": 98,
+      "index": 99,
       "key": "jwt_verifier",
       "slug": "jwt-verifier",
       "category": "text-string",
@@ -2134,7 +2158,7 @@
       "sourceFile": "src/features/tools/jwt-verifier/manifest.ts"
     },
     {
-      "index": 99,
+      "index": 100,
       "key": "slugify_case_converter",
       "slug": "slugify-case-converter",
       "category": "text-string",
@@ -2156,7 +2180,7 @@
       "sourceFile": "src/features/tools/slugify-case-converter/manifest.ts"
     },
     {
-      "index": 100,
+      "index": 101,
       "key": "invisible_chars_detector",
       "slug": "invisible-characters-detector",
       "category": "text-string",
@@ -2179,7 +2203,7 @@
       "sourceFile": "src/features/tools/invisible-characters-detector/manifest.ts"
     },
     {
-      "index": 101,
+      "index": 102,
       "key": "robots_txt_tester",
       "slug": "robots-txt-tester",
       "category": "network-web",
@@ -2201,7 +2225,7 @@
       "sourceFile": "src/features/tools/robots-txt-tester/manifest.ts"
     },
     {
-      "index": 102,
+      "index": 103,
       "key": "csp_parser",
       "slug": "csp-parser",
       "category": "network-web",
@@ -2223,7 +2247,7 @@
       "sourceFile": "src/features/tools/csp-parser/manifest.ts"
     },
     {
-      "index": 103,
+      "index": 104,
       "key": "csv_diff",
       "slug": "csv-diff",
       "category": "formatters",
@@ -2245,7 +2269,7 @@
       "sourceFile": "src/features/tools/csv-diff/manifest.ts"
     },
     {
-      "index": 104,
+      "index": 105,
       "key": "header_diff",
       "slug": "header-diff",
       "category": "network-web",
@@ -2267,7 +2291,7 @@
       "sourceFile": "src/features/tools/header-diff/manifest.ts"
     },
     {
-      "index": 105,
+      "index": 106,
       "key": "security_header_analyzer",
       "slug": "security-header-analyzer",
       "category": "network-web",
@@ -2289,7 +2313,7 @@
       "sourceFile": "src/features/tools/security-header-analyzer/manifest.ts"
     },
     {
-      "index": 106,
+      "index": 107,
       "key": "totp_generator",
       "slug": "totp-generator",
       "category": "generators",
@@ -2311,7 +2335,7 @@
       "sourceFile": "src/features/tools/totp-generator/manifest.ts"
     },
     {
-      "index": 107,
+      "index": 108,
       "key": "openapi_mock",
       "slug": "openapi-mock",
       "category": "network-web",
@@ -2333,7 +2357,7 @@
       "sourceFile": "src/features/tools/openapi-mock/manifest.ts"
     },
     {
-      "index": 108,
+      "index": 109,
       "key": "docker_run_to_compose",
       "slug": "docker-run-to-compose",
       "category": "network-web",
@@ -2355,7 +2379,7 @@
       "sourceFile": "src/features/tools/docker-run-to-compose/manifest.ts"
     },
     {
-      "index": 109,
+      "index": 110,
       "key": "local_log_parser",
       "slug": "local-log-parser",
       "category": "network-web",
@@ -2378,7 +2402,7 @@
       "sourceFile": "src/features/tools/local-log-parser/manifest.ts"
     },
     {
-      "index": 110,
+      "index": 111,
       "key": "jq_playground",
       "slug": "jq-playground",
       "category": "network-web",
@@ -2401,7 +2425,7 @@
       "sourceFile": "src/features/tools/jq-playground/manifest.ts"
     },
     {
-      "index": 111,
+      "index": 112,
       "key": "log_scrubber",
       "slug": "log-scrubber",
       "category": "network-web",
@@ -2423,7 +2447,7 @@
       "sourceFile": "src/features/tools/log-scrubber/manifest.ts"
     },
     {
-      "index": 112,
+      "index": 113,
       "key": "gzip_brotli_lab",
       "slug": "gzip-brotli-lab",
       "category": "text-string",
@@ -2445,7 +2469,7 @@
       "sourceFile": "src/features/tools/gzip-brotli-lab/manifest.ts"
     },
     {
-      "index": 113,
+      "index": 114,
       "key": "yaml_merge_patch_explorer",
       "slug": "yaml-merge-patch-explorer",
       "category": "formatters",
@@ -2467,7 +2491,7 @@
       "sourceFile": "src/features/tools/yaml-merge-patch-explorer/manifest.ts"
     },
     {
-      "index": 114,
+      "index": 115,
       "key": "yq_playground",
       "slug": "yq-playground",
       "category": "network-web",
@@ -2490,7 +2514,7 @@
       "sourceFile": "src/features/tools/yq-playground/manifest.ts"
     },
     {
-      "index": 115,
+      "index": 116,
       "key": "structured_data_visualizer",
       "slug": "structured-data-visualizer",
       "category": "formatters",
@@ -2513,7 +2537,7 @@
       "sourceFile": "src/features/tools/structured-data-visualizer/manifest.ts"
     },
     {
-      "index": 116,
+      "index": 117,
       "key": "har_viewer_sanitizer",
       "slug": "har-viewer-sanitizer",
       "category": "network-web",
@@ -2536,7 +2560,7 @@
       "sourceFile": "src/features/tools/har-viewer-sanitizer/manifest.ts"
     },
     {
-      "index": 117,
+      "index": 118,
       "key": "pipeline_builder",
       "slug": "pipeline-builder",
       "category": "network-web",
@@ -2559,7 +2583,7 @@
       "sourceFile": "src/features/tools/pipeline-builder/manifest.ts"
     },
     {
-      "index": 118,
+      "index": 119,
       "key": "saml_decoder",
       "slug": "saml-decoder",
       "category": "network-web",
@@ -2581,7 +2605,7 @@
       "sourceFile": "src/features/tools/saml-decoder/manifest.ts"
     },
     {
-      "index": 119,
+      "index": 120,
       "key": "asn1_der_inspector",
       "slug": "asn1-der-inspector",
       "category": "network-web",
@@ -2603,7 +2627,7 @@
       "sourceFile": "src/features/tools/asn1-der-inspector/manifest.ts"
     },
     {
-      "index": 120,
+      "index": 121,
       "key": "hex_bytes_workbench",
       "slug": "hex-bytes-workbench",
       "category": "text-string",
@@ -2625,7 +2649,7 @@
       "sourceFile": "src/features/tools/hex-bytes-workbench/manifest.ts"
     },
     {
-      "index": 121,
+      "index": 122,
       "key": "unicode_inspector",
       "slug": "unicode-inspector",
       "category": "text-string",
@@ -2707,6 +2731,14 @@
     },
     {
       "slug": "barcode-generator",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "base-encoding-converter",
       "hasPage": true,
       "kind": "canonical-tool",
       "targetSlug": null,
