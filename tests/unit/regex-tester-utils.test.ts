@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { testRegexPattern } from "@/features/tools/regex-tester/utils"
+import { assessRegexSafety, testRegexPattern } from "@/features/tools/regex-tester/utils"
 
 describe("regex tester utils", () => {
     it("returns match summaries with captures", () => {
@@ -21,5 +21,23 @@ describe("regex tester utils", () => {
         if (!result.ok) {
             expect(result.error).toMatch(/Invalid regular expression/)
         }
+    })
+
+    it("blocks nested quantifier patterns before running them", () => {
+        const pattern = "^(a+)+$"
+        const input = `${"a".repeat(30)}X`
+
+        expect(assessRegexSafety(pattern, input)).toMatch(/nested quantifiers/)
+        const result = testRegexPattern(pattern, "g", input)
+
+        expect(result.ok).toBe(false)
+        if (!result.ok) {
+            expect(result.error).toMatch(/catastrophic backtracking/)
+        }
+    })
+
+    it("enforces pattern and input safety limits", () => {
+        expect(testRegexPattern("a".repeat(501), "g", "aaa").ok).toBe(false)
+        expect(testRegexPattern("a", "g", "a".repeat(20_001)).ok).toBe(false)
     })
 })

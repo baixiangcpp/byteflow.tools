@@ -59,11 +59,16 @@ describe("HTML injection surface guard", () => {
     })
 
     it("sanitizes user-provided SVG output before previewing it as HTML", () => {
-        const source = readSource("src/features/tools/svg-optimizer/page.tsx")
+        const pageSource = readSource("src/features/tools/svg-optimizer/page.tsx")
+        const logicSource = readSource("src/features/tools/svg-optimizer/logic.ts")
 
-        expect(source).toContain("import DOMPurify from \"isomorphic-dompurify\"")
-        expect(source).toContain("dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(output) }}")
-        expect(countMatches(source, /dangerouslySetInnerHTML=\{\{/g)).toBe(1)
+        expect(logicSource).toContain("import DOMPurify from \"isomorphic-dompurify\"")
+        expect(logicSource).toContain("export function sanitizeSvg(svg: string): string")
+        expect(logicSource).toContain("DOMPurify.sanitize(svg")
+        expect(logicSource).toContain("FORBID_TAGS")
+        expect(pageSource).toContain("setOutput(optimizeAndSanitizeSvg(input))")
+        expect(pageSource).toContain("dangerouslySetInnerHTML={{ __html: output }}")
+        expect(countMatches(pageSource, /dangerouslySetInnerHTML=\{\{/g)).toBe(1)
     })
 
     it("embeds dynamic redirect and runtime script data with JSON serialization only", () => {

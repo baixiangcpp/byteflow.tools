@@ -29,7 +29,7 @@ export function RegexTesterPage() {
             setMatches(result.matches)
             setError(result.limited ? toolT.error_match_limit : null)
         } else {
-            setError(toolT.error_invalid_regex)
+            setError(result.error || toolT.error_invalid_regex)
             setMatches([])
         }
     }, [flags, pattern, testString, toolT.error_invalid_regex, toolT.error_match_limit])

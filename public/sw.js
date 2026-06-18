@@ -28,6 +28,20 @@ const STATIC_ASSETS = [
     ...OFFLINE_FALLBACK_CANDIDATES,
 ];
 
+const SENSITIVE_QUERY_PARAMS = [
+    'handoff',
+    'handoff_ref',
+    'token',
+    'secret',
+    'payload',
+    'key',
+    'authorization',
+];
+
+function hasSensitiveQuery(url) {
+    return SENSITIVE_QUERY_PARAMS.some((param) => url.searchParams.has(param));
+}
+
 function matchOfflineFallback() {
     return caches.match(OFFLINE_FALLBACK_URL)
         .then((cached) => cached || caches.match('/offline'))
@@ -79,6 +93,8 @@ self.addEventListener('fetch', (event) => {
     if (event.request.method !== 'GET') return;
     // Do not cache or intercept third-party requests.
     if (url.origin !== self.location.origin) return;
+    // Keep tool payloads and secret-like query strings out of CacheStorage.
+    if (hasSensitiveQuery(url)) return;
 
     // Network-first for Next.js chunks and pages (ensures fresh code)
     if (

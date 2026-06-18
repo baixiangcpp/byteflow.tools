@@ -6,6 +6,7 @@ import {
     generatePassphrase,
     generatePasswordBatch,
     generateRandomPassword,
+    secureRandomInt,
 } from "@/features/tools/password-generator/utils"
 
 const zeroRandom = () => 0
@@ -89,5 +90,46 @@ describe("password-utils", () => {
 
         expect(high.entropy).toBeGreaterThan(low.entropy)
         expect(high.fraction).toBeGreaterThanOrEqual(low.fraction)
+    })
+
+    it("fails closed when Web Crypto is unavailable", () => {
+        const originalCrypto = globalThis.crypto
+        Object.defineProperty(globalThis, "crypto", {
+            configurable: true,
+            value: undefined,
+        })
+
+        try {
+            expect(() => secureRandomInt(10)).toThrow("Web Crypto is required")
+        } finally {
+            Object.defineProperty(globalThis, "crypto", {
+                configurable: true,
+                value: originalCrypto,
+            })
+        }
+    })
+
+    it("uses rejection sampling instead of modulo-biased random values", () => {
+        const originalCrypto = globalThis.crypto
+        const maxExclusive = 10
+        const values = [4_294_967_295, 12]
+        Object.defineProperty(globalThis, "crypto", {
+            configurable: true,
+            value: {
+                getRandomValues(array: Uint32Array) {
+                    array[0] = values.shift() ?? 0
+                    return array
+                },
+            },
+        })
+
+        try {
+            expect(secureRandomInt(maxExclusive)).toBe(2)
+        } finally {
+            Object.defineProperty(globalThis, "crypto", {
+                configurable: true,
+                value: originalCrypto,
+            })
+        }
     })
 })

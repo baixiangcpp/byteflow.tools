@@ -761,7 +761,8 @@
       "strength_weak": "弱",
       "strength_fair": "一般",
       "strength_good": "良好",
-      "strength_strong": "强"
+      "strength_strong": "强",
+      "crypto_unavailable": "需要 Web Crypto 才能生成安全密码。"
     },
     "color_converter": {
       "title": "颜色转换器",

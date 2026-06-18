@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import DOMPurify from "isomorphic-dompurify"
 import { Minimize2, BarChart3, Upload, Copy, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 import { useLang } from "@/core/i18n/lang-provider"
@@ -10,22 +9,7 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
-
-function optimizeSvg(svg: string): string {
-    let result = svg
-    result = result.replace(/<\?xml[^?]*\?>\s*/gi, "")
-    result = result.replace(/<!--[\s\S]*?-->/g, "")
-    result = result.replace(/<metadata[\s\S]*?<\/metadata>/gi, "")
-    result = result.replace(/<title[\s\S]*?<\/title>/gi, "")
-    result = result.replace(/<desc[\s\S]*?<\/desc>/gi, "")
-    result = result.replace(/\s+(inkscape|sodipodi|xmlns:inkscape|xmlns:sodipodi|xmlns:rdf|xmlns:cc|xmlns:dc)[^=]*="[^"]*"/gi, "")
-    result = result.replace(/<g[^>]*>\s*<\/g>/gi, "")
-    result = result.replace(/\s{2,}/g, " ")
-    result = result.replace(/>\s+</g, "><")
-    result = result.replace(/\s+>/g, ">")
-    result = result.replace(/\s+\/>/g, "/>")
-    return result.trim()
-}
+import { optimizeAndSanitizeSvg } from "./logic"
 
 const SAMPLE_SVG = `<?xml version="1.0" encoding="UTF-8"?>
 <!-- BF -->
@@ -59,7 +43,7 @@ export function SvgOptimizerPage() {
             setOutput("")
             return
         }
-        setOutput(optimizeSvg(input))
+        setOutput(optimizeAndSanitizeSvg(input))
     }, [input])
 
     const originalSize = new Blob([input]).size
@@ -174,7 +158,7 @@ export function SvgOptimizerPage() {
                         <div className="flex h-48 shrink-0 items-center justify-center border-b bg-muted/20 p-4">
                             {output ? (
                                 <div
-                                    dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(output) }}
+                                    dangerouslySetInnerHTML={{ __html: output }}
                                     className="flex h-full w-full items-center justify-center [&_svg]:max-h-full [&_svg]:max-w-full [&_svg]:drop-shadow-sm"
                                 />
                             ) : (

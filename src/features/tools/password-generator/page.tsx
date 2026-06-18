@@ -7,13 +7,7 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
@@ -36,7 +30,7 @@ export function PasswordGeneratorPage() {
     const { t } = useLang()
     const toolT = t.tools["password_generator"] as Record<string, string>
 
-    const text = (key: string) => toolT[key]
+    const text = React.useCallback((key: string) => toolT[key], [toolT])
 
     const [mode, setMode] = React.useState<PasswordMode>("random")
     const [randomOptions, setRandomOptions] = React.useState(DEFAULT_RANDOM_OPTIONS)
@@ -72,13 +66,18 @@ export function PasswordGeneratorPage() {
     }, [savedPresets])
 
     const regenerate = React.useCallback((count: number) => {
-        setResults(generatePasswordBatch({
-            mode,
-            random: randomOptions,
-            passphrase: passphraseOptions,
-            count,
-        }))
-    }, [mode, randomOptions, passphraseOptions])
+        try {
+            setResults(generatePasswordBatch({
+                mode,
+                random: randomOptions,
+                passphrase: passphraseOptions,
+                count,
+            }))
+        } catch (error) {
+            setResults([])
+            toast.error(error instanceof Error ? error.message : text("crypto_unavailable"))
+        }
+    }, [mode, passphraseOptions, randomOptions, text])
 
     React.useEffect(() => {
         regenerate(batchCount)
