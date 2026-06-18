@@ -80,6 +80,7 @@ export type TemplateCopy = {
 }
 
 export type ToolTemplateRenderModel = {
+    toolSlug: string
     title: string
     content: ToolContentTemplateData
     copy: TemplateCopy

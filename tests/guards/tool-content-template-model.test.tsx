@@ -141,4 +141,20 @@ describe("tool content FAQ JSON-LD shape", () => {
             ),
         ).not.toThrow()
     })
+
+    it("does not emit FAQPage schema for non-allowlisted tool templates", () => {
+        const model = buildModelForEn("xml-formatter")
+        expect(model).not.toBeNull()
+        if (!model) throw new Error("expected model to be available")
+
+        const { container } = render(
+            <ToolContentTemplateSection
+                model={model}
+                source="server"
+            />,
+        )
+
+        expect(container.querySelector("script[data-faq-schema=\"tool\"]")).toBeNull()
+        expect(container.textContent).toContain(model.copy.frequentlyAskedQuestions)
+    })
 })

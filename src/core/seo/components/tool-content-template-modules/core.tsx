@@ -14,6 +14,11 @@ import type {
 } from "./types"
 
 export const SEO_CONTENT_TEMPLATE_LOCALES = new Set<Locale>(["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr"])
+export const FAQ_SCHEMA_TOOL_SLUGS = new Set(["json-formatter", "base64-encode-decode", "jwt-decoder"])
+
+export function shouldEmitFaqSchema(toolSlug: string) {
+    return FAQ_SCHEMA_TOOL_SLUGS.has(toolSlug)
+}
 
 function buildFallbackContentTemplate(
     toolSlug: string,
@@ -69,6 +74,7 @@ export function buildToolTemplateModel({
     const intentProfile = localizedEntry ? null : pack.intentContent?.[intent]
 
     return {
+        toolSlug,
         title,
         content,
         copy: getTemplateCopy(lang),
@@ -85,7 +91,7 @@ export function ToolContentTemplateSection({
     model: ToolTemplateRenderModel
     source?: "client" | "server"
 }) {
-    const faqSchema = {
+    const faqSchema = shouldEmitFaqSchema(model.toolSlug) ? {
         "@context": "https://schema.org",
         "@type": "FAQPage",
         mainEntity: model.content.faqs.map((item) => ({
@@ -96,11 +102,11 @@ export function ToolContentTemplateSection({
                 text: item.a,
             },
         })),
-    }
+    } : null
 
     return (
         <>
-            <JsonLdScript data-faq-schema="tool" jsonLd={faqSchema} />
+            {faqSchema ? <JsonLdScript data-faq-schema="tool" jsonLd={faqSchema} /> : null}
             <ToolContentTemplateSurface source={source}>
                 <div className="mx-auto max-w-4xl space-y-8">
                     <header className="space-y-3">
