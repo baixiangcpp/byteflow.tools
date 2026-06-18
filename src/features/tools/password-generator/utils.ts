@@ -167,14 +167,23 @@ function getRequiredSets(options: RandomPasswordOptions): string[] {
     return sets.filter((set) => set.length > 0)
 }
 
-function secureRandomInt(maxExclusive: number): number {
+export function secureRandomInt(maxExclusive: number): number {
     if (maxExclusive <= 1) return 0
-    if (typeof globalThis !== "undefined" && globalThis.crypto?.getRandomValues) {
-        const values = new Uint32Array(1)
-        globalThis.crypto.getRandomValues(values)
-        return values[0] % maxExclusive
+
+    const crypto = globalThis.crypto
+    if (!crypto?.getRandomValues) {
+        throw new Error("Web Crypto is required to generate secure passwords.")
     }
-    return Math.floor(Math.random() * maxExclusive)
+
+    const values = new Uint32Array(1)
+    const maxGeneratedValue = 0x1_0000_0000
+    const rejectionLimit = maxGeneratedValue - (maxGeneratedValue % maxExclusive)
+
+    do {
+        crypto.getRandomValues(values)
+    } while (values[0] >= rejectionLimit)
+
+    return values[0] % maxExclusive
 }
 
 function pickChar(chars: string, randomInt: RandomIntFn): string {

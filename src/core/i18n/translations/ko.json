@@ -761,7 +761,8 @@
       "strength_weak": "약함",
       "strength_fair": "보통",
       "strength_good": "좋음",
-      "strength_strong": "강함"
+      "strength_strong": "강함",
+      "crypto_unavailable": "안전한 비밀번호를 생성하려면 Web Crypto가 필요합니다."
     },
     "color_converter": {
       "title": "색상 변환기",

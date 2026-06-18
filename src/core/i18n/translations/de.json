@@ -761,7 +761,8 @@
       "strength_weak": "Schwach",
       "strength_fair": "Mittel",
       "strength_good": "Gut",
-      "strength_strong": "Stark"
+      "strength_strong": "Stark",
+      "crypto_unavailable": "Web Crypto ist erforderlich, um sichere Passwoerter zu generieren."
     },
     "color_converter": {
       "title": "Farbkonverter",

@@ -21,4 +21,15 @@ describe("offline fallback page", () => {
         expect(source).toContain("new Response(")
         expect(source).toContain("You are offline")
     })
+
+    it("keeps tool payload query strings out of CacheStorage", () => {
+        const source = fs.readFileSync(path.join(process.cwd(), "public", "sw.js"), "utf8")
+
+        expect(source).toContain("const SENSITIVE_QUERY_PARAMS = [")
+        expect(source).toContain("'handoff'")
+        expect(source).toContain("'handoff_ref'")
+        expect(source).toContain("'secret'")
+        expect(source).toContain("function hasSensitiveQuery(url)")
+        expect(source).toContain("if (hasSensitiveQuery(url)) return;")
+    })
 })

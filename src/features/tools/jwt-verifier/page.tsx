@@ -9,6 +9,12 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import {
+    base64UrlEncode,
+    checkClaims,
+    decodeHeader,
+    decodePayload,
+} from "./logic"
 
 const ICON_BUTTON_CLASS =
     "inline-flex h-7 w-7 items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 dark:hover:bg-accent/50"
@@ -21,20 +27,6 @@ async function loadToast() {
 }
 
 // ─── JWT Verification Engine (HMAC-SHA256 only, client-side) ────────────────
-
-function base64UrlDecode(str: string): Uint8Array {
-    const padded = str.replace(/-/g, "+").replace(/_/g, "/")
-    const binary = atob(padded)
-    const bytes = new Uint8Array(binary.length)
-    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i)
-    return bytes
-}
-
-function base64UrlEncode(bytes: Uint8Array): string {
-    let binary = ""
-    for (const b of bytes) binary += String.fromCharCode(b)
-    return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "")
-}
 
 async function verifyHS256(token: string, secret: string): Promise<boolean> {
     const parts = token.split(".")
@@ -68,59 +60,6 @@ async function verifyHS512(token: string, secret: string): Promise<boolean> {
     const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-512" }, false, ["sign"])
     const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(signingInput))
     return base64UrlEncode(new Uint8Array(sig)) === parts[2]
-}
-
-function decodePayload(token: string): Record<string, unknown> | null {
-    try {
-        const parts = token.split(".")
-        if (parts.length !== 3) return null
-        const payload = JSON.parse(new TextDecoder().decode(base64UrlDecode(parts[1])))
-        return payload
-    } catch { return null }
-}
-
-function decodeHeader(token: string): Record<string, unknown> | null {
-    try {
-        const parts = token.split(".")
-        if (parts.length !== 3) return null
-        return JSON.parse(new TextDecoder().decode(base64UrlDecode(parts[0])))
-    } catch { return null }
-}
-
-type JwtClaimLabels = {
-    exp: string
-    nbf: string
-    iat: string
-    iss: string
-    sub: string
-    aud: string
-}
-
-function checkClaims(payload: Record<string, unknown>, labels: JwtClaimLabels): { label: string; status: "valid" | "invalid" | "info"; value: string }[] {
-    const checks: { label: string; status: "valid" | "invalid" | "info"; value: string }[] = []
-    const now = Math.floor(Date.now() / 1000)
-
-    if (payload.exp !== undefined) {
-        const exp = Number(payload.exp)
-        checks.push({ label: labels.exp, status: exp > now ? "valid" : "invalid", value: new Date(exp * 1000).toISOString() })
-    }
-    if (payload.nbf !== undefined) {
-        const nbf = Number(payload.nbf)
-        checks.push({ label: labels.nbf, status: nbf <= now ? "valid" : "invalid", value: new Date(nbf * 1000).toISOString() })
-    }
-    if (payload.iat !== undefined) {
-        checks.push({ label: labels.iat, status: "info", value: new Date(Number(payload.iat) * 1000).toISOString() })
-    }
-    if (payload.iss !== undefined) {
-        checks.push({ label: labels.iss, status: "info", value: String(payload.iss) })
-    }
-    if (payload.sub !== undefined) {
-        checks.push({ label: labels.sub, status: "info", value: String(payload.sub) })
-    }
-    if (payload.aud !== undefined) {
-        checks.push({ label: labels.aud, status: "info", value: String(payload.aud) })
-    }
-    return checks
 }
 
 export function JwtVerifierPage() {

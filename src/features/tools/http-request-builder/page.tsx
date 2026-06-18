@@ -16,16 +16,14 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-
-type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "HEAD" | "OPTIONS"
-type BodyType = "none" | "json" | "raw" | "form-urlencoded"
-
-interface HeaderEntry {
-    id: string
-    key: string
-    value: string
-    enabled: boolean
-}
+import {
+    generateCurl,
+    generateFetch,
+    generatePythonRequests,
+    type BodyType,
+    type HeaderEntry,
+    type HttpMethod,
+} from "./logic"
 
 let nextId = 0
 
@@ -35,90 +33,6 @@ const FORM_BODY_PLACEHOLDER = "mode=test&limit=10"
 
 function createDefaultHeaders(): HeaderEntry[] {
     return [{ id: `h_${nextId++}`, key: "Accept", value: "application/json", enabled: true }]
-}
-
-// ─── Code Generators ────────────────────────────────────────────────────────
-
-function generateCurl(method: HttpMethod, url: string, headers: HeaderEntry[], bodyType: BodyType, body: string): string {
-    const parts = ["curl"]
-    if (method !== "GET") parts.push(`-X ${method}`)
-    parts.push(`'${url}'`)
-
-    for (const h of headers.filter((h) => h.enabled && h.key)) {
-        parts.push(`-H '${h.key}: ${h.value}'`)
-    }
-
-    if (bodyType === "json" && body) {
-        parts.push(`-H 'Content-Type: application/json'`)
-        parts.push(`-d '${body}'`)
-    } else if (bodyType === "raw" && body) {
-        parts.push(`-d '${body}'`)
-    } else if (bodyType === "form-urlencoded" && body) {
-        parts.push(`-H 'Content-Type: application/x-www-form-urlencoded'`)
-        parts.push(`--data-urlencode '${body}'`)
-    }
-
-    return parts.join(" \\\n  ")
-}
-
-function generateFetch(method: HttpMethod, url: string, headers: HeaderEntry[], bodyType: BodyType, body: string): string {
-    const headersObj: Record<string, string> = {}
-    for (const h of headers.filter((h) => h.enabled && h.key)) {
-        headersObj[h.key] = h.value
-    }
-    if (bodyType === "json") headersObj["Content-Type"] = "application/json"
-    if (bodyType === "form-urlencoded") headersObj["Content-Type"] = "application/x-www-form-urlencoded"
-
-    const options: Record<string, unknown> = { method }
-    if (Object.keys(headersObj).length > 0) options.headers = headersObj
-    if (body && bodyType !== "none") {
-        options.body = bodyType === "json" ? `JSON.stringify(${body})` : body
-    }
-
-    let code = `const response = await fetch('${url}'`
-    if (Object.keys(options).length > 1 || method !== "GET") {
-        const optStr = JSON.stringify(options, null, 2)
-            .replace(/"JSON\.stringify\((.*?)\)"/, "JSON.stringify($1)")
-        code += `, ${optStr}`
-    }
-    code += ");\n"
-    code += "const data = await response.json();\n"
-    code += "console.log(data);"
-
-    return code
-}
-
-function generatePythonRequests(method: HttpMethod, url: string, headers: HeaderEntry[], bodyType: BodyType, body: string): string {
-    const lines = ["import requests", ""]
-    const headersObj: Record<string, string> = {}
-    for (const h of headers.filter((h) => h.enabled && h.key)) {
-        headersObj[h.key] = h.value
-    }
-
-    const methodLower = method.toLowerCase()
-    let callArgs = `'${url}'`
-
-    if (Object.keys(headersObj).length > 0) {
-        lines.push(`headers = ${JSON.stringify(headersObj, null, 4)}`)
-        callArgs += ", headers=headers"
-    }
-
-    if (body && bodyType !== "none") {
-        if (bodyType === "json") {
-            lines.push(`payload = ${body}`)
-            callArgs += ", json=payload"
-        } else {
-            lines.push(`data = '${body}'`)
-            callArgs += ", data=data"
-        }
-    }
-
-    lines.push("")
-    lines.push(`response = requests.${methodLower}(${callArgs})`)
-    lines.push("print(response.status_code)")
-    lines.push("print(response.json())")
-
-    return lines.join("\n")
 }
 
 export function HttpRequestBuilderPage() {

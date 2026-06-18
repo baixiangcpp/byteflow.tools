@@ -761,7 +761,8 @@
       "strength_weak": "弱い",
       "strength_fair": "普通",
       "strength_good": "良い",
-      "strength_strong": "強い"
+      "strength_strong": "強い",
+      "crypto_unavailable": "安全なパスワード生成には Web Crypto が必要です。"
     },
     "color_converter": {
       "title": "カラー変換",

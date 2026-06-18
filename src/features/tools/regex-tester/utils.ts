@@ -18,9 +18,32 @@ export type RegexTestResult =
         limited: false
     }
 
+const MAX_PATTERN_LENGTH = 500
+const MAX_TEST_STRING_LENGTH = 20_000
+const NESTED_QUANTIFIER_RE = /\((?:[^()\\]|\\.)*[+*](?:[^()\\]|\\.)*\)\s*[+*{]/
+const REPEATED_GROUP_WITH_RANGE_RE = /\((?:[^()\\]|\\.)*\{(?:\d+,?\d*|,\d+)\}(?:[^()\\]|\\.)*\)\s*[+*{]/
+
+export function assessRegexSafety(pattern: string, testString: string): string | null {
+    if (pattern.length > MAX_PATTERN_LENGTH) {
+        return `Pattern exceeds the ${MAX_PATTERN_LENGTH} character safety limit.`
+    }
+    if (testString.length > MAX_TEST_STRING_LENGTH) {
+        return `Test string exceeds the ${MAX_TEST_STRING_LENGTH} character safety limit.`
+    }
+    if (NESTED_QUANTIFIER_RE.test(pattern) || REPEATED_GROUP_WITH_RANGE_RE.test(pattern)) {
+        return "Pattern contains nested quantifiers that can cause catastrophic backtracking."
+    }
+    return null
+}
+
 export function testRegexPattern(pattern: string, flags: string, testString: string, maxMatches = 5_000): RegexTestResult {
     if (!pattern || testString === "") {
         return { ok: true, matches: [], limited: false }
+    }
+
+    const safetyError = assessRegexSafety(pattern, testString)
+    if (safetyError) {
+        return { ok: false, error: safetyError, matches: [], limited: false }
     }
 
     try {
