@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { resolveTrackedFileLastmod, toUtcDayIso } from "../../scripts/lib/sitemap-lastmod-lib.js"
+import { buildLastmodInputPaths, resolveTrackedFileLastmod, toUtcDayIso } from "../../scripts/lib/sitemap-lastmod-lib.js"
 
 describe("sitemap lastmod lib", () => {
     it("normalizes git timestamps to UTC day granularity", () => {
@@ -25,5 +25,29 @@ describe("sitemap lastmod lib", () => {
                 todayIso: "2026-04-10T09:15:00.000Z",
             }),
         ).toBe("2026-04-10T00:00:00.000Z")
+    })
+
+    it("keeps route lastmod inputs scoped to files that materially change the rendered page", () => {
+        const homePaths = buildLastmodInputPaths({
+            slug: "",
+            includeToolMeta: false,
+        })
+        const toolPaths = buildLastmodInputPaths({
+            slug: "json-formatter",
+            includeToolMeta: true,
+        })
+
+        expect(homePaths).toContain("src/app/[lang]/page.tsx")
+        expect(homePaths).not.toContain("src/app/layout.tsx")
+        expect(homePaths).not.toContain("src/app/[lang]/layout.tsx")
+        expect(homePaths).not.toContain("src/core/i18n/translations/en.json")
+
+        expect(toolPaths).toContain("src/app/[lang]/json-formatter/page.tsx")
+        expect(toolPaths).toContain("src/app/[lang]/json-formatter/layout.tsx")
+        expect(toolPaths).toContain("src/features/tools/json-formatter/manifest.ts")
+        expect(toolPaths).not.toContain("src/core/registry/manifests.ts")
+        expect(toolPaths).not.toContain("src/core/registry/registry.ts")
+        expect(toolPaths).not.toContain("src/core/registry/tool-order.json")
+        expect(toolPaths).not.toContain("src/core/i18n/translations/en.json")
     })
 })

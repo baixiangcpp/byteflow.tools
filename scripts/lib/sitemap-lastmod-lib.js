@@ -4,19 +4,11 @@ import fs from "node:fs";
 import path from "node:path";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
-import { listManifestFiles, loadToolSlugs } from "./tool-manifest-lib.js";
+import { loadOrderedToolManifests, loadToolSlugs } from "./tool-manifest-lib.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.join(__dirname, "../..");
 const ROUTE_GROUPS_PATH = path.join(ROOT_DIR, "src/lib/sitemap-route-groups.json");
-const TOOL_REGISTRY_SHARED_FILES = [
-    "src/core/registry/categories.ts",
-    "src/core/registry/manifests.ts",
-    "src/core/registry/registry.ts",
-    "src/core/registry/related-tools.ts",
-    "src/core/registry/tool-order.json",
-    "src/core/registry/types.ts",
-];
 const MANIFEST_RELATIVE_PATH = "src/lib/sitemap-lastmod.json";
 
 const LOCALES = ["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr"];
@@ -30,7 +22,6 @@ const ROUTE_FILE_NAMES = [
     "layout.jsx",
     "layout.js",
 ];
-const GLOBAL_ROUTE_FILES = ["src/app/layout.tsx", "src/app/[lang]/layout.tsx"];
 const DEFAULT_FALLBACK_ISO = "2026-02-25T00:00:00.000Z";
 
 function runGit(args) {
@@ -145,36 +136,47 @@ function readRouteGroups() {
     return JSON.parse(fs.readFileSync(ROUTE_GROUPS_PATH, "utf8"));
 }
 
-function toProjectRelativePath(absolutePath) {
-    return path.relative(ROOT_DIR, absolutePath).replace(/\\/g, "/");
+function buildToolManifestPathBySlug() {
+    const manifestPathBySlug = new Map();
+    for (const manifest of loadOrderedToolManifests()) {
+        if (manifest.sourceFile) {
+            manifestPathBySlug.set(manifest.slug, manifest.sourceFile);
+        }
+    }
+    return manifestPathBySlug;
 }
 
-function getToolMetaTrackedFiles() {
-    return [
-        ...TOOL_REGISTRY_SHARED_FILES,
-        ...listManifestFiles().map((manifestPath) => toProjectRelativePath(manifestPath)),
-    ]
-        .filter((relativePath) => isTrackedFile(relativePath));
-}
+const TOOL_MANIFEST_PATH_BY_SLUG = buildToolManifestPathBySlug();
 
 function readToolSlugs() {
     return loadToolSlugs();
 }
 
 function getRouteFilesForSlug(slug) {
+    if (!slug) {
+        return ["src/app/[lang]/page.tsx"].filter((filePath) => isTrackedFile(filePath));
+    }
+
     const base = slug ? `src/app/[lang]/${slug}` : "src/app/[lang]";
     return ROUTE_FILE_NAMES
         .map((name) => `${base}/${name}`)
         .filter((filePath) => isTrackedFile(filePath));
 }
 
-function resolveRouteLastmod({ locale, slug, includeToolMeta, fallbackIso }) {
-    const paths = dedupePaths([
-        ...GLOBAL_ROUTE_FILES,
+function getToolMetaTrackedFiles(slug) {
+    const manifestPath = TOOL_MANIFEST_PATH_BY_SLUG.get(slug);
+    return manifestPath && isTrackedFile(manifestPath) ? [manifestPath] : [];
+}
+
+export function buildLastmodInputPaths({ slug, includeToolMeta }) {
+    return dedupePaths([
         ...getRouteFilesForSlug(slug),
-        `src/core/i18n/translations/${locale}.json`,
-        ...(includeToolMeta ? getToolMetaTrackedFiles() : []),
+        ...(includeToolMeta && slug ? getToolMetaTrackedFiles(slug) : []),
     ].filter(Boolean));
+}
+
+function resolveRouteLastmod({ slug, includeToolMeta, fallbackIso }) {
+    const paths = buildLastmodInputPaths({ slug, includeToolMeta });
 
     const routeIsos = paths.map((filePath) => getEffectiveTrackedIso(filePath));
     return selectLatestIso(routeIsos, fallbackIso);
@@ -182,7 +184,7 @@ function resolveRouteLastmod({ locale, slug, includeToolMeta, fallbackIso }) {
 
 function buildLocaleMap({ slug, includeToolMeta, fallbackIso }) {
     return Object.fromEntries(
-        LOCALES.map((locale) => [locale, resolveRouteLastmod({ locale, slug, includeToolMeta, fallbackIso })])
+        LOCALES.map((locale) => [locale, resolveRouteLastmod({ slug, includeToolMeta, fallbackIso })])
     );
 }
 
