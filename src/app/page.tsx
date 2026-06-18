@@ -63,7 +63,13 @@ export default function RootPage() {
                         if (supported.indexOf(lang) < 0) lang = 'en';
                       }
 
-                      var suffix = (window.location.search || '') + (window.location.hash || '');
+                      var search = window.location.search || '';
+                      var hash = window.location.hash || '';
+                      if (search.indexOf('handoff=') >= 0 || search.indexOf('handoff_ref=') >= 0) {
+                        hash = '#' + search.slice(1);
+                        search = '';
+                      }
+                      var suffix = search + hash;
                       var target = '/' + lang + suffix;
                       window.location.replace(target);
                     })();

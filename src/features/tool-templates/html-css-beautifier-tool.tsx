@@ -119,7 +119,7 @@ export function HtmlCssBeautifierTool({
 
     React.useEffect(() => {
         if (typeof window === "undefined") return
-        const handoff = getToolHandoffFromSearchParams(new URLSearchParams(window.location.search))
+        const handoff = getToolHandoffFromSearchParams(new URLSearchParams(window.location.search), window.location.hash)
         if (!handoff || handoff === appliedHandoffRef.current) return
         appliedHandoffRef.current = handoff
         setInput(handoff)

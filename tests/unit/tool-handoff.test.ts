@@ -9,7 +9,8 @@ import {
 describe("tool handoff", () => {
     it("builds a localized shareable handoff URL", () => {
         const href = buildShareableToolHandoffHref("en", "json-to-typescript", '{"a":1}')
-        expect(href.startsWith("/en/json-to-typescript?handoff=")).toBe(true)
+        expect(href.startsWith("/en/json-to-typescript#handoff=")).toBe(true)
+        expect(href).not.toContain("?handoff=")
     })
 
     it("returns base path when payload is empty", () => {
@@ -19,9 +20,8 @@ describe("tool handoff", () => {
     it("round-trips unicode payload from query params", () => {
         const payload = "你好, JSON\n{\"name\":\"ByteFlow\"}"
         const href = buildShareableToolHandoffHref("en", "json-to-typescript", payload)
-        const query = href.split("?")[1] || ""
-        const params = new URLSearchParams(query)
-        expect(getToolHandoffFromSearchParams(params)).toBe(payload)
+        const fragment = href.split("#")[1] || ""
+        expect(getToolHandoffFromSearchParams(new URLSearchParams(), fragment)).toBe(payload)
     })
 
     it("returns null on invalid handoff value", () => {
@@ -37,20 +37,29 @@ describe("tool handoff", () => {
 
     it("keeps the legacy handoff href export as explicit share-link behavior", () => {
         const href = buildToolHandoffHref("en", "json-to-typescript", '{"a":1}')
-        expect(href.startsWith("/en/json-to-typescript?handoff=")).toBe(true)
+        expect(href.startsWith("/en/json-to-typescript#handoff=")).toBe(true)
     })
 
     it("uses sessionStorage handoff by default when available", () => {
         const payload = '{"token":"secret"}'
         const handoff = buildToolHandoffLink("en", "json-to-typescript", payload)
 
-        expect(handoff.href.startsWith("/en/json-to-typescript?handoff_ref=")).toBe(true)
+        expect(handoff.href.startsWith("/en/json-to-typescript#handoff_ref=")).toBe(true)
         expect(handoff.href).not.toContain("secret")
         handoff.prime()
 
-        const query = handoff.href.split("?")[1] || ""
-        const params = new URLSearchParams(query)
-        expect(getToolHandoffFromSearchParams(params)).toBe(payload)
-        expect(getToolHandoffFromSearchParams(params)).toBeNull()
+        const fragment = handoff.href.split("#")[1] || ""
+        expect(getToolHandoffFromSearchParams(new URLSearchParams(), fragment)).toBe(payload)
+        expect(getToolHandoffFromSearchParams(new URLSearchParams(), fragment)).toBeNull()
+    })
+
+    it("still reads old query-string handoff URLs for backward compatibility", () => {
+        const href = buildShareableToolHandoffHref("en", "json-to-typescript", "legacy payload")
+        const fragment = href.split("#")[1] || ""
+        const value = new URLSearchParams(fragment).get("handoff") ?? ""
+
+        expect(getToolHandoffFromSearchParams(new URLSearchParams(`handoff=${encodeURIComponent(value)}`))).toBe(
+            "legacy payload",
+        )
     })
 })
