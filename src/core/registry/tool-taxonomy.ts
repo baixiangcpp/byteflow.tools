@@ -68,6 +68,18 @@ const FAMILY_BY_TOOL_KEY: Partial<Record<string, ToolFamily>> = {
     color_shades_generator: "svg-css-visual",
     cron_visualizer: "devops-logs",
     crontab_generator: "devops-logs",
+    css_background_pattern_generator: "svg-css-visual",
+    css_border_radius_generator: "svg-css-visual",
+    css_box_shadow_generator: "svg-css-visual",
+    css_checkbox_generator: "svg-css-visual",
+    css_clip_path_generator: "svg-css-visual",
+    css_cubic_bezier_generator: "svg-css-visual",
+    css_glassmorphism_generator: "svg-css-visual",
+    css_gradient_generator: "svg-css-visual",
+    css_loader_generator: "svg-css-visual",
+    css_switch_generator: "svg-css-visual",
+    css_text_glitch_effect_generator: "svg-css-visual",
+    css_triangle_generator: "svg-css-visual",
     csp_parser: "security-tokens",
     csv_diff: "data-formats",
     csv_json_converter: "data-formats",
@@ -239,4 +251,3 @@ export function getToolTaxonomy(tool: ToolMeta): ToolTaxonomy {
         capabilities: uniqueSorted(capabilities),
     }
 }
-

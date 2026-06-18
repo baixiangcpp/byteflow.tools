@@ -1,12 +1,14 @@
 {
   "schemaVersion": 1,
   "menuGroupHubs": [
-    "convert-encode",
-    "design-media",
-    "format-validate",
-    "generators-ids",
-    "text-content",
-    "web-api"
+    "data-code-formats",
+    "devops-logs",
+    "encoding-crypto",
+    "generators-calculators",
+    "images-svg-css",
+    "social-metadata",
+    "text-regex",
+    "web-api-network"
   ],
   "toolCategoryHubs": [
     "formatters",
@@ -16,15 +18,23 @@
   ],
   "sitemapHubs": [
     "convert-encode",
+    "data-code-formats",
     "design-media",
+    "devops-logs",
+    "encoding-crypto",
     "format-validate",
     "formatters",
     "generators",
+    "generators-calculators",
     "generators-ids",
+    "images-svg-css",
     "network-tools",
+    "social-metadata",
     "text-content",
+    "text-regex",
     "text-tools",
-    "web-api"
+    "web-api",
+    "web-api-network"
   ],
   "requiredPersistentPages": [
     "about",

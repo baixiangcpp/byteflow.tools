@@ -201,7 +201,7 @@ describe("layout components", () => {
         render(<Footer />)
 
         expect(screen.getByRole("link", { name: "byteflow.tools" })).toHaveAttribute("href", "/en")
-        expect(screen.getByRole("link", { name: "format_validate" })).toHaveAttribute("href", "/en/format-validate")
+        expect(screen.getByRole("link", { name: "data_code_formats" })).toHaveAttribute("href", "/en/data-code-formats")
         expect(screen.getByRole("link", { name: "About" })).toHaveAttribute("href", "/en/about")
         expect(screen.queryByRole("link", { name: "json_formatter" })).not.toBeInTheDocument()
     })

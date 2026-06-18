@@ -1,9 +1,9 @@
 {
-  "generatedAt": "2026-06-17T14:58:43.146Z",
+  "generatedAt": "2026-06-18T17:14:32.292Z",
   "counts": {
     "canonicalTools": 121,
     "aliasRoutes": 1,
-    "routeDirs": 170,
+    "routeDirs": 178,
     "unknownRouteDirs": 0
   },
   "canonicalTools": [
@@ -3034,7 +3034,23 @@
       "inStaticGroup": false
     },
     {
+      "slug": "data-code-formats",
+      "hasPage": true,
+      "kind": "hub",
+      "targetSlug": null,
+      "inHubGroup": true,
+      "inStaticGroup": false
+    },
+    {
       "slug": "design-media",
+      "hasPage": true,
+      "kind": "hub",
+      "targetSlug": null,
+      "inHubGroup": true,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "devops-logs",
       "hasPage": true,
       "kind": "hub",
       "targetSlug": null,
@@ -3055,6 +3071,14 @@
       "kind": "canonical-tool",
       "targetSlug": null,
       "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "encoding-crypto",
+      "hasPage": true,
+      "kind": "hub",
+      "targetSlug": null,
+      "inHubGroup": true,
       "inStaticGroup": false
     },
     {
@@ -3091,6 +3115,14 @@
     },
     {
       "slug": "generators",
+      "hasPage": true,
+      "kind": "hub",
+      "targetSlug": null,
+      "inHubGroup": true,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "generators-calculators",
       "hasPage": true,
       "kind": "hub",
       "targetSlug": null,
@@ -3303,6 +3335,14 @@
       "kind": "canonical-tool",
       "targetSlug": null,
       "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "images-svg-css",
+      "hasPage": true,
+      "kind": "hub",
+      "targetSlug": null,
+      "inHubGroup": true,
       "inStaticGroup": false
     },
     {
@@ -3762,6 +3802,14 @@
       "inStaticGroup": false
     },
     {
+      "slug": "social-metadata",
+      "hasPage": true,
+      "kind": "hub",
+      "targetSlug": null,
+      "inHubGroup": true,
+      "inStaticGroup": false
+    },
+    {
       "slug": "sql-formatter",
       "hasPage": true,
       "kind": "canonical-tool",
@@ -3847,6 +3895,14 @@
       "kind": "canonical-tool",
       "targetSlug": null,
       "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "text-regex",
+      "hasPage": true,
+      "kind": "hub",
+      "targetSlug": null,
+      "inHubGroup": true,
       "inStaticGroup": false
     },
     {
@@ -3971,6 +4027,14 @@
     },
     {
       "slug": "web-api",
+      "hasPage": true,
+      "kind": "hub",
+      "targetSlug": null,
+      "inHubGroup": true,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "web-api-network",
       "hasPage": true,
       "kind": "hub",
       "targetSlug": null,

@@ -6,17 +6,19 @@ import {
   Compass,
   Puzzle,
   Braces,
-  Languages,
-  FileText,
-  Globe2,
   KeyRound,
   Palette,
+  Network,
+  TerminalSquare,
+  Regex,
+  Calculator,
+  Share2,
 } from "lucide-react"
 import { notFound } from "next/navigation"
 import { LOCALES, isValidLocale, requireTranslationValue } from "@/core/i18n/i18n"
 import { SearchButton } from "./search-button"
 import { getTranslation } from "@/core/i18n/translations/catalog"
-import { getMenuGroups } from "@/core/registry/menu-groups"
+import { MENU_GROUP_DEFS, getMenuGroups } from "@/core/registry/menu-groups"
 import { PopularToolsSection } from "@/features/home/components/popular-tools-section"
 import { HomeCategoryPreview } from "@/features/home/components/home-category-preview"
 import { ALL_TOOLS_SECTION_ID } from "@/core/routing/all-tools-route"
@@ -66,14 +68,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   const commonLabels = t.common
   const installAppLinkLabel = requireTranslationValue(commonLabels.install_as_app, "common.install_as_app")
 
-  const categoryLinks = [
-    { key: "format_validate", slug: "format-validate" },
-    { key: "convert_encode", slug: "convert-encode" },
-    { key: "text_content", slug: "text-content" },
-    { key: "web_api", slug: "web-api" },
-    { key: "generators_ids", slug: "generators-ids" },
-    { key: "design_media", slug: "design-media" },
-  ] as const
+  const categoryLinks = MENU_GROUP_DEFS
 
   const featureCards: FeatureCard[] = [
     {
@@ -113,20 +108,24 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
     menuGroups.map((group) => [group.key, group.items.length])
   ) as Record<string, number>
   const categoryIcons = {
-    format_validate: Braces,
-    convert_encode: Languages,
-    text_content: FileText,
-    web_api: Globe2,
-    generators_ids: KeyRound,
-    design_media: Palette,
+    data_code_formats: Braces,
+    encoding_crypto: KeyRound,
+    web_api_network: Network,
+    devops_logs: TerminalSquare,
+    text_regex: Regex,
+    images_svg_css: Palette,
+    generators_calculators: Calculator,
+    social_metadata: Share2,
   } as const
   const categoryIconClass = {
-    format_validate: "border-cyan-500/30 bg-cyan-500/12 text-cyan-400",
-    convert_encode: "border-blue-500/30 bg-blue-500/12 text-blue-400",
-    text_content: "border-emerald-500/30 bg-emerald-500/12 text-emerald-400",
-    web_api: "border-indigo-500/30 bg-indigo-500/12 text-indigo-400",
-    generators_ids: "border-amber-500/30 bg-amber-500/12 text-amber-400",
-    design_media: "border-pink-500/30 bg-pink-500/12 text-pink-400",
+    data_code_formats: "border-cyan-500/30 bg-cyan-500/12 text-cyan-400",
+    encoding_crypto: "border-blue-500/30 bg-blue-500/12 text-blue-400",
+    web_api_network: "border-indigo-500/30 bg-indigo-500/12 text-indigo-400",
+    devops_logs: "border-emerald-500/30 bg-emerald-500/12 text-emerald-400",
+    text_regex: "border-violet-500/30 bg-violet-500/12 text-violet-400",
+    images_svg_css: "border-pink-500/30 bg-pink-500/12 text-pink-400",
+    generators_calculators: "border-amber-500/30 bg-amber-500/12 text-amber-400",
+    social_metadata: "border-rose-500/30 bg-rose-500/12 text-rose-400",
   } as const
   const heroCategoryLinks = categoryLinks.map((item) => ({
     ...item,
@@ -134,7 +133,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   }))
   const categoryNavLabels = Object.fromEntries(
     categoryLinks.map((item) => [item.key, requireTranslationValue(t.nav[item.key], `nav.${item.key}`)])
-  ) as Record<(typeof categoryLinks)[number]["key"], string>
+  ) as Record<(typeof MENU_GROUP_DEFS)[number]["key"], string>
   const getLocalizedToolTitle = (toolKey: string) =>
     requireTranslationValue(localizedTools[toolKey]?.title, `tools.${toolKey}.title`)
   const getLocalizedToolDescription = (toolKey: string) =>

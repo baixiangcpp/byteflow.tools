@@ -30,7 +30,15 @@
     "text_content": "テキストとコンテンツ",
     "web_api": "Web と API",
     "generators_ids": "ジェネレーターと ID",
-    "design_media": "デザインとメディア"
+    "design_media": "デザインとメディア",
+    "data_code_formats": "データとコード形式",
+    "encoding_crypto": "エンコードと暗号",
+    "web_api_network": "Web・API・ネットワーク",
+    "devops_logs": "DevOps とログ",
+    "text_regex": "テキストと正規表現",
+    "images_svg_css": "画像・SVG・CSS",
+    "generators_calculators": "生成と計算",
+    "social_metadata": "ソーシャルとメタデータ"
   },
   "features": {
     "privacy_title": "100% プライバシー設計",
@@ -2544,7 +2552,15 @@
     "text_content_desc": "文字数カウント、空白整理、ケース変換、差分確認などのテキスト処理を提供します。",
     "web_api_desc": "JWT、ハッシュ、ヘッダー、HTTP、OpenAPI、リクエスト構築で Web/API を検証します。",
     "generators_ids_desc": "ID、パスワード、タイムスタンプ、シークレットなど開発向けデータを生成します。",
-    "design_media_desc": "コード画像、カラー出力、SVG 資産など共有向けのデザイン素材を作成します。"
+    "design_media_desc": "コード画像、カラー出力、SVG 資産など共有向けのデザイン素材を作成します。",
+    "data_code_formats_desc": "JSON、YAML、XML、CSV、スキーマ、コード向けデータ形式を整形・確認・変換します。",
+    "encoding_crypto_desc": "エンコード、デコード、ハッシュ、トークン確認、証明書と鍵データの処理をローカルで行います。",
+    "web_api_network_desc": "HTTP、OpenAPI、URL、User-Agent、ヘッダー、robots ルール、ネットワークデータを構築・確認・検証します。",
+    "devops_logs_desc": "環境ファイル、ログ、HAR、cron 式、運用向けスニペットを扱います。",
+    "text_regex_desc": "テキスト、Unicode、slug、正規表現、Markdown をクリーンアップ、比較、集計、変換、検証します。",
+    "images_svg_css_desc": "画像編集、色抽出、SVG 最適化、CSS ビジュアル生成、ローカルなデザイン素材作成を行います。",
+    "generators_calculators_desc": "ID、パスワード、タイムスタンプ、QR コード、バーコード、ランダムリスト、テストデータを生成します。",
+    "social_metadata_desc": "Open Graph メタデータ、ソーシャルプレビュー、サムネイル、共有用ソーシャル素材を作成します。"
   },
   "pages": {
     "about_title": "byteflow.toolsについて",
