@@ -11,7 +11,7 @@ const ALLOWED_DANGEROUS_HTML_FILES = [
     ...INLINE_SCRIPT_POLICY.map((entry) => entry.file),
     "src/core/seo/components/json-ld-script.tsx",
     "src/features/tools/svg-optimizer/page.tsx",
-]
+].filter((file) => INLINE_SCRIPT_POLICY.some((entry) => entry.file === file && entry.requiresUnsafeInline) || !INLINE_SCRIPT_POLICY.some((entry) => entry.file === file))
 
 function walk(dir: string): string[] {
     const entries = fs.readdirSync(dir, { withFileTypes: true })
@@ -73,15 +73,10 @@ describe("HTML injection surface guard", () => {
 
     it("embeds dynamic redirect and runtime script data with JSON serialization only", () => {
         const rootPageSource = readSource("src/app/page.tsx")
-        const legacyRedirectSource = readSource("src/core/seo/components/legacy-tool-redirect-page.tsx")
         const layoutSource = readSource("src/app/layout.tsx")
 
         expect(rootPageSource).toContain("var supported = ${JSON.stringify(LOCALES)};")
         expect(countMatches(rootPageSource, /dangerouslySetInnerHTML=\{\{/g)).toBe(1)
-
-        expect(legacyRedirectSource).toContain("const escapedHref = JSON.stringify(href)")
-        expect(legacyRedirectSource).toContain("var target = ${escapedHref};")
-        expect(countMatches(legacyRedirectSource, /dangerouslySetInnerHTML=\{\{/g)).toBe(1)
 
         expect(layoutSource).toContain("var locales = ${JSON.stringify(LOCALES)};")
         expect(countMatches(layoutSource, /dangerouslySetInnerHTML=\{\{/g)).toBe(1)
@@ -94,7 +89,11 @@ describe("HTML injection surface guard", () => {
             expect(fs.existsSync(path.join(process.cwd(), entry.file)), entry.file).toBe(true)
             expect(entry.purpose).toMatch(/\S/)
             expect(entry.migrationPath).toMatch(/\S/)
-            expect(entry.requiresUnsafeInline).toBe(true)
+            if (entry.id === "legacy-tool-redirect") {
+                expect(entry.requiresUnsafeInline).toBe(false)
+            } else {
+                expect(entry.requiresUnsafeInline).toBe(true)
+            }
         }
     })
 })
