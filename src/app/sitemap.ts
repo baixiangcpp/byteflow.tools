@@ -63,10 +63,10 @@ function getToolLastmod(locale: Locale, slug: string, homeFallback: Date): Date 
     )
 }
 
-function buildAlternates(pathBuilder: (locale: Locale) => string) {
+function buildAlternates(pathBuilder: (locale: Locale) => string, xDefaultUrl = pathBuilder("en")) {
     return Object.fromEntries([
         ...LOCALES.map((locale) => [locale, pathBuilder(locale)]),
-        ["x-default", pathBuilder("en")],
+        ["x-default", xDefaultUrl],
     ])
 }
 
@@ -83,7 +83,7 @@ function buildCoreEntries(): MetadataRoute.Sitemap {
         alternates: {
             languages: Object.fromEntries([
                 ...LOCALES.map((locale) => [locale, `${BASE_URL}/${locale}`]),
-                ["x-default", `${BASE_URL}/`],
+                ["x-default", BASE_URL],
             ]),
         },
     })
@@ -96,7 +96,7 @@ function buildCoreEntries(): MetadataRoute.Sitemap {
             changeFrequency: "weekly",
             priority: 1,
             alternates: {
-                languages: buildAlternates((l) => `${BASE_URL}/${l}`),
+                languages: buildAlternates((l) => `${BASE_URL}/${l}`, BASE_URL),
             },
         })
 
