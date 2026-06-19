@@ -18,19 +18,13 @@ import { ModeSelector } from "@/features/tool-shell/mode-selector"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import {
-    emptyHmacHashes,
-    emptyStandardHashes,
-    hashBytes,
-    hashHmac,
-    hashText,
-    hashTextByAlgorithm,
-    type HmacHashes,
     type StandardHashAlgorithm,
-    type StandardHashes,
 } from "@/core/utils/hash-utils"
 import { downloadTextFile } from "./browser-actions"
 import { BATCH_ALGORITHMS } from "./constants"
+import type { HashTaskInput } from "./hash-task-logic"
 import type { HashMode } from "./types"
+import { useHashTask } from "./use-hash-task"
 
 export function HashGeneratorPage() {
     const { t, lang } = useLang()
@@ -53,29 +47,14 @@ export function HashGeneratorPage() {
         { value: "batch" as const, label: toolT.mode_batch },
     ], [toolT])
 
-    const standardHashes = React.useMemo<StandardHashes>(() => {
-        if (mode === "text") return hashText(input)
-        if (mode === "file" && fileBytes) return hashBytes(fileBytes)
-        return emptyStandardHashes()
-    }, [mode, input, fileBytes])
-
-    const hmacHashes = React.useMemo<HmacHashes>(() => {
-        if (mode !== "hmac") return emptyHmacHashes()
-        return hashHmac(input, secret)
-    }, [mode, input, secret])
-
-    const batchRows = React.useMemo(() => {
-        if (mode !== "batch" || !input.trim()) return []
-        return input
-            .split(/\r?\n/)
-            .map((line) => line.trim())
-            .filter((line) => line.length > 0)
-            .map((line, index) => ({
-                index: index + 1,
-                line,
-                hash: hashTextByAlgorithm(line, batchAlgorithm),
-            }))
-    }, [mode, input, batchAlgorithm])
+    const hashTaskInput = React.useMemo<HashTaskInput | null>(() => {
+        if (mode === "text") return { mode, input }
+        if (mode === "file" && fileBytes) return { mode, bytes: fileBytes }
+        if (mode === "hmac") return { mode, input, secret }
+        if (mode === "batch") return { mode, input, algorithm: batchAlgorithm }
+        return null
+    }, [batchAlgorithm, fileBytes, input, mode, secret])
+    const { standardHashes, hmacHashes, batchRows, isHashing } = useHashTask(hashTaskInput)
 
     const handleCopy = async (text: string, label: string) => {
         if (!text) return
@@ -240,7 +219,7 @@ export function HashGeneratorPage() {
                     ) : null}
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-4" aria-busy={isHashing}>
                     {(mode === "text" || mode === "file") ? (
                         <>
                             <HashOutputBox
