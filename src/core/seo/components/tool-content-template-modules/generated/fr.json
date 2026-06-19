@@ -10111,7 +10111,7 @@
       ],
       "useCases": [
         "Mesurer la taille Gzip de JSON, HTML, CSS ou extraits de logs.",
-        "Décoder des fixtures gzip Base64 copiées depuis des outils de debug.",
+        "Décoder des jeux de test gzip Base64 copiés depuis des outils de debug.",
         "Comparer Gzip, Deflate et le support Brotli du navigateur."
       ],
       "inputExamples": [
@@ -10187,7 +10187,7 @@
       "useCases": [
         "Extraire rapidement une valeur imbriquée depuis une configuration Kubernetes, Docker Compose ou CI.",
         "Vérifier qu'une expression de chemin cible le bon noeud avant de modifier un overlay YAML.",
-        "Convertir un extrait YAML en JSON pour le coller dans une requête de débogage, une documentation ou un fixture de test."
+        "Convertir un extrait YAML en JSON pour le coller dans une requête de débogage, une documentation ou un jeu de test."
       ],
       "inputExamples": [
         {

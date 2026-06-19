@@ -1482,17 +1482,48 @@ const FILE_GUARDS: Array<{ file: string; forbidden: Array<string | RegExp> }> = 
             "The formatted ${mode.toUpperCase()} has been copied.",
         ],
     },
+]
+
+const LOCALIZED_JSON_COPY_GUARDS: Array<{ globRoot: string; forbidden: Array<string | RegExp> }> = [
     {
-        file: "scripts/generators/generate-localized-tool-content.mjs",
+        globRoot: "src/core/i18n/translations",
         forbidden: [
-            "sert 脿 la ${intentTerm} directement dans le navigateur.",
-            "utile pour valider la ${intentTerm} dans le navigateur",
-            "au flux de ${intentTerm}",
-            "dans la phase de ${intentTerm}",
-            "doit 锚tre utilis茅 comme 茅tape de v茅rification rapide",
+            "测试 fixture",
+            "測試 fixture",
+            "テスト fixture",
+            "테스트 fixture",
+            "Test-Fixtures",
+            "fixtures de test",
+        ],
+    },
+    {
+        globRoot: "src/core/seo/components/tool-content-template-modules/generated",
+        forbidden: [
+            "测试夹具",
+            "測試夾具",
+            "测试 fixture",
+            "測試 fixture",
+            "テスト fixture",
+            "Base64 gzip fixture",
+            "fixture de test",
+            "fixtures de test",
+            "Test-Fixtures",
+            "Support-Fixtures",
+            "Kompakte Kompakte",
+            "内容를",
+            "測試樣本 或",
+            "真實 權杖",
+            "テストデータ の",
         ],
     },
 ]
+
+const listJsonFiles = (root: string): string[] => {
+    const absoluteRoot = path.join(PROJECT_ROOT, root)
+    return fs.readdirSync(absoluteRoot)
+        .filter((file) => file.endsWith(".json"))
+        .map((file) => path.join(root, file))
+}
 
 describe("localized copy regression guard", () => {
     it("rejects previously degraded de/fr copy fragments", () => {
@@ -1511,5 +1542,25 @@ describe("localized copy regression guard", () => {
         }
 
         expect(violations, `Found degraded localized copy fragments:\n${violations.join("\n")}`).toEqual([])
+    })
+
+    it("rejects known low-quality localized JSON fragments", () => {
+        const violations: string[] = []
+
+        for (const guard of LOCALIZED_JSON_COPY_GUARDS) {
+            for (const file of listJsonFiles(guard.globRoot)) {
+                const source = fs.readFileSync(path.join(PROJECT_ROOT, file), "utf8")
+                for (const fragment of guard.forbidden) {
+                    const found = typeof fragment === "string"
+                        ? source.includes(fragment)
+                        : fragment.test(source)
+                    if (found) {
+                        violations.push(`${file}: ${String(fragment)}`)
+                    }
+                }
+            }
+        }
+
+        expect(violations, `Found low-quality localized JSON fragments:\n${violations.join("\n")}`).toEqual([])
     })
 })

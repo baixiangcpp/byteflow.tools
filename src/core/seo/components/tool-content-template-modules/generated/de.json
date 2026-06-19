@@ -10187,7 +10187,7 @@
       "useCases": [
         "Einen bestimmten verschachtelten Wert aus Kubernetes-, Docker-Compose- oder CI-Konfigurationen extrahieren.",
         "Vor Änderungen an YAML-Overlays prüfen, ob ein Pfadausdruck den erwarteten Knoten trifft.",
-        "YAML-Ausschnitte nach JSON konvertieren, um sie in Debug-Requests, Dokumentation oder Test-Fixtures zu verwenden."
+        "YAML-Ausschnitte nach JSON konvertieren, um sie in Debug-Requests, Dokumentation oder Testdaten zu verwenden."
       ],
       "inputExamples": [
         {
@@ -10944,12 +10944,12 @@
         "Es kodiert UTF-8-Text als RFC-4648-Base32 mit Padding, passend für Systeme mit Großbuchstabenalphabet und fester Blockgröße.",
         "Es dekodiert Base32 zurück zu Text und weist ungültige Zeichen oder falsches Padding zurück, damit Kopier- und Transportfehler sichtbar werden.",
         "Es unterstützt Bitcoin-artiges Base58, erhält führende Nullbytes und schließt verwechselbare Zeichen wie 0, O, I und l aus.",
-        "Die Konvertierung bleibt im Browser und eignet sich für Kennungen, Wallet-bezogene Beispiele, Bereitstellungscodes und Support-Fixtures ohne API-Upload."
+        "Die Konvertierung bleibt im Browser und eignet sich für Kennungen, Wallet-bezogene Beispiele, Bereitstellungscodes und Support-Testdaten ohne API-Upload."
       ],
       "useCases": [
         "Prüfen, ob ein Base32-Recovery-Code oder Bereitstellungswert sauber hin und zurück konvertiert.",
         "Ein Base58-Kennungsbeispiel beim Debugging von Wallet-, Schlüssel- oder verteilten Systemen dekodieren.",
-        "Kompakte Kompakte Testdaten erstellen, wenn Base64-Zeichen in URLs, Shells oder Dokumentation stören.",
+        "Kompakte Testdaten erstellen, wenn Base64-Zeichen in URLs, Shells oder Dokumentation stören.",
         "Kontrollieren, ob kopierte Werte durch E-Mail oder Chat Leerzeichen oder verwechselbare Zeichen enthalten.",
         "Base32, Base58, Base64 und Hex vergleichen, bevor eine Darstellung für einen lokalen Workflow festgelegt wird."
       ],
