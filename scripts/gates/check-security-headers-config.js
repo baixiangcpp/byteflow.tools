@@ -68,6 +68,15 @@ function inlineScriptPolicyRequiresUnsafeInline() {
     return trueCount > 0
 }
 
+function externalRuntimeScriptsFromPolicy() {
+    if (!fs.existsSync(INLINE_SCRIPT_POLICY_PATH)) {
+        fail(`Missing inline script policy: ${path.relative(process.cwd(), INLINE_SCRIPT_POLICY_PATH)}`)
+    }
+
+    const source = fs.readFileSync(INLINE_SCRIPT_POLICY_PATH, "utf8")
+    return [...source.matchAll(/externalScript:\s*["']([^"']+)["']/g)].map((match) => match[1])
+}
+
 function loadExternalSourceAllowlist() {
     if (!fs.existsSync(EXTERNAL_SOURCE_ALLOWLIST_PATH)) {
         fail(`Missing security header allowlist: ${path.relative(process.cwd(), EXTERNAL_SOURCE_ALLOWLIST_PATH)}`)
@@ -185,11 +194,22 @@ function main() {
     }
 
     const hasUnsafeInlineScript = /(?:^|;)\s*script-src\b[^;]*'unsafe-inline'/.test(cspValue)
+    const scriptSrc = cspDirectives.get("script-src") || []
     if (hasUnsafeInlineScript && !inlineScriptPolicyRequiresUnsafeInline()) {
         failures.push("content-security-policy: script-src contains 'unsafe-inline' but inline policy has no active rationale")
     }
     if (!hasUnsafeInlineScript && inlineScriptPolicyRequiresUnsafeInline()) {
         failures.push("content-security-policy: inline script policy still requires 'unsafe-inline' but script-src does not include it")
+    }
+
+    for (const runtimeScript of externalRuntimeScriptsFromPolicy()) {
+        const publicScriptPath = path.join(process.cwd(), "public", runtimeScript.replace(/^\/+/, ""))
+        if (!fs.existsSync(publicScriptPath)) {
+            failures.push(`inline-script-policy: externalScript "${runtimeScript}" does not exist in public/`)
+        }
+        if (!scriptSrc.includes("'self'")) {
+            failures.push(`content-security-policy: script-src must include 'self' for externalScript "${runtimeScript}"`)
+        }
     }
 
     for (const [directiveName, allowlistKey] of [["script-src", "scriptSrc"], ["connect-src", "connectSrc"]]) {

@@ -26,56 +26,7 @@ export const metadata: Metadata = {
 export default function RootPage() {
     return (
         <>
-            <script
-                dangerouslySetInnerHTML={{
-                    __html: `
-                    (function() {
-                      var supported = ${JSON.stringify(LOCALES)};
-                      var lang = 'en';
-
-                      // Check if user has manually selected a language before
-                      try {
-                        var saved = localStorage.getItem('byteflow:preferred-locale');
-                        if (saved && supported.indexOf(saved) >= 0) {
-                          lang = saved;
-                        } else {
-                          // Fall back to browser language detection
-                          var raw = (navigator.language || 'en').toLowerCase();
-                          if (raw === 'zh-cn' || raw === 'zh-sg') lang = 'zh-CN';
-                          else if (raw === 'zh-tw' || raw === 'zh-hk' || raw === 'zh-mo') lang = 'zh-TW';
-                          else if (raw === 'zh' || raw.indexOf('zh-') === 0) lang = 'zh-CN';
-                          else if (raw.indexOf('ja') === 0) lang = 'ja';
-                          else if (raw.indexOf('ko') === 0) lang = 'ko';
-                          else if (raw.indexOf('de') === 0) lang = 'de';
-                          else if (raw.indexOf('fr') === 0) lang = 'fr';
-                          if (supported.indexOf(lang) < 0) lang = 'en';
-                        }
-                      } catch (e) {
-                        // localStorage not available, use browser language
-                        var raw = (navigator.language || 'en').toLowerCase();
-                        if (raw === 'zh-cn' || raw === 'zh-sg') lang = 'zh-CN';
-                        else if (raw === 'zh-tw' || raw === 'zh-hk' || raw === 'zh-mo') lang = 'zh-TW';
-                        else if (raw === 'zh' || raw.indexOf('zh-') === 0) lang = 'zh-CN';
-                        else if (raw.indexOf('ja') === 0) lang = 'ja';
-                        else if (raw.indexOf('ko') === 0) lang = 'ko';
-                        else if (raw.indexOf('de') === 0) lang = 'de';
-                        else if (raw.indexOf('fr') === 0) lang = 'fr';
-                        if (supported.indexOf(lang) < 0) lang = 'en';
-                      }
-
-                      var search = window.location.search || '';
-                      var hash = window.location.hash || '';
-                      if (search.indexOf('handoff=') >= 0 || search.indexOf('handoff_ref=') >= 0) {
-                        hash = '#' + search.slice(1);
-                        search = '';
-                      }
-                      var suffix = search + hash;
-                      var target = '/' + lang + suffix;
-                      window.location.replace(target);
-                    })();
-                `,
-                }}
-            />
+            <script src="/runtime/root-locale-redirect.js" />
             <main className="mx-auto max-w-xl px-6 py-16 text-center">
                 <h1 className="text-2xl font-semibold tracking-tight">byteflow.tools</h1>
                 <p className="mt-3 text-sm text-muted-foreground">

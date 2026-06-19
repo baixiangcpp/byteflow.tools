@@ -4,6 +4,7 @@ export type InlineScriptPolicyEntry = {
     purpose: string
     requiresUnsafeInline: boolean
     migrationPath: string
+    externalScript?: string
 }
 
 export const INLINE_SCRIPT_POLICY: readonly InlineScriptPolicyEntry[] = [
@@ -11,22 +12,24 @@ export const INLINE_SCRIPT_POLICY: readonly InlineScriptPolicyEntry[] = [
         id: "root-locale-redirect",
         file: "src/app/page.tsx",
         purpose: "Static export root locale redirect before React hydration.",
-        requiresUnsafeInline: true,
-        migrationPath: "Move redirect bootstrap into a hashed static script once static export can preserve locale fallback behavior.",
+        requiresUnsafeInline: false,
+        migrationPath: "Implemented as a same-origin runtime script to avoid inline execution in the root route.",
+        externalScript: "/runtime/root-locale-redirect.js",
     },
     {
         id: "theme-manifest-bootstrap",
         file: "src/app/layout.tsx",
         purpose: "Set locale lang, color scheme, theme-color, and localized manifest before first paint.",
-        requiresUnsafeInline: true,
-        migrationPath: "Move bootstrap into a hashed static script after verifying no theme flash or manifest race in exported HTML.",
+        requiresUnsafeInline: false,
+        migrationPath: "Implemented as a same-origin runtime script loaded in <head> before first paint.",
+        externalScript: "/runtime/theme-manifest-bootstrap.js",
     },
     {
-        id: "legacy-tool-redirect",
-        file: "src/core/seo/components/legacy-tool-redirect-page.tsx",
-        purpose: "Fallback content for statically exported legacy tool aliases after deployment-level redirects.",
-        requiresUnsafeInline: false,
-        migrationPath: "Keep alias redirects in public/_redirects and remove this fallback when old exports can be dropped.",
+        id: "json-ld-structured-data",
+        file: "src/core/seo/components/json-ld-script.tsx",
+        purpose: "Emit per-page application/ld+json structured data in statically exported HTML.",
+        requiresUnsafeInline: true,
+        migrationPath: "Next static export uses one global CSP header, so per-page JSON-LD hashes cannot be enumerated centrally; keep the serializer guard active until structured data can be moved to hashed page-specific headers or external JSON assets.",
     },
 ]
 

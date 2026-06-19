@@ -1,6 +1,8 @@
 import fs from "node:fs"
 import path from "node:path"
 import { describe, expect, it } from "vitest"
+import { LOCALES } from "@/core/i18n/i18n"
+import { PWA_THEME_COLOR, PWA_THEME_COLOR_LIGHT } from "@/core/pwa/constants"
 import { INLINE_SCRIPT_POLICY } from "@/core/security/inline-script-policy"
 
 const SRC_ROOT = path.join(process.cwd(), "src")
@@ -9,7 +11,6 @@ const DANGEROUS_HTML_CALL = "dangerouslySetInnerHTML"
 
 const ALLOWED_DANGEROUS_HTML_FILES = [
     ...INLINE_SCRIPT_POLICY.map((entry) => entry.file),
-    "src/core/seo/components/json-ld-script.tsx",
     "src/features/tools/svg-optimizer/page.tsx",
 ].filter((file) => INLINE_SCRIPT_POLICY.some((entry) => entry.file === file && entry.requiresUnsafeInline) || !INLINE_SCRIPT_POLICY.some((entry) => entry.file === file))
 
@@ -37,6 +38,11 @@ function readSource(relativePath: string): string {
 
 function countMatches(source: string, pattern: RegExp): number {
     return Array.from(source.matchAll(pattern)).length
+}
+
+function jsonArrayPattern(values: readonly string[]): RegExp {
+    const escapedValues = values.map((value) => `"${value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}"`)
+    return new RegExp(`\\[\\s*${escapedValues.join("\\s*,\\s*")}\\s*\\]`)
 }
 
 describe("HTML injection surface guard", () => {
@@ -74,12 +80,17 @@ describe("HTML injection surface guard", () => {
     it("embeds dynamic redirect and runtime script data with JSON serialization only", () => {
         const rootPageSource = readSource("src/app/page.tsx")
         const layoutSource = readSource("src/app/layout.tsx")
+        const rootScript = readSource("public/runtime/root-locale-redirect.js")
+        const themeScript = readSource("public/runtime/theme-manifest-bootstrap.js")
 
-        expect(rootPageSource).toContain("var supported = ${JSON.stringify(LOCALES)};")
-        expect(countMatches(rootPageSource, /dangerouslySetInnerHTML=\{\{/g)).toBe(1)
+        expect(rootPageSource).toContain("<script src=\"/runtime/root-locale-redirect.js\" />")
+        expect(countMatches(rootPageSource, /dangerouslySetInnerHTML=\{\{/g)).toBe(0)
+        expect(rootScript).toMatch(new RegExp(`var supported = ${jsonArrayPattern(LOCALES).source};`))
 
-        expect(layoutSource).toContain("var locales = ${JSON.stringify(LOCALES)};")
-        expect(countMatches(layoutSource, /dangerouslySetInnerHTML=\{\{/g)).toBe(1)
+        expect(layoutSource).toContain("<script src=\"/runtime/theme-manifest-bootstrap.js\" />")
+        expect(countMatches(layoutSource, /dangerouslySetInnerHTML=\{\{/g)).toBe(0)
+        expect(themeScript).toMatch(new RegExp(`var locales = ${jsonArrayPattern(LOCALES).source};`))
+        expect(themeScript).toContain(`var themeColor = t === "light" ? "${PWA_THEME_COLOR_LIGHT}" : "${PWA_THEME_COLOR}";`)
     })
 
     it("documents each remaining inline runtime script with a CSP migration path", () => {
@@ -89,10 +100,12 @@ describe("HTML injection surface guard", () => {
             expect(fs.existsSync(path.join(process.cwd(), entry.file)), entry.file).toBe(true)
             expect(entry.purpose).toMatch(/\S/)
             expect(entry.migrationPath).toMatch(/\S/)
-            if (entry.id === "legacy-tool-redirect") {
-                expect(entry.requiresUnsafeInline).toBe(false)
-            } else {
+            if (entry.id === "json-ld-structured-data") {
                 expect(entry.requiresUnsafeInline).toBe(true)
+            } else {
+                expect(entry.requiresUnsafeInline).toBe(false)
+                expect(entry.externalScript).toMatch(/^\/runtime\/.+\.js$/)
+                expect(fs.existsSync(path.join(process.cwd(), "public", entry.externalScript!.slice(1))), entry.externalScript).toBe(true)
             }
         }
     })
