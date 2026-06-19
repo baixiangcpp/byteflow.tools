@@ -14,6 +14,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { ModeSelector } from "@/features/tool-shell/mode-selector"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import {
@@ -45,6 +46,12 @@ export function HashGeneratorPage() {
     const [batchAlgorithm, setBatchAlgorithm] = React.useState<StandardHashAlgorithm>("sha256")
     const sha1Warning = toolT.sha1_warning
     const buildCopyActionLabel = React.useCallback((label: string) => `${t.common.copy} ${label}`, [t.common.copy])
+    const modeOptions = React.useMemo(() => [
+        { value: "text" as const, label: toolT.mode_text },
+        { value: "hmac" as const, label: toolT.mode_hmac },
+        { value: "file" as const, label: toolT.mode_file },
+        { value: "batch" as const, label: toolT.mode_batch },
+    ], [toolT])
 
     const standardHashes = React.useMemo<StandardHashes>(() => {
         if (mode === "text") return hashText(input)
@@ -164,15 +171,7 @@ export function HashGeneratorPage() {
             </div>
 
             <div className="rounded-lg border bg-card p-3">
-                <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    {toolT.mode_label}
-                </div>
-                <div className="flex flex-wrap gap-2">
-                    <ModeButton active={mode === "text"} onClick={() => setMode("text")} label={toolT.mode_text} />
-                    <ModeButton active={mode === "hmac"} onClick={() => setMode("hmac")} label={toolT.mode_hmac} />
-                    <ModeButton active={mode === "file"} onClick={() => setMode("file")} label={toolT.mode_file} />
-                    <ModeButton active={mode === "batch"} onClick={() => setMode("batch")} label={toolT.mode_batch} />
-                </div>
+                <ModeSelector label={toolT.mode_label} value={mode} options={modeOptions} onChange={setMode} size="sm" />
             </div>
 
             <div className="rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
@@ -366,20 +365,6 @@ export function HashGeneratorPage() {
                 </div>
             </div>
         </div>
-    )
-}
-
-function ModeButton({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
-    return (
-        <button
-            type="button"
-            onClick={onClick}
-            className={`rounded px-3 py-1.5 text-sm transition-colors ${
-                active ? "bg-primary text-primary-foreground" : "border bg-background text-muted-foreground hover:text-foreground"
-            }`}
-        >
-            {label}
-        </button>
     )
 }
 

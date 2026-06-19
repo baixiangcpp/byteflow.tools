@@ -4,6 +4,7 @@ import * as React from "react"
 import { ArrowLeft, ArrowRight, Binary, Download, FileUp, Share2, TestTube2, RotateCcw, Workflow } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
+import { ModeSelector } from "@/features/tool-shell/mode-selector"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { useLang } from "@/core/i18n/lang-provider"
 import { Textarea } from "@/components/ui/textarea"
@@ -41,6 +42,15 @@ export function Base64Page() {
         const hiddenChars = output.length - OUTPUT_PREVIEW_LIMIT
         return `${output.slice(0, OUTPUT_PREVIEW_LIMIT)}\n\n[${outputPreviewTruncatedLabel.replace("{hidden}", String(hiddenChars))}]`
     }, [isOutputPreviewTruncated, output, outputPreviewTruncatedLabel])
+    const operationOptions = React.useMemo(() => [
+        { value: "encode" as const, label: text("operation_encode") },
+        { value: "decode" as const, label: text("operation_decode") },
+    ], [toolT])
+    const modeOptions = React.useMemo(() => [
+        { value: "text" as const, label: text("mode_text") },
+        { value: "file" as const, label: text("mode_file") },
+        { value: "url-safe" as const, label: text("mode_url_safe") },
+    ], [toolT])
 
     React.useEffect(() => {
         const savedMode = readStorageString(MODE_STORAGE_KEY)
@@ -319,55 +329,11 @@ export function Base64Page() {
             <div className="flex flex-col gap-4">
                 <div className="grid gap-3 rounded-lg border border-border/70 bg-card/40 p-4 sm:grid-cols-[1.2fr_1fr]">
                     <div className="rounded-lg border border-primary/30 bg-primary/5 p-3">
-                        <label className="mb-2 block text-sm font-bold text-foreground">{text("operation_label")}</label>
-                        <div className="inline-flex w-full rounded-lg border border-primary/30 bg-background/60 p-1 sm:w-auto">
-                            <button
-                                type="button"
-                                onClick={() => handleOperationChange("encode")}
-                                className={`flex-1 rounded-md px-4 py-2 text-sm font-semibold transition-colors sm:flex-none ${
-                                    operation === "encode"
-                                        ? "bg-primary text-primary-foreground shadow-sm"
-                                        : "text-muted-foreground hover:text-foreground"
-                                }`}
-                            >
-                                {text("operation_encode")}
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => handleOperationChange("decode")}
-                                className={`flex-1 rounded-md px-4 py-2 text-sm font-semibold transition-colors sm:flex-none ${
-                                    operation === "decode"
-                                        ? "bg-primary text-primary-foreground shadow-sm"
-                                        : "text-muted-foreground hover:text-foreground"
-                                }`}
-                            >
-                                {text("operation_decode")}
-                            </button>
-                        </div>
+                        <ModeSelector label={text("operation_label")} value={operation} options={operationOptions} onChange={handleOperationChange} />
                     </div>
 
                     <div className="rounded-lg border border-border/50 bg-muted/20 p-3">
-                        <label className="mb-2 block text-xs font-medium uppercase tracking-wide text-muted-foreground">{text("input_type_label")}</label>
-                        <div className="inline-flex w-full rounded-lg border border-border/70 bg-background/60 p-1 sm:w-auto">
-                            {(["text", "file", "url-safe"] as Mode[]).map((item) => (
-                                <button
-                                    key={item}
-                                    type="button"
-                                    onClick={() => handleModeChange(item)}
-                                    className={`flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors sm:flex-none ${
-                                        mode === item
-                                            ? "bg-background text-foreground shadow-sm"
-                                            : "text-muted-foreground hover:text-foreground"
-                                    }`}
-                                >
-                                    {item === "text"
-                                        ? text("mode_text")
-                                        : item === "file"
-                                            ? text("mode_file")
-                                            : text("mode_url_safe")}
-                                </button>
-                            ))}
-                        </div>
+                        <ModeSelector label={text("input_type_label")} value={mode} options={modeOptions} onChange={handleModeChange} size="sm" />
                         {mode === "url-safe" && (
                             <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                                 {text("url_safe_hint")}
