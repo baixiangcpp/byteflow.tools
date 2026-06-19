@@ -59,6 +59,7 @@
     "lint": "eslint",
     "test": "vitest run",
     "test:e2e:smoke": "node scripts/e2e/run-playwright-smoke.js",
+    "test:e2e:pwa": "node scripts/e2e/run-playwright-smoke.js --pwa",
     "check:i18n": "node scripts/gates/check-i18n.js",
     "check:i18n:ratchet": "node scripts/gates/check-i18n-untranslated-ratchet.js --mode=fail",
     "check:i18n:ratchet:warn": "node scripts/gates/check-i18n-untranslated-ratchet.js --mode=warn",
