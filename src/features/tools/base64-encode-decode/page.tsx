@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { useLang } from "@/core/i18n/lang-provider"
 import { Textarea } from "@/components/ui/textarea"
-import { decodeBase64ToBytes, decodeBase64ToText, encodeBytesToBase64, encodeTextToBase64 } from "@/core/utils/base64-utils"
+import { decodeBase64ToBytes, encodeBytesToBase64 } from "@/core/utils/base64-utils"
 import { readStorageString, writeStorageString } from "@/core/storage/tool-persistence"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildToolHandoffLink } from "@/core/routing/tool-handoff"
@@ -15,6 +15,7 @@ import { downloadBlob, downloadTextFile } from "./browser-actions"
 import { MAX_FILE_SIZE, MODE_STORAGE_KEY, OPERATION_STORAGE_KEY, OUTPUT_PREVIEW_LIMIT } from "./constants"
 import { BINARY_SAMPLE_BASE64, TEXT_SAMPLE_BASE64, TEXT_SAMPLE_INPUT, URL_SAFE_SAMPLE_BASE64, URL_SAFE_SAMPLE_INPUT } from "./samples"
 import type { Mode, Operation } from "./types"
+import { useBase64TextTask } from "./use-base64-text-task"
 
 export function Base64Page() {
     const { t, lang } = useLang()
@@ -29,6 +30,7 @@ export function Base64Page() {
     const [decodedBlob, setDecodedBlob] = React.useState<Blob | null>(null)
     const [decodedFileName, setDecodedFileName] = React.useState("decoded.bin")
     const fileInputRef = React.useRef<HTMLInputElement>(null)
+    const { isProcessing, runTextTask } = useBase64TextTask()
 
     const outputBytes = React.useMemo(() => new Blob([output]).size, [output])
     const canDownload = output.length > 0 || decodedBlob !== null
@@ -189,57 +191,66 @@ export function Base64Page() {
             return
         }
 
-        try {
-            const encoded = encodeTextToBase64(input, mode === "url-safe")
-            setOutput(encoded)
-            setError(null)
-            setDecodedBlob(null)
-        } catch {
-            setError(text("error_encode_failed"))
-        }
+        await runTextTask({
+            input,
+            operation: "encode",
+            urlSafe: mode === "url-safe",
+            onSuccess: (encoded) => {
+                setOutput(encoded)
+                setError(null)
+                setDecodedBlob(null)
+            },
+            onError: () => setError(text("error_encode_failed")),
+        })
     }
 
-    const decodeBase64 = () => {
+    const decodeBase64 = async () => {
         if (!input.trim()) {
             setOutput("")
             setError(null)
             return
         }
-        try {
-            if (mode === "file") {
+
+        if (mode === "file") {
+            try {
                 const bytes = decodeBase64ToBytes(input.trim())
                 const safeBuffer = Uint8Array.from(bytes).buffer as ArrayBuffer
                 const blob = new Blob([safeBuffer], { type: sourceFile?.type || "application/octet-stream" })
-                const baseName = sourceFile?.name ? sourceFile.name.replace(/\.[^.]+$/, "") : "decoded"
-                setDecodedFileName(`${baseName}.bin`)
+                setDecodedFileName(`${sourceFile?.name ? sourceFile.name.replace(/\.[^.]+$/, "") : "decoded"}.bin`)
                 setDecodedBlob(blob)
                 setOutput(
                     text("decode_binary_success")
                         .replace("{bytes}", String(bytes.length)),
                 )
                 setError(null)
-                return
+            } catch {
+                setError(text("error_invalid_base64"))
+                setDecodedBlob(null)
             }
-
-            const decoded = decodeBase64ToText(input.trim(), mode === "url-safe")
-            setOutput(decoded)
-            setError(null)
-            setDecodedBlob(null)
-        } catch {
-            setError(
-                mode === "url-safe"
-                    ? text("error_invalid_base64url")
-                    : text("error_invalid_base64"),
-            )
-            setDecodedBlob(null)
+            return
         }
+
+        await runTextTask({
+            input,
+            operation: "decode",
+            urlSafe: mode === "url-safe",
+            onSuccess: (decoded) => {
+                setOutput(decoded)
+                setError(null)
+                setDecodedBlob(null)
+            },
+            onError: () => {
+                setError(mode === "url-safe" ? text("error_invalid_base64url") : text("error_invalid_base64"))
+                setDecodedBlob(null)
+            },
+        })
     }
 
     const handleExecute = () => {
         if (operation === "encode") {
             void encodeBase64()
         } else {
-            decodeBase64()
+            void decodeBase64()
         }
     }
 
@@ -368,7 +379,7 @@ export function Base64Page() {
                 <ToolActionBar actions={standardActions} handoffPayload={handoffPayload} />
 
                 <div className="flex flex-wrap items-center gap-2">
-                    <Button size="sm" onClick={handleExecute}>
+                    <Button size="sm" onClick={handleExecute} disabled={isProcessing}>
                         {operation === "encode" ? (
                             <>
                                 {text("encode_action")}
