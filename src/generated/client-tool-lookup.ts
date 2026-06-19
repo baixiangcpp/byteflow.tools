@@ -9,6 +9,8 @@ export type ClientToolLookupEntry = {
     keywords: readonly string[]
     aliases: readonly string[]
     relatedToolKeys: readonly string[]
+    sampleInput: string | null
+    sampleMode: string | null
     networkAccess: "none" | "user_requested" | "third_party_api"
     networkHosts: readonly string[]
     networkPurposeKey: string | null
@@ -46,6 +48,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_to_typescript",
             "yaml_json_converter"
         ],
+        "sampleInput": "{\"user\":{\"id\":1001,\"name\":\"Alice Chen\",\"active\":true}}",
+        "sampleMode": "format",
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -94,6 +98,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "yaml_json_converter",
             "sql_formatter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -135,6 +141,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "xml_formatter",
             "html_css_beautifier"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -176,6 +184,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "sql_formatter",
             "markdown_preview"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -217,6 +227,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "html_formatter",
             "json_formatter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -249,6 +261,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_minifier",
             "javascript_minifier"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -282,6 +296,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_encode_decode",
             "base64_encode_decode"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -315,6 +331,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_optimizer",
             "xml_formatter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -349,6 +367,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_minifier",
             "markdown_preview"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -392,6 +412,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "structured_data_visualizer",
             "xml_formatter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -441,6 +463,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker",
             "lorem_ipsum"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -484,6 +508,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "html_encoder_decoder",
             "text_diff_checker"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -518,6 +544,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "yaml_json_converter",
             "jsonpath_playground"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -560,6 +588,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_optimizer",
             "json_formatter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -592,6 +622,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "html_css_beautifier",
             "image_base64"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -626,6 +658,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_to_typescript",
             "yaml_json_converter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -659,6 +693,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "yaml_json_converter",
             "jsonpath_playground"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -691,6 +727,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker",
             "jsonpath_playground"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -725,6 +763,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_to_typescript",
             "text_diff_checker"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -760,6 +800,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hash_generator",
             "image_base64"
         ],
+        "sampleInput": "user_001|zh-CN|text",
+        "sampleMode": "text:encode",
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -810,6 +852,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_encode_decode",
             "hash_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -851,6 +895,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jwt_decoder",
             "user_agent_parser"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -898,6 +944,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hash_generator",
             "url_encode_decode"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -945,6 +993,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "base64_encode_decode",
             "hash_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -979,6 +1029,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jwt_decoder",
             "password_generator"
         ],
+        "sampleInput": "Byteflow sample checksum",
+        "sampleMode": "text:sha256",
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1024,6 +1076,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker",
             "password_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1057,6 +1111,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "markdown_preview",
             "base64_encode_decode"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1089,6 +1145,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "markdown_preview",
             "lorem_ipsum"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1122,6 +1180,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "lorem_ipsum",
             "slugify_case_converter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1155,6 +1215,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "markdown_preview",
             "text_diff_checker"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1187,6 +1249,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "code_to_image_converter",
             "open_graph_meta_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1220,6 +1284,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_caption_generator",
             "instagram_post_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1255,6 +1321,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_formatter",
             "html_formatter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1288,6 +1356,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_optimizer",
             "qr_code_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1321,6 +1391,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "cron_visualizer",
             "crontab_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1353,6 +1425,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "unix_timestamp",
             "lorem_ipsum"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1393,6 +1467,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "uuid_generator",
             "markdown_preview"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1423,6 +1499,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "uuid_generator",
             "lorem_ipsum"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1454,6 +1532,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "html_css_beautifier",
             "svg_optimizer"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1488,6 +1568,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_border_radius_generator",
             "color_converter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1522,6 +1604,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter",
             "css_gradient_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1557,6 +1641,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "ai_color_palette_generator",
             "css_gradient_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1591,6 +1677,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter",
             "css_gradient_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1627,6 +1715,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_shades_generator",
             "color_converter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1663,6 +1753,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_average_color_finder",
             "color_mixer"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1698,6 +1790,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "ai_color_palette_generator",
             "color_mixer"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1734,6 +1828,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter",
             "color_mixer"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1770,6 +1866,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "code_to_image_converter",
             "image_base64"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1805,6 +1903,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_caption_generator",
             "image_color_extractor"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1840,6 +1940,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_filters",
             "instagram_photo_downloader"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1874,6 +1976,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "instagram_filters",
             "open_graph_meta_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1907,6 +2011,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "instagram_filters",
             "open_graph_meta_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1940,6 +2046,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "instagram_post_generator",
             "instagram_story_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1973,6 +2081,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "twitter_ad_revenue_generator",
             "instagram_post_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2007,6 +2117,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "instagram_post_generator",
             "code_to_image_converter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2041,6 +2153,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "open_graph_meta_generator",
             "id_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2074,6 +2188,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "instagram_filters",
             "image_resizer"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "user_requested",
         "networkHosts": [
             "instagram.com"
@@ -2111,6 +2227,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "open_graph_meta_generator",
             "image_resizer"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "user_requested",
         "networkHosts": [
             "vimeo.com",
@@ -2150,6 +2268,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "open_graph_meta_generator",
             "image_resizer"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "user_requested",
         "networkHosts": [
             "youtube.com",
@@ -2190,6 +2310,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_base64",
             "code_to_image_converter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2225,6 +2347,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_resizer",
             "scanned_pdf_converter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2260,6 +2384,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_resizer",
             "image_base64"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2294,6 +2420,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_optimizer",
             "css_clip_path_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2329,6 +2457,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_background_pattern_generator",
             "css_gradient_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2363,6 +2493,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_pattern_generator",
             "svg_to_png_converter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2397,6 +2529,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_blob_generator",
             "svg_stroke_to_fill_converter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2432,6 +2566,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter",
             "css_minifier"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2466,6 +2602,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter",
             "css_minifier"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2500,6 +2638,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter",
             "css_minifier"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2535,6 +2675,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_background_pattern_generator",
             "color_converter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2569,6 +2711,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter",
             "svg_optimizer"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2604,6 +2748,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_checkbox_generator",
             "css_minifier"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2638,6 +2784,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_border_radius_generator",
             "color_converter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2672,6 +2820,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_background_pattern_generator",
             "css_minifier"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2707,6 +2857,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_box_shadow_generator",
             "css_minifier"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2741,6 +2893,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_glassmorphism_generator",
             "color_converter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2775,6 +2929,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "code_to_image_converter",
             "css_minifier"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2809,6 +2965,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_border_radius_generator",
             "css_minifier"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2841,6 +2999,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "password_generator",
             "url_encode_decode"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2873,6 +3033,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "fake_iban_generator",
             "list_randomizer"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2907,6 +3069,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "id_generator",
             "password_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2940,6 +3104,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "lorem_ipsum",
             "password_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2970,6 +3136,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "markdown_preview",
             "text_diff_checker"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3001,6 +3169,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "yaml_json_converter",
             "base64_encode_decode"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3036,6 +3206,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "unix_timestamp",
             "hash_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3067,6 +3239,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker",
             "url_encode_decode"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3114,6 +3288,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jsonpath_playground",
             "url_encode_decode"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3145,6 +3321,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "unix_timestamp",
             "regex_tester"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3193,6 +3371,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_parser",
             "chmod_calculator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3223,6 +3403,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "unix_timestamp",
             "regex_tester"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3256,6 +3438,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_parser",
             "http_request_builder"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3288,6 +3472,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "user_agent_parser",
             "cidr_subnet_calculator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3322,6 +3508,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "chmod_calculator",
             "http_status_codes"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3354,6 +3542,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "user_agent_parser",
             "http_request_builder"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3387,6 +3577,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_status_codes",
             "security_header_analyzer"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3421,6 +3613,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_encode_decode",
             "user_agent_parser"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3456,6 +3650,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_status_codes",
             "jwt_decoder"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3490,6 +3686,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_diff_viewer",
             "jsonpath_playground"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3526,6 +3724,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "base64_encode_decode",
             "certificate_decoder"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3560,6 +3760,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hash_generator",
             "text_diff_checker"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3594,6 +3796,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "base64_encode_decode",
             "url_encode_decode"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3639,6 +3843,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_parser",
             "csp_parser"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3671,6 +3877,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "header_diff",
             "robots_txt_tester"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3706,6 +3914,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_diff_viewer",
             "header_diff"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3740,6 +3950,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "csp_parser",
             "text_diff_checker"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3774,6 +3986,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_status_codes",
             "certificate_decoder"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3810,6 +4024,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "uuid_generator",
             "id_generator"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3844,6 +4060,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_formatter",
             "curl_to_code"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3877,6 +4095,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "chmod_calculator",
             "curl_to_code"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3923,6 +4143,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "regex_tester",
             "text_diff_checker"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3969,6 +4191,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_to_typescript",
             "yaml_json_converter"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4013,6 +4237,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jwt_decoder",
             "text_diff_checker"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4050,6 +4276,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_request_builder",
             "local_log_parser"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4083,6 +4311,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "openapi_viewer",
             "docker_run_to_compose"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4119,6 +4349,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jq_playground",
             "jsonpath_playground"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4154,6 +4386,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "xml_formatter",
             "jsonpath_playground"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4191,6 +4425,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_status_codes",
             "security_header_analyzer"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4227,6 +4463,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_encode_decode",
             "log_scrubber"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4269,6 +4507,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "base64_encode_decode",
             "security_header_analyzer"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4305,6 +4545,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hex_bytes_workbench",
             "jwt_decoder"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4339,6 +4581,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hash_generator",
             "unicode_inspector"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4371,6 +4615,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hex_bytes_workbench",
             "multiple_whitespace_remover"
         ],
+        "sampleInput": null,
+        "sampleMode": null,
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,

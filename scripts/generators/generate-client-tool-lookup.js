@@ -166,6 +166,8 @@ function buildClientLookupSource() {
                 keywords: tool.keywords,
                 aliases: aliasesByKey.get(tool.key) || [],
                 relatedToolKeys: tool.relatedTools,
+                sampleInput: tool.sampleInput || null,
+                sampleMode: tool.sampleMode || null,
                 networkAccess: tool.networkAccess || "none",
                 networkHosts: tool.networkHosts || [],
                 networkPurposeKey: tool.networkPurposeKey || null,
@@ -206,6 +208,8 @@ export type ClientToolLookupEntry = {
     keywords: readonly string[]
     aliases: readonly string[]
     relatedToolKeys: readonly string[]
+    sampleInput: string | null
+    sampleMode: string | null
     networkAccess: "none" | "user_requested" | "third_party_api"
     networkHosts: readonly string[]
     networkPurposeKey: string | null

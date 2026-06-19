@@ -23,6 +23,8 @@
         "json prettify",
         "format json online"
       ],
+      "sampleInput": "{\"user\":{\"id\":1001,\"name\":\"Alice Chen\",\"active\":true}}",
+      "sampleMode": "format",
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -50,6 +52,8 @@
         "format xml online",
         "xml pretty print"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -76,6 +80,8 @@
         "format sql online",
         "sql pretty print"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -103,6 +109,8 @@
         "beautify javascript",
         "format javascript online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -130,6 +138,8 @@
         "minify javascript",
         "compress javascript online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -157,6 +167,8 @@
         "html compressor",
         "compress html online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -184,6 +196,8 @@
         "html entities encode",
         "html entities decode"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -211,6 +225,8 @@
         "html formatter online",
         "beautify html css"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -238,6 +254,8 @@
         "format html online",
         "html pretty print"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -266,6 +284,8 @@
         "json to toml",
         "yaml json toml converter"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -293,6 +313,8 @@
         "markdown to html",
         "gfm preview"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -320,6 +342,8 @@
         "html markdown converter",
         "html2md online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -346,6 +370,8 @@
         "generate typescript types",
         "json to ts"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -372,6 +398,8 @@
         "css compressor",
         "css optimize"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -398,6 +426,8 @@
         "optimize svg",
         "compress svg"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -425,6 +455,8 @@
         "jsonpath query",
         "json path online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -451,6 +483,8 @@
         "openapi explorer",
         "api spec viewer"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -477,6 +511,8 @@
         "json diff viewer",
         "json compare tool"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -504,6 +540,8 @@
         "csv converter online",
         "csv json transform"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -530,6 +568,8 @@
         "base64 decode",
         "base64 converter online"
       ],
+      "sampleInput": "user_001|zh-CN|text",
+      "sampleMode": "text:encode",
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -558,6 +598,8 @@
         "base58 decoder",
         "base encoding converter"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -584,6 +626,8 @@
         "percent encoding",
         "url encoder online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -611,6 +655,8 @@
         "jwt parser",
         "json web token decoder"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -638,6 +684,8 @@
         "jwt hs256 signer",
         "jwt all in one tool"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -665,6 +713,8 @@
         "sha256 hash online",
         "sha512 generator"
       ],
+      "sampleInput": "Byteflow sample checksum",
+      "sampleMode": "text:sha256",
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -692,6 +742,8 @@
         "md5 checksum",
         "md5 encoder"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -718,6 +770,8 @@
         "diff checker",
         "text comparison tool"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -745,6 +799,8 @@
         "collapse whitespace",
         "trim text online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -772,6 +828,8 @@
         "word counter",
         "text analyzer"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -799,6 +857,8 @@
         "bionic text generator",
         "focus reading tool"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -826,6 +886,8 @@
         "typography pairing",
         "font combination tool"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -853,6 +915,8 @@
         "typed text to handwritten",
         "handwriting png"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -880,6 +944,8 @@
         "source code screenshot",
         "code image generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -905,6 +971,8 @@
         "base64 to image",
         "convert image base64 online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -931,6 +999,8 @@
         "timestamp to date",
         "unix time online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -957,6 +1027,8 @@
         "generate uuid online",
         "guid generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -982,6 +1054,8 @@
         "dummy text generator",
         "placeholder text"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1007,6 +1081,8 @@
         "random password",
         "strong password generator online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1033,6 +1109,8 @@
         "hsl converter",
         "color picker online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1060,6 +1138,8 @@
         "android elevation generator",
         "react native style shadow"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1087,6 +1167,8 @@
         "color scheme creator",
         "palette maker online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1114,6 +1196,8 @@
         "rgb color blend",
         "hsl color blend"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1141,6 +1225,8 @@
         "color ramp generator",
         "generate color tokens"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1168,6 +1254,8 @@
         "dominant average hex",
         "image color analyzer"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1195,6 +1283,8 @@
         "caption maker",
         "image quote generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1222,6 +1312,8 @@
         "image palette generator",
         "dominant colors from photo"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1249,6 +1341,8 @@
         "image hex picker",
         "sample image color"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1276,6 +1370,8 @@
         "photo crop tool",
         "crop png jpg"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1303,6 +1399,8 @@
         "adjust brightness contrast image",
         "image effects online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1330,6 +1428,8 @@
         "instagram style photo editor",
         "photo preset filters"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1357,6 +1457,8 @@
         "social post generator",
         "instagram post template"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1384,6 +1486,8 @@
         "story mockup generator",
         "social story maker"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1411,6 +1515,8 @@
         "twitter card meta tags",
         "social preview meta"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1438,6 +1544,8 @@
         "tweet image maker",
         "social tweet mockup"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1465,6 +1573,8 @@
         "tweet image converter",
         "x post image maker"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1492,6 +1602,8 @@
         "social ad revenue forecast",
         "cpm ctr calculator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1519,6 +1631,8 @@
         "instagram media saver",
         "authorized ig image download"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "user_requested",
       "networkHosts": [
         "instagram.com"
@@ -1548,6 +1662,8 @@
         "vimeo cover image",
         "get vimeo video thumbnail"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "user_requested",
       "networkHosts": [
         "vimeo.com",
@@ -1579,6 +1695,8 @@
         "youtube video thumbnail",
         "get youtube thumbnail url"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "user_requested",
       "networkHosts": [
         "youtube.com",
@@ -1611,6 +1729,8 @@
         "change photo dimensions",
         "image resize tool"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1638,6 +1758,8 @@
         "pixelate image region",
         "hide sensitive info image"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1665,6 +1787,8 @@
         "enhance scanned document",
         "multi page pdf exporter"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1692,6 +1816,8 @@
         "blob path generator",
         "random blob svg"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1719,6 +1845,8 @@
         "tileable pattern svg",
         "svg texture generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1746,6 +1874,8 @@
         "outline to fill svg",
         "svg path converter"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1773,6 +1903,8 @@
         "svg rasterizer",
         "export svg as png"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1800,6 +1932,8 @@
         "css background maker",
         "pattern css online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1827,6 +1961,8 @@
         "border radius css",
         "radius generator online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1854,6 +1990,8 @@
         "css shadow builder",
         "box shadow css online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1881,6 +2019,8 @@
         "checkbox style maker",
         "checkbox ui generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1908,6 +2048,8 @@
         "clip-path css",
         "shape generator css"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1935,6 +2077,8 @@
         "transition timing function",
         "cubic bezier tool"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1962,6 +2106,8 @@
         "frosted glass ui",
         "backdrop filter generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -1989,6 +2135,8 @@
         "radial gradient generator",
         "gradient maker online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2016,6 +2164,8 @@
         "loading animation css",
         "css preloaders"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2043,6 +2193,8 @@
         "custom switch styles",
         "switch ui generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2070,6 +2222,8 @@
         "neon glitch generator",
         "animated text effect css"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2097,6 +2251,8 @@
         "tooltip arrow css",
         "directional triangle css"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2122,6 +2278,8 @@
         "generate qr code online",
         "qr code maker"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2149,6 +2307,8 @@
         "ean13 generator",
         "barcode png svg export"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2176,6 +2336,8 @@
         "iban checksum generator",
         "dummy bank iban"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2203,6 +2365,8 @@
         "random sample picker",
         "seeded random list"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2228,6 +2392,8 @@
         "text to ascii art",
         "figlet online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2254,6 +2420,8 @@
         "parse .env file online",
         "environment variable viewer"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2281,6 +2449,8 @@
         "nanoid generator",
         "unique id generator online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2307,6 +2477,8 @@
         "test regular expression",
         "regex debugger"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2334,6 +2506,8 @@
         "regex pattern builder",
         "regular expression generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2359,6 +2533,8 @@
         "cron expression builder",
         "cron maker online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2385,6 +2561,8 @@
         "parse user agent",
         "ua string analyzer online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2410,6 +2588,8 @@
         "cron schedule viewer",
         "visualize cron expression"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2436,6 +2616,8 @@
         "http response codes list",
         "status code reference"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2462,6 +2644,8 @@
         "unix permissions calculator",
         "file permissions chmod"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2489,6 +2673,8 @@
         "ipv4 cidr to range",
         "network broadcast calculator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2516,6 +2702,8 @@
         "query string parser",
         "url components breakdown"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2543,6 +2731,8 @@
         "ssl certificate decoder online",
         "certificate parser"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2570,6 +2760,8 @@
         "api request builder",
         "rest client online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2597,6 +2789,8 @@
         "curl to python",
         "curl converter online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2624,6 +2818,8 @@
         "jsonl formatter",
         "ndjson to json array"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2652,6 +2848,8 @@
         "hmac jwt verify",
         "jwt validator online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2679,6 +2877,8 @@
         "camelcase converter",
         "snake case to camel case"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2707,6 +2907,8 @@
         "unicode detector",
         "hidden characters finder"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2734,6 +2936,8 @@
         "robots txt validator",
         "crawler access tester"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2761,6 +2965,8 @@
         "csp validator",
         "csp checker"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2788,6 +2994,8 @@
         "csv difference checker",
         "spreadsheet diff"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2815,6 +3023,8 @@
         "request diff",
         "header comparison"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2842,6 +3052,8 @@
         "csp hsts checker",
         "header security audit"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2869,6 +3081,8 @@
         "2fa code",
         "authenticator code generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2896,6 +3110,8 @@
         "api mock generator",
         "mock response generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2923,6 +3139,8 @@
         "docker command to yaml",
         "containerize"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2951,6 +3169,8 @@
         "ndjson logs",
         "log viewer"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -2979,6 +3199,8 @@
         "jq filter",
         "json transform"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -3006,6 +3228,8 @@
         "secret redaction",
         "pii remover"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -3033,6 +3257,8 @@
         "brotli compression",
         "http compression"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -3060,6 +3286,8 @@
         "json merge patch",
         "kubernetes yaml"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -3088,6 +3316,8 @@
         "yq online",
         "yaml transform"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -3116,6 +3346,8 @@
         "xml tree",
         "data graph"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -3144,6 +3376,8 @@
         "network log sanitizer",
         "har redaction"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -3172,6 +3406,8 @@
         "local workflow",
         "developer workbench"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -3199,6 +3435,8 @@
         "saml request parser",
         "saml assertion viewer"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -3226,6 +3464,8 @@
         "asn.1 viewer",
         "certificate der decoder"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -3253,6 +3493,8 @@
         "bytes inspector",
         "utf8 hex converter"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
@@ -3280,6 +3522,8 @@
         "unicode analyzer",
         "utf8 inspector"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,

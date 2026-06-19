@@ -20,6 +20,9 @@ export interface ToolMeta {
     category: ToolCategory
     /** Related tool keys for internal linking (4-6 recommended) */
     relatedTools: string[]
+    /** Lightweight example metadata used by quality gates and discovery surfaces */
+    sampleInput?: string
+    sampleMode?: string
     /** SEO target keywords (English, used for meta keywords) */
     keywords: string[]
     /** Optional deterministic lastmod timestamp used by sitemap */

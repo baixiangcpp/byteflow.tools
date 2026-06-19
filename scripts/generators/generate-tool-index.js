@@ -168,6 +168,8 @@ function buildIndexData() {
                 category: tool.category,
                 relatedTools: tool.relatedTools,
                 keywords: tool.keywords,
+                sampleInput: tool.sampleInput || null,
+                sampleMode: tool.sampleMode || null,
                 networkAccess: tool.networkAccess || "none",
                 networkHosts: tool.networkHosts || [],
                 networkPurposeKey: tool.networkPurposeKey || null,

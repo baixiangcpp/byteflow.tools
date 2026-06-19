@@ -257,6 +257,8 @@ export function parseToolManifestFile(manifestPath) {
     const category = stringField(body, "category", manifestPath, true)
     const keywords = arrayField(body, "keywords", manifestPath, true)
     const relatedTools = arrayField(body, "relatedTools", manifestPath, true)
+    const sampleInput = stringField(body, "sampleInput", manifestPath)
+    const sampleMode = stringField(body, "sampleMode", manifestPath)
     const searchKeywords = arrayField(body, "searchKeywords", manifestPath)
     const updatedAt = stringField(body, "updatedAt", manifestPath)
     const networkAccess = stringField(body, "networkAccess", manifestPath)
@@ -287,6 +289,8 @@ export function parseToolManifestFile(manifestPath) {
         sourceFile: relative(manifestPath),
     }
 
+    if (sampleInput) manifest.sampleInput = sampleInput
+    if (sampleMode) manifest.sampleMode = sampleMode
     if (updatedAt) manifest.updatedAt = updatedAt
     if (searchKeywords.length > 0) manifest.searchKeywords = searchKeywords
     if (networkAccess) manifest.networkAccess = networkAccess
