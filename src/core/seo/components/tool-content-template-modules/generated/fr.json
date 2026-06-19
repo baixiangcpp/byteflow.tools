@@ -10935,5 +10935,114 @@
       "Contrôlez le rendu sur desktop et sur mobile."
     ],
     "operationalNote": "Inspecteur Unicode constitue une étape de vérification rapide avant livraison, publication ou passation."
+  },
+  "base-encoding-converter": {
+    "content": {
+      "toolKey": "base_encoding_converter",
+      "intro": "Convertissez du texte en Base32 et Base58 localement afin de vérifier alphabets, padding et allers-retours pour jetons, identifiants, jeux de test et échantillons proches des usages liés à la blockchain.",
+      "whatThisToolDoes": [
+        "Il encode du texte UTF-8 en Base32 RFC 4648 avec padding, utile pour les systèmes qui attendent un alphabet en majuscules et des blocs stables.",
+        "Il décode la Base32 vers du texte en rejetant les caractères ou paddings invalides qui masqueraient des erreurs de copie ou de transport.",
+        "Il prend en charge la Base58 de style Bitcoin, conserve les octets zéro en tête et exclut les caractères ambigus comme 0, O, I et l.",
+        "La conversion reste dans le navigateur, pratique pour tester identifiants, exemples proches de portefeuilles, codes de configuration et jeux de test de support sans API."
+      ],
+      "useCases": [
+        "Vérifier qu’un code de récupération ou une valeur de configuration Base32 fait un aller-retour propre.",
+        "Décoder un exemple d’identifiant Base58 pendant le débogage d’un portefeuille, d’une clé ou d’un système distribué.",
+        "Créer des jeux de test textuels compacts quand la ponctuation Base64 gêne dans des URL, lignes de commande ou documentations.",
+        "Contrôler qu’une valeur copiée depuis un courriel ou un chat ne contient ni espaces ni caractères ambigus.",
+        "Comparer Base32, Base58, Base64 et hex avant de choisir la représentation d’un flux local."
+      ],
+      "inputExamples": [
+        {
+          "label": "Texte brut",
+          "value": "byteflow tools"
+        },
+        {
+          "label": "Entrée Base32",
+          "value": "MZXW6YTBOI======"
+        },
+        {
+          "label": "Entrée Base58",
+          "value": "2NEpo7TZRRrLZSi2U"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Sortie Base32",
+          "value": "MJ4XI2DGN5XWIZLTMF2A===="
+        },
+        {
+          "label": "Sortie Base58",
+          "value": "2NEpo7TZRRrLZSi2U"
+        },
+        {
+          "label": "Note de validation",
+          "value": "Au décodage Base58, rejetez les valeurs contenant 0, O, I ou l."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Padding Base32 absent ou placé au milieu",
+          "fix": "Utilisez = seulement à la fin, ou régénérez la valeur depuis le texte source."
+        },
+        {
+          "error": "Entrée Base58 avec caractères ambigus",
+          "fix": "Utilisez une valeur Base58 vérifiée ; l’alphabet exclut volontairement 0, O, I et l."
+        },
+        {
+          "error": "Espaces copiés depuis un courriel ou un chat",
+          "fix": "Supprimez retours ligne et espaces avant de décoder, puis faites un aller-retour."
+        },
+        {
+          "error": "Mauvais alphabet sélectionné",
+          "fix": "Choisissez Base32 ou Base58 selon le système producteur avant de déboguer le contenu."
+        },
+        {
+          "error": "Encodage confondu avec sécurité",
+          "fix": "Les encodages Base sont réversibles ; ajoutez chiffrement ou signature pour protéger les données."
+        }
+      ],
+      "privacyNotes": [
+        "Les conversions Base32 et Base58 s’exécutent localement dans le navigateur, sans requête réseau.",
+        "Les valeurs encodées peuvent encore révéler des secrets, car l’encodage est réversible ; masquez les exemples avant partage.",
+        "Nettoyez les identifiants et exemples copiés dans un presse-papiers partagé après le débogage ou la documentation."
+      ],
+      "faqs": [
+        {
+          "q": "Quand choisir Base32 plutôt que Base58 ?",
+          "a": "Choisissez Base32 si un système attend une sortie RFC 4648 avec alphabet majuscule limité et padding optionnel."
+        },
+        {
+          "q": "Pourquoi Base58 exclut certains caractères ?",
+          "a": "Base58 retire les caractères visuellement ambigus pour réduire les erreurs de copie dans les identifiants."
+        },
+        {
+          "q": "Base58 est-il identique à Base64URL ?",
+          "a": "Non. Base58 utilise un alphabet et un processus différents ; Base64URL reste une variante URL-safe de Base64."
+        },
+        {
+          "q": "Puis-je valider des secrets de production ?",
+          "a": "La syntaxe peut être vérifiée localement, mais les secrets doivent être masqués ou renouvelés avant tout partage."
+        },
+        {
+          "q": "Comment confirmer qu’une conversion est correcte ?",
+          "a": "Encodez, décodez vers le texte d’origine, puis comparez avant d’utiliser la valeur dans une doc ou un test."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "Choisissez Base32 ou Base58 et confirmez l’alphabet du système source.",
+      "Collez l’échantillon puis exécutez une conversion pour repérer caractères invalides ou padding incorrect.",
+      "Convertissez la sortie dans le sens inverse et comparez avec le texte d’origine.",
+      "Retirez les valeurs sensibles avant de publier docs, jeux de test ou tickets."
+    ],
+    "qualityChecklist": [
+      "Le sens encodage/décodage est correct.",
+      "Le padding Base32 avec = apparaît uniquement en fin de valeur.",
+      "L’échantillon Base58 ne contient pas 0, O, I ou l.",
+      "La sortie ne contient aucun token, clé ou donnée personnelle réelle avant partage."
+    ],
+    "operationalNote": "Le convertisseur Base32/Base58 convient au débogage d’identifiants, à la préparation de jeux de test et à la revue documentaire, mais ne remplace ni chiffrement, ni signature, ni tests automatisés."
   }
 }

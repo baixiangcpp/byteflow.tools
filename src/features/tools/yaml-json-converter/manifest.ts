@@ -4,7 +4,7 @@ export const toolManifest = {
     key: "yaml_json_converter",
     slug: "yaml-json-converter",
     category: "formatters",
-    relatedTools: ["json_formatter", "json_to_typescript", "jsonpath_playground", "xml_formatter"],
-    keywords: ["yaml to json", "json to yaml", "yaml converter online", "yaml json transform"],
-    searchKeywords: ["convert yaml", "yaml parser", "json converter", "YAML转换", "YAML変換", "YAML 변환", "配置转换"],
+    relatedTools: ["json_formatter", "json_to_typescript", "structured_data_visualizer", "xml_formatter"],
+    keywords: ["yaml to json", "json to yaml", "toml to json", "json to toml", "yaml json toml converter"],
+    searchKeywords: ["convert yaml", "convert toml", "toml parser", "json converter", "YAML转换", "TOML转换", "YAML変換", "TOML変換", "YAML 변환", "TOML 변환", "配置转换"],
 } satisfies ToolMeta

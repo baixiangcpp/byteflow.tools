@@ -19,6 +19,7 @@
   "json-diff-viewer",
   "csv-json-converter",
   "base64-encode-decode",
+  "base-encoding-converter",
   "url-encode-decode",
   "jwt-decoder",
   "jwt-workbench",

@@ -406,15 +406,16 @@
       "error_minify_css": "CSS 최소화에 실패했습니다. 구문을 확인 후 다시 시도하세요."
     },
     "yaml_json_converter": {
-      "title": "YAML/JSON 변환기",
-      "description": "YAML과 JSON을 즉시 상호 변환합니다.",
+      "title": "JSON/YAML/TOML 변환기",
+      "description": "JSON, YAML, TOML 설정 데이터를 브라우저에서 로컬로 변환합니다.",
       "import_file": "파일 가져오기",
       "convert_action": "변환",
       "drag_drop_import_hint": "텍스트 파일을 여기로 끌어다 놓거나 파일을 선택해 가져오세요.",
       "import_failed": "파일을 가져올 수 없습니다.",
       "copied_desc": "변환 결과를 복사했습니다.",
       "error_yaml_to_json": "YAML을 JSON으로 변환할 수 없습니다. 입력을 확인한 뒤 다시 시도하세요.",
-      "error_json_to_yaml": "JSON을 YAML로 변환할 수 없습니다. 입력을 확인한 뒤 다시 시도하세요."
+      "error_json_to_yaml": "JSON을 YAML로 변환할 수 없습니다. 입력을 확인한 뒤 다시 시도하세요.",
+      "error_convert": "선택한 형식 간 변환에 실패했습니다. 구문을 확인하고 다시 시도하세요."
     },
     "markdown_preview": {
       "title": "Markdown 미리보기",
@@ -2540,6 +2541,17 @@
       "category": "분류",
       "flags": "플래그",
       "truncated_warning": "입력이 로컬 검사 예산을 초과했습니다. 문자 행, 통계, 복사되는 JSON은 검사된 하위 집합을 기준으로 합니다."
+    },
+    "base_encoding_converter": {
+      "title": "Base32/Base58 변환기",
+      "description": "Base32와 Base58 텍스트를 업로드 없이 로컬에서 인코딩하고 디코딩합니다.",
+      "encoding_label": "인코딩",
+      "operation_label": "작업",
+      "encode": "인코딩",
+      "decode": "디코딩",
+      "convert": "변환",
+      "invalid_base32": "Base32 입력이 올바르지 않습니다. 문자와 패딩을 확인하세요.",
+      "invalid_base58": "Base58 입력이 올바르지 않습니다. Base58은 0, O, I, l을 제외합니다."
     }
   },
   "categories": {

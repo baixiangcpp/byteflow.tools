@@ -406,15 +406,16 @@
       "error_minify_css": "CSS konnte nicht minimiert werden. Syntax prüfen und erneut versuchen."
     },
     "yaml_json_converter": {
-      "title": "YAML/JSON-Konverter",
-      "description": "Konvertieren Sie YAML in JSON und JSON in YAML.",
+      "title": "JSON/YAML/TOML-Konverter",
+      "description": "Konvertieren Sie JSON-, YAML- und TOML-Konfigurationsdaten lokal im Browser.",
       "import_file": "Datei importieren",
       "convert_action": "Konvertieren",
       "drag_drop_import_hint": "Textdatei hierher ziehen oder eine Datei zum Importieren auswählen.",
       "import_failed": "Datei konnte nicht importiert werden.",
       "copied_desc": "Die konvertierte Ausgabe wurde kopiert.",
       "error_yaml_to_json": "YAML konnte nicht in JSON konvertiert werden. Bitte Eingabe prüfen und erneut versuchen.",
-      "error_json_to_yaml": "JSON konnte nicht in YAML konvertiert werden. Bitte Eingabe prüfen und erneut versuchen."
+      "error_json_to_yaml": "JSON konnte nicht in YAML konvertiert werden. Bitte Eingabe prüfen und erneut versuchen.",
+      "error_convert": "Die ausgewählten Formate konnten nicht konvertiert werden. Prüfen Sie die Syntax und versuchen Sie es erneut."
     },
     "markdown_preview": {
       "title": "Markdown-Vorschau",
@@ -2540,6 +2541,17 @@
       "category": "Kategorie",
       "flags": "Markierungen",
       "truncated_warning": "Die Eingabe überschreitet das lokale Prüflimit. Zeichenzeilen, Statistiken und kopiertes JSON basieren nur auf dem geprüften Ausschnitt."
+    },
+    "base_encoding_converter": {
+      "title": "Base32/Base58-Konverter",
+      "description": "Kodieren und dekodieren Sie Base32- und Base58-Text lokal, ohne Daten hochzuladen.",
+      "encoding_label": "Kodierung",
+      "operation_label": "Aktion",
+      "encode": "Kodieren",
+      "decode": "Dekodieren",
+      "convert": "Konvertieren",
+      "invalid_base32": "Ungültige Base32-Eingabe. Prüfen Sie Zeichen und Padding.",
+      "invalid_base58": "Ungültige Base58-Eingabe. Base58 schließt 0, O, I und l aus."
     }
   },
   "categories": {

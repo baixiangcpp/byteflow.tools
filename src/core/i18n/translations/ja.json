@@ -406,15 +406,16 @@
       "error_minify_css": "CSS を圧縮できませんでした。構文を確認して再試行してください。"
     },
     "yaml_json_converter": {
-      "title": "YAML/JSON 変換",
-      "description": "YAML と JSON を相互変換します。",
+      "title": "JSON/YAML/TOML 変換",
+      "description": "JSON、YAML、TOML の設定データをブラウザ内でローカル変換します。",
       "import_file": "ファイルを読み込む",
       "convert_action": "変換",
       "drag_drop_import_hint": "テキストファイルをここにドラッグするか、ファイルを選択して読み込んでください。",
       "import_failed": "ファイルを読み込めませんでした。",
       "copied_desc": "変換結果をコピーしました。",
       "error_yaml_to_json": "YAML を JSON に変換できませんでした。入力を確認して再試行してください。",
-      "error_json_to_yaml": "JSON を YAML に変換できませんでした。入力を確認して再試行してください。"
+      "error_json_to_yaml": "JSON を YAML に変換できませんでした。入力を確認して再試行してください。",
+      "error_convert": "選択した形式間で変換できません。構文を確認してもう一度試してください。"
     },
     "markdown_preview": {
       "title": "Markdown プレビュー",
@@ -2540,6 +2541,17 @@
       "category": "カテゴリ",
       "flags": "フラグ",
       "truncated_warning": "入力がローカル検査の上限を超えています。文字行、統計、コピーされる JSON は検査済みの部分だけに基づきます。"
+    },
+    "base_encoding_converter": {
+      "title": "Base32/Base58 変換",
+      "description": "Base32 と Base58 のテキストをアップロードせずにローカルでエンコード、デコードします。",
+      "encoding_label": "エンコード形式",
+      "operation_label": "操作",
+      "encode": "エンコード",
+      "decode": "デコード",
+      "convert": "変換",
+      "invalid_base32": "Base32 入力が無効です。文字とパディングを確認してください。",
+      "invalid_base58": "Base58 入力が無効です。Base58 では 0、O、I、l は使いません。"
     }
   },
   "categories": {

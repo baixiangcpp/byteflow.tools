@@ -434,15 +434,16 @@
       "download_html_success": "Saved HTML file:"
     },
     "yaml_json_converter": {
-      "title": "YAML/JSON Converter",
-      "description": "Convert bidirectionally between YAML and JSON seamlessly.",
+      "title": "JSON/YAML/TOML Converter",
+      "description": "Convert JSON, YAML, and TOML configuration data locally in your browser.",
       "import_file": "Import File",
       "convert_action": "Convert",
       "drag_drop_import_hint": "Drag and drop a text file here, or choose a file to import.",
       "import_failed": "Unable to import file.",
       "copied_desc": "The converted output has been copied.",
       "error_yaml_to_json": "Unable to convert YAML to JSON. Check the input and try again.",
-      "error_json_to_yaml": "Unable to convert JSON to YAML. Check the input and try again."
+      "error_json_to_yaml": "Unable to convert JSON to YAML. Check the input and try again.",
+      "error_convert": "Unable to convert between the selected formats. Check syntax and try again."
     },
     "markdown_preview": {
       "title": "Markdown Preview",
@@ -2560,6 +2561,17 @@
       "category": "Category",
       "flags": "Flags",
       "truncated_warning": "Input exceeds the local inspection budget. Character rows, stats, and copied JSON are based on the inspected subset."
+    },
+    "base_encoding_converter": {
+      "title": "Base32/Base58 Converter",
+      "description": "Encode and decode Base32 and Base58 text locally without uploading data.",
+      "encoding_label": "Encoding",
+      "operation_label": "Operation",
+      "encode": "Encode",
+      "decode": "Decode",
+      "convert": "Convert",
+      "invalid_base32": "Invalid Base32 input. Check characters and padding.",
+      "invalid_base58": "Invalid Base58 input. Base58 excludes 0, O, I, and l."
     }
   },
   "pages": {

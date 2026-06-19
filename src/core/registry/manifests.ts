@@ -18,6 +18,7 @@ import { toolManifest as openapiViewerManifest } from "@/features/tools/openapi-
 import { toolManifest as jsonDiffViewerManifest } from "@/features/tools/json-diff-viewer/manifest"
 import { toolManifest as csvJsonConverterManifest } from "@/features/tools/csv-json-converter/manifest"
 import { toolManifest as base64EncodeDecodeManifest } from "@/features/tools/base64-encode-decode/manifest"
+import { toolManifest as baseEncodingConverterManifest } from "@/features/tools/base-encoding-converter/manifest"
 import { toolManifest as urlEncodeDecodeManifest } from "@/features/tools/url-encode-decode/manifest"
 import { toolManifest as jwtDecoderManifest } from "@/features/tools/jwt-decoder/manifest"
 import { toolManifest as jwtWorkbenchManifest } from "@/features/tools/jwt-workbench/manifest"
@@ -142,6 +143,7 @@ export const TOOL_MANIFESTS = [
     jsonDiffViewerManifest,
     csvJsonConverterManifest,
     base64EncodeDecodeManifest,
+    baseEncodingConverterManifest,
     urlEncodeDecodeManifest,
     jwtDecoderManifest,
     jwtWorkbenchManifest,

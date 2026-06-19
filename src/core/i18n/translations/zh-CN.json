@@ -406,15 +406,16 @@
       "error_minify_css": "CSS 压缩失败，请检查语法后重试。"
     },
     "yaml_json_converter": {
-      "title": "YAML/JSON 转换器",
-      "description": "在 YAML 和 JSON 格式之间相互转换。",
+      "title": "JSON/YAML/TOML 转换器",
+      "description": "在浏览器本地转换 JSON、YAML 和 TOML 配置数据。",
       "import_file": "导入文件",
       "convert_action": "转换",
       "drag_drop_import_hint": "将文本文件拖到这里，或选择文件导入。",
       "import_failed": "无法导入文件。",
       "copied_desc": "转换结果已复制。",
       "error_yaml_to_json": "无法将 YAML 转为 JSON。请检查输入后重试。",
-      "error_json_to_yaml": "无法将 JSON 转为 YAML。请检查输入后重试。"
+      "error_json_to_yaml": "无法将 JSON 转为 YAML。请检查输入后重试。",
+      "error_convert": "无法在所选格式之间转换。请检查语法后重试。"
     },
     "markdown_preview": {
       "title": "Markdown 预览",
@@ -2540,6 +2541,17 @@
       "category": "类别",
       "flags": "标记",
       "truncated_warning": "输入超过本地检查预算。字符行、统计和复制的 JSON 仅基于已检查的子集。"
+    },
+    "base_encoding_converter": {
+      "title": "Base32/Base58 转换器",
+      "description": "在本地编码和解码 Base32、Base58 文本，无需上传数据。",
+      "encoding_label": "编码",
+      "operation_label": "操作",
+      "encode": "编码",
+      "decode": "解码",
+      "convert": "转换",
+      "invalid_base32": "Base32 输入无效。请检查字符和填充。",
+      "invalid_base58": "Base58 输入无效。Base58 不包含 0、O、I 和 l。"
     }
   },
   "categories": {

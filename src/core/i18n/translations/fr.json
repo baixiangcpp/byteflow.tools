@@ -406,15 +406,16 @@
       "error_minify_css": "Impossible de minifier le CSS. Vérifiez la syntaxe puis réessayez."
     },
     "yaml_json_converter": {
-      "title": "Convertisseur YAML/JSON",
-      "description": "Convertissez YAML en JSON et JSON en YAML instantanément.",
+      "title": "Convertisseur JSON/YAML/TOML",
+      "description": "Convertissez des données de configuration JSON, YAML et TOML localement dans le navigateur.",
       "import_file": "Importer un fichier",
       "convert_action": "Convertir",
-      "drag_drop_import_hint": "Glissez un fichier texte ici ou choisissez un fichier a importer.",
+      "drag_drop_import_hint": "Glissez un fichier texte ici ou choisissez un fichier à importer.",
       "import_failed": "Impossible d'importer le fichier.",
-      "copied_desc": "La sortie convertie a ete copiee.",
-      "error_yaml_to_json": "Impossible de convertir YAML en JSON. Verifiez l'entree puis reessayez.",
-      "error_json_to_yaml": "Impossible de convertir JSON en YAML. Verifiez l'entree puis reessayez."
+      "copied_desc": "La sortie convertie a été copiée.",
+      "error_yaml_to_json": "Impossible de convertir YAML en JSON. Vérifiez l’entrée puis réessayez.",
+      "error_json_to_yaml": "Impossible de convertir JSON en YAML. Vérifiez l’entrée puis réessayez.",
+      "error_convert": "Impossible de convertir entre les formats sélectionnés. Vérifiez la syntaxe puis réessayez."
     },
     "markdown_preview": {
       "title": "Aperçu Markdown",
@@ -2540,6 +2541,17 @@
       "category": "Catégorie",
       "flags": "Indicateurs",
       "truncated_warning": "L'entrée dépasse le budget d'inspection local. Les lignes de caractères, les statistiques et le JSON copié reposent sur le sous-ensemble inspecté."
+    },
+    "base_encoding_converter": {
+      "title": "Convertisseur Base32/Base58",
+      "description": "Encodez et décodez du texte Base32 et Base58 localement, sans téléverser de données.",
+      "encoding_label": "Encodage",
+      "operation_label": "Opération",
+      "encode": "Encoder",
+      "decode": "Décoder",
+      "convert": "Convertir",
+      "invalid_base32": "Entrée Base32 invalide. Vérifiez les caractères et le padding.",
+      "invalid_base58": "Entrée Base58 invalide. Base58 exclut 0, O, I et l."
     }
   },
   "categories": {
