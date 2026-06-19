@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import {
+    decodeBase32ToBytes,
     decodeBase58ToBytes,
     decodeBase32ToText,
     decodeBase58ToText,
@@ -21,6 +22,10 @@ describe("base encoding converter utils", () => {
 
     it("encodes Bitcoin Base58 and preserves leading zero bytes", () => {
         expect(encodeTextToBase58("Hello World!")).toBe("2NEpo7TZRRrLZSi2U")
+        expect(encodeBytesToBase58(new Uint8Array([0]))).toBe("1")
+        expect(encodeBytesToBase58(new Uint8Array([0, 0]))).toBe("11")
+        expect(Array.from(decodeBase58ToBytes("1"))).toEqual([0])
+        expect(Array.from(decodeBase58ToBytes("11"))).toEqual([0, 0])
         expect(encodeBytesToBase58(new Uint8Array([0, 0, 1]))).toBe("112")
         expect(Array.from(decodeBase58ToBytes("112"))).toEqual([0, 0, 1])
     })
@@ -33,5 +38,11 @@ describe("base encoding converter utils", () => {
 
     it("rejects ambiguous Base58 characters", () => {
         expect(() => decodeBase58ToText("0OIl")).toThrow("Invalid Base58 character.")
+    })
+
+    it("rejects malformed Base32 padding and impossible lengths", () => {
+        for (const value of ["A", "AAA", "MZ======", "MZXW6YTBOI="]) {
+            expect(() => decodeBase32ToBytes(value)).toThrow("Invalid Base32 character.")
+        }
     })
 })
