@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "@/app/globals.css";
 import { DeferredToaster } from "@/components/ui/deferred-toaster";
 import { PWA_THEME_COLOR } from "@/core/pwa/constants";
@@ -37,7 +38,7 @@ export default function RootLayout({
       <head>
         <link rel="manifest" id="app-manifest" href="/manifest.json" />
         <meta name="theme-color" content={PWA_THEME_COLOR} />
-        <script src="/runtime/theme-manifest-bootstrap.js" />
+        <Script src="/runtime/theme-manifest-bootstrap.js" strategy="beforeInteractive" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
       </head>

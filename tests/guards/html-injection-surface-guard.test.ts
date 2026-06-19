@@ -83,11 +83,13 @@ describe("HTML injection surface guard", () => {
         const rootScript = readSource("public/runtime/root-locale-redirect.js")
         const themeScript = readSource("public/runtime/theme-manifest-bootstrap.js")
 
-        expect(rootPageSource).toContain("<script src=\"/runtime/root-locale-redirect.js\" />")
+        expect(rootPageSource).toContain("import Script from \"next/script\"")
+        expect(rootPageSource).toContain("<Script src=\"/runtime/root-locale-redirect.js\" strategy=\"beforeInteractive\" />")
         expect(countMatches(rootPageSource, /dangerouslySetInnerHTML=\{\{/g)).toBe(0)
         expect(rootScript).toMatch(new RegExp(`var supported = ${jsonArrayPattern(LOCALES).source};`))
 
-        expect(layoutSource).toContain("<script src=\"/runtime/theme-manifest-bootstrap.js\" />")
+        expect(layoutSource).toContain("import Script from \"next/script\"")
+        expect(layoutSource).toContain("<Script src=\"/runtime/theme-manifest-bootstrap.js\" strategy=\"beforeInteractive\" />")
         expect(countMatches(layoutSource, /dangerouslySetInnerHTML=\{\{/g)).toBe(0)
         expect(themeScript).toMatch(new RegExp(`var locales = ${jsonArrayPattern(LOCALES).source};`))
         expect(themeScript).toContain(`var themeColor = t === "light" ? "${PWA_THEME_COLOR_LIGHT}" : "${PWA_THEME_COLOR}";`)

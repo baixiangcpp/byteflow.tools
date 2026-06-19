@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Script from "next/script"
 import { LOCALES } from "@/core/i18n/i18n"
 
 const SITE_URL = "https://byteflow.tools"
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
 export default function RootPage() {
     return (
         <>
-            <script src="/runtime/root-locale-redirect.js" />
+            <Script src="/runtime/root-locale-redirect.js" strategy="beforeInteractive" />
             <main className="mx-auto max-w-xl px-6 py-16 text-center">
                 <h1 className="text-2xl font-semibold tracking-tight">byteflow.tools</h1>
                 <p className="mt-3 text-sm text-muted-foreground">

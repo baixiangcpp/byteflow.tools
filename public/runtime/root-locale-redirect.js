@@ -17,7 +17,7 @@
   try {
     var saved = localStorage.getItem("byteflow:preferred-locale");
     lang = saved && supported.indexOf(saved) >= 0 ? saved : detectBrowserLocale();
-  } catch (e) {
+  } catch {
     lang = detectBrowserLocale();
   }
 

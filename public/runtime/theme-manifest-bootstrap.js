@@ -37,5 +37,5 @@
     var themeColor = t === "light" ? "#f6f8fa" : "#0a0a1a";
     var themeMeta = document.querySelector('meta[name="theme-color"]');
     if (themeMeta) themeMeta.setAttribute("content", themeColor);
-  } catch (e) {}
+  } catch {}
 })();

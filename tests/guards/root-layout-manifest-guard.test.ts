@@ -8,7 +8,7 @@ describe("root layout localized manifest guard", () => {
         const runtimeSource = fs.readFileSync(path.join(process.cwd(), "public/runtime/theme-manifest-bootstrap.js"), "utf8")
 
         expect(layoutSource).toContain('<link rel="manifest" id="app-manifest" href="/manifest.json" />')
-        expect(layoutSource).toContain('<script src="/runtime/theme-manifest-bootstrap.js" />')
+        expect(layoutSource).toContain('<Script src="/runtime/theme-manifest-bootstrap.js" strategy="beforeInteractive" />')
         expect(runtimeSource).toContain('var manifestLink = document.getElementById("app-manifest");')
         expect(runtimeSource).toContain("if (!manifestLink) {")
         expect(runtimeSource).toContain('manifestLink = document.createElement("link");')

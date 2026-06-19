@@ -21,7 +21,7 @@ import { useBase64TextTask } from "./use-base64-text-task"
 export function Base64Page() {
     const { t, lang } = useLang()
     const toolT = t.tools["base64_encode_decode"] as Record<string, string>
-    const text = (key: string) => toolT[key]
+    const text = React.useCallback((key: string) => toolT[key], [toolT])
     const [mode, setMode] = React.useState<Mode>("text")
     const [operation, setOperation] = React.useState<Operation>("encode")
     const [input, setInput] = React.useState("")
@@ -45,12 +45,12 @@ export function Base64Page() {
     const operationOptions = React.useMemo(() => [
         { value: "encode" as const, label: text("operation_encode") },
         { value: "decode" as const, label: text("operation_decode") },
-    ], [toolT])
+    ], [text])
     const modeOptions = React.useMemo(() => [
         { value: "text" as const, label: text("mode_text") },
         { value: "file" as const, label: text("mode_file") },
         { value: "url-safe" as const, label: text("mode_url_safe") },
-    ], [toolT])
+    ], [text])
 
     React.useEffect(() => {
         const savedMode = readStorageString(MODE_STORAGE_KEY)
