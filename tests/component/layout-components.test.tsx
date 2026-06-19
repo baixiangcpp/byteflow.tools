@@ -144,8 +144,16 @@ vi.mock("@/components/ui/dialog", () => ({
 }))
 
 vi.mock("@/components/ui/command", () => ({
-    CommandDialog: ({ open, children }: { open: boolean; children: React.ReactNode }) =>
-        open ? <div data-testid="command-dialog">{children}</div> : null,
+    CommandDialog: ({
+        open,
+        children,
+        filter,
+    }: {
+        open: boolean
+        children: React.ReactNode
+        filter?: unknown
+    }) =>
+        open ? <div data-testid="command-dialog" data-has-filter={typeof filter === "function" ? "true" : "false"}>{children}</div> : null,
     CommandEmpty: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
     CommandGroup: ({ heading, children }: { heading: string; children: React.ReactNode }) => (
         <section>
@@ -213,6 +221,7 @@ describe("layout components", () => {
 
         fireEvent.keyDown(document, { key: "k", ctrlKey: true })
         expect(screen.getByTestId("command-dialog")).toBeInTheDocument()
+        expect(screen.getByTestId("command-dialog")).toHaveAttribute("data-has-filter", "true")
 
         fireEvent.click(screen.getByRole("button", { name: "Home" }))
 
