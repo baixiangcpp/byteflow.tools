@@ -2349,7 +2349,7 @@
       "use_template": "Nutzen",
       "template_loaded": "Rezeptvorlage geladen",
       "template_json_minify_base64url_title": "JSON minifizieren zu URL-sicherem Base64",
-      "template_json_minify_base64url_description": "Minifiziert ein JSON-Payload und kodiert es für URLs, Umgebungswerte oder Test-Fixtures.",
+      "template_json_minify_base64url_description": "Minifiziert eine JSON-Nutzlast und kodiert sie für URLs, Umgebungswerte oder Testdaten.",
       "template_url_decode_json_title": "URL dekodieren und JSON formatieren",
       "template_url_decode_json_description": "Dekodiert einen URL-kodierten JSON-Blob und formatiert ihn zur Prüfung.",
       "template_clean_copied_config_title": "Kopierten Konfigurationstext bereinigen",

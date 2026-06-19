@@ -2349,7 +2349,7 @@
       "use_template": "使用",
       "template_loaded": "Recipe テンプレートを読み込みました",
       "template_json_minify_base64url_title": "JSON を圧縮して URL セーフ Base64 へ",
-      "template_json_minify_base64url_description": "JSON payload を圧縮し、URL、環境変数、テスト fixture に使いやすい文字列へエンコードします。",
+      "template_json_minify_base64url_description": "JSON ペイロードを圧縮し、URL、環境変数、テストデータに使いやすい文字列へエンコードします。",
       "template_url_decode_json_title": "URL デコードして JSON を整形",
       "template_url_decode_json_description": "URL エンコードされた JSON blob をデコードし、確認しやすい形に整形します。",
       "template_clean_copied_config_title": "コピーした設定テキストを清掃",

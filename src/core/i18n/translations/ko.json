@@ -2349,7 +2349,7 @@
       "use_template": "사용",
       "template_loaded": "Recipe 템플릿을 불러왔습니다",
       "template_json_minify_base64url_title": "JSON 압축 후 URL 안전 Base64",
-      "template_json_minify_base64url_description": "JSON payload를 압축한 뒤 URL, 환경 변수, 테스트 fixture에 쓰기 좋은 문자열로 인코딩합니다.",
+      "template_json_minify_base64url_description": "JSON 페이로드를 압축한 뒤 URL, 환경 변수, 테스트 데이터에 쓰기 좋은 문자열로 인코딩합니다.",
       "template_url_decode_json_title": "URL 디코드 후 JSON 정리",
       "template_url_decode_json_description": "URL 인코딩된 JSON blob을 디코드하고 검토하기 쉽게 포맷합니다.",
       "template_clean_copied_config_title": "복사한 설정 텍스트 정리",
