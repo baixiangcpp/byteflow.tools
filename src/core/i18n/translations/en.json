@@ -134,6 +134,19 @@
     "all_tools": "All Tools",
     "install_as_app": "Install as app",
     "try_example": "Try Example",
+    "external_network_notice": {
+      "title": "External network notice",
+      "third_party_api_message": "This tool may contact a third-party service from your browser as part of its workflow.",
+      "user_requested_message": "This tool may request or open a URL you provide from your browser when you explicitly run that action."
+    },
+    "local_data_controls": {
+      "title": "Local data controls",
+      "description": "Byteflow processing stays in your browser. Some preferences and non-sensitive tool settings may be saved locally; sensitive payloads are configured not to persist by default.",
+      "clear_button": "Clear saved tool data",
+      "cleared_one_message": "Cleared {count} saved Byteflow item.",
+      "cleared_many_message": "Cleared {count} saved Byteflow items.",
+      "none_found_message": "No saved Byteflow data was found."
+    },
     "privacy_badge": {
       "label": "Runs Locally",
       "title": "🛡️ Privacy First",

@@ -134,6 +134,19 @@
     "all_tools": "所有工具",
     "install_as_app": "安裝為應用",
     "try_example": "試試範例",
+    "external_network_notice": {
+      "title": "外部網路提示",
+      "third_party_api_message": "此工具可能會在工作流程中從你的瀏覽器請求第三方服務。",
+      "user_requested_message": "此工具只會在你明確執行該操作時，從瀏覽器請求或開啟你提供的 URL。"
+    },
+    "local_data_controls": {
+      "title": "本地資料控制",
+      "description": "Byteflow 的處理保留在你的瀏覽器中。部分偏好和非敏感工具設定可能會保存在本地；敏感 payload 預設設定為不持久化。",
+      "clear_button": "清除已保存的工具資料",
+      "cleared_one_message": "已清除 {count} 筆保存的 Byteflow 項目。",
+      "cleared_many_message": "已清除 {count} 筆保存的 Byteflow 項目。",
+      "none_found_message": "未找到已保存的 Byteflow 資料。"
+    },
     "privacy_badge": {
       "label": "本地執行",
       "title": "🛡️ 隱私優先",

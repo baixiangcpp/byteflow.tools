@@ -134,6 +134,19 @@
     "all_tools": "すべてのツール",
     "install_as_app": "アプリとしてインストール",
     "try_example": "サンプルを試す",
+    "external_network_notice": {
+      "title": "外部ネットワーク通知",
+      "third_party_api_message": "このツールは、ワークフローの一部としてブラウザからサードパーティサービスに接続する場合があります。",
+      "user_requested_message": "このツールは、明示的に実行した操作でのみ、指定した URL をブラウザからリクエストまたは開く場合があります。"
+    },
+    "local_data_controls": {
+      "title": "ローカルデータ管理",
+      "description": "Byteflow の処理はブラウザ内に留まります。一部の設定や機密性の低いツール設定はローカルに保存される場合がありますが、機密 payload は既定で永続化されないよう設定されています。",
+      "clear_button": "保存済みツールデータをクリア",
+      "cleared_one_message": "保存済み Byteflow 項目を {count} 件クリアしました。",
+      "cleared_many_message": "保存済み Byteflow 項目を {count} 件クリアしました。",
+      "none_found_message": "保存済み Byteflow データは見つかりませんでした。"
+    },
     "privacy_badge": {
       "label": "ローカル実行",
       "title": "🛡️ プライバシー第一",

@@ -134,6 +134,19 @@
     "all_tools": "Tous les outils",
     "install_as_app": "Installer en tant qu'application",
     "try_example": "Essayer un exemple",
+    "external_network_notice": {
+      "title": "Avis de réseau externe",
+      "third_party_api_message": "Cet outil peut contacter un service tiers depuis votre navigateur dans le cadre de son flux de travail.",
+      "user_requested_message": "Cet outil peut demander ou ouvrir une URL que vous fournissez depuis votre navigateur lorsque vous lancez explicitement cette action."
+    },
+    "local_data_controls": {
+      "title": "Contrôles des données locales",
+      "description": "Le traitement Byteflow reste dans votre navigateur. Certaines préférences et certains réglages non sensibles peuvent être enregistrés localement ; les payloads sensibles sont configurés pour ne pas être conservés par défaut.",
+      "clear_button": "Effacer les données d’outils enregistrées",
+      "cleared_one_message": "{count} élément Byteflow enregistré a été effacé.",
+      "cleared_many_message": "{count} éléments Byteflow enregistrés ont été effacés.",
+      "none_found_message": "Aucune donnée Byteflow enregistrée n’a été trouvée."
+    },
     "privacy_badge": {
       "label": "Exécution locale",
       "title": "🛡️ Confidentialité d'abord",
