@@ -47,6 +47,7 @@ import {
     updateValueAtPath,
 } from "./logic"
 import { JsonTreeNode } from "./components"
+import { SAMPLE_JSON_SOURCE } from "./samples"
 import type { JsonPath, JsonValue, TreeDialogState, ViewMode } from "./types"
 
 export function JsonFormatterPage() {
@@ -328,27 +329,10 @@ export function JsonFormatterPage() {
     }, [output, treeData, formatJson, minifyJson, handleCopy, viewMode])
 
     const handleUseSample = () => {
-        const sampleJson = {
-            "user": {
-                "id": 1001,
-                "name": "Alice Chen",
-                "email": "alice@example.com",
-                "active": true,
-                "roles": ["admin", "developer"],
-                "metadata": {
-                    "lastLogin": "2026-06-04T10:30:00Z",
-                    "preferences": {
-                        "theme": "dark",
-                        "language": "en"
-                    }
-                }
-            }
-        }
-        const source = JSON.stringify(sampleJson)
-        setInput(source)
+        setInput(SAMPLE_JSON_SOURCE)
         setExpanded(new Set(["$"]))
         setError(null)
-        formatJsonSource(source)
+        formatJsonSource(SAMPLE_JSON_SOURCE)
     }
 
     const actions: ToolAction[] = [
