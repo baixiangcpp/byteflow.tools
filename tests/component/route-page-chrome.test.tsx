@@ -5,6 +5,11 @@ import { RoutePageChrome } from "@/components/layout/route-page-chrome"
 const mocks = vi.hoisted(() => {
     const translations = {
         common: {
+            external_network_notice: {
+                title: "Localized network notice",
+                third_party_api_message: "Localized third-party API message",
+                user_requested_message: "Localized user requested URL message",
+            },
             install_guide: "Install guide",
             install_inline_description: "Install description",
             install_inline_title: "Install Byteflow",
@@ -55,8 +60,8 @@ describe("RoutePageChrome", () => {
             </RoutePageChrome>,
         )
 
-        expect(screen.getByText("External network notice")).toBeInTheDocument()
-        expect(screen.getByText(/request or open a URL you provide/i)).toBeInTheDocument()
+        expect(screen.getByText("Localized network notice")).toBeInTheDocument()
+        expect(screen.getByText("Localized user requested URL message")).toBeInTheDocument()
     })
 
     it("does not show an external network notice for local-only tools", () => {
@@ -66,6 +71,6 @@ describe("RoutePageChrome", () => {
             </RoutePageChrome>,
         )
 
-        expect(screen.queryByText("External network notice")).not.toBeInTheDocument()
+        expect(screen.queryByText("Localized network notice")).not.toBeInTheDocument()
     })
 })

@@ -9,6 +9,7 @@ const ROOT = process.cwd()
 const FEATURE_TOOLS_DIR = path.join(ROOT, "src/features/tools")
 const SOURCE_EXTENSIONS = new Set([".ts", ".tsx"])
 const EXECUTABLE_NETWORK_CALLS = new Set(["fetch", "openExternalUrl"])
+const EXECUTABLE_NETWORK_CONSTRUCTORS = new Set(["EventSource", "WebSocket", "XMLHttpRequest"])
 const EXECUTABLE_NETWORK_PROPERTY_CALLS = new Set(["window.open", "navigator.sendBeacon"])
 const EXTERNAL_TARGET_PATTERNS = [
     /\btarget\s*=\s*["']_blank["']/,
@@ -46,6 +47,13 @@ function hasExecutableNetworkCall(source: string): boolean {
                     found = true
                     return
                 }
+            }
+        }
+        if (ts.isNewExpression(node)) {
+            const expression = node.expression
+            if (ts.isIdentifier(expression) && EXECUTABLE_NETWORK_CONSTRUCTORS.has(expression.text)) {
+                found = true
+                return
             }
         }
         ts.forEachChild(node, visit)
