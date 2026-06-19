@@ -7,166 +7,37 @@ import { loadOrderedToolManifests } from "../lib/tool-manifest-lib.js"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, "../..")
-const MENU_GROUPS_PATH = path.join(ROOT, "src/core/registry/menu-groups.ts")
+const TAXONOMY_CONFIG_PATH = path.join(ROOT, "src/core/registry/tool-taxonomy-config.json")
 const OUTPUT_PATH = path.join(ROOT, "src/generated/client-tool-lookup.ts")
 const TOOL_INDEX_PATH = path.join(ROOT, "src/generated/tool-index.json")
 
-const MENU_GROUP_DEF_RE = /{ key: "([^"]+)", navKey: "([^"]+)", slug: "([^"]+)", descriptionKey: "([^"]+)" }/g
-const FAMILY_GROUP_RE = /^\s*"([^"]+)":\s*"([^"]+)",?\s*$/gm
-const FAMILY_BY_TOOL_KEY = {
-    ai_color_palette_generator: "images-media",
-    asn1_der_inspector: "security-tokens",
-    barcode_generator: "generators",
-    base_encoding_converter: "encoders-decoders",
-    base64_encode_decode: "encoders-decoders",
-    certificate_decoder: "security-tokens",
-    chmod_calculator: "devops-logs",
-    cidr_subnet_calculator: "network-http",
-    code_to_image_converter: "images-media",
-    color_converter: "svg-css-visual",
-    color_mixer: "svg-css-visual",
-    color_shades_generator: "svg-css-visual",
-    cron_visualizer: "devops-logs",
-    crontab_generator: "devops-logs",
-    css_background_pattern_generator: "svg-css-visual",
-    css_border_radius_generator: "svg-css-visual",
-    css_box_shadow_generator: "svg-css-visual",
-    css_checkbox_generator: "svg-css-visual",
-    css_clip_path_generator: "svg-css-visual",
-    css_cubic_bezier_generator: "svg-css-visual",
-    css_glassmorphism_generator: "svg-css-visual",
-    css_gradient_generator: "svg-css-visual",
-    css_loader_generator: "svg-css-visual",
-    css_switch_generator: "svg-css-visual",
-    css_text_glitch_effect_generator: "svg-css-visual",
-    css_triangle_generator: "svg-css-visual",
-    csp_parser: "security-tokens",
-    csv_diff: "data-formats",
-    csv_json_converter: "data-formats",
-    curl_to_code: "network-http",
-    docker_run_to_compose: "devops-logs",
-    env_parser: "devops-logs",
-    fake_iban_generator: "generators",
-    google_fonts_pair_finder: "svg-css-visual",
-    gzip_brotli_lab: "encoders-decoders",
-    har_viewer_sanitizer: "network-http",
-    hash_generator: "security-tokens",
-    header_diff: "network-http",
-    hex_bytes_workbench: "encoders-decoders",
-    html_encoder_decoder: "encoders-decoders",
-    html_to_markdown: "text-strings",
-    http_request_builder: "network-http",
-    http_status_codes: "network-http",
-    id_generator: "generators",
-    image_average_color_finder: "images-media",
-    image_base64: "encoders-decoders",
-    image_caption_generator: "images-media",
-    image_color_extractor: "images-media",
-    image_color_picker: "images-media",
-    image_cropper: "images-media",
-    image_filters: "images-media",
-    image_resizer: "images-media",
-    instagram_filters: "social-metadata",
-    instagram_photo_downloader: "social-metadata",
-    instagram_post_generator: "social-metadata",
-    instagram_story_generator: "social-metadata",
-    invisible_chars_detector: "text-strings",
-    jq_playground: "data-formats",
-    json_diff_viewer: "data-formats",
-    json_formatter: "data-formats",
-    json_to_typescript: "data-formats",
-    jsonpath_playground: "data-formats",
-    jwt_decoder: "security-tokens",
-    jwt_verifier: "security-tokens",
-    jwt_workbench: "security-tokens",
-    list_randomizer: "generators",
-    local_log_parser: "devops-logs",
-    log_scrubber: "devops-logs",
-    markdown_preview: "text-strings",
-    md5_generator: "security-tokens",
-    ndjson_formatter: "data-formats",
-    open_graph_meta_generator: "social-metadata",
-    openapi_mock: "network-http",
-    openapi_viewer: "network-http",
-    password_generator: "generators",
-    photo_censor: "images-media",
-    pipeline_builder: "workbench-pipeline",
-    qr_code_generator: "generators",
-    react_native_shadow_generator: "svg-css-visual",
-    regex_generator: "text-strings",
-    regex_tester: "text-strings",
-    robots_txt_tester: "network-http",
-    saml_decoder: "security-tokens",
-    scanned_pdf_converter: "images-media",
-    security_header_analyzer: "security-tokens",
-    slugify_case_converter: "text-strings",
-    structured_data_visualizer: "data-formats",
-    svg_blob_generator: "svg-css-visual",
-    svg_optimizer: "svg-css-visual",
-    svg_pattern_generator: "svg-css-visual",
-    svg_stroke_to_fill_converter: "svg-css-visual",
-    svg_to_png_converter: "svg-css-visual",
-    text_diff_checker: "text-strings",
-    text_to_handwriting_converter: "images-media",
-    totp_generator: "security-tokens",
-    tweet_generator: "social-metadata",
-    tweet_to_image_converter: "social-metadata",
-    twitter_ad_revenue_generator: "social-metadata",
-    unicode_inspector: "text-strings",
-    unix_timestamp: "generators",
-    url_encode_decode: "encoders-decoders",
-    url_parser: "network-http",
-    user_agent_parser: "network-http",
-    uuid_generator: "generators",
-    vimeo_thumbnail_grabber: "social-metadata",
-    yaml_json_converter: "data-formats",
-    yaml_merge_patch_explorer: "data-formats",
-    youtube_thumbnail_grabber: "social-metadata",
-    yq_playground: "data-formats",
-}
-
-const PIPELINE_READY_TOOL_KEYS = new Set([
-    "base64_encode_decode",
-    "csv_json_converter",
-    "env_parser",
-    "hash_generator",
-    "html_to_markdown",
-    "invisible_chars_detector",
-    "json_formatter",
-    "jwt_decoder",
-    "log_scrubber",
-    "multiple_whitespace_remover",
-    "ndjson_formatter",
-    "regex_tester",
-    "slugify_case_converter",
-    "unix_timestamp",
-    "url_encode_decode",
-    "yaml_json_converter",
+const taxonomyConfig = JSON.parse(fs.readFileSync(TAXONOMY_CONFIG_PATH, "utf8"))
+const FAMILY_BY_TOOL_KEY = taxonomyConfig.familyByToolKey
+const PIPELINE_READY_TOOL_KEYS = new Set(taxonomyConfig.pipelineReadyToolKeys)
+const TOOL_FAMILIES = new Set([
+    "formatters-validators",
+    "encoders-decoders",
+    "text-strings",
+    "data-formats",
+    "security-tokens",
+    "network-http",
+    "devops-logs",
+    "generators",
+    "images-media",
+    "svg-css-visual",
+    "social-metadata",
+    "workbench-pipeline",
 ])
 
 function parseMenuGroups() {
-    const source = fs.readFileSync(MENU_GROUPS_PATH, "utf8")
-    const defsBlock = source.match(/export const MENU_GROUP_DEFS:[\s\S]*?=\s*\[([\s\S]*?)\]/)
-    if (!defsBlock) {
-        throw new Error("Unable to parse MENU_GROUP_DEFS from src/core/registry/menu-groups.ts")
+    return {
+        defs: taxonomyConfig.primaryMenuGroupDefs.map((group) => ({
+            key: group.key,
+            navKey: group.navKey,
+            slug: group.slug,
+        })),
+        primaryGroupByFamily: taxonomyConfig.primaryGroupByFamily,
     }
-
-    const defs = [...defsBlock[1].matchAll(MENU_GROUP_DEF_RE)].map((match) => ({
-        key: match[1],
-        navKey: match[2],
-        slug: match[3],
-    }))
-
-    const familyBlock = source.match(/const PRIMARY_GROUP_BY_FAMILY:[\s\S]*?=\s*{([\s\S]*?)}/)
-    if (!familyBlock) {
-        throw new Error("Unable to parse PRIMARY_GROUP_BY_FAMILY from src/core/registry/menu-groups.ts")
-    }
-
-    const primaryGroupByFamily = Object.fromEntries(
-        [...familyBlock[1].matchAll(FAMILY_GROUP_RE)].map((match) => [match[1], match[2]]),
-    )
-
-    return { defs, primaryGroupByFamily }
 }
 
 function classifyToolToMenuGroup(tool, primaryGroupByFamily) {
@@ -178,6 +49,36 @@ function classifyToolToMenuGroup(tool, primaryGroupByFamily) {
     if (tool.category === "formatters") return "data_code_formats"
     if (tool.category === "generators") return "generators_calculators"
     return "text_regex"
+}
+
+function assertTaxonomyConfig(orderedTools) {
+    const toolKeys = new Set(orderedTools.map((tool) => tool.key))
+    const primaryGroupKeys = new Set(taxonomyConfig.primaryMenuGroupDefs.map((group) => group.key))
+    const legacyGroupKeys = new Set(taxonomyConfig.legacyMenuGroupDefs.map((group) => group.key))
+    const problems = []
+
+    for (const [toolKey, family] of Object.entries(taxonomyConfig.familyByToolKey)) {
+        if (!toolKeys.has(toolKey)) problems.push(`familyByToolKey references unknown tool: ${toolKey}`)
+        if (!TOOL_FAMILIES.has(family)) problems.push(`familyByToolKey.${toolKey} uses unknown family: ${family}`)
+    }
+
+    for (const toolKey of taxonomyConfig.pipelineReadyToolKeys) {
+        if (!toolKeys.has(toolKey)) problems.push(`pipelineReadyToolKeys references unknown tool: ${toolKey}`)
+    }
+
+    for (const [family, groupKey] of Object.entries(taxonomyConfig.primaryGroupByFamily)) {
+        if (!TOOL_FAMILIES.has(family)) problems.push(`primaryGroupByFamily uses unknown family: ${family}`)
+        if (!primaryGroupKeys.has(groupKey)) problems.push(`primaryGroupByFamily.${family} uses unknown menu group: ${groupKey}`)
+    }
+
+    for (const [toolKey, groupKey] of Object.entries(taxonomyConfig.legacyOverrideGroupByToolKey)) {
+        if (!toolKeys.has(toolKey)) problems.push(`legacyOverrideGroupByToolKey references unknown tool: ${toolKey}`)
+        if (!legacyGroupKeys.has(groupKey)) problems.push(`legacyOverrideGroupByToolKey.${toolKey} uses unknown legacy group: ${groupKey}`)
+    }
+
+    if (problems.length > 0) {
+        throw new Error(`[tool-taxonomy-config] ${problems.join("; ")}`)
+    }
 }
 
 function fallbackFamily(tool) {
@@ -253,6 +154,7 @@ function loadAliases() {
 
 function buildClientLookupSource() {
     const orderedTools = loadOrderedToolManifests()
+    assertTaxonomyConfig(orderedTools)
     const aliasesByKey = loadAliases()
 
     const byKey = Object.fromEntries(
