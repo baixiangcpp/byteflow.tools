@@ -10,6 +10,11 @@ export type ClientToolLookupEntry = {
     aliases: readonly string[]
     relatedToolKeys: readonly string[]
     networkAccess: "none" | "user_requested" | "third_party_api"
+    networkHosts: readonly string[]
+    networkPurposeKey: string | null
+    allowUserProvidedUrl: boolean | null
+    requiresExplicitUserAction: boolean | null
+    externalDataSent: "none" | "user_provided_url" | "derived_url" | null
     persistInput: true | false | "opt-in" | null
     family: string
     tags: readonly string[]
@@ -42,6 +47,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "yaml_json_converter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": false,
         "family": "data-formats",
         "tags": [
@@ -85,6 +95,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "sql_formatter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "formatters-validators",
         "tags": [
@@ -121,6 +136,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "html_css_beautifier"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "formatters-validators",
         "tags": [
@@ -157,6 +177,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "markdown_preview"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "formatters-validators",
         "tags": [
@@ -193,6 +218,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_formatter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "formatters-validators",
         "tags": [
@@ -220,6 +250,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "javascript_minifier"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "formatters-validators",
         "tags": [
@@ -248,6 +283,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "base64_encode_decode"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "encoders-decoders",
         "tags": [
@@ -276,6 +316,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "xml_formatter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "formatters-validators",
         "tags": [
@@ -305,6 +350,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "markdown_preview"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "formatters-validators",
         "tags": [
@@ -343,6 +393,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "xml_formatter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "data-formats",
         "tags": [
@@ -387,6 +442,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "lorem_ipsum"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "text-strings",
         "tags": [
@@ -425,6 +485,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "text-strings",
         "tags": [
@@ -454,6 +519,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jsonpath_playground"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "data-formats",
         "tags": [
@@ -491,6 +561,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "json_formatter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "formatters-validators",
         "tags": [
@@ -518,6 +593,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_base64"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -547,6 +627,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "yaml_json_converter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "data-formats",
         "tags": [
@@ -575,6 +660,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jsonpath_playground"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "network-http",
         "tags": [
@@ -602,6 +692,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jsonpath_playground"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "data-formats",
         "tags": [
@@ -631,6 +726,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "data-formats",
         "tags": [
@@ -661,6 +761,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_base64"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "encoders-decoders",
         "tags": [
@@ -706,6 +811,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hash_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "encoders-decoders",
         "tags": [
@@ -742,6 +852,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "user_agent_parser"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "encoders-decoders",
         "tags": [
@@ -784,6 +899,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_encode_decode"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": false,
         "family": "security-tokens",
         "tags": [
@@ -826,6 +946,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hash_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": false,
         "family": "security-tokens",
         "tags": [
@@ -855,6 +980,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "password_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "security-tokens",
         "tags": [
@@ -895,6 +1025,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "password_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "security-tokens",
         "tags": [
@@ -923,6 +1058,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "base64_encode_decode"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "text-strings",
         "tags": [
@@ -950,6 +1090,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "lorem_ipsum"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "text-strings",
         "tags": [
@@ -978,6 +1123,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "slugify_case_converter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "text-strings",
         "tags": [
@@ -1006,6 +1156,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "text-strings",
         "tags": [
@@ -1033,6 +1188,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "open_graph_meta_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -1061,6 +1221,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "instagram_post_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "images-media",
         "tags": [
@@ -1091,6 +1256,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "html_formatter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "images-media",
         "tags": [
@@ -1119,6 +1289,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "qr_code_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "encoders-decoders",
         "tags": [
@@ -1147,6 +1322,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "crontab_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "generators",
         "tags": [
@@ -1174,6 +1354,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "lorem_ipsum"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "generators",
         "tags": [
@@ -1209,6 +1394,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "markdown_preview"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "generators",
         "tags": [
@@ -1234,6 +1424,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "lorem_ipsum"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "generators",
         "tags": [
@@ -1260,6 +1455,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_optimizer"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -1289,6 +1489,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -1318,6 +1523,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_gradient_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "images-media",
         "tags": [
@@ -1348,6 +1558,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_gradient_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -1377,6 +1592,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_gradient_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -1408,6 +1628,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "images-media",
         "tags": [
@@ -1439,6 +1664,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_mixer"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "images-media",
         "tags": [
@@ -1469,6 +1699,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_mixer"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "images-media",
         "tags": [
@@ -1500,6 +1735,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_mixer"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "images-media",
         "tags": [
@@ -1531,6 +1771,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_base64"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "images-media",
         "tags": [
@@ -1561,6 +1806,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_color_extractor"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "images-media",
         "tags": [
@@ -1591,6 +1841,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "instagram_photo_downloader"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "social-metadata",
         "tags": [
@@ -1620,6 +1875,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "open_graph_meta_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "social-metadata",
         "tags": [
@@ -1648,6 +1908,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "open_graph_meta_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "social-metadata",
         "tags": [
@@ -1676,6 +1941,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "instagram_story_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "social-metadata",
         "tags": [
@@ -1704,6 +1974,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "instagram_post_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "social-metadata",
         "tags": [
@@ -1733,6 +2008,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "code_to_image_converter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "social-metadata",
         "tags": [
@@ -1762,6 +2042,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "id_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "social-metadata",
         "tags": [
@@ -1790,6 +2075,13 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_resizer"
         ],
         "networkAccess": "user_requested",
+        "networkHosts": [
+            "instagram.com"
+        ],
+        "networkPurposeKey": "authorized_media_download",
+        "allowUserProvidedUrl": true,
+        "requiresExplicitUserAction": true,
+        "externalDataSent": "user_provided_url",
         "persistInput": null,
         "family": "social-metadata",
         "tags": [
@@ -1820,6 +2112,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_resizer"
         ],
         "networkAccess": "user_requested",
+        "networkHosts": [
+            "vimeo.com",
+            "player.vimeo.com",
+            "vumbnail.com"
+        ],
+        "networkPurposeKey": "thumbnail_preview",
+        "allowUserProvidedUrl": true,
+        "requiresExplicitUserAction": false,
+        "externalDataSent": "derived_url",
         "persistInput": null,
         "family": "social-metadata",
         "tags": [
@@ -1850,6 +2151,16 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_resizer"
         ],
         "networkAccess": "user_requested",
+        "networkHosts": [
+            "youtube.com",
+            "youtube-nocookie.com",
+            "youtu.be",
+            "i.ytimg.com"
+        ],
+        "networkPurposeKey": "thumbnail_preview",
+        "allowUserProvidedUrl": true,
+        "requiresExplicitUserAction": false,
+        "externalDataSent": "derived_url",
         "persistInput": null,
         "family": "social-metadata",
         "tags": [
@@ -1880,6 +2191,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "code_to_image_converter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "images-media",
         "tags": [
@@ -1910,6 +2226,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "scanned_pdf_converter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "images-media",
         "tags": [
@@ -1940,6 +2261,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_base64"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "images-media",
         "tags": [
@@ -1969,6 +2295,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_clip_path_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -1999,6 +2330,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_gradient_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -2028,6 +2364,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_to_png_converter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -2057,6 +2398,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_stroke_to_fill_converter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -2087,6 +2433,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_minifier"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -2116,6 +2467,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_minifier"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -2145,6 +2501,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_minifier"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -2175,6 +2536,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -2204,6 +2570,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "svg_optimizer"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -2234,6 +2605,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_minifier"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -2263,6 +2639,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -2292,6 +2673,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_minifier"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -2322,6 +2708,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_minifier"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -2351,6 +2742,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "color_converter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -2380,6 +2776,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_minifier"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -2409,6 +2810,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "css_minifier"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "svg-css-visual",
         "tags": [
@@ -2436,6 +2842,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_encode_decode"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "generators",
         "tags": [
@@ -2463,6 +2874,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "list_randomizer"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "generators",
         "tags": [
@@ -2492,6 +2908,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "password_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "generators",
         "tags": [
@@ -2520,6 +2941,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "password_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "generators",
         "tags": [
@@ -2545,6 +2971,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "generators",
         "tags": [
@@ -2571,6 +3002,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "base64_encode_decode"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": false,
         "family": "devops-logs",
         "tags": [
@@ -2601,6 +3037,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hash_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "generators",
         "tags": [
@@ -2627,6 +3068,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_encode_decode"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "text-strings",
         "tags": [
@@ -2669,6 +3115,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_encode_decode"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "text-strings",
         "tags": [
@@ -2695,6 +3146,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "regex_tester"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "devops-logs",
         "tags": [
@@ -2738,6 +3194,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "chmod_calculator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "network-http",
         "tags": [
@@ -2763,6 +3224,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "regex_tester"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "devops-logs",
         "tags": [
@@ -2791,6 +3257,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_request_builder"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "network-http",
         "tags": [
@@ -2818,6 +3289,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "cidr_subnet_calculator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "devops-logs",
         "tags": [
@@ -2847,6 +3323,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_status_codes"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "network-http",
         "tags": [
@@ -2874,6 +3355,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_request_builder"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "network-http",
         "tags": [
@@ -2902,6 +3388,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "security_header_analyzer"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": false,
         "family": "security-tokens",
         "tags": [
@@ -2931,6 +3422,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "user_agent_parser"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": false,
         "family": "network-http",
         "tags": [
@@ -2961,6 +3457,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jwt_decoder"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "network-http",
         "tags": [
@@ -2990,6 +3491,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jsonpath_playground"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "data-formats",
         "tags": [
@@ -3021,6 +3527,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "certificate_decoder"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": false,
         "family": "security-tokens",
         "tags": [
@@ -3050,6 +3561,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "text-strings",
         "tags": [
@@ -3079,6 +3595,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_encode_decode"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "text-strings",
         "tags": [
@@ -3119,6 +3640,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "csp_parser"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "network-http",
         "tags": [
@@ -3146,6 +3672,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "robots_txt_tester"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "security-tokens",
         "tags": [
@@ -3176,6 +3707,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "header_diff"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "data-formats",
         "tags": [
@@ -3205,6 +3741,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": false,
         "family": "network-http",
         "tags": [
@@ -3234,6 +3775,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "certificate_decoder"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": false,
         "family": "security-tokens",
         "tags": [
@@ -3265,6 +3811,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "id_generator"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": false,
         "family": "security-tokens",
         "tags": [
@@ -3294,6 +3845,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "curl_to_code"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "network-http",
         "tags": [
@@ -3322,6 +3878,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "curl_to_code"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "devops-logs",
         "tags": [
@@ -3363,6 +3924,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": false,
         "family": "devops-logs",
         "tags": [
@@ -3404,6 +3970,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "yaml_json_converter"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "data-formats",
         "tags": [
@@ -3443,6 +4014,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": false,
         "family": "devops-logs",
         "tags": [
@@ -3475,6 +4051,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "local_log_parser"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "encoders-decoders",
         "tags": [
@@ -3503,6 +4084,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "docker_run_to_compose"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "data-formats",
         "tags": [
@@ -3534,6 +4120,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jsonpath_playground"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "data-formats",
         "tags": [
@@ -3564,6 +4155,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jsonpath_playground"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "data-formats",
         "tags": [
@@ -3596,6 +4192,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "security_header_analyzer"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": false,
         "family": "network-http",
         "tags": [
@@ -3627,6 +4228,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "log_scrubber"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "workbench-pipeline",
         "tags": [
@@ -3664,6 +4270,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "security_header_analyzer"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": false,
         "family": "security-tokens",
         "tags": [
@@ -3695,6 +4306,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jwt_decoder"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "security-tokens",
         "tags": [
@@ -3724,6 +4340,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "unicode_inspector"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "encoders-decoders",
         "tags": [
@@ -3751,6 +4372,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "multiple_whitespace_remover"
         ],
         "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
         "persistInput": null,
         "family": "text-strings",
         "tags": [

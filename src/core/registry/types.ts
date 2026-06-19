@@ -5,6 +5,7 @@ export type { ToolCategory } from "./categories"
 export type { ToolCapability, ToolFamily } from "./tool-taxonomy"
 
 export type ToolNetworkAccess = "none" | "user_requested" | "third_party_api"
+export type ToolExternalDataSent = "none" | "user_provided_url" | "derived_url"
 export type ToolInputPersistenceMode = true | false | "opt-in"
 
 /**
@@ -27,6 +28,16 @@ export interface ToolMeta {
     searchKeywords?: string[]
     /** Browser network behavior used by privacy UI and CI guards */
     networkAccess?: ToolNetworkAccess
+    /** External hosts this tool may contact or embed from the browser */
+    networkHosts?: string[]
+    /** Translation key under common.external_network_notice.purposes */
+    networkPurposeKey?: string
+    /** Whether the tool can request a URL supplied directly by the user */
+    allowUserProvidedUrl?: boolean
+    /** Whether network activity only starts after an explicit user action */
+    requiresExplicitUserAction?: boolean
+    /** What kind of data may leave the browser when network access is used */
+    externalDataSent?: ToolExternalDataSent
     /** Input payload persistence behavior used by privacy UI and CI guards */
     persistInput?: ToolInputPersistenceMode
     /** Practical discovery family derived from manifest metadata */

@@ -137,7 +137,20 @@
     "external_network_notice": {
       "title": "External network notice",
       "third_party_api_message": "This tool may contact a third-party service from your browser as part of its workflow.",
-      "user_requested_message": "This tool may request or open a URL you provide from your browser when you explicitly run that action."
+      "user_requested_message": "This tool may request or open a URL you provide from your browser when you explicitly run that action.",
+      "user_input_preview_message": "This tool may load external preview assets from your browser after you enter a supported URL.",
+      "hosts_label": "Hosts",
+      "purpose_label": "Purpose",
+      "data_sent_label": "Data sent",
+      "purposes": {
+        "authorized_media_download": "Download media from a URL you provide after you confirm you are allowed to use it.",
+        "thumbnail_preview": "Generate and preview public thumbnail image URLs derived from the video link you enter."
+      },
+      "external_data": {
+        "none": "No tool input is sent by this feature.",
+        "user_provided_url": "The URL you provide may be requested by your browser.",
+        "derived_url": "A derived public asset URL may be requested by your browser."
+      }
     },
     "local_data_controls": {
       "title": "Local data controls",

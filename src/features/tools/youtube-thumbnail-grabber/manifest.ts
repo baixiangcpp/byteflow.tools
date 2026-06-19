@@ -7,6 +7,11 @@ export const toolManifest = {
     relatedTools: ["vimeo_thumbnail_grabber", "tweet_to_image_converter", "open_graph_meta_generator", "image_resizer"],
     keywords: ["youtube thumbnail grabber", "youtube thumbnail downloader", "youtube video thumbnail", "get youtube thumbnail url"],
     networkAccess: "user_requested",
+    networkHosts: ["youtube.com", "youtube-nocookie.com", "youtu.be", "i.ytimg.com"],
+    networkPurposeKey: "thumbnail_preview",
+    allowUserProvidedUrl: true,
+    requiresExplicitUserAction: false,
+    externalDataSent: "derived_url",
     deprecated: {
         alternatives: ["image_resizer"],
         reason: "strategic-refocus",

@@ -137,7 +137,20 @@
     "external_network_notice": {
       "title": "外部網路提示",
       "third_party_api_message": "此工具可能會在工作流程中從你的瀏覽器請求第三方服務。",
-      "user_requested_message": "此工具只會在你明確執行該操作時，從瀏覽器請求或開啟你提供的 URL。"
+      "user_requested_message": "此工具只會在你明確執行該操作時，從瀏覽器請求或開啟你提供的 URL。",
+      "user_input_preview_message": "當你輸入支援的 URL 後，此工具可能會從你的瀏覽器載入外部預覽資源。",
+      "hosts_label": "主機",
+      "purpose_label": "用途",
+      "data_sent_label": "傳送的資料",
+      "purposes": {
+        "authorized_media_download": "在你確認有權使用後，從你提供的 URL 下載媒體。",
+        "thumbnail_preview": "根據你輸入的影片連結產生並預覽公開縮圖網址。"
+      },
+      "external_data": {
+        "none": "此功能不會傳送工具輸入。",
+        "user_provided_url": "你提供的 URL 可能會由瀏覽器請求。",
+        "derived_url": "瀏覽器可能會請求衍生出的公開資源 URL。"
+      }
     },
     "local_data_controls": {
       "title": "本地資料控制",

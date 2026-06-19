@@ -137,7 +137,20 @@
     "external_network_notice": {
       "title": "外部ネットワーク通知",
       "third_party_api_message": "このツールは、ワークフローの一部としてブラウザからサードパーティサービスに接続する場合があります。",
-      "user_requested_message": "このツールは、明示的に実行した操作でのみ、指定した URL をブラウザからリクエストまたは開く場合があります。"
+      "user_requested_message": "このツールは、明示的に実行した操作でのみ、指定した URL をブラウザからリクエストまたは開く場合があります。",
+      "user_input_preview_message": "対応する URL を入力すると、このツールはブラウザから外部プレビュー資産を読み込む場合があります。",
+      "hosts_label": "ホスト",
+      "purpose_label": "目的",
+      "data_sent_label": "送信されるデータ",
+      "purposes": {
+        "authorized_media_download": "利用権限を確認した後、入力した URL からメディアをダウンロードします。",
+        "thumbnail_preview": "入力した動画リンクから公開サムネイル画像 URL を生成してプレビューします。"
+      },
+      "external_data": {
+        "none": "この機能ではツール入力は送信されません。",
+        "user_provided_url": "入力した URL がブラウザからリクエストされる場合があります。",
+        "derived_url": "派生した公開アセット URL がブラウザからリクエストされる場合があります。"
+      }
     },
     "local_data_controls": {
       "title": "ローカルデータ管理",

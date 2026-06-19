@@ -28,7 +28,15 @@ function RoutePageChromeContent({ children, pathname }: RoutePageChromeProps) {
         if (routeContext.routeType !== "tool" || !routeContext.slug) return null
         const tool = getClientToolBySlug(routeContext.slug)
         if (!tool) return null
-        return { key: tool.key, slug: tool.slug, networkAccess: tool.networkAccess }
+        return {
+            key: tool.key,
+            slug: tool.slug,
+            networkAccess: tool.networkAccess,
+            networkHosts: tool.networkHosts,
+            networkPurposeKey: tool.networkPurposeKey,
+            requiresExplicitUserAction: tool.requiresExplicitUserAction,
+            externalDataSent: tool.externalDataSent,
+        }
     }, [routeContext])
 
     useEffect(() => {
@@ -64,7 +72,13 @@ function RoutePageChromeContent({ children, pathname }: RoutePageChromeProps) {
                 </div>
             ) : null}
             {activeTool?.networkAccess && activeTool.networkAccess !== "none" ? (
-                <ExternalNetworkNotice networkAccess={activeTool.networkAccess} />
+                <ExternalNetworkNotice
+                    networkAccess={activeTool.networkAccess}
+                    networkHosts={activeTool.networkHosts}
+                    networkPurposeKey={activeTool.networkPurposeKey}
+                    requiresExplicitUserAction={activeTool.requiresExplicitUserAction}
+                    externalDataSent={activeTool.externalDataSent}
+                />
             ) : null}
             {children}
             {routeContext.routeType === "tool" ? (

@@ -137,7 +137,20 @@
     "external_network_notice": {
       "title": "外部网络提示",
       "third_party_api_message": "此工具可能会在工作流中从你的浏览器请求第三方服务。",
-      "user_requested_message": "此工具只会在你明确运行该操作时，从浏览器请求或打开你提供的 URL。"
+      "user_requested_message": "此工具只会在你明确运行该操作时，从浏览器请求或打开你提供的 URL。",
+      "user_input_preview_message": "当你输入受支持的 URL 后，此工具可能会从你的浏览器加载外部预览资源。",
+      "hosts_label": "主机",
+      "purpose_label": "用途",
+      "data_sent_label": "发送的数据",
+      "purposes": {
+        "authorized_media_download": "在你确认有权使用后，从你提供的 URL 下载媒体。",
+        "thumbnail_preview": "根据你输入的视频链接生成并预览公开缩略图地址。"
+      },
+      "external_data": {
+        "none": "此功能不会发送工具输入。",
+        "user_provided_url": "你提供的 URL 可能会由浏览器请求。",
+        "derived_url": "浏览器可能会请求派生出的公开资源 URL。"
+      }
     },
     "local_data_controls": {
       "title": "本地数据控制",

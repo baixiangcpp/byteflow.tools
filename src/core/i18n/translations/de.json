@@ -133,7 +133,20 @@
     "external_network_notice": {
       "title": "Hinweis zu externen Netzwerkzugriffen",
       "third_party_api_message": "Dieses Tool kann im Rahmen seines Workflows über Ihren Browser einen Drittanbieterdienst kontaktieren.",
-      "user_requested_message": "Dieses Tool kann eine von Ihnen angegebene URL über Ihren Browser anfragen oder öffnen, wenn Sie diese Aktion ausdrücklich ausführen."
+      "user_requested_message": "Dieses Tool kann eine von Ihnen angegebene URL über Ihren Browser anfragen oder öffnen, wenn Sie diese Aktion ausdrücklich ausführen.",
+      "user_input_preview_message": "Dieses Tool kann externe Vorschau-Assets über Ihren Browser laden, nachdem Sie eine unterstützte URL eingegeben haben.",
+      "hosts_label": "Zielhosts",
+      "purpose_label": "Zweck",
+      "data_sent_label": "Gesendete Daten",
+      "purposes": {
+        "authorized_media_download": "Medien von einer von Ihnen angegebenen URL herunterladen, nachdem Sie die Nutzungsberechtigung bestätigt haben.",
+        "thumbnail_preview": "Öffentliche Thumbnail-Bild-URLs aus dem eingegebenen Videolink erzeugen und anzeigen."
+      },
+      "external_data": {
+        "none": "Diese Funktion sendet keine Tool-Eingaben.",
+        "user_provided_url": "Die von Ihnen angegebene URL kann von Ihrem Browser angefragt werden.",
+        "derived_url": "Eine abgeleitete öffentliche Asset-URL kann von Ihrem Browser angefragt werden."
+      }
     },
     "local_data_controls": {
       "title": "Lokale Datenverwaltung",

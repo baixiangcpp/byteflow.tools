@@ -8,6 +8,7 @@ export const TOOL_ORDER_PATH = path.join(ROOT_DIR, "src/core/registry/tool-order
 
 const REQUIRED_FIELDS = ["key", "slug", "category", "relatedTools", "keywords"]
 const NETWORK_ACCESS_VALUES = new Set(["none", "user_requested", "third_party_api"])
+const EXTERNAL_DATA_SENT_VALUES = new Set(["none", "user_provided_url", "derived_url"])
 const PERSIST_INPUT_VALUES = new Set(["true", "false", "\"opt-in\"", "'opt-in'"])
 
 function relative(filePath) {
@@ -208,6 +209,14 @@ function booleanOrOptInField(source, fieldName, manifestPath) {
     return "opt-in"
 }
 
+function booleanField(source, fieldName, manifestPath) {
+    const match = new RegExp(`(?:^|[,\\n])\\s*${fieldName}:\\s*(true|false)`, "s").exec(source)
+    if (!match) return undefined
+    if (match[1] === "true") return true
+    if (match[1] === "false") return false
+    throw manifestError(manifestPath, fieldName, "must be true or false")
+}
+
 function parseDeprecated(source, manifestPath) {
     const block = objectField(source, "deprecated")
     if (!block) return undefined
@@ -251,11 +260,22 @@ export function parseToolManifestFile(manifestPath) {
     const searchKeywords = arrayField(body, "searchKeywords", manifestPath)
     const updatedAt = stringField(body, "updatedAt", manifestPath)
     const networkAccess = stringField(body, "networkAccess", manifestPath)
+    const networkHosts = arrayField(body, "networkHosts", manifestPath)
+    const networkPurposeKey = stringField(body, "networkPurposeKey", manifestPath)
+    const allowUserProvidedUrl = booleanField(body, "allowUserProvidedUrl", manifestPath)
+    const requiresExplicitUserAction = booleanField(body, "requiresExplicitUserAction", manifestPath)
+    const externalDataSent = stringField(body, "externalDataSent", manifestPath)
     const persistInput = booleanOrOptInField(body, "persistInput", manifestPath)
     const deprecated = parseDeprecated(body, manifestPath)
 
     if (networkAccess && !NETWORK_ACCESS_VALUES.has(networkAccess)) {
         throw manifestError(manifestPath, "networkAccess", "must be one of none, user_requested, or third_party_api")
+    }
+    if (externalDataSent && !EXTERNAL_DATA_SENT_VALUES.has(externalDataSent)) {
+        throw manifestError(manifestPath, "externalDataSent", "must be one of none, user_provided_url, or derived_url")
+    }
+    if (networkHosts.some((host) => !/^[a-z0-9.-]+$/i.test(host))) {
+        throw manifestError(manifestPath, "networkHosts", "must contain hostname literals only")
     }
 
     const manifest = {
@@ -270,6 +290,11 @@ export function parseToolManifestFile(manifestPath) {
     if (updatedAt) manifest.updatedAt = updatedAt
     if (searchKeywords.length > 0) manifest.searchKeywords = searchKeywords
     if (networkAccess) manifest.networkAccess = networkAccess
+    if (networkHosts.length > 0) manifest.networkHosts = networkHosts
+    if (networkPurposeKey) manifest.networkPurposeKey = networkPurposeKey
+    if (allowUserProvidedUrl !== undefined) manifest.allowUserProvidedUrl = allowUserProvidedUrl
+    if (requiresExplicitUserAction !== undefined) manifest.requiresExplicitUserAction = requiresExplicitUserAction
+    if (externalDataSent) manifest.externalDataSent = externalDataSent
     if (persistInput !== undefined) manifest.persistInput = persistInput
     if (deprecated) manifest.deprecated = deprecated
 

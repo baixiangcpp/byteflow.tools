@@ -9,6 +9,19 @@ const mocks = vi.hoisted(() => {
                 title: "Localized network notice",
                 third_party_api_message: "Localized third-party API message",
                 user_requested_message: "Localized user requested URL message",
+                user_input_preview_message: "Localized preview message",
+                hosts_label: "Hosts",
+                purpose_label: "Purpose",
+                data_sent_label: "Data sent",
+                purposes: {
+                    authorized_media_download: "Localized authorized media purpose",
+                    thumbnail_preview: "Localized thumbnail purpose",
+                },
+                external_data: {
+                    none: "No data sent",
+                    user_provided_url: "User URL sent",
+                    derived_url: "Derived URL sent",
+                },
             },
             install_guide: "Install guide",
             install_inline_description: "Install description",
@@ -62,6 +75,9 @@ describe("RoutePageChrome", () => {
 
         expect(screen.getByText("Localized network notice")).toBeInTheDocument()
         expect(screen.getByText("Localized user requested URL message")).toBeInTheDocument()
+        expect(screen.getByText("instagram.com")).toBeInTheDocument()
+        expect(screen.getByText("Localized authorized media purpose")).toBeInTheDocument()
+        expect(screen.getByText("User URL sent")).toBeInTheDocument()
     })
 
     it("does not show an external network notice for local-only tools", () => {

@@ -167,6 +167,11 @@ function buildClientLookupSource() {
                 aliases: aliasesByKey.get(tool.key) || [],
                 relatedToolKeys: tool.relatedTools,
                 networkAccess: tool.networkAccess || "none",
+                networkHosts: tool.networkHosts || [],
+                networkPurposeKey: tool.networkPurposeKey || null,
+                allowUserProvidedUrl: tool.allowUserProvidedUrl ?? null,
+                requiresExplicitUserAction: tool.requiresExplicitUserAction ?? null,
+                externalDataSent: tool.externalDataSent || null,
                 persistInput: tool.persistInput ?? null,
                 family: taxonomy.family,
                 tags: taxonomy.tags,
@@ -202,6 +207,11 @@ export type ClientToolLookupEntry = {
     aliases: readonly string[]
     relatedToolKeys: readonly string[]
     networkAccess: "none" | "user_requested" | "third_party_api"
+    networkHosts: readonly string[]
+    networkPurposeKey: string | null
+    allowUserProvidedUrl: boolean | null
+    requiresExplicitUserAction: boolean | null
+    externalDataSent: "none" | "user_provided_url" | "derived_url" | null
     persistInput: true | false | "opt-in" | null
     family: string
     tags: readonly string[]

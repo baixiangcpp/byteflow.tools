@@ -137,7 +137,20 @@
     "external_network_notice": {
       "title": "외부 네트워크 알림",
       "third_party_api_message": "이 도구는 워크플로의 일부로 브라우저에서 제3자 서비스에 접속할 수 있습니다.",
-      "user_requested_message": "이 도구는 사용자가 명시적으로 실행한 작업에서만 브라우저에서 제공한 URL을 요청하거나 열 수 있습니다."
+      "user_requested_message": "이 도구는 사용자가 명시적으로 실행한 작업에서만 브라우저에서 제공한 URL을 요청하거나 열 수 있습니다.",
+      "user_input_preview_message": "지원되는 URL을 입력하면 이 도구가 브라우저에서 외부 미리보기 자산을 불러올 수 있습니다.",
+      "hosts_label": "호스트",
+      "purpose_label": "목적",
+      "data_sent_label": "전송되는 데이터",
+      "purposes": {
+        "authorized_media_download": "사용 권한을 확인한 뒤 사용자가 제공한 URL에서 미디어를 다운로드합니다.",
+        "thumbnail_preview": "입력한 동영상 링크에서 공개 썸네일 이미지 URL을 생성하고 미리 봅니다."
+      },
+      "external_data": {
+        "none": "이 기능은 도구 입력을 전송하지 않습니다.",
+        "user_provided_url": "사용자가 제공한 URL이 브라우저에서 요청될 수 있습니다.",
+        "derived_url": "파생된 공개 자산 URL이 브라우저에서 요청될 수 있습니다."
+      }
     },
     "local_data_controls": {
       "title": "로컬 데이터 관리",
