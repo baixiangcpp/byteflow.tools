@@ -49,6 +49,24 @@ export function decodeBase32ToBytes(value: string): Uint8Array {
     }
 
     const unpadded = normalized.replace(/=+$/g, "")
+    const paddingLength = normalized.length - unpadded.length
+    const unpaddedRemainder = unpadded.length % 8
+    const expectedPaddingByRemainder: Partial<Record<number, number>> = {
+        0: 0,
+        2: 6,
+        4: 4,
+        5: 3,
+        7: 1,
+    }
+    const expectedPaddingLength = expectedPaddingByRemainder[unpaddedRemainder]
+
+    if (expectedPaddingLength === undefined) {
+        throw new Error("Invalid Base32 character.")
+    }
+    if (paddingLength > 0 && (normalized.length % 8 !== 0 || paddingLength !== expectedPaddingLength)) {
+        throw new Error("Invalid Base32 character.")
+    }
+
     const bytes: number[] = []
     let buffer = 0
     let bitsLeft = 0
@@ -68,14 +86,23 @@ export function decodeBase32ToBytes(value: string): Uint8Array {
         }
     }
 
+    if (bitsLeft > 0 && (buffer & ((1 << bitsLeft) - 1)) !== 0) {
+        throw new Error("Invalid Base32 character.")
+    }
+
     return new Uint8Array(bytes)
 }
 
 export function encodeBytesToBase58(bytes: Uint8Array): string {
     if (bytes.length === 0) return ""
 
-    const digits = [0]
-    for (const byte of bytes) {
+    let leadingZeroCount = 0
+    while (leadingZeroCount < bytes.length && bytes[leadingZeroCount] === 0) {
+        leadingZeroCount += 1
+    }
+
+    const digits: number[] = []
+    for (const byte of bytes.slice(leadingZeroCount)) {
         let carry = byte
         for (let index = 0; index < digits.length; index += 1) {
             carry += digits[index] << 8
@@ -88,20 +115,21 @@ export function encodeBytesToBase58(bytes: Uint8Array): string {
         }
     }
 
-    for (const byte of bytes) {
-        if (byte !== 0) break
-        digits.push(0)
-    }
-
-    return digits.reverse().map((digit) => BASE58_ALPHABET[digit]).join("")
+    const encoded = digits.reverse().map((digit) => BASE58_ALPHABET[digit]).join("")
+    return `${BASE58_ALPHABET[0].repeat(leadingZeroCount)}${encoded}`
 }
 
 export function decodeBase58ToBytes(value: string): Uint8Array {
     const normalized = value.trim().replace(/\s+/g, "")
     if (!normalized) return new Uint8Array()
 
-    const bytes = [0]
-    for (const char of normalized) {
+    let leadingZeroCount = 0
+    while (leadingZeroCount < normalized.length && normalized[leadingZeroCount] === BASE58_ALPHABET[0]) {
+        leadingZeroCount += 1
+    }
+
+    const bytes: number[] = []
+    for (const char of normalized.slice(leadingZeroCount)) {
         const digit = BASE58_ALPHABET.indexOf(char)
         if (digit < 0) {
             throw new Error("Invalid Base58 character.")
@@ -118,12 +146,10 @@ export function decodeBase58ToBytes(value: string): Uint8Array {
         }
     }
 
-    for (const char of normalized) {
-        if (char !== BASE58_ALPHABET[0]) break
-        bytes.push(0)
-    }
+    const decoded = bytes.reverse()
+    decoded.unshift(...Array.from({ length: leadingZeroCount }, () => 0))
 
-    return new Uint8Array(bytes.reverse())
+    return new Uint8Array(decoded)
 }
 
 export function encodeTextToBase32(value: string): string {
