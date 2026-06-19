@@ -455,13 +455,13 @@ Secondary: "格式化、转换、生成、调试 — 敏感数据不出浏览器
 **Status**: 
 - ✅ Popular tools section added to homepage (9 high-traffic tools)
 - ✅ Category preview shows 4 tools per category for better discovery
+- ✅ Recently used tools tracking implemented in localStorage and surfaced in discovery UIs
 - Command palette search exists but needs fuzzy matching and multilingual search terms
-- 🔄 Recently used tools tracking not yet implemented
 
 **Remaining work**:
 - Add search terms or aliases to the tool manifest/alias registry
 - Implement fuzzy matching (consider Fuse.js)
-- Track recently used tools in localStorage
+- Improve recent tools ranking, grouping, clearing controls, privacy copy, and tests
 
 **Files to modify**:
 - `src/core/registry/types.ts` — add aliases or search terms if the registry model supports them
@@ -633,7 +633,7 @@ Goal: Make high-traffic tools exceptionally smooth
 ### Phase 3: Discovery and Retention
 Goal: Help users find tools and return frequently
 - Build favorites/bookmark system (localStorage)
-- Track recently used tools
+- Improve recently used tools ranking, grouping, clearing controls, privacy copy, and tests
 - Add tool tags and advanced filtering
 - Optimize PWA install flow
 - Build task-based tool recommendations
