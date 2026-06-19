@@ -190,6 +190,7 @@ Guidelines:
 - Preserve technical terms such as `JSON`, `JWT`, `API`, `Base64`, and `UUID` when that is the natural localized form.
 - For Chinese copy, use spaces between Chinese text and English terms or numbers where readability requires it.
 - Keep labels short enough for compact tool controls.
+- For larger localized copy or SEO template changes, follow the [localization quality review checklist](docs/specs/localization-quality-review.md).
 
 Checks:
 
