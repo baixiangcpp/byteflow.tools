@@ -1,0 +1,13 @@
+{
+  "scriptSrc": {
+    "https://static.cloudflareinsights.com": "Cookie-free Cloudflare Web Analytics script loaded by the hosting layer."
+  },
+  "connectSrc": {
+    "https://cloudflare-dns.com": "Reserved for browser-requested DNS lookup tooling; requests must be disclosed by tool networkAccess metadata.",
+    "https://cloudflareinsights.com": "Cookie-free Cloudflare Web Analytics beacon endpoint.",
+    "https://dns.google": "Reserved for browser-requested DNS lookup tooling; requests must be disclosed by tool networkAccess metadata.",
+    "https://ipwho.is": "Reserved for browser-requested IP lookup tooling; requests must be disclosed by tool networkAccess metadata.",
+    "https://rdap.org": "Reserved for browser-requested RDAP lookup tooling; requests must be disclosed by tool networkAccess metadata.",
+    "https://static.cloudflareinsights.com": "Cookie-free Cloudflare Web Analytics static endpoint."
+  }
+}

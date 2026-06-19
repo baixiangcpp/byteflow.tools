@@ -3,6 +3,7 @@ import path from "node:path"
 
 const CONFIG_PATH = path.join(process.cwd(), "public", "_headers")
 const INLINE_SCRIPT_POLICY_PATH = path.join(process.cwd(), "src", "core", "security", "inline-script-policy.ts")
+const EXTERNAL_SOURCE_ALLOWLIST_PATH = path.join(process.cwd(), "scripts", "gates", "security-header-allowlist.json")
 const REQUIRED_HEADERS = {
     "content-security-policy": {
         requiredTokens: [
@@ -65,6 +66,32 @@ function inlineScriptPolicyRequiresUnsafeInline() {
         fail("Inline script policy entries must include migrationPath rationale")
     }
     return trueCount > 0
+}
+
+function loadExternalSourceAllowlist() {
+    if (!fs.existsSync(EXTERNAL_SOURCE_ALLOWLIST_PATH)) {
+        fail(`Missing security header allowlist: ${path.relative(process.cwd(), EXTERNAL_SOURCE_ALLOWLIST_PATH)}`)
+    }
+
+    return JSON.parse(fs.readFileSync(EXTERNAL_SOURCE_ALLOWLIST_PATH, "utf8"))
+}
+
+function parseCspDirectives(cspValue) {
+    const directives = new Map()
+
+    for (const directive of cspValue.split(";")) {
+        const parts = directive.trim().split(/\s+/).filter(Boolean)
+        if (parts.length === 0) continue
+        directives.set(parts[0].toLowerCase(), parts.slice(1))
+    }
+
+    return directives
+}
+
+function externalHttpsSourcesForDirective(cspDirectives, directiveName) {
+    return (cspDirectives.get(directiveName) || [])
+        .filter((token) => /^https:\/\//.test(token))
+        .sort((a, b) => a.localeCompare(b))
 }
 
 function parseCloudflareHeadersConfig(fileContent) {
@@ -134,6 +161,8 @@ function main() {
     const headerMap = normalizeHeaderEntries(globalRule.headers)
     const failures = []
     const cspValue = headerMap.get("content-security-policy") || ""
+    const cspDirectives = parseCspDirectives(cspValue)
+    const externalSourceAllowlist = loadExternalSourceAllowlist()
 
     for (const [headerName, requirement] of Object.entries(REQUIRED_HEADERS)) {
         const value = headerMap.get(headerName)
@@ -161,6 +190,15 @@ function main() {
     }
     if (!hasUnsafeInlineScript && inlineScriptPolicyRequiresUnsafeInline()) {
         failures.push("content-security-policy: inline script policy still requires 'unsafe-inline' but script-src does not include it")
+    }
+
+    for (const [directiveName, allowlistKey] of [["script-src", "scriptSrc"], ["connect-src", "connectSrc"]]) {
+        const allowedSources = externalSourceAllowlist[allowlistKey] || {}
+        for (const source of externalHttpsSourcesForDirective(cspDirectives, directiveName)) {
+            if (!allowedSources[source]) {
+                failures.push(`content-security-policy: ${directiveName} external source "${source}" is missing from scripts/gates/security-header-allowlist.json`)
+            }
+        }
     }
 
     if (failures.length > 0) {
