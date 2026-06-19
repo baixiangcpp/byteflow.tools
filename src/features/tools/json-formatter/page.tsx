@@ -29,6 +29,7 @@ import { importTextFile } from "@/core/files/text-file-import"
 import { buildToolHandoffLink, getToolHandoffFromSearchParams } from "@/core/routing/tool-handoff"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildJsonParseErrorMessage } from "@/features/tools/json-formatter/error-utils"
+import { runJsonFormatTask, type JsonFormatMode } from "@/features/tools/json-formatter/format-json-task"
 import { PrivacyBadge } from "@/features/tool-shell/privacy-badge"
 import { PrivacyFAQ } from "@/features/tool-shell/privacy-faq"
 import { JsonImportDropzone } from "./json-import-dropzone"
@@ -62,6 +63,7 @@ export function JsonFormatterPage() {
     const [treeDialog, setTreeDialog] = React.useState<TreeDialogState>(null)
     const [searchQuery, setSearchQuery] = React.useState("")
     const [isSearchOpen, setIsSearchOpen] = React.useState(false)
+    const [isFormatting, setIsFormatting] = React.useState(false)
 
     const searchResults = React.useMemo(() => {
         if (!treeData || !searchQuery.trim()) return { matched: new Set<string>(), parents: new Set<string>() }
@@ -84,6 +86,7 @@ export function JsonFormatterPage() {
     const fileInputRef = React.useRef<HTMLInputElement | null>(null)
     const outputPaneRef = React.useRef<HTMLDivElement | null>(null)
     const appliedHandoffRef = React.useRef<string | null>(null)
+    const formatRequestIdRef = React.useRef(0)
     React.useEffect(() => {
         const savedMode = readStorageString(VIEW_MODE_STORAGE_KEY)
         if (savedMode === "text" || savedMode === "tree") {
@@ -160,7 +163,18 @@ export function JsonFormatterPage() {
         return true
     }, [input, output, parseSource])
 
-    const formatJsonSource = React.useCallback((source: string) => {
+    const scrollOutputIntoViewOnMobile = React.useCallback(() => {
+        if (window.innerWidth < 1024) {
+            window.requestAnimationFrame(() => {
+                outputPaneRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+            })
+        }
+    }, [])
+
+    const runJsonFormat = React.useCallback(async (source: string, mode: JsonFormatMode) => {
+        const requestId = formatRequestIdRef.current + 1
+        formatRequestIdRef.current = requestId
+
         if (!source.trim()) {
             setOutput("")
             setTreeData(null)
@@ -168,34 +182,38 @@ export function JsonFormatterPage() {
             return
         }
 
-        const parsed = parseSource(source)
-        if (parsed === null) return
-        setOutput(JSON.stringify(parsed, null, 2))
-        setTreeData(parsed)
-        if (window.innerWidth < 1024) {
-            window.requestAnimationFrame(() => {
-                outputPaneRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-            })
+        setIsFormatting(true)
+        try {
+            const result = await runJsonFormatTask(source, mode)
+            if (formatRequestIdRef.current !== requestId) return
+            setOutput(result.output)
+            setTreeData(result.parsed)
+            setError(null)
+            scrollOutputIntoViewOnMobile()
+        } catch (err) {
+            if (formatRequestIdRef.current !== requestId) return
+            const errorMessage = buildJsonParseErrorMessage(source, err, text)
+            setError(errorMessage)
+        } finally {
+            if (formatRequestIdRef.current === requestId) {
+                setIsFormatting(false)
+            }
         }
-    }, [parseSource])
+    }, [scrollOutputIntoViewOnMobile, text])
+
+    const formatJsonSource = React.useCallback((source: string) => {
+        void runJsonFormat(source, "format")
+    }, [runJsonFormat])
 
     const formatJson = React.useCallback(() => {
-        formatJsonSource(input)
-    }, [formatJsonSource, input])
+        void runJsonFormat(input, "format")
+    }, [input, runJsonFormat])
 
     const minifyJson = React.useCallback(() => {
         if (!input.trim()) return
 
-        const parsed = parseSource(input)
-        if (parsed === null) return
-        setOutput(JSON.stringify(parsed))
-        setTreeData(parsed)
-        if (window.innerWidth < 1024) {
-            window.requestAnimationFrame(() => {
-                outputPaneRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-            })
-        }
-    }, [input, parseSource])
+        void runJsonFormat(input, "minify")
+    }, [input, runJsonFormat])
 
     const handleCopy = React.useCallback(async () => {
         const copyText = viewMode === "tree" && treeData !== null
@@ -373,6 +391,7 @@ export function JsonFormatterPage() {
             label: t.common.minify,
             icon: AlignLeft,
             onClick: minifyJson,
+            disabled: isFormatting,
         },
         {
             id: "format",
@@ -380,6 +399,7 @@ export function JsonFormatterPage() {
             icon: Play,
             onClick: formatJson,
             variant: "default",
+            disabled: isFormatting,
         },
     ]
 
