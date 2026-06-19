@@ -17,6 +17,23 @@
         "json_to_typescript",
         "yaml_json_converter"
       ],
+      "relatedWorkflows": [
+        {
+          "toolKey": "json_to_typescript",
+          "reasonKey": "typed_model_from_formatted_json",
+          "handoffSupported": true
+        },
+        {
+          "toolKey": "jsonpath_playground",
+          "reasonKey": "query_formatted_json",
+          "handoffSupported": true
+        },
+        {
+          "toolKey": "json_diff_viewer",
+          "reasonKey": "compare_after_formatting",
+          "handoffSupported": true
+        }
+      ],
       "keywords": [
         "json formatter",
         "json beautifier",
@@ -46,6 +63,7 @@
         "yaml_json_converter",
         "sql_formatter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "xml formatter",
         "xml beautifier",
@@ -74,6 +92,7 @@
         "xml_formatter",
         "html_css_beautifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "sql formatter",
         "sql beautifier",
@@ -103,6 +122,7 @@
         "sql_formatter",
         "markdown_preview"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "javascript formatter",
         "js formatter",
@@ -132,6 +152,7 @@
         "html_formatter",
         "json_formatter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "javascript minifier",
         "js minify",
@@ -161,6 +182,7 @@
         "css_minifier",
         "javascript_minifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "html minifier",
         "minify html",
@@ -190,6 +212,7 @@
         "url_encode_decode",
         "base64_encode_decode"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "html encoder",
         "html decoder",
@@ -219,6 +242,7 @@
         "svg_optimizer",
         "xml_formatter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "html beautifier",
         "css formatter",
@@ -248,6 +272,7 @@
         "css_minifier",
         "markdown_preview"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "html formatter",
         "beautify html",
@@ -277,6 +302,7 @@
         "structured_data_visualizer",
         "xml_formatter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "yaml to json",
         "json to yaml",
@@ -307,6 +333,7 @@
         "text_diff_checker",
         "lorem_ipsum"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "markdown preview",
         "markdown editor online",
@@ -336,6 +363,7 @@
         "html_encoder_decoder",
         "text_diff_checker"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "html to markdown",
         "convert html to markdown",
@@ -364,6 +392,7 @@
         "yaml_json_converter",
         "jsonpath_playground"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "json to typescript",
         "json to interface",
@@ -392,6 +421,7 @@
         "svg_optimizer",
         "json_formatter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css minifier",
         "minify css online",
@@ -420,6 +450,7 @@
         "html_css_beautifier",
         "image_base64"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "svg optimizer",
         "svgo online",
@@ -449,6 +480,7 @@
         "json_to_typescript",
         "yaml_json_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "jsonpath tester",
         "jsonpath playground",
@@ -477,6 +509,7 @@
         "yaml_json_converter",
         "jsonpath_playground"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "openapi viewer",
         "swagger viewer online",
@@ -505,6 +538,7 @@
         "text_diff_checker",
         "jsonpath_playground"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "json diff",
         "compare json online",
@@ -534,6 +568,7 @@
         "json_to_typescript",
         "text_diff_checker"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "csv to json",
         "json to csv",
@@ -563,6 +598,23 @@
         "hash_generator",
         "image_base64"
       ],
+      "relatedWorkflows": [
+        {
+          "toolKey": "jwt_decoder",
+          "reasonKey": "inspect_decoded_token",
+          "handoffSupported": true
+        },
+        {
+          "toolKey": "url_encode_decode",
+          "reasonKey": "decode_url_payloads",
+          "handoffSupported": true
+        },
+        {
+          "toolKey": "hash_generator",
+          "reasonKey": "verify_decoded_payload",
+          "handoffSupported": true
+        }
+      ],
       "keywords": [
         "base64 encode",
         "base64 decode",
@@ -591,6 +643,7 @@
         "url_encode_decode",
         "hash_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "base32 encoder",
         "base32 decoder",
@@ -620,6 +673,7 @@
         "jwt_decoder",
         "user_agent_parser"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "url encode",
         "url decode",
@@ -649,6 +703,7 @@
         "hash_generator",
         "url_encode_decode"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "jwt decoder",
         "decode jwt online",
@@ -678,6 +733,7 @@
         "base64_encode_decode",
         "hash_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "jwt workbench",
         "jwt encode decode verify",
@@ -707,6 +763,7 @@
         "jwt_decoder",
         "password_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "hash generator",
         "md5 hash",
@@ -736,6 +793,7 @@
         "text_diff_checker",
         "password_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "md5 generator",
         "md5 hash online",
@@ -764,6 +822,7 @@
         "markdown_preview",
         "base64_encode_decode"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "text diff",
         "compare text online",
@@ -793,6 +852,7 @@
         "markdown_preview",
         "lorem_ipsum"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "remove extra spaces",
         "whitespace remover",
@@ -822,6 +882,7 @@
         "lorem_ipsum",
         "slugify_case_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "letter counter",
         "character counter",
@@ -851,6 +912,7 @@
         "markdown_preview",
         "text_diff_checker"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "bionic reading converter",
         "speed reading text",
@@ -880,6 +942,7 @@
         "code_to_image_converter",
         "open_graph_meta_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "google fonts pair finder",
         "font pairing generator",
@@ -909,6 +972,7 @@
         "image_caption_generator",
         "instagram_post_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "text to handwriting converter",
         "handwriting generator",
@@ -938,6 +1002,7 @@
         "json_formatter",
         "html_formatter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "code to image",
         "snippet to png",
@@ -966,6 +1031,7 @@
         "svg_optimizer",
         "qr_code_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "image to base64",
         "base64 to image",
@@ -993,6 +1059,7 @@
         "cron_visualizer",
         "crontab_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "unix timestamp",
         "epoch converter",
@@ -1021,6 +1088,7 @@
         "unix_timestamp",
         "lorem_ipsum"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "uuid generator",
         "uuid v4 generator",
@@ -1049,6 +1117,7 @@
         "uuid_generator",
         "markdown_preview"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "lorem ipsum generator",
         "dummy text generator",
@@ -1076,6 +1145,7 @@
         "uuid_generator",
         "lorem_ipsum"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "password generator",
         "random password",
@@ -1103,6 +1173,7 @@
         "html_css_beautifier",
         "svg_optimizer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "color converter",
         "hex to rgb",
@@ -1132,6 +1203,7 @@
         "css_border_radius_generator",
         "color_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "react native shadow generator",
         "ios shadowoffset shadowradius",
@@ -1161,6 +1233,7 @@
         "color_converter",
         "css_gradient_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "ai color palette generator",
         "brand palette generator",
@@ -1190,6 +1263,7 @@
         "ai_color_palette_generator",
         "css_gradient_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "color mixer",
         "mix two colors",
@@ -1219,6 +1293,7 @@
         "color_converter",
         "css_gradient_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "color shades generator",
         "tailwind color scale",
@@ -1248,6 +1323,7 @@
         "color_shades_generator",
         "color_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "image average color finder",
         "average image color",
@@ -1277,6 +1353,7 @@
         "image_average_color_finder",
         "color_mixer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "image caption generator",
         "add text to image",
@@ -1306,6 +1383,7 @@
         "ai_color_palette_generator",
         "color_mixer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "image color extractor",
         "extract color palette from image",
@@ -1335,6 +1413,7 @@
         "color_converter",
         "color_mixer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "image color picker",
         "pick color from image",
@@ -1364,6 +1443,7 @@
         "code_to_image_converter",
         "image_base64"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "image cropper",
         "crop image online",
@@ -1393,6 +1473,7 @@
         "image_caption_generator",
         "image_color_extractor"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "image filters",
         "photo filter editor",
@@ -1422,6 +1503,7 @@
         "image_filters",
         "instagram_photo_downloader"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "instagram filters",
         "ig filters online",
@@ -1451,6 +1533,7 @@
         "instagram_filters",
         "open_graph_meta_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "instagram post generator",
         "instagram mockup maker",
@@ -1480,6 +1563,7 @@
         "instagram_filters",
         "open_graph_meta_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "instagram story generator",
         "instagram story template",
@@ -1509,6 +1593,7 @@
         "instagram_post_generator",
         "instagram_story_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "open graph meta generator",
         "og tags generator",
@@ -1538,6 +1623,7 @@
         "twitter_ad_revenue_generator",
         "instagram_post_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "tweet generator",
         "twitter post generator",
@@ -1567,6 +1653,7 @@
         "instagram_post_generator",
         "code_to_image_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "tweet to image converter",
         "convert tweet to png",
@@ -1596,6 +1683,7 @@
         "open_graph_meta_generator",
         "id_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "twitter ad revenue generator",
         "x ad revenue calculator",
@@ -1625,6 +1713,7 @@
         "instagram_filters",
         "image_resizer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "instagram photo downloader",
         "download instagram image",
@@ -1656,6 +1745,7 @@
         "open_graph_meta_generator",
         "image_resizer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "vimeo thumbnail grabber",
         "vimeo thumbnail downloader",
@@ -1689,6 +1779,7 @@
         "open_graph_meta_generator",
         "image_resizer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "youtube thumbnail grabber",
         "youtube thumbnail downloader",
@@ -1723,6 +1814,7 @@
         "image_base64",
         "code_to_image_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "image resizer",
         "resize image online",
@@ -1752,6 +1844,7 @@
         "image_resizer",
         "scanned_pdf_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "photo censor",
         "blur image area",
@@ -1781,6 +1874,7 @@
         "image_resizer",
         "image_base64"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "scanned pdf converter",
         "scan to pdf",
@@ -1810,6 +1904,7 @@
         "svg_optimizer",
         "css_clip_path_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "svg blob generator",
         "organic svg shape",
@@ -1839,6 +1934,7 @@
         "css_background_pattern_generator",
         "css_gradient_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "svg pattern generator",
         "seamless svg pattern",
@@ -1868,6 +1964,7 @@
         "svg_pattern_generator",
         "svg_to_png_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "svg stroke to fill",
         "convert stroke to fill svg",
@@ -1897,6 +1994,7 @@
         "svg_blob_generator",
         "svg_stroke_to_fill_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "svg to png converter",
         "convert svg to png",
@@ -1926,6 +2024,7 @@
         "color_converter",
         "css_minifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css background pattern generator",
         "css texture generator",
@@ -1955,6 +2054,7 @@
         "color_converter",
         "css_minifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css border radius generator",
         "rounded corner generator",
@@ -1984,6 +2084,7 @@
         "color_converter",
         "css_minifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css box shadow generator",
         "shadow generator",
@@ -2013,6 +2114,7 @@
         "css_background_pattern_generator",
         "color_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css checkbox generator",
         "custom checkbox css",
@@ -2042,6 +2144,7 @@
         "color_converter",
         "svg_optimizer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css clip path generator",
         "polygon clip path",
@@ -2071,6 +2174,7 @@
         "css_checkbox_generator",
         "css_minifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css cubic bezier generator",
         "easing curve generator",
@@ -2100,6 +2204,7 @@
         "css_border_radius_generator",
         "color_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css glassmorphism generator",
         "glass effect css",
@@ -2129,6 +2234,7 @@
         "css_background_pattern_generator",
         "css_minifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css gradient generator",
         "linear gradient css",
@@ -2158,6 +2264,7 @@
         "css_box_shadow_generator",
         "css_minifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css loader generator",
         "spinner css generator",
@@ -2187,6 +2294,7 @@
         "css_glassmorphism_generator",
         "color_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css switch generator",
         "toggle switch css",
@@ -2216,6 +2324,7 @@
         "code_to_image_converter",
         "css_minifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css text glitch effect",
         "glitch text css",
@@ -2245,6 +2354,7 @@
         "css_border_radius_generator",
         "css_minifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css triangle generator",
         "triangle arrow css",
@@ -2273,6 +2383,7 @@
         "password_generator",
         "url_encode_decode"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "qr code generator",
         "generate qr code online",
@@ -2301,6 +2412,7 @@
         "fake_iban_generator",
         "list_randomizer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "barcode generator",
         "code128 generator",
@@ -2330,6 +2442,7 @@
         "id_generator",
         "password_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "fake iban generator",
         "test iban data",
@@ -2359,6 +2472,7 @@
         "lorem_ipsum",
         "password_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "list randomizer",
         "shuffle list online",
@@ -2387,6 +2501,7 @@
         "markdown_preview",
         "text_diff_checker"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "ascii art generator",
         "text to ascii art",
@@ -2414,6 +2529,7 @@
         "yaml_json_converter",
         "base64_encode_decode"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "env parser",
         "dotenv parser",
@@ -2443,6 +2559,7 @@
         "unix_timestamp",
         "hash_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "uuid v7 generator",
         "ulid generator",
@@ -2471,6 +2588,7 @@
         "text_diff_checker",
         "url_encode_decode"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "regex tester",
         "regex online",
@@ -2500,6 +2618,7 @@
         "jsonpath_playground",
         "url_encode_decode"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "regex generator",
         "generate regex",
@@ -2528,6 +2647,7 @@
         "unix_timestamp",
         "regex_tester"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "crontab generator",
         "cron expression builder",
@@ -2556,6 +2676,7 @@
         "url_parser",
         "chmod_calculator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "user agent parser",
         "parse user agent",
@@ -2583,6 +2704,7 @@
         "unix_timestamp",
         "regex_tester"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "cron visualizer",
         "cron schedule viewer",
@@ -2611,6 +2733,7 @@
         "url_parser",
         "http_request_builder"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "http status codes",
         "http response codes list",
@@ -2639,6 +2762,7 @@
         "user_agent_parser",
         "cidr_subnet_calculator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "chmod calculator",
         "unix permissions calculator",
@@ -2667,6 +2791,7 @@
         "chmod_calculator",
         "http_status_codes"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "cidr calculator",
         "subnet calculator",
@@ -2696,6 +2821,7 @@
         "user_agent_parser",
         "http_request_builder"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "url parser",
         "url decoder",
@@ -2725,6 +2851,7 @@
         "http_status_codes",
         "security_header_analyzer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "pem decoder",
         "x509 certificate viewer",
@@ -2754,6 +2881,7 @@
         "url_encode_decode",
         "user_agent_parser"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "http request builder",
         "curl generator",
@@ -2783,6 +2911,7 @@
         "http_status_codes",
         "jwt_decoder"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "curl to code",
         "curl to javascript",
@@ -2812,6 +2941,7 @@
         "json_diff_viewer",
         "jsonpath_playground"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "ndjson formatter",
         "newline json",
@@ -2842,6 +2972,7 @@
         "base64_encode_decode",
         "certificate_decoder"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "jwt verify",
         "jwt signature verifier",
@@ -2871,6 +3002,7 @@
         "hash_generator",
         "text_diff_checker"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "slugify",
         "case converter",
@@ -2900,6 +3032,7 @@
         "base64_encode_decode",
         "url_encode_decode"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "invisible characters detector",
         "zero width space",
@@ -2930,6 +3063,7 @@
         "url_parser",
         "csp_parser"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "robots.txt tester",
         "robots txt checker",
@@ -2959,6 +3093,7 @@
         "header_diff",
         "robots_txt_tester"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "csp parser",
         "content security policy analyzer",
@@ -2988,6 +3123,7 @@
         "json_diff_viewer",
         "header_diff"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "csv diff",
         "csv compare",
@@ -3017,6 +3153,7 @@
         "csp_parser",
         "text_diff_checker"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "header diff",
         "http header compare",
@@ -3046,6 +3183,7 @@
         "http_status_codes",
         "certificate_decoder"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "security header analyzer",
         "http security headers",
@@ -3075,6 +3213,7 @@
         "uuid_generator",
         "id_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "totp generator",
         "hotp generator",
@@ -3104,6 +3243,7 @@
         "json_formatter",
         "curl_to_code"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "openapi mock",
         "swagger mock",
@@ -3133,6 +3273,7 @@
         "chmod_calculator",
         "curl_to_code"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "docker run to compose",
         "docker compose converter",
@@ -3162,6 +3303,7 @@
         "regex_tester",
         "text_diff_checker"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "log parser",
         "log analyzer",
@@ -3192,6 +3334,7 @@
         "json_to_typescript",
         "yaml_json_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "jq playground",
         "jq online",
@@ -3222,6 +3365,7 @@
         "jwt_decoder",
         "text_diff_checker"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "log scrubber",
         "log redaction",
@@ -3251,6 +3395,7 @@
         "http_request_builder",
         "local_log_parser"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "gzip brotli lab",
         "gzip decoder",
@@ -3280,6 +3425,7 @@
         "openapi_viewer",
         "docker_run_to_compose"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "yaml merge",
         "yaml patch",
@@ -3309,6 +3455,7 @@
         "jq_playground",
         "jsonpath_playground"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "yq playground",
         "yaml query",
@@ -3339,6 +3486,7 @@
         "xml_formatter",
         "jsonpath_playground"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "structured data visualizer",
         "json tree",
@@ -3369,6 +3517,7 @@
         "http_status_codes",
         "security_header_analyzer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "har viewer",
         "har sanitizer",
@@ -3399,6 +3548,7 @@
         "url_encode_decode",
         "log_scrubber"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "pipeline builder",
         "recipe builder",
@@ -3429,6 +3579,7 @@
         "base64_encode_decode",
         "security_header_analyzer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "saml decoder",
         "saml response decoder",
@@ -3458,6 +3609,7 @@
         "hex_bytes_workbench",
         "jwt_decoder"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "asn1 der inspector",
         "der parser",
@@ -3487,6 +3639,7 @@
         "hash_generator",
         "unicode_inspector"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "hex bytes workbench",
         "hex decoder",
@@ -3516,6 +3669,7 @@
         "hex_bytes_workbench",
         "multiple_whitespace_remover"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "unicode inspector",
         "code point inspector",

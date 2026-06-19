@@ -166,6 +166,7 @@ function buildClientLookupSource() {
                 keywords: tool.keywords,
                 aliases: aliasesByKey.get(tool.key) || [],
                 relatedToolKeys: tool.relatedTools,
+                relatedWorkflows: tool.relatedWorkflows || [],
                 sampleInput: tool.sampleInput || null,
                 sampleMode: tool.sampleMode || null,
                 networkAccess: tool.networkAccess || "none",
@@ -208,6 +209,7 @@ export type ClientToolLookupEntry = {
     keywords: readonly string[]
     aliases: readonly string[]
     relatedToolKeys: readonly string[]
+    relatedWorkflows: ReadonlyArray<{ toolKey: string; reasonKey: string; handoffSupported?: boolean }>
     sampleInput: string | null
     sampleMode: string | null
     networkAccess: "none" | "user_requested" | "third_party_api"

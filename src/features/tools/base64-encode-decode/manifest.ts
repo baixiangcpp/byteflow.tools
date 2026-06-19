@@ -5,6 +5,11 @@ export const toolManifest = {
     slug: "base64-encode-decode",
     category: "text-string",
     relatedTools: ["url_encode_decode", "jwt_decoder", "hash_generator", "image_base64"],
+    relatedWorkflows: [
+        { toolKey: "jwt_decoder", reasonKey: "inspect_decoded_token", handoffSupported: true },
+        { toolKey: "url_encode_decode", reasonKey: "decode_url_payloads", handoffSupported: true },
+        { toolKey: "hash_generator", reasonKey: "verify_decoded_payload", handoffSupported: true },
+    ],
     sampleInput: "user_001|zh-CN|text",
     sampleMode: "text:encode",
     keywords: ["base64 encode", "base64 decode", "base64 converter online"],

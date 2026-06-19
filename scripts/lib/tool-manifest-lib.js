@@ -233,6 +233,33 @@ function parseDeprecated(source, manifestPath) {
     return Object.keys(deprecated).length > 0 ? deprecated : {}
 }
 
+function parseRelatedWorkflows(source, manifestPath) {
+    const match = new RegExp(`(?:^|[,\\n])\\s*relatedWorkflows:\\s*\\[([\\s\\S]*?)\\n\\s*\\]`, "s").exec(source)
+    if (!match) return []
+
+    const entries = []
+    const entryPattern = /\{([\s\S]*?)\}/g
+    for (const entryMatch of match[1].matchAll(entryPattern)) {
+        const block = entryMatch[1]
+        const toolKey = stringField(block, "toolKey", manifestPath)
+        const reasonKey = stringField(block, "reasonKey", manifestPath)
+        const handoffSupported = booleanField(block, "handoffSupported", manifestPath)
+
+        if (!toolKey) throw manifestError(manifestPath, "relatedWorkflows", "entries must include toolKey")
+        if (!reasonKey) throw manifestError(manifestPath, "relatedWorkflows", "entries must include reasonKey")
+
+        const entry = { toolKey, reasonKey }
+        if (handoffSupported !== undefined) entry.handoffSupported = handoffSupported
+        entries.push(entry)
+    }
+
+    if (entries.length === 0 && match[1].trim().length > 0) {
+        throw manifestError(manifestPath, "relatedWorkflows", "must be an array of simple object literals")
+    }
+
+    return entries
+}
+
 export function listManifestFiles() {
     return fs
         .readdirSync(FEATURE_TOOLS_DIR, { withFileTypes: true })
@@ -257,6 +284,7 @@ export function parseToolManifestFile(manifestPath) {
     const category = stringField(body, "category", manifestPath, true)
     const keywords = arrayField(body, "keywords", manifestPath, true)
     const relatedTools = arrayField(body, "relatedTools", manifestPath, true)
+    const relatedWorkflows = parseRelatedWorkflows(body, manifestPath)
     const sampleInput = stringField(body, "sampleInput", manifestPath)
     const sampleMode = stringField(body, "sampleMode", manifestPath)
     const searchKeywords = arrayField(body, "searchKeywords", manifestPath)
@@ -291,6 +319,7 @@ export function parseToolManifestFile(manifestPath) {
 
     if (sampleInput) manifest.sampleInput = sampleInput
     if (sampleMode) manifest.sampleMode = sampleMode
+    if (relatedWorkflows.length > 0) manifest.relatedWorkflows = relatedWorkflows
     if (updatedAt) manifest.updatedAt = updatedAt
     if (searchKeywords.length > 0) manifest.searchKeywords = searchKeywords
     if (networkAccess) manifest.networkAccess = networkAccess

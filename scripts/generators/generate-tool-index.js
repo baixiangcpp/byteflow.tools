@@ -167,6 +167,7 @@ function buildIndexData() {
                 slug: tool.slug,
                 category: tool.category,
                 relatedTools: tool.relatedTools,
+                relatedWorkflows: tool.relatedWorkflows || [],
                 keywords: tool.keywords,
                 sampleInput: tool.sampleInput || null,
                 sampleMode: tool.sampleMode || null,
