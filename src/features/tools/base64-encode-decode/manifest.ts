@@ -5,6 +5,15 @@ export const toolManifest = {
     slug: "base64-encode-decode",
     category: "text-string",
     relatedTools: ["url_encode_decode", "jwt_decoder", "hash_generator", "image_base64"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     relatedWorkflows: [
         { toolKey: "jwt_decoder", reasonKey: "inspect_decoded_token", handoffSupported: true },
         { toolKey: "url_encode_decode", reasonKey: "decode_url_payloads", handoffSupported: true },

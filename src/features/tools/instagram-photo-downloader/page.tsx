@@ -26,6 +26,7 @@ export function InstagramPhotoDownloaderPage() {
     const [inputUrl, setInputUrl] = React.useState("")
     const [rightsConfirmed, setRightsConfirmed] = React.useState(false)
     const [statusNote, setStatusNote] = React.useState("")
+    const [previewApproved, setPreviewApproved] = React.useState(false)
 
     const statusReadyLine = text("status_ready_line")
     const statusPendingLine = text("status_pending_line")
@@ -125,12 +126,22 @@ export function InstagramPhotoDownloaderPage() {
     const handleSample = () => {
         setInputUrl(SAMPLE_URL)
         setRightsConfirmed(false)
+        setPreviewApproved(false)
     }
 
     const handleReset = () => {
         setInputUrl("")
         setRightsConfirmed(false)
         setStatusNote("")
+        setPreviewApproved(false)
+    }
+
+    const handleLoadPreview = () => {
+        if (!canDownload) {
+            toast.error(t.common.download_blocked_until_checks_pass)
+            return
+        }
+        setPreviewApproved(true)
     }
 
     const handleCopy = async () => {
@@ -173,6 +184,7 @@ export function InstagramPhotoDownloaderPage() {
     const actions: ToolAction[] = [
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: handleSample },
         { id: "reset", label: t.common.reset, icon: Eraser, onClick: handleReset },
+        { id: "preview", label: t.common.preview, icon: ImageDown, onClick: handleLoadPreview, disabled: !canDownload },
         { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy() },
         { id: "download", label: t.common.download, icon: Download, onClick: () => void handleDownload(), disabled: !canDownload },
     ]
@@ -199,7 +211,10 @@ export function InstagramPhotoDownloaderPage() {
                         <div className="space-y-3 border-t p-3">
                             <Input
                                 value={inputUrl}
-                                onChange={(event) => setInputUrl(event.target.value)}
+                                onChange={(event) => {
+                                    setInputUrl(event.target.value)
+                                    setPreviewApproved(false)
+                                }}
                                 placeholder="https://…"
                                 spellCheck={false}
                             />
@@ -207,7 +222,10 @@ export function InstagramPhotoDownloaderPage() {
                                 <input
                                     type="checkbox"
                                     checked={rightsConfirmed}
-                                    onChange={(event) => setRightsConfirmed(event.target.checked)}
+                                    onChange={(event) => {
+                                        setRightsConfirmed(event.target.checked)
+                                        setPreviewApproved(false)
+                                    }}
                                     className="mt-0.5 h-4 w-4"
                                 />
                                 <span>
@@ -248,7 +266,7 @@ export function InstagramPhotoDownloaderPage() {
                             title={t.common.preview}
                             metadata={parsed?.kind}
                         >
-                            {canDownload && parsed ? (
+                            {canDownload && parsed && previewApproved ? (
                                 // eslint-disable-next-line @next/next/no-img-element
                                 <img
                                     src={parsed.normalizedUrl}

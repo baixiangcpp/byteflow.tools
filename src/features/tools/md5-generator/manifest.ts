@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "md5-generator",
     category: "text-string",
     relatedTools: ["hash_generator", "base64_encode_decode", "text_diff_checker", "password_generator"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["md5 generator", "md5 hash online", "md5 checksum", "md5 encoder"],
 } satisfies ToolMeta

@@ -5,6 +5,15 @@ export const toolManifest = {
     slug: "json-formatter",
     category: "formatters",
     relatedTools: ["jsonpath_playground", "json_diff_viewer", "json_to_typescript", "yaml_json_converter"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: true,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     relatedWorkflows: [
         { toolKey: "json_to_typescript", reasonKey: "typed_model_from_formatted_json", handoffSupported: true },
         { toolKey: "jsonpath_playground", reasonKey: "query_formatted_json", handoffSupported: true },

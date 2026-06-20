@@ -1389,8 +1389,8 @@ const COMMAND_SEARCH_INDEX: Record<string, CommandSearchIndexEntry> = {
             "social-metadata"
         ],
         "capabilities": [
-            "browser-local",
             "external-request",
+            "sensitive-input",
             "visual-output"
         ]
     },
@@ -1411,7 +1411,6 @@ const COMMAND_SEARCH_INDEX: Record<string, CommandSearchIndexEntry> = {
             "social-metadata"
         ],
         "capabilities": [
-            "browser-local",
             "external-request",
             "visual-output"
         ]
@@ -1433,7 +1432,6 @@ const COMMAND_SEARCH_INDEX: Record<string, CommandSearchIndexEntry> = {
             "url"
         ],
         "capabilities": [
-            "browser-local",
             "external-request",
             "visual-output"
         ]
@@ -2382,7 +2380,8 @@ const COMMAND_SEARCH_INDEX: Record<string, CommandSearchIndexEntry> = {
         "capabilities": [
             "browser-local",
             "offline-capable",
-            "pipeline-ready"
+            "pipeline-ready",
+            "sensitive-input"
         ]
     },
     "robots_txt_tester": {

@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "url-parser",
     category: "network-web",
     relatedTools: ["url_encode_decode", "http_status_codes", "user_agent_parser", "http_request_builder"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["url parser", "url decoder", "query string parser", "url components breakdown"],
 } satisfies ToolMeta

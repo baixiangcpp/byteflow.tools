@@ -5,6 +5,15 @@ export const toolManifest = {
     slug: "tweet-to-image-converter",
     category: "generators",
     relatedTools: ["tweet_generator", "open_graph_meta_generator", "instagram_post_generator", "code_to_image_converter"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["tweet to image converter", "convert tweet to png", "tweet image converter", "x post image maker"],
     deprecated: {
         alternatives: ["code_to_image_converter"],

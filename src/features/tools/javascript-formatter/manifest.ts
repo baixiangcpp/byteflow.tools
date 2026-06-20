@@ -5,6 +5,15 @@ export const toolManifest = {
     slug: "javascript-formatter",
     category: "formatters",
     relatedTools: ["json_formatter", "html_css_beautifier", "sql_formatter", "markdown_preview"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["javascript formatter", "js formatter", "beautify javascript", "format javascript online"],
     searchKeywords: ["beautify js", "format javascript", "js beautifier", "JS格式化", "JS整形", "자바스크립트 포맷", "美化代码"],
 } satisfies ToolMeta

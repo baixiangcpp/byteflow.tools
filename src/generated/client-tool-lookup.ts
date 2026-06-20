@@ -13,6 +13,7 @@ export type ClientToolLookupEntry = {
     sampleInput: string | null
     sampleMode: string | null
     inputSizePolicy: Readonly<{ warnAtBytes?: number; workerAtBytes?: number; hardLimitBytes?: number; streamingSupported?: boolean }> | null
+    privacy: ToolPrivacyManifest
     networkAccess: "none" | "user_requested" | "third_party_api"
     networkHosts: readonly string[]
     networkPurposeKey: string | null
@@ -24,6 +25,21 @@ export type ClientToolLookupEntry = {
     tags: readonly string[]
     capabilities: readonly string[]
     searchKeywords?: readonly string[]
+}
+
+export type ToolPrivacyManifest = {
+    executionMode: "browser-local" | "external-request"
+    offlineCapable: boolean
+    sensitiveInput: boolean
+    externalRequest: {
+        required: boolean
+        endpointType?: "none" | "user_provided_url" | "derived_public_asset" | "third_party_api"
+        domains?: readonly string[]
+        purposeKey?: string
+        userDataSent?: "none" | "user_provided_url" | "derived_url"
+        disclosure?: string
+        consentRequired?: boolean
+    }
 }
 
 export type ClientMenuGroup = {
@@ -74,6 +90,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "workerAtBytes": 10485760,
             "hardLimitBytes": 52428800,
             "streamingSupported": false
+        },
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
         },
         "networkAccess": "none",
         "networkHosts": [],
@@ -127,6 +152,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -172,6 +206,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -217,6 +260,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -262,6 +314,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -298,6 +359,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -335,6 +405,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -372,6 +451,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -410,6 +498,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -478,6 +575,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hardLimitBytes": 10485760,
             "streamingSupported": false
         },
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -532,6 +638,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -579,6 +694,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -617,6 +741,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -663,6 +796,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -699,6 +841,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -737,6 +888,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -774,6 +934,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -810,6 +979,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -852,6 +1030,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "workerAtBytes": 262144,
             "hardLimitBytes": 1048576,
             "streamingSupported": false
+        },
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
         },
         "networkAccess": "none",
         "networkHosts": [],
@@ -912,6 +1099,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "workerAtBytes": 1048576,
             "hardLimitBytes": 10485760,
             "streamingSupported": false
+        },
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
         },
         "networkAccess": "none",
         "networkHosts": [],
@@ -988,6 +1184,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hardLimitBytes": 10485760,
             "streamingSupported": false
         },
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1033,6 +1238,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1084,6 +1298,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1135,6 +1358,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1177,6 +1409,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "workerAtBytes": 1048576,
             "hardLimitBytes": 52428800,
             "streamingSupported": false
+        },
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
         },
         "networkAccess": "none",
         "networkHosts": [],
@@ -1227,6 +1468,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1264,6 +1514,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1300,6 +1559,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1337,6 +1605,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1374,6 +1651,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1410,6 +1696,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1447,6 +1742,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1486,6 +1790,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1523,6 +1836,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1560,6 +1882,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1596,6 +1927,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1640,6 +1980,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1674,6 +2023,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1709,6 +2067,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1747,6 +2114,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1785,6 +2161,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1824,6 +2209,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1862,6 +2256,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1902,6 +2305,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1942,6 +2354,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1981,6 +2402,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2021,6 +2451,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2061,6 +2500,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2100,6 +2548,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2139,6 +2596,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2177,6 +2643,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2214,6 +2689,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2251,6 +2735,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2288,6 +2781,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2326,6 +2828,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2364,6 +2875,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2401,6 +2921,22 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "external-request",
+            "offlineCapable": false,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": true,
+                "endpointType": "user_provided_url",
+                "domains": [
+                    "instagram.com"
+                ],
+                "purposeKey": "authorized_media_download",
+                "userDataSent": "user_provided_url",
+                "disclosure": "Requests the Instagram URL you provide only after you confirm rights and click Download.",
+                "consentRequired": true
+            }
+        },
         "networkAccess": "user_requested",
         "networkHosts": [
             "instagram.com"
@@ -2416,8 +2952,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "social-metadata"
         ],
         "capabilities": [
-            "browser-local",
             "external-request",
+            "sensitive-input",
             "visual-output"
         ]
     },
@@ -2441,6 +2977,24 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "external-request",
+            "offlineCapable": false,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": true,
+                "endpointType": "derived_public_asset",
+                "domains": [
+                    "vimeo.com",
+                    "player.vimeo.com",
+                    "vumbnail.com"
+                ],
+                "purposeKey": "thumbnail_preview",
+                "userDataSent": "derived_url",
+                "disclosure": "Loads derived public Vimeo thumbnail image URLs only after you choose to load the preview.",
+                "consentRequired": true
+            }
+        },
         "networkAccess": "user_requested",
         "networkHosts": [
             "vimeo.com",
@@ -2448,8 +3002,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "vumbnail.com"
         ],
         "networkPurposeKey": "thumbnail_preview",
-        "allowUserProvidedUrl": true,
-        "requiresExplicitUserAction": false,
+        "allowUserProvidedUrl": false,
+        "requiresExplicitUserAction": true,
         "externalDataSent": "derived_url",
         "persistInput": null,
         "family": "social-metadata",
@@ -2458,7 +3012,6 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "social-metadata"
         ],
         "capabilities": [
-            "browser-local",
             "external-request",
             "visual-output"
         ]
@@ -2483,6 +3036,25 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "external-request",
+            "offlineCapable": false,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": true,
+                "endpointType": "derived_public_asset",
+                "domains": [
+                    "youtube.com",
+                    "youtube-nocookie.com",
+                    "youtu.be",
+                    "i.ytimg.com"
+                ],
+                "purposeKey": "thumbnail_preview",
+                "userDataSent": "derived_url",
+                "disclosure": "Loads derived public YouTube thumbnail image URLs only after you choose to load the preview.",
+                "consentRequired": true
+            }
+        },
         "networkAccess": "user_requested",
         "networkHosts": [
             "youtube.com",
@@ -2491,8 +3063,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "i.ytimg.com"
         ],
         "networkPurposeKey": "thumbnail_preview",
-        "allowUserProvidedUrl": true,
-        "requiresExplicitUserAction": false,
+        "allowUserProvidedUrl": false,
+        "requiresExplicitUserAction": true,
         "externalDataSent": "derived_url",
         "persistInput": null,
         "family": "social-metadata",
@@ -2501,7 +3073,6 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url"
         ],
         "capabilities": [
-            "browser-local",
             "external-request",
             "visual-output"
         ]
@@ -2530,6 +3101,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "workerAtBytes": 3145728,
             "hardLimitBytes": 12582912,
             "streamingSupported": false
+        },
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
         },
         "networkAccess": "none",
         "networkHosts": [],
@@ -2570,6 +3150,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2614,6 +3203,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hardLimitBytes": 12582912,
             "streamingSupported": false
         },
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2652,6 +3250,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2691,6 +3298,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2729,6 +3345,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2767,6 +3392,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2806,6 +3440,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2844,6 +3487,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2882,6 +3534,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2921,6 +3582,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2959,6 +3629,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -2998,6 +3677,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3036,6 +3724,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3074,6 +3771,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3113,6 +3819,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3151,6 +3866,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3189,6 +3913,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3227,6 +3960,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3263,6 +4005,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3299,6 +4050,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3337,6 +4097,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3374,6 +4143,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3408,6 +4186,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3443,6 +4230,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3482,6 +4278,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3517,6 +4322,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3568,6 +4382,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3603,6 +4426,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3655,6 +4487,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3689,6 +4530,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3726,6 +4576,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3762,6 +4621,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3800,6 +4668,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3836,6 +4713,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3873,6 +4759,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3911,6 +4806,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3950,6 +4854,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -3988,6 +4901,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4028,6 +4950,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4066,6 +4997,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4104,6 +5044,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4119,7 +5068,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "capabilities": [
             "browser-local",
             "offline-capable",
-            "pipeline-ready"
+            "pipeline-ready",
+            "sensitive-input"
         ],
         "searchKeywords": [
             "invisible chars",
@@ -4153,6 +5103,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4189,6 +5148,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4228,6 +5196,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4266,6 +5243,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4304,6 +5290,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4344,6 +5339,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4382,6 +5386,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4419,6 +5432,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4469,6 +5491,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4519,6 +5550,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4567,6 +5607,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4608,6 +5657,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4645,6 +5703,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4685,6 +5752,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4724,6 +5800,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4765,6 +5850,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4805,6 +5899,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4851,6 +5954,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4891,6 +6003,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4929,6 +6050,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -4965,6 +6095,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -5018,6 +6157,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "warnAtBytes": 65536,
             "hardLimitBytes": 262144,
             "streamingSupported": false
+        },
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
         },
         "networkAccess": "none",
         "networkHosts": [],

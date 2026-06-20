@@ -7,6 +7,23 @@ export type { ToolCapability, ToolFamily } from "./tool-taxonomy"
 export type ToolNetworkAccess = "none" | "user_requested" | "third_party_api"
 export type ToolExternalDataSent = "none" | "user_provided_url" | "derived_url"
 export type ToolInputPersistenceMode = true | false | "opt-in"
+export type ToolExecutionMode = "browser-local" | "external-request"
+export type ToolExternalRequestEndpointType = "none" | "user_provided_url" | "derived_public_asset" | "third_party_api"
+export type ToolExternalRequestManifest = {
+    required: boolean
+    endpointType?: ToolExternalRequestEndpointType
+    domains?: string[]
+    purposeKey?: string
+    userDataSent?: ToolExternalDataSent
+    disclosure?: string
+    consentRequired?: boolean
+}
+export type ToolPrivacyManifest = {
+    executionMode: ToolExecutionMode
+    offlineCapable: boolean
+    sensitiveInput: boolean
+    externalRequest: ToolExternalRequestManifest
+}
 export type ToolInputSizePolicy = {
     warnAtBytes?: number
     workerAtBytes?: number
@@ -31,6 +48,8 @@ export interface ToolMeta {
     category: ToolCategory
     /** Related tool keys for internal linking (4-6 recommended) */
     relatedTools: string[]
+    /** Required runtime privacy manifest used by badges, notices, and gates */
+    privacy: ToolPrivacyManifest
     /** Optional structured next-step workflow metadata for richer related-tool UX */
     relatedWorkflows?: RelatedToolWorkflow[]
     /** Lightweight example metadata used by quality gates and discovery surfaces */

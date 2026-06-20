@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "gzip-brotli-lab",
     category: "text-string",
     relatedTools: ["base64_encode_decode", "url_encode_decode", "http_request_builder", "local_log_parser"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["gzip brotli lab", "gzip decoder", "brotli compression", "http compression"],
 } satisfies ToolMeta

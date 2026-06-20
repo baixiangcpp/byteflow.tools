@@ -5,6 +5,15 @@ export const toolManifest = {
     slug: "yaml-json-converter",
     category: "formatters",
     relatedTools: ["json_formatter", "json_to_typescript", "structured_data_visualizer", "xml_formatter"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: true,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     relatedWorkflows: [
         { toolKey: "json_formatter", reasonKey: "format_converted_json", handoffSupported: true },
         { toolKey: "json_to_typescript", reasonKey: "typed_model_from_converted_json", handoffSupported: true },

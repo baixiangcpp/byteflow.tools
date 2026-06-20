@@ -52,7 +52,7 @@ describe("BF-006 privacy copy alignment", () => {
     })
 
     it("does not mark external-request tools as offline capable", () => {
-        const externalTools = TOOL_REGISTRY.filter((tool) => tool.networkAccess && tool.networkAccess !== "none")
+        const externalTools = TOOL_REGISTRY.filter((tool) => tool.privacy.externalRequest.required)
         expect(externalTools.length).toBeGreaterThan(0)
 
         for (const tool of externalTools) {

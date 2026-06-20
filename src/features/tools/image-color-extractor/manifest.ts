@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "image-color-extractor",
     category: "generators",
     relatedTools: ["image_average_color_finder", "color_shades_generator", "ai_color_palette_generator", "color_mixer"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["image color extractor", "extract color palette from image", "image palette generator", "dominant colors from photo"],
 } satisfies ToolMeta

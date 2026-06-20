@@ -11,6 +11,8 @@ type ExternalNetworkNoticeProps = {
     networkPurposeKey?: string | null
     requiresExplicitUserAction?: boolean | null
     externalDataSent?: ToolExternalDataSent | null
+    disclosure?: string | null
+    consentRequired?: boolean | null
 }
 
 export function ExternalNetworkNotice({
@@ -19,6 +21,8 @@ export function ExternalNetworkNotice({
     networkPurposeKey,
     requiresExplicitUserAction,
     externalDataSent,
+    disclosure,
+    consentRequired,
 }: ExternalNetworkNoticeProps) {
     const { t } = useLang()
 
@@ -47,6 +51,9 @@ export function ExternalNetworkNotice({
                         {requireTranslationValue(labels.title, "common.external_network_notice.title")}
                     </p>
                     <p className="mt-1 text-muted-foreground">{baseMessage}</p>
+                    {disclosure ? (
+                        <p className="mt-1 text-muted-foreground">{disclosure}</p>
+                    ) : null}
                     {hostList ? (
                         <p className="mt-1 text-muted-foreground">
                             <span className="font-medium text-foreground">
@@ -69,6 +76,11 @@ export function ExternalNetworkNotice({
                                 {requireTranslationValue(labels.data_sent_label, "common.external_network_notice.data_sent_label")}:
                             </span>{" "}
                             {externalDataLabel}
+                        </p>
+                    ) : null}
+                    {consentRequired ? (
+                        <p className="mt-1 text-muted-foreground">
+                            {requireTranslationValue(labels.consent_required_message, "common.external_network_notice.consent_required_message")}
                         </p>
                     ) : null}
                 </div>

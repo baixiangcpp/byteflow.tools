@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "unicode-inspector",
     category: "text-string",
     relatedTools: ["invisible_chars_detector", "text_diff_checker", "hex_bytes_workbench", "multiple_whitespace_remover"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["unicode inspector", "code point inspector", "unicode analyzer", "utf8 inspector"],
 } satisfies ToolMeta

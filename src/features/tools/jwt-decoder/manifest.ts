@@ -5,6 +5,15 @@ export const toolManifest = {
     slug: "jwt-decoder",
     category: "text-string",
     relatedTools: ["jwt_workbench", "base64_encode_decode", "hash_generator", "url_encode_decode"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: true,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["jwt decoder", "decode jwt online", "jwt parser", "json web token decoder"],
     searchKeywords: ["decode token", "parse jwt", "jwt inspector", "token decoder", "令牌解码", "トークンデコード", "JWT 파서", "解析令牌"],
     persistInput: false,

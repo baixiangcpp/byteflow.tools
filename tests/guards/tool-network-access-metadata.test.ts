@@ -3,6 +3,7 @@ import path from "node:path"
 import ts from "typescript"
 import { describe, expect, it } from "vitest"
 import { TOOL_MANIFESTS } from "@/core/registry"
+import { getToolPrivacyNetworkMetadata } from "@/core/registry/privacy"
 import type { ToolMeta } from "@/core/registry/types"
 
 const ROOT = process.cwd()
@@ -87,13 +88,28 @@ function isHostCovered(host: string, declaredHosts: readonly string[] | undefine
 }
 
 describe("tool network access metadata", () => {
+    it("requires privacy manifest fields for every tool", () => {
+        const tools = TOOL_MANIFESTS as readonly ToolMeta[]
+        const offenders = tools.flatMap((tool) => {
+            const problems: string[] = []
+            if (!tool.privacy) problems.push("missing privacy")
+            if (!tool.privacy?.executionMode) problems.push("missing privacy.executionMode")
+            if (typeof tool.privacy?.offlineCapable !== "boolean") problems.push("missing privacy.offlineCapable")
+            if (typeof tool.privacy?.sensitiveInput !== "boolean") problems.push("missing privacy.sensitiveInput")
+            if (typeof tool.privacy?.externalRequest?.required !== "boolean") problems.push("missing privacy.externalRequest.required")
+            return problems.map((problem) => `${tool.slug}: ${problem}`)
+        })
+
+        expect(offenders).toEqual([])
+    })
+
     it("requires explicit metadata for tools with browser network behavior", () => {
         const tools = TOOL_MANIFESTS as readonly ToolMeta[]
         const manifestBySlug = new Map(tools.map((tool) => [tool.slug, tool]))
         const offenders = [...manifestBySlug.values()].flatMap((tool) => {
             const files = walkFiles(path.join(FEATURE_TOOLS_DIR, tool.slug))
             const hasNetwork = files.some((file) => hasNetworkBehavior(fs.readFileSync(file, "utf8")))
-            return hasNetwork && !tool.networkAccess ? [`${tool.slug}: missing networkAccess`] : []
+            return hasNetwork && !tool.privacy.externalRequest.required ? [`${tool.slug}: missing privacy.externalRequest`] : []
         })
 
         expect(offenders).toEqual([])
@@ -103,10 +119,10 @@ describe("tool network access metadata", () => {
         const tools = TOOL_MANIFESTS as readonly ToolMeta[]
         const manifestBySlug = new Map(tools.map((tool) => [tool.slug, tool]))
         const offenders = [...manifestBySlug.values()].flatMap((tool) => {
-            if (!tool.networkAccess || tool.networkAccess === "none") return []
+            if (!tool.privacy.externalRequest.required) return []
             const files = walkFiles(path.join(FEATURE_TOOLS_DIR, tool.slug))
             const hasNetwork = files.some((file) => hasNetworkBehavior(fs.readFileSync(file, "utf8")))
-            return hasNetwork ? [] : [`${tool.slug}: declares ${tool.networkAccess} but no guarded network behavior was found`]
+            return hasNetwork ? [] : [`${tool.slug}: declares external request but no guarded network behavior was found`]
         })
 
         expect(offenders).toEqual([])
@@ -115,16 +131,38 @@ describe("tool network access metadata", () => {
     it("requires host and purpose details for network-enabled tools", () => {
         const tools = TOOL_MANIFESTS as readonly ToolMeta[]
         const offenders = tools.flatMap((tool) => {
-            if (!tool.networkAccess || tool.networkAccess === "none") return []
+            if (!tool.privacy.externalRequest.required) return []
 
             const problems: string[] = []
-            if (!tool.networkHosts || tool.networkHosts.length === 0) problems.push("missing networkHosts")
-            if (!tool.networkPurposeKey) problems.push("missing networkPurposeKey")
-            if (tool.allowUserProvidedUrl === undefined) problems.push("missing allowUserProvidedUrl")
-            if (tool.requiresExplicitUserAction === undefined) problems.push("missing requiresExplicitUserAction")
-            if (!tool.externalDataSent) problems.push("missing externalDataSent")
+            if (tool.privacy.executionMode !== "external-request") problems.push("privacy.executionMode must be external-request")
+            if (tool.privacy.offlineCapable) problems.push("privacy.offlineCapable must be false")
+            if (!tool.privacy.externalRequest.domains || tool.privacy.externalRequest.domains.length === 0) problems.push("missing externalRequest.domains")
+            if (!tool.privacy.externalRequest.purposeKey) problems.push("missing externalRequest.purposeKey")
+            if (!tool.privacy.externalRequest.endpointType || tool.privacy.externalRequest.endpointType === "none") problems.push("missing externalRequest.endpointType")
+            if (!tool.privacy.externalRequest.userDataSent) problems.push("missing externalRequest.userDataSent")
+            if (!tool.privacy.externalRequest.disclosure) problems.push("missing externalRequest.disclosure")
+            if (tool.privacy.externalRequest.consentRequired !== true) problems.push("missing externalRequest.consentRequired")
 
             return problems.map((problem) => `${tool.slug}: ${problem}`)
+        })
+
+        expect(offenders).toEqual([])
+    })
+
+    it("keeps compatibility network fields derived from privacy manifest", () => {
+        const tools = TOOL_MANIFESTS as readonly ToolMeta[]
+        const offenders = tools.flatMap((tool) => {
+            const expected = getToolPrivacyNetworkMetadata(tool.privacy)
+            const actual = {
+                networkAccess: tool.networkAccess ?? expected.networkAccess,
+                networkHosts: tool.networkHosts ?? expected.networkHosts,
+                networkPurposeKey: tool.networkPurposeKey ?? expected.networkPurposeKey,
+                allowUserProvidedUrl: tool.allowUserProvidedUrl ?? expected.allowUserProvidedUrl,
+                requiresExplicitUserAction: tool.requiresExplicitUserAction ?? expected.requiresExplicitUserAction,
+                externalDataSent: tool.externalDataSent ?? expected.externalDataSent,
+            }
+
+            return JSON.stringify(actual) === JSON.stringify(expected) ? [] : [`${tool.slug}: privacy/network metadata drift`]
         })
 
         expect(offenders).toEqual([])
@@ -133,16 +171,29 @@ describe("tool network access metadata", () => {
     it("requires static external hosts in tool source to be covered by network metadata", () => {
         const tools = TOOL_MANIFESTS as readonly ToolMeta[]
         const offenders = tools.flatMap((tool) => {
-            if (!tool.networkAccess || tool.networkAccess === "none") return []
+            if (!tool.privacy.externalRequest.required) return []
 
             const files = walkFiles(path.join(FEATURE_TOOLS_DIR, tool.slug))
             return files.flatMap((file) => {
                 const source = fs.readFileSync(file, "utf8")
                 const hosts = collectStaticExternalHosts(source)
                 return hosts
-                    .filter((host) => !isHostCovered(host, tool.networkHosts))
-                    .map((host) => `${tool.slug}: ${path.relative(ROOT, file)} references ${host} without networkHosts coverage`)
+                    .filter((host) => !isHostCovered(host, tool.privacy.externalRequest.domains))
+                    .map((host) => `${tool.slug}: ${path.relative(ROOT, file)} references ${host} without externalRequest.domains coverage`)
             })
+        })
+
+        expect(offenders).toEqual([])
+    })
+
+    it("keeps browser-local tools free of external request domains", () => {
+        const tools = TOOL_MANIFESTS as readonly ToolMeta[]
+        const offenders = tools.flatMap((tool) => {
+            if (tool.privacy.externalRequest.required) return []
+            if (tool.privacy.executionMode !== "browser-local") return [`${tool.slug}: non-external tool must use browser-local executionMode`]
+            if (!tool.privacy.offlineCapable) return [`${tool.slug}: browser-local tool must be offline capable`]
+            if ((tool.privacy.externalRequest.domains ?? []).length > 0) return [`${tool.slug}: browser-local tool declares external domains`]
+            return []
         })
 
         expect(offenders).toEqual([])

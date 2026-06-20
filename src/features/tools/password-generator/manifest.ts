@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "password-generator",
     category: "generators",
     relatedTools: ["hash_generator", "uuid_generator", "lorem_ipsum"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["password generator", "random password", "strong password generator online"],
 } satisfies ToolMeta

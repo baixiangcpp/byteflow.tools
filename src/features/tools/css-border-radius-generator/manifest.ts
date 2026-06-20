@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "css-border-radius-generator",
     category: "generators",
     relatedTools: ["css_background_pattern_generator", "css_box_shadow_generator", "color_converter", "css_minifier"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["css border radius generator", "rounded corner generator", "border radius css", "radius generator online"],
 } satisfies ToolMeta

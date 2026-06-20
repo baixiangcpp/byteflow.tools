@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "javascript-minifier",
     category: "formatters",
     relatedTools: ["javascript_formatter", "css_minifier", "html_formatter", "json_formatter"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["javascript minifier", "js minify", "minify javascript", "compress javascript online"],
 } satisfies ToolMeta

@@ -150,7 +150,8 @@
         "none": "この機能ではツール入力は送信されません。",
         "user_provided_url": "入力した URL がブラウザからリクエストされる場合があります。",
         "derived_url": "派生した公開アセット URL がブラウザからリクエストされる場合があります。"
-      }
+      },
+      "consent_required_message": "外部リクエスト操作を選んだ場合にのみネットワークアクセスが開始されます。"
     },
     "local_data_controls": {
       "title": "ローカルデータ管理",
@@ -2686,6 +2687,8 @@
     "contact_issues_title": "Issue とフィードバック",
     "contact_issues_desc": "バグ報告や機能要望は GitHub Issue でお知らせください。",
     "contact_email_title": "メール",
-    "contact_email_desc": "ビジネスに関するお問い合わせや提携のご相談はこちら。"
+    "contact_email_desc": "ビジネスに関するお問い合わせや提携のご相談はこちら。",
+    "privacy_external_request_tools_title": "外部リクエストツール",
+    "privacy_external_request_tools_desc": "この一覧はツール manifest から自動生成されます。これらのツールは、表示された目的のために、外部リクエスト操作を選んだ後だけ記載ドメインへ接続します。"
   }
 }

@@ -146,7 +146,8 @@
         "none": "Diese Funktion sendet keine Tool-Eingaben.",
         "user_provided_url": "Die von Ihnen angegebene URL kann von Ihrem Browser angefragt werden.",
         "derived_url": "Eine abgeleitete öffentliche Asset-URL kann von Ihrem Browser angefragt werden."
-      }
+      },
+      "consent_required_message": "Netzwerkzugriff startet erst, nachdem Sie die externe Anfrageaktion auswählen."
     },
     "local_data_controls": {
       "title": "Lokale Datenverwaltung",
@@ -2686,6 +2687,8 @@
     "contact_issues_title": "Issues und Feedback",
     "contact_issues_desc": "Erstellen Sie ein GitHub-Issue für Bugmeldungen oder Feature-Anfragen.",
     "contact_email_title": "E-Mail",
-    "contact_email_desc": "Für geschäftliche Anfragen oder Partnerschaften kontaktieren Sie uns per E-Mail."
+    "contact_email_desc": "Für geschäftliche Anfragen oder Partnerschaften kontaktieren Sie uns per E-Mail.",
+    "privacy_external_request_tools_title": "Tools mit externer Anfrage",
+    "privacy_external_request_tools_desc": "Diese Liste wird aus Tool-Manifests generiert. Diese Tools kontaktieren die aufgeführten Domains nur für den offengelegten Zweck und erst nach Auswahl der externen Anfrageaktion."
   }
 }

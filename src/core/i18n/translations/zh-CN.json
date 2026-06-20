@@ -150,7 +150,8 @@
         "none": "此功能不会发送工具输入。",
         "user_provided_url": "你提供的 URL 可能会由浏览器请求。",
         "derived_url": "浏览器可能会请求派生出的公开资源 URL。"
-      }
+      },
+      "consent_required_message": "只有在你选择外部请求操作后，才会开始网络访问。"
     },
     "local_data_controls": {
       "title": "本地数据控制",
@@ -2686,6 +2687,8 @@
     "contact_issues_title": "问题与反馈",
     "contact_issues_desc": "如需反馈 bug 或功能建议，请在 GitHub 提交 issue。",
     "contact_email_title": "邮箱",
-    "contact_email_desc": "商务合作或伙伴关系咨询，请通过邮件联系。"
+    "contact_email_desc": "商务合作或伙伴关系咨询，请通过邮件联系。",
+    "privacy_external_request_tools_title": "外部请求工具",
+    "privacy_external_request_tools_desc": "此清单由工具 manifest 自动生成。这些工具只会为声明用途访问列出的域名，并且只会在你选择外部请求操作后执行。"
   }
 }

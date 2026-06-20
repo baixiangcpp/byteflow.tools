@@ -102,14 +102,18 @@ function uniqueSorted<T extends string>(values: T[]): T[] {
 }
 
 export function getToolTaxonomy(tool: ToolMeta): ToolTaxonomy {
-    const networkAccess: ToolNetworkAccess = tool.networkAccess ?? "none"
+    const networkAccess: ToolNetworkAccess = tool.networkAccess ?? (tool.privacy.externalRequest.required ? "user_requested" : "none")
     const family = FAMILY_BY_TOOL_KEY[tool.key] ?? fallbackFamily(tool)
     const tags = uniqueSorted([family, ...inferKeywordTags(tool)])
-    const capabilities: ToolCapability[] = ["browser-local"]
+    const capabilities: ToolCapability[] = []
 
-    if (networkAccess === "none") capabilities.push("offline-capable")
-    if (networkAccess !== "none") capabilities.push("external-request")
-    if (tool.persistInput === false || family === "security-tokens" || family === "devops-logs") {
+    if (tool.privacy.executionMode === "external-request" || networkAccess !== "none") {
+        capabilities.push("external-request")
+    } else {
+        capabilities.push("browser-local")
+    }
+    if (tool.privacy.offlineCapable) capabilities.push("offline-capable")
+    if (tool.privacy.sensitiveInput || tool.persistInput === false || family === "security-tokens" || family === "devops-logs") {
         capabilities.push("sensitive-input")
     }
     if (PIPELINE_READY_TOOL_KEYS.has(tool.key)) capabilities.push("pipeline-ready")

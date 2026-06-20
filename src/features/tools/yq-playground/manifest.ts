@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "yq-playground",
     category: "network-web",
     relatedTools: ["yaml_json_converter", "json_formatter", "jq_playground", "jsonpath_playground"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["yq playground", "yaml query", "yaml filter", "yq online", "yaml transform"],
 } satisfies ToolMeta

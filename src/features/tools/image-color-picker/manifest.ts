@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "image-color-picker",
     category: "generators",
     relatedTools: ["image_color_extractor", "image_average_color_finder", "color_converter", "color_mixer"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["image color picker", "pick color from image", "image hex picker", "sample image color"],
 } satisfies ToolMeta

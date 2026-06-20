@@ -125,14 +125,18 @@ function uniqueSorted(values) {
 }
 
 function getToolTaxonomy(tool) {
-    const networkAccess = tool.networkAccess || "none"
+    const networkAccess = getToolPrivacyNetworkMetadata(tool.privacy).networkAccess || "none"
     const family = FAMILY_BY_TOOL_KEY[tool.key] || fallbackFamily(tool)
     const tags = uniqueSorted([family, ...inferKeywordTags(tool)])
-    const capabilities = ["browser-local"]
+    const capabilities = []
 
-    if (networkAccess === "none") capabilities.push("offline-capable")
-    if (networkAccess !== "none") capabilities.push("external-request")
-    if (tool.persistInput === false || family === "security-tokens" || family === "devops-logs") {
+    if (tool.privacy.executionMode === "external-request" || networkAccess !== "none") {
+        capabilities.push("external-request")
+    } else {
+        capabilities.push("browser-local")
+    }
+    if (tool.privacy.offlineCapable) capabilities.push("offline-capable")
+    if (tool.privacy.sensitiveInput || tool.persistInput === false || family === "security-tokens" || family === "devops-logs") {
         capabilities.push("sensitive-input")
     }
     if (PIPELINE_READY_TOOL_KEYS.has(tool.key)) capabilities.push("pipeline-ready")
@@ -150,6 +154,28 @@ function getToolTaxonomy(tool) {
     }
 }
 
+function getToolPrivacyNetworkMetadata(privacy) {
+    if (!privacy.externalRequest.required) {
+        return {
+            networkAccess: "none",
+            networkHosts: [],
+            networkPurposeKey: null,
+            allowUserProvidedUrl: null,
+            requiresExplicitUserAction: null,
+            externalDataSent: null,
+        }
+    }
+
+    return {
+        networkAccess: privacy.externalRequest.endpointType === "third_party_api" ? "third_party_api" : "user_requested",
+        networkHosts: privacy.externalRequest.domains || [],
+        networkPurposeKey: privacy.externalRequest.purposeKey || null,
+        allowUserProvidedUrl: privacy.externalRequest.endpointType === "user_provided_url",
+        requiresExplicitUserAction: privacy.externalRequest.consentRequired ?? null,
+        externalDataSent: privacy.externalRequest.userDataSent || null,
+    }
+}
+
 function loadAliases() {
     if (!fs.existsSync(TOOL_INDEX_PATH)) return new Map()
     const index = JSON.parse(fs.readFileSync(TOOL_INDEX_PATH, "utf8"))
@@ -163,6 +189,7 @@ function buildGeneratedLookupData() {
 
     const entries = orderedTools.map((tool) => {
         const taxonomy = getToolTaxonomy(tool)
+        const privacyNetwork = getToolPrivacyNetworkMetadata(tool.privacy)
         const entry = {
             key: tool.key,
             slug: tool.slug,
@@ -173,12 +200,13 @@ function buildGeneratedLookupData() {
             sampleInput: tool.sampleInput || null,
             sampleMode: tool.sampleMode || null,
             inputSizePolicy: tool.inputSizePolicy || null,
-            networkAccess: tool.networkAccess || "none",
-            networkHosts: tool.networkHosts || [],
-            networkPurposeKey: tool.networkPurposeKey || null,
-            allowUserProvidedUrl: tool.allowUserProvidedUrl ?? null,
-            requiresExplicitUserAction: tool.requiresExplicitUserAction ?? null,
-            externalDataSent: tool.externalDataSent || null,
+            privacy: tool.privacy,
+            networkAccess: privacyNetwork.networkAccess,
+            networkHosts: privacyNetwork.networkHosts,
+            networkPurposeKey: privacyNetwork.networkPurposeKey,
+            allowUserProvidedUrl: privacyNetwork.allowUserProvidedUrl,
+            requiresExplicitUserAction: privacyNetwork.requiresExplicitUserAction,
+            externalDataSent: privacyNetwork.externalDataSent,
             persistInput: tool.persistInput ?? null,
             family: taxonomy.family,
             tags: taxonomy.tags,
@@ -214,6 +242,7 @@ function buildRouteLookupSource(data = buildGeneratedLookupData()) {
         data.entries.map((tool) => [tool.key, {
             key: tool.key,
             slug: tool.slug,
+            privacy: tool.privacy,
             networkAccess: tool.networkAccess,
             networkHosts: tool.networkHosts,
             networkPurposeKey: tool.networkPurposeKey,
@@ -231,11 +260,27 @@ function buildRouteLookupSource(data = buildGeneratedLookupData()) {
 export type RouteToolLookupEntry = {
     key: string
     slug: string
+    privacy: ToolPrivacyManifest
     networkAccess: "none" | "user_requested" | "third_party_api"
     networkHosts: readonly string[]
     networkPurposeKey: string | null
     requiresExplicitUserAction: boolean | null
     externalDataSent: "none" | "user_provided_url" | "derived_url" | null
+}
+
+export type ToolPrivacyManifest = {
+    executionMode: "browser-local" | "external-request"
+    offlineCapable: boolean
+    sensitiveInput: boolean
+    externalRequest: {
+        required: boolean
+        endpointType?: "none" | "user_provided_url" | "derived_public_asset" | "third_party_api"
+        domains?: readonly string[]
+        purposeKey?: string
+        userDataSent?: "none" | "user_provided_url" | "derived_url"
+        disclosure?: string
+        consentRequired?: boolean
+    }
 }
 
 const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = ${JSON.stringify(routeEntries, null, 4)}
@@ -373,6 +418,7 @@ export type ClientToolLookupEntry = {
     sampleInput: string | null
     sampleMode: string | null
     inputSizePolicy: Readonly<{ warnAtBytes?: number; workerAtBytes?: number; hardLimitBytes?: number; streamingSupported?: boolean }> | null
+    privacy: ToolPrivacyManifest
     networkAccess: "none" | "user_requested" | "third_party_api"
     networkHosts: readonly string[]
     networkPurposeKey: string | null
@@ -384,6 +430,21 @@ export type ClientToolLookupEntry = {
     tags: readonly string[]
     capabilities: readonly string[]
     searchKeywords?: readonly string[]
+}
+
+export type ToolPrivacyManifest = {
+    executionMode: "browser-local" | "external-request"
+    offlineCapable: boolean
+    sensitiveInput: boolean
+    externalRequest: {
+        required: boolean
+        endpointType?: "none" | "user_provided_url" | "derived_public_asset" | "third_party_api"
+        domains?: readonly string[]
+        purposeKey?: string
+        userDataSent?: "none" | "user_provided_url" | "derived_url"
+        disclosure?: string
+        consentRequired?: boolean
+    }
 }
 
 export type ClientMenuGroup = {

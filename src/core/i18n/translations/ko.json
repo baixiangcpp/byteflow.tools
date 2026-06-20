@@ -150,7 +150,8 @@
         "none": "이 기능은 도구 입력을 전송하지 않습니다.",
         "user_provided_url": "사용자가 제공한 URL이 브라우저에서 요청될 수 있습니다.",
         "derived_url": "파생된 공개 자산 URL이 브라우저에서 요청될 수 있습니다."
-      }
+      },
+      "consent_required_message": "외부 요청 작업을 선택한 후에만 네트워크 접근이 시작됩니다."
     },
     "local_data_controls": {
       "title": "로컬 데이터 관리",
@@ -2686,6 +2687,8 @@
     "contact_issues_title": "이슈 및 피드백",
     "contact_issues_desc": "버그 신고나 기능 요청은 GitHub Issue로 등록해 주세요.",
     "contact_email_title": "이메일",
-    "contact_email_desc": "비즈니스 문의나 파트너십 제안은 이메일로 연락해 주세요."
+    "contact_email_desc": "비즈니스 문의나 파트너십 제안은 이메일로 연락해 주세요.",
+    "privacy_external_request_tools_title": "외부 요청 도구",
+    "privacy_external_request_tools_desc": "이 목록은 도구 manifest에서 자동 생성됩니다. 이러한 도구는 공개된 목적에 한해 나열된 도메인에 접근하며, 외부 요청 작업을 선택한 후에만 실행됩니다."
   }
 }

@@ -23,6 +23,28 @@ function toRepoPath(filePath) {
     return filePath.replace(/\\/g, "/")
 }
 
+function getToolPrivacyNetworkMetadata(privacy) {
+    if (!privacy.externalRequest.required) {
+        return {
+            networkAccess: "none",
+            networkHosts: [],
+            networkPurposeKey: null,
+            allowUserProvidedUrl: null,
+            requiresExplicitUserAction: null,
+            externalDataSent: null,
+        }
+    }
+
+    return {
+        networkAccess: privacy.externalRequest.endpointType === "third_party_api" ? "third_party_api" : "user_requested",
+        networkHosts: privacy.externalRequest.domains || [],
+        networkPurposeKey: privacy.externalRequest.purposeKey || null,
+        allowUserProvidedUrl: privacy.externalRequest.endpointType === "user_provided_url",
+        requiresExplicitUserAction: privacy.externalRequest.consentRequired ?? null,
+        externalDataSent: privacy.externalRequest.userDataSent || null,
+    }
+}
+
 function loadToolMetaData() {
     const map = new Map()
     const duplicateKeys = []
@@ -161,6 +183,7 @@ function buildIndexData() {
         .filter((key) => metaMap.has(key))
         .map((key, index) => {
             const tool = metaMap.get(key)
+            const privacyNetwork = getToolPrivacyNetworkMetadata(tool.privacy)
             return {
                 index: index + 1,
                 key: tool.key,
@@ -172,12 +195,13 @@ function buildIndexData() {
                 sampleInput: tool.sampleInput || null,
                 sampleMode: tool.sampleMode || null,
                 inputSizePolicy: tool.inputSizePolicy || null,
-                networkAccess: tool.networkAccess || "none",
-                networkHosts: tool.networkHosts || [],
-                networkPurposeKey: tool.networkPurposeKey || null,
-                allowUserProvidedUrl: tool.allowUserProvidedUrl ?? null,
-                requiresExplicitUserAction: tool.requiresExplicitUserAction ?? null,
-                externalDataSent: tool.externalDataSent || null,
+                privacy: tool.privacy,
+                networkAccess: privacyNetwork.networkAccess,
+                networkHosts: privacyNetwork.networkHosts,
+                networkPurposeKey: privacyNetwork.networkPurposeKey,
+                allowUserProvidedUrl: privacyNetwork.allowUserProvidedUrl,
+                requiresExplicitUserAction: privacyNetwork.requiresExplicitUserAction,
+                externalDataSent: privacyNetwork.externalDataSent,
                 persistInput: tool.persistInput ?? null,
                 updatedAt: tool.updatedAt || null,
                 sourceFile: tool.sourceFile,

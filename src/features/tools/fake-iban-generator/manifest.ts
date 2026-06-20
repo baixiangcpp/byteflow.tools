@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "fake-iban-generator",
     category: "generators",
     relatedTools: ["barcode_generator", "list_randomizer", "id_generator", "password_generator"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["fake iban generator", "test iban data", "iban checksum generator", "dummy bank iban"],
 } satisfies ToolMeta

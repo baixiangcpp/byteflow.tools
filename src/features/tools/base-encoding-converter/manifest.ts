@@ -5,6 +5,15 @@ export const toolManifest = {
     slug: "base-encoding-converter",
     category: "text-string",
     relatedTools: ["base64_encode_decode", "hex_bytes_workbench", "url_encode_decode", "hash_generator"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     relatedWorkflows: [
         { toolKey: "base64_encode_decode", reasonKey: "compare_base_encodings", handoffSupported: true },
         { toolKey: "hex_bytes_workbench", reasonKey: "inspect_encoded_bytes", handoffSupported: true },

@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "html-to-markdown",
     category: "formatters",
     relatedTools: ["markdown_preview", "html_formatter", "html_encoder_decoder", "text_diff_checker"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["html to markdown", "convert html to markdown", "html markdown converter", "html2md online"],
 } satisfies ToolMeta

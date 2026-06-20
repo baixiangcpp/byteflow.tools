@@ -5,6 +5,15 @@ export const toolManifest = {
     slug: "certificate-decoder",
     category: "network-web",
     relatedTools: ["jwt_decoder", "base64_encode_decode", "http_status_codes", "security_header_analyzer"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: true,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["pem decoder", "x509 certificate viewer", "ssl certificate decoder online", "certificate parser"],
     persistInput: false,
 } satisfies ToolMeta
