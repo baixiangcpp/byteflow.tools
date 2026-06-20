@@ -11,7 +11,7 @@ import { getRouteIntentCopy as getLocalizedRouteIntentCopy, type RouteIntentType
 const SITE_NAME = "byteflow.tools";
 const SITE_TITLE_SUFFIX = ` | ${SITE_NAME}`;
 const DEFAULT_OG_IMAGE = `${SITE_URL}/icon-512.png`;
-const CONTENT_INTRO_EXCLUDE_SLUGS = new Set(["about", "pricing", "contact", "privacy", "terms"]);
+const CONTENT_INTRO_EXCLUDE_SLUGS = new Set(["about", "pricing", "contact", "privacy", "trust-center", "terms"]);
 const OPEN_GRAPH_LOCALES: Record<Locale, string> = {
     en: "en_US",
     "zh-CN": "zh_CN",

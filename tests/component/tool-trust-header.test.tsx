@@ -65,6 +65,7 @@ describe("ToolTrustHeader", () => {
             "href",
             "https://github.com/baixiangcpp/byteflow.tools/blob/main/src/features/tools/url-encode-decode/page.tsx",
         )
+        expect(screen.getByRole("link", { name: "Trust Center" })).toHaveAttribute("href", "/en/trust-center")
         expect(screen.getByRole("link", { name: "How to verify" })).toHaveAttribute("href", "/en/about#privacy")
         expect(screen.queryByText("External request details")).not.toBeInTheDocument()
     })
@@ -77,6 +78,7 @@ describe("ToolTrustHeader", () => {
         expect(screen.getByText("instagram.com")).toBeInTheDocument()
         expect(screen.getByText("The URL you provide may be requested by your browser.")).toBeInTheDocument()
         expect(screen.getByText("Requests the Instagram URL you provide only after you confirm rights and click Download.")).toBeInTheDocument()
+        expect(screen.getAllByRole("link", { name: "Trust Center" })[0]).toHaveAttribute("href", "/en/trust-center")
         expect(screen.getByRole("link", { name: "Privacy policy" })).toHaveAttribute("href", "/en/privacy")
     })
 })

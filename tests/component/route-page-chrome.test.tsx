@@ -41,6 +41,7 @@ const mocks = vi.hoisted(() => {
                 devtools_desc: "DevTools message",
                 github_label: "Verify on GitHub",
                 devtools_link: "How to verify",
+                trust_center_link: "Trust Center",
                 external_details: "External request details",
                 endpoints_label: "Endpoints",
                 sent_data_label: "Sent data",
@@ -107,6 +108,7 @@ describe("RoutePageChrome", () => {
         expect(screen.getByText("User URL sent")).toBeInTheDocument()
         expect(screen.getByText("Requests the Instagram URL you provide only after you confirm rights and click Download.")).toBeInTheDocument()
         expect(screen.getByText("Consent message")).toBeInTheDocument()
+        expect(screen.getAllByRole("link", { name: "Trust Center" })[0]).toHaveAttribute("href", "/en/trust-center")
     })
 
     it("shows local trust status for local-only tools", () => {

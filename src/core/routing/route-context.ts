@@ -18,7 +18,7 @@ const HUB_SLUGS = new Set([
     ...ROUTE_MENU_GROUP_HUB_SLUGS,
     ...LEGACY_MENU_GROUP_HUB_SLUGS,
 ])
-const CONTENT_ROUTE_SLUGS = new Set(["about", "pricing", "contact", "privacy", "terms"])
+const CONTENT_ROUTE_SLUGS = new Set(["about", "pricing", "contact", "privacy", "trust-center", "terms"])
 
 export function getRouteContext(pathname: string): {
     locale: string | null

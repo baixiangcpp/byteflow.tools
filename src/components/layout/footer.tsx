@@ -17,6 +17,7 @@ export function Footer() {
         { key: "install-app", slug: "install-app", label: requireTranslationValue(t.common.install_app_label, "common.install_app_label") },
         { key: "about", slug: "about", label: requireTranslationValue(t.pages.about_title, "pages.about_title") },
         { key: "privacy", slug: "privacy", label: requireTranslationValue(t.pages.privacy_title, "pages.privacy_title") },
+        { key: "trust-center", slug: "trust-center", label: requireTranslationValue(t.pages.trust_center_title, "pages.trust_center_title") },
         { key: "terms", slug: "terms", label: requireTranslationValue(t.pages.terms_title, "pages.terms_title") },
         { key: "contact", slug: "contact", label: requireTranslationValue(t.pages.contact_title, "pages.contact_title") },
     ] as const

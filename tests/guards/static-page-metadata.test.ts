@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest"
 import { generateMetadata as generateAboutMetadata } from "@/app/[lang]/about/layout"
 import { generateMetadata as generateContactMetadata } from "@/app/[lang]/contact/layout"
 import { generateMetadata as generateInstallAppMetadata } from "@/app/[lang]/install-app/layout"
+import { generateMetadata as generateTrustCenterMetadata } from "@/app/[lang]/trust-center/layout"
 import { DEFAULT_OG_IMAGE } from "@/core/seo/seo"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 
@@ -74,6 +75,26 @@ describe("static page social metadata", () => {
             title: getExpectedSocialTitle(title),
             description,
             url: "https://byteflow.tools/fr/install-app",
+            images: [DEFAULT_OG_IMAGE],
+        })
+        expect(metadata.twitter).toMatchObject({
+            card: "summary_large_image",
+            title: getExpectedSocialTitle(title),
+            description,
+            images: [DEFAULT_OG_IMAGE],
+        })
+    })
+
+    it("keeps trust center social metadata aligned with localized trust copy", async () => {
+        const metadata = await generateTrustCenterMetadata({ params: Promise.resolve({ lang: "zh-CN" }) })
+        const title = metadata.title
+        const description = metadata.description as string
+
+        expect(getTitleText(title)).toBe(getTranslation("zh-CN").pages.trust_center_title)
+        expect(metadata.openGraph).toMatchObject({
+            title: getExpectedSocialTitle(title),
+            description,
+            url: "https://byteflow.tools/zh-CN/trust-center",
             images: [DEFAULT_OG_IMAGE],
         })
         expect(metadata.twitter).toMatchObject({

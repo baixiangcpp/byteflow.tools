@@ -57,6 +57,13 @@ export default function AboutPage() {
                     <ArrowUpRight className="h-3.5 w-3.5" />
                 </a>
                 <Link
+                    href={`/${lang}/trust-center`}
+                    className="inline-flex items-center gap-2 rounded-xl border border-border/75 bg-background/55 px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                    <Shield className="h-4 w-4" />
+                    {p.trust_center_title}
+                </Link>
+                <Link
                     href={`/${lang}`}
                     className="inline-flex items-center gap-2 rounded-xl border border-border/75 bg-background/55 px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >

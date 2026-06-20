@@ -13,6 +13,7 @@ export default async function InstallAppPage({ params }: { params: Promise<{ lan
     const t = getTranslation(locale)
     const copy = getInstallPageCopy(locale)
     const allToolsLabel = t.common.all_tools
+    const trustCenterLabel = t.pages.trust_center_title
 
-    return <InstallAppClient locale={locale} copy={copy} allToolsLabel={allToolsLabel} />
+    return <InstallAppClient locale={locale} copy={copy} allToolsLabel={allToolsLabel} trustCenterLabel={trustCenterLabel} />
 }

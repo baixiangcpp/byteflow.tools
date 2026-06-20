@@ -47,12 +47,14 @@ describe("install app page", () => {
                 locale="en"
                 copy={getInstallPageCopy("en")}
                 allToolsLabel="All tools"
+                trustCenterLabel="Trust Center"
             />,
         )
 
         const browseLink = screen.getByRole("link", { name: "All tools" })
         expect(browseLink).toHaveAttribute("href", getAllToolsHref("en"))
         expect(browseLink).not.toHaveAttribute("href", "/en/format-validate")
+        expect(screen.getByRole("link", { name: "Trust Center" })).toHaveAttribute("href", "/en/trust-center")
     })
 
     it("uses localized all-tools label and localized image alt in zh-CN locale", () => {
@@ -62,12 +64,14 @@ describe("install app page", () => {
                 locale="zh-CN"
                 copy={copy}
                 allToolsLabel="所有工具"
+                trustCenterLabel="信任中心"
             />,
         )
 
         const browseLink = screen.getByRole("link", { name: "所有工具" })
         expect(browseLink).toHaveAttribute("href", getAllToolsHref("zh-CN"))
         expect(browseLink).not.toHaveAttribute("href", "/zh-CN/format-validate")
+        expect(screen.getByRole("link", { name: "信任中心" })).toHaveAttribute("href", "/zh-CN/trust-center")
 
         const previewImage = screen.getByTestId("mock-next-image")
         expect(previewImage).toHaveAttribute("aria-label", `${copy.guides.chrome_desktop.label} ${copy.guidePreviewLabel}`)
