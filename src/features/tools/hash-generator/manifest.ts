@@ -5,6 +5,15 @@ export const toolManifest = {
     slug: "hash-generator",
     category: "text-string",
     relatedTools: ["md5_generator", "base64_encode_decode", "jwt_decoder", "password_generator"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     sampleInput: "Byteflow sample checksum",
     sampleMode: "text:sha256",
     inputSizePolicy: {

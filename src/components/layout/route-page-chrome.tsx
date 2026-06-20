@@ -31,6 +31,7 @@ function RoutePageChromeContent({ children, pathname }: RoutePageChromeProps) {
         return {
             key: tool.key,
             slug: tool.slug,
+            privacy: tool.privacy,
             networkAccess: tool.networkAccess,
             networkHosts: tool.networkHosts,
             networkPurposeKey: tool.networkPurposeKey,
@@ -78,6 +79,8 @@ function RoutePageChromeContent({ children, pathname }: RoutePageChromeProps) {
                     networkPurposeKey={activeTool.networkPurposeKey}
                     requiresExplicitUserAction={activeTool.requiresExplicitUserAction}
                     externalDataSent={activeTool.externalDataSent}
+                    disclosure={activeTool.privacy.externalRequest.disclosure}
+                    consentRequired={activeTool.privacy.externalRequest.consentRequired}
                 />
             ) : null}
             {children}

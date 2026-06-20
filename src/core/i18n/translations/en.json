@@ -150,7 +150,8 @@
         "none": "No tool input is sent by this feature.",
         "user_provided_url": "The URL you provide may be requested by your browser.",
         "derived_url": "A derived public asset URL may be requested by your browser."
-      }
+      },
+      "consent_required_message": "Network access starts only after you choose the external-request action."
     },
     "local_data_controls": {
       "title": "Local data controls",
@@ -2686,6 +2687,8 @@
     "contact_issues_title": "Issues & Feedback",
     "contact_issues_desc": "Open a GitHub issue for bug reports or feature requests.",
     "contact_email_title": "Email",
-    "contact_email_desc": "For business inquiries or partnership opportunities."
+    "contact_email_desc": "For business inquiries or partnership opportunities.",
+    "privacy_external_request_tools_title": "External request tools",
+    "privacy_external_request_tools_desc": "This list is generated from tool manifests. These tools may contact the listed domains only for the disclosed purpose and only after the external-request action is chosen."
   }
 }

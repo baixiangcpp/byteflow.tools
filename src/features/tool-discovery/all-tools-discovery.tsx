@@ -73,6 +73,24 @@ const CAPABILITY_ICONS: Record<string, React.ComponentType<{ className?: string 
     "pipeline-ready": Workflow,
 }
 
+const CAPABILITY_DISPLAY_ORDER = [
+    "external-request",
+    "sensitive-input",
+    "browser-local",
+    "offline-capable",
+    "pipeline-ready",
+    "file-input",
+    "visual-output",
+]
+
+function sortCapabilitiesForDisplay(capabilities: string[]): string[] {
+    return [...capabilities].sort((left, right) => {
+        const leftIndex = CAPABILITY_DISPLAY_ORDER.indexOf(left)
+        const rightIndex = CAPABILITY_DISPLAY_ORDER.indexOf(right)
+        return (leftIndex === -1 ? Number.MAX_SAFE_INTEGER : leftIndex) - (rightIndex === -1 ? Number.MAX_SAFE_INTEGER : rightIndex)
+    })
+}
+
 function toggleTag(current: string[], tag: string): string[] {
     return current.includes(tag) ? current.filter((item) => item !== tag) : [...current, tag]
 }
@@ -281,7 +299,7 @@ export function AllToolsDiscovery({
                                             <span className="rounded-md border border-primary/25 bg-primary/10 px-2 py-0.5 text-[11px] font-medium text-primary">
                                                 {tool.familyLabel}
                                             </span>
-                                            {tool.capabilities.slice(0, 3).map((capability) => {
+                                            {sortCapabilitiesForDisplay(tool.capabilities).slice(0, 3).map((capability) => {
                                                 const Icon = CAPABILITY_ICONS[capability]
                                                 return (
                                                     <span key={capability} className="inline-flex items-center gap-1 rounded-md border border-border/70 px-1.5 py-0.5 text-[11px] text-muted-foreground">

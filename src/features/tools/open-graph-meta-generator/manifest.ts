@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "open-graph-meta-generator",
     category: "generators",
     relatedTools: ["tweet_generator", "tweet_to_image_converter", "instagram_post_generator", "instagram_story_generator"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["open graph meta generator", "og tags generator", "twitter card meta tags", "social preview meta"],
 } satisfies ToolMeta

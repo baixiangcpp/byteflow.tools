@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "google-fonts-pair-finder",
     category: "text-string",
     relatedTools: ["color_converter", "ai_color_palette_generator", "code_to_image_converter", "open_graph_meta_generator"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["google fonts pair finder", "font pairing generator", "typography pairing", "font combination tool"],
 } satisfies ToolMeta

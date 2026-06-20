@@ -6,6 +6,7 @@
 export type RouteToolLookupEntry = {
     key: string
     slug: string
+    privacy: ToolPrivacyManifest
     networkAccess: "none" | "user_requested" | "third_party_api"
     networkHosts: readonly string[]
     networkPurposeKey: string | null
@@ -13,10 +14,34 @@ export type RouteToolLookupEntry = {
     externalDataSent: "none" | "user_provided_url" | "derived_url" | null
 }
 
+export type ToolPrivacyManifest = {
+    executionMode: "browser-local" | "external-request"
+    offlineCapable: boolean
+    sensitiveInput: boolean
+    externalRequest: {
+        required: boolean
+        endpointType?: "none" | "user_provided_url" | "derived_public_asset" | "third_party_api"
+        domains?: readonly string[]
+        purposeKey?: string
+        userDataSent?: "none" | "user_provided_url" | "derived_url"
+        disclosure?: string
+        consentRequired?: boolean
+    }
+}
+
 const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "json_formatter": {
         "key": "json_formatter",
         "slug": "json-formatter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -26,6 +51,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "xml_formatter": {
         "key": "xml_formatter",
         "slug": "xml-formatter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -35,6 +69,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "sql_formatter": {
         "key": "sql_formatter",
         "slug": "sql-formatter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -44,6 +87,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "javascript_formatter": {
         "key": "javascript_formatter",
         "slug": "javascript-formatter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -53,6 +105,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "javascript_minifier": {
         "key": "javascript_minifier",
         "slug": "javascript-minifier",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -62,6 +123,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "html_minifier": {
         "key": "html_minifier",
         "slug": "html-minifier",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -71,6 +141,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "html_encoder_decoder": {
         "key": "html_encoder_decoder",
         "slug": "html-encoder-decoder",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -80,6 +159,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "html_css_beautifier": {
         "key": "html_css_beautifier",
         "slug": "html-css-beautifier",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -89,6 +177,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "html_formatter": {
         "key": "html_formatter",
         "slug": "html-formatter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -98,6 +195,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "yaml_json_converter": {
         "key": "yaml_json_converter",
         "slug": "yaml-json-converter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -107,6 +213,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "markdown_preview": {
         "key": "markdown_preview",
         "slug": "markdown-preview",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -116,6 +231,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "html_to_markdown": {
         "key": "html_to_markdown",
         "slug": "html-to-markdown",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -125,6 +249,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "json_to_typescript": {
         "key": "json_to_typescript",
         "slug": "json-to-typescript",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -134,6 +267,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "css_minifier": {
         "key": "css_minifier",
         "slug": "css-minifier",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -143,6 +285,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "svg_optimizer": {
         "key": "svg_optimizer",
         "slug": "svg-optimizer",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -152,6 +303,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "jsonpath_playground": {
         "key": "jsonpath_playground",
         "slug": "jsonpath-playground",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -161,6 +321,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "openapi_viewer": {
         "key": "openapi_viewer",
         "slug": "openapi-viewer",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -170,6 +339,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "json_diff_viewer": {
         "key": "json_diff_viewer",
         "slug": "json-diff-viewer",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -179,6 +357,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "csv_json_converter": {
         "key": "csv_json_converter",
         "slug": "csv-json-converter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -188,6 +375,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "base64_encode_decode": {
         "key": "base64_encode_decode",
         "slug": "base64-encode-decode",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -197,6 +393,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "base_encoding_converter": {
         "key": "base_encoding_converter",
         "slug": "base-encoding-converter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -206,6 +411,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "url_encode_decode": {
         "key": "url_encode_decode",
         "slug": "url-encode-decode",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -215,6 +429,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "jwt_decoder": {
         "key": "jwt_decoder",
         "slug": "jwt-decoder",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -224,6 +447,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "jwt_workbench": {
         "key": "jwt_workbench",
         "slug": "jwt-workbench",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -233,6 +465,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "hash_generator": {
         "key": "hash_generator",
         "slug": "hash-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -242,6 +483,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "md5_generator": {
         "key": "md5_generator",
         "slug": "md5-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -251,6 +501,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "text_diff_checker": {
         "key": "text_diff_checker",
         "slug": "text-diff-checker",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -260,6 +519,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "multiple_whitespace_remover": {
         "key": "multiple_whitespace_remover",
         "slug": "multiple-whitespace-remover",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -269,6 +537,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "letter_counter": {
         "key": "letter_counter",
         "slug": "letter-counter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -278,6 +555,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "bionic_reading_converter": {
         "key": "bionic_reading_converter",
         "slug": "bionic-reading-converter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -287,6 +573,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "google_fonts_pair_finder": {
         "key": "google_fonts_pair_finder",
         "slug": "google-fonts-pair-finder",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -296,6 +591,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "text_to_handwriting_converter": {
         "key": "text_to_handwriting_converter",
         "slug": "text-to-handwriting-converter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -305,6 +609,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "code_to_image_converter": {
         "key": "code_to_image_converter",
         "slug": "code-to-image-converter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -314,6 +627,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "image_base64": {
         "key": "image_base64",
         "slug": "image-base64",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -323,6 +645,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "unix_timestamp": {
         "key": "unix_timestamp",
         "slug": "unix-timestamp",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -332,6 +663,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "uuid_generator": {
         "key": "uuid_generator",
         "slug": "uuid-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -341,6 +681,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "lorem_ipsum": {
         "key": "lorem_ipsum",
         "slug": "lorem-ipsum",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -350,6 +699,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "password_generator": {
         "key": "password_generator",
         "slug": "password-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -359,6 +717,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "color_converter": {
         "key": "color_converter",
         "slug": "color-converter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -368,6 +735,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "react_native_shadow_generator": {
         "key": "react_native_shadow_generator",
         "slug": "react-native-shadow-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -377,6 +753,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "ai_color_palette_generator": {
         "key": "ai_color_palette_generator",
         "slug": "ai-color-palette-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -386,6 +771,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "color_mixer": {
         "key": "color_mixer",
         "slug": "color-mixer",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -395,6 +789,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "color_shades_generator": {
         "key": "color_shades_generator",
         "slug": "color-shades-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -404,6 +807,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "image_average_color_finder": {
         "key": "image_average_color_finder",
         "slug": "image-average-color-finder",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -413,6 +825,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "image_caption_generator": {
         "key": "image_caption_generator",
         "slug": "image-caption-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -422,6 +843,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "image_color_extractor": {
         "key": "image_color_extractor",
         "slug": "image-color-extractor",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -431,6 +861,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "image_color_picker": {
         "key": "image_color_picker",
         "slug": "image-color-picker",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -440,6 +879,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "image_cropper": {
         "key": "image_cropper",
         "slug": "image-cropper",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -449,6 +897,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "image_filters": {
         "key": "image_filters",
         "slug": "image-filters",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -458,6 +915,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "instagram_filters": {
         "key": "instagram_filters",
         "slug": "instagram-filters",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -467,6 +933,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "instagram_post_generator": {
         "key": "instagram_post_generator",
         "slug": "instagram-post-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -476,6 +951,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "instagram_story_generator": {
         "key": "instagram_story_generator",
         "slug": "instagram-story-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -485,6 +969,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "open_graph_meta_generator": {
         "key": "open_graph_meta_generator",
         "slug": "open-graph-meta-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -494,6 +987,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "tweet_generator": {
         "key": "tweet_generator",
         "slug": "tweet-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -503,6 +1005,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "tweet_to_image_converter": {
         "key": "tweet_to_image_converter",
         "slug": "tweet-to-image-converter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -512,6 +1023,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "twitter_ad_revenue_generator": {
         "key": "twitter_ad_revenue_generator",
         "slug": "twitter-ad-revenue-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -521,6 +1041,22 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "instagram_photo_downloader": {
         "key": "instagram_photo_downloader",
         "slug": "instagram-photo-downloader",
+        "privacy": {
+            "executionMode": "external-request",
+            "offlineCapable": false,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": true,
+                "endpointType": "user_provided_url",
+                "domains": [
+                    "instagram.com"
+                ],
+                "purposeKey": "authorized_media_download",
+                "userDataSent": "user_provided_url",
+                "disclosure": "Requests the Instagram URL you provide only after you confirm rights and click Download.",
+                "consentRequired": true
+            }
+        },
         "networkAccess": "user_requested",
         "networkHosts": [
             "instagram.com"
@@ -532,6 +1068,24 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "vimeo_thumbnail_grabber": {
         "key": "vimeo_thumbnail_grabber",
         "slug": "vimeo-thumbnail-grabber",
+        "privacy": {
+            "executionMode": "external-request",
+            "offlineCapable": false,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": true,
+                "endpointType": "derived_public_asset",
+                "domains": [
+                    "vimeo.com",
+                    "player.vimeo.com",
+                    "vumbnail.com"
+                ],
+                "purposeKey": "thumbnail_preview",
+                "userDataSent": "derived_url",
+                "disclosure": "Loads derived public Vimeo thumbnail image URLs only after you choose to load the preview.",
+                "consentRequired": true
+            }
+        },
         "networkAccess": "user_requested",
         "networkHosts": [
             "vimeo.com",
@@ -539,12 +1093,31 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
             "vumbnail.com"
         ],
         "networkPurposeKey": "thumbnail_preview",
-        "requiresExplicitUserAction": false,
+        "requiresExplicitUserAction": true,
         "externalDataSent": "derived_url"
     },
     "youtube_thumbnail_grabber": {
         "key": "youtube_thumbnail_grabber",
         "slug": "youtube-thumbnail-grabber",
+        "privacy": {
+            "executionMode": "external-request",
+            "offlineCapable": false,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": true,
+                "endpointType": "derived_public_asset",
+                "domains": [
+                    "youtube.com",
+                    "youtube-nocookie.com",
+                    "youtu.be",
+                    "i.ytimg.com"
+                ],
+                "purposeKey": "thumbnail_preview",
+                "userDataSent": "derived_url",
+                "disclosure": "Loads derived public YouTube thumbnail image URLs only after you choose to load the preview.",
+                "consentRequired": true
+            }
+        },
         "networkAccess": "user_requested",
         "networkHosts": [
             "youtube.com",
@@ -553,12 +1126,21 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
             "i.ytimg.com"
         ],
         "networkPurposeKey": "thumbnail_preview",
-        "requiresExplicitUserAction": false,
+        "requiresExplicitUserAction": true,
         "externalDataSent": "derived_url"
     },
     "image_resizer": {
         "key": "image_resizer",
         "slug": "image-resizer",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -568,6 +1150,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "photo_censor": {
         "key": "photo_censor",
         "slug": "photo-censor",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -577,6 +1168,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "scanned_pdf_converter": {
         "key": "scanned_pdf_converter",
         "slug": "scanned-pdf-converter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -586,6 +1186,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "svg_blob_generator": {
         "key": "svg_blob_generator",
         "slug": "svg-blob-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -595,6 +1204,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "svg_pattern_generator": {
         "key": "svg_pattern_generator",
         "slug": "svg-pattern-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -604,6 +1222,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "svg_stroke_to_fill_converter": {
         "key": "svg_stroke_to_fill_converter",
         "slug": "svg-stroke-to-fill-converter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -613,6 +1240,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "svg_to_png_converter": {
         "key": "svg_to_png_converter",
         "slug": "svg-to-png-converter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -622,6 +1258,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "css_background_pattern_generator": {
         "key": "css_background_pattern_generator",
         "slug": "css-background-pattern-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -631,6 +1276,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "css_border_radius_generator": {
         "key": "css_border_radius_generator",
         "slug": "css-border-radius-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -640,6 +1294,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "css_box_shadow_generator": {
         "key": "css_box_shadow_generator",
         "slug": "css-box-shadow-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -649,6 +1312,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "css_checkbox_generator": {
         "key": "css_checkbox_generator",
         "slug": "css-checkbox-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -658,6 +1330,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "css_clip_path_generator": {
         "key": "css_clip_path_generator",
         "slug": "css-clip-path-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -667,6 +1348,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "css_cubic_bezier_generator": {
         "key": "css_cubic_bezier_generator",
         "slug": "css-cubic-bezier-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -676,6 +1366,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "css_glassmorphism_generator": {
         "key": "css_glassmorphism_generator",
         "slug": "css-glassmorphism-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -685,6 +1384,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "css_gradient_generator": {
         "key": "css_gradient_generator",
         "slug": "css-gradient-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -694,6 +1402,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "css_loader_generator": {
         "key": "css_loader_generator",
         "slug": "css-loader-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -703,6 +1420,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "css_switch_generator": {
         "key": "css_switch_generator",
         "slug": "css-switch-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -712,6 +1438,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "css_text_glitch_effect_generator": {
         "key": "css_text_glitch_effect_generator",
         "slug": "css-text-glitch-effect-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -721,6 +1456,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "css_triangle_generator": {
         "key": "css_triangle_generator",
         "slug": "css-triangle-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -730,6 +1474,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "qr_code_generator": {
         "key": "qr_code_generator",
         "slug": "qr-code-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -739,6 +1492,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "barcode_generator": {
         "key": "barcode_generator",
         "slug": "barcode-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -748,6 +1510,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "fake_iban_generator": {
         "key": "fake_iban_generator",
         "slug": "fake-iban-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -757,6 +1528,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "list_randomizer": {
         "key": "list_randomizer",
         "slug": "list-randomizer",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -766,6 +1546,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "ascii_art_generator": {
         "key": "ascii_art_generator",
         "slug": "ascii-art-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -775,6 +1564,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "env_parser": {
         "key": "env_parser",
         "slug": "env-parser",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -784,6 +1582,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "id_generator": {
         "key": "id_generator",
         "slug": "id-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -793,6 +1600,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "regex_tester": {
         "key": "regex_tester",
         "slug": "regex-tester",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -802,6 +1618,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "regex_generator": {
         "key": "regex_generator",
         "slug": "regex-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -811,6 +1636,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "crontab_generator": {
         "key": "crontab_generator",
         "slug": "crontab-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -820,6 +1654,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "user_agent_parser": {
         "key": "user_agent_parser",
         "slug": "user-agent-parser",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -829,6 +1672,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "cron_visualizer": {
         "key": "cron_visualizer",
         "slug": "cron-visualizer",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -838,6 +1690,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "http_status_codes": {
         "key": "http_status_codes",
         "slug": "http-status-codes",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -847,6 +1708,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "chmod_calculator": {
         "key": "chmod_calculator",
         "slug": "chmod-calculator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -856,6 +1726,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "cidr_subnet_calculator": {
         "key": "cidr_subnet_calculator",
         "slug": "cidr-subnet-calculator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -865,6 +1744,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "url_parser": {
         "key": "url_parser",
         "slug": "url-parser",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -874,6 +1762,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "certificate_decoder": {
         "key": "certificate_decoder",
         "slug": "certificate-decoder",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -883,6 +1780,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "http_request_builder": {
         "key": "http_request_builder",
         "slug": "http-request-builder",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -892,6 +1798,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "curl_to_code": {
         "key": "curl_to_code",
         "slug": "curl-to-code",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -901,6 +1816,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "ndjson_formatter": {
         "key": "ndjson_formatter",
         "slug": "ndjson-formatter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -910,6 +1834,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "jwt_verifier": {
         "key": "jwt_verifier",
         "slug": "jwt-verifier",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -919,6 +1852,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "slugify_case_converter": {
         "key": "slugify_case_converter",
         "slug": "slugify-case-converter",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -928,6 +1870,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "invisible_chars_detector": {
         "key": "invisible_chars_detector",
         "slug": "invisible-characters-detector",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -937,6 +1888,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "robots_txt_tester": {
         "key": "robots_txt_tester",
         "slug": "robots-txt-tester",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -946,6 +1906,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "csp_parser": {
         "key": "csp_parser",
         "slug": "csp-parser",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -955,6 +1924,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "csv_diff": {
         "key": "csv_diff",
         "slug": "csv-diff",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -964,6 +1942,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "header_diff": {
         "key": "header_diff",
         "slug": "header-diff",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -973,6 +1960,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "security_header_analyzer": {
         "key": "security_header_analyzer",
         "slug": "security-header-analyzer",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -982,6 +1978,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "totp_generator": {
         "key": "totp_generator",
         "slug": "totp-generator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -991,6 +1996,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "openapi_mock": {
         "key": "openapi_mock",
         "slug": "openapi-mock",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1000,6 +2014,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "docker_run_to_compose": {
         "key": "docker_run_to_compose",
         "slug": "docker-run-to-compose",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1009,6 +2032,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "local_log_parser": {
         "key": "local_log_parser",
         "slug": "local-log-parser",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1018,6 +2050,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "jq_playground": {
         "key": "jq_playground",
         "slug": "jq-playground",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1027,6 +2068,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "log_scrubber": {
         "key": "log_scrubber",
         "slug": "log-scrubber",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1036,6 +2086,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "gzip_brotli_lab": {
         "key": "gzip_brotli_lab",
         "slug": "gzip-brotli-lab",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1045,6 +2104,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "yaml_merge_patch_explorer": {
         "key": "yaml_merge_patch_explorer",
         "slug": "yaml-merge-patch-explorer",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1054,6 +2122,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "yq_playground": {
         "key": "yq_playground",
         "slug": "yq-playground",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1063,6 +2140,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "structured_data_visualizer": {
         "key": "structured_data_visualizer",
         "slug": "structured-data-visualizer",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1072,6 +2158,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "har_viewer_sanitizer": {
         "key": "har_viewer_sanitizer",
         "slug": "har-viewer-sanitizer",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1081,6 +2176,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "pipeline_builder": {
         "key": "pipeline_builder",
         "slug": "pipeline-builder",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1090,6 +2194,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "saml_decoder": {
         "key": "saml_decoder",
         "slug": "saml-decoder",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1099,6 +2212,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "asn1_der_inspector": {
         "key": "asn1_der_inspector",
         "slug": "asn1-der-inspector",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1108,6 +2230,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "hex_bytes_workbench": {
         "key": "hex_bytes_workbench",
         "slug": "hex-bytes-workbench",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1117,6 +2248,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "unicode_inspector": {
         "key": "unicode_inspector",
         "slug": "unicode-inspector",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": false,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,
@@ -1126,6 +2266,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
     "public_key_jwk_helper": {
         "key": "public_key_jwk_helper",
         "slug": "public-key-jwk-helper",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
         "networkAccess": "none",
         "networkHosts": [],
         "networkPurposeKey": null,

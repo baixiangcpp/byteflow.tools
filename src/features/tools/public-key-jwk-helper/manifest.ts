@@ -5,6 +5,15 @@ export const toolManifest = {
     slug: "public-key-jwk-helper",
     category: "network-web",
     relatedTools: ["certificate_decoder", "jwt_verifier", "jwt_workbench", "base64_encode_decode", "asn1_der_inspector"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: true,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     relatedWorkflows: [
         { toolKey: "certificate_decoder", reasonKey: "inspect_certificate_material" },
         { toolKey: "jwt_verifier", reasonKey: "verify_token_signatures" },

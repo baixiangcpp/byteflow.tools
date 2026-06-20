@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "css-loader-generator",
     category: "generators",
     relatedTools: ["css_cubic_bezier_generator", "css_gradient_generator", "css_box_shadow_generator", "css_minifier"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["css loader generator", "spinner css generator", "loading animation css", "css preloaders"],
 } satisfies ToolMeta

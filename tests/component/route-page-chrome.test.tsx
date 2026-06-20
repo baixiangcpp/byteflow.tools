@@ -13,6 +13,7 @@ const mocks = vi.hoisted(() => {
                 hosts_label: "Hosts",
                 purpose_label: "Purpose",
                 data_sent_label: "Data sent",
+                consent_required_message: "Runs only after consent",
                 purposes: {
                     authorized_media_download: "Localized authorized media purpose",
                     thumbnail_preview: "Localized thumbnail purpose",
@@ -78,6 +79,8 @@ describe("RoutePageChrome", () => {
         expect(screen.getByText("instagram.com")).toBeInTheDocument()
         expect(screen.getByText("Localized authorized media purpose")).toBeInTheDocument()
         expect(screen.getByText("User URL sent")).toBeInTheDocument()
+        expect(screen.getByText("Requests the Instagram URL you provide only after you confirm rights and click Download.")).toBeInTheDocument()
+        expect(screen.getByText("Runs only after consent")).toBeInTheDocument()
     })
 
     it("does not show an external network notice for local-only tools", () => {

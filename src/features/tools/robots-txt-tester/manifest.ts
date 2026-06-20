@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "robots-txt-tester",
     category: "network-web",
     relatedTools: ["user_agent_parser", "http_status_codes", "url_parser", "csp_parser"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["robots.txt tester", "robots txt checker", "robots txt validator", "crawler access tester"],
 } satisfies ToolMeta

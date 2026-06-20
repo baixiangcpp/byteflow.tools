@@ -5,6 +5,15 @@ export const toolManifest = {
     slug: "sql-formatter",
     category: "formatters",
     relatedTools: ["json_formatter", "xml_formatter", "html_css_beautifier"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["sql formatter", "sql beautifier", "format sql online", "sql pretty print"],
     searchKeywords: ["beautify sql", "format sql", "sql validator", "SQL格式化", "SQL整形", "SQL 포맷", "格式化查询"],
 } satisfies ToolMeta

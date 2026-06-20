@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "json-diff-viewer",
     category: "formatters",
     relatedTools: ["json_formatter", "text_diff_checker", "jsonpath_playground"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["json diff", "compare json online", "json diff viewer", "json compare tool"],
 } satisfies ToolMeta

@@ -5,6 +5,15 @@ export const toolManifest = {
     slug: "log-scrubber",
     category: "network-web",
     relatedTools: ["local_log_parser", "security_header_analyzer", "jwt_decoder", "text_diff_checker"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: true,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["log scrubber", "log redaction", "secret redaction", "pii remover"],
     persistInput: false,
 } satisfies ToolMeta

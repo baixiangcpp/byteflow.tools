@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "barcode-generator",
     category: "generators",
     relatedTools: ["qr_code_generator", "id_generator", "fake_iban_generator", "list_randomizer"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["barcode generator", "code128 generator", "ean13 generator", "barcode png svg export"],
 } satisfies ToolMeta

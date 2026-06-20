@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "jsonpath-playground",
     category: "formatters",
     relatedTools: ["json_formatter", "json_diff_viewer", "json_to_typescript", "yaml_json_converter"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["jsonpath tester", "jsonpath playground", "jsonpath query", "json path online"],
 } satisfies ToolMeta

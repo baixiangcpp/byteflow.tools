@@ -376,9 +376,33 @@ function createBrowserActionsTemplate() {
 }
 
 function createManifestTemplate({ key, slug, category, relatedTools, keywords, searchKeywords, networkAccess, persistInput, pipelineAdapter }) {
+    const isExternalRequest = networkAccess && networkAccess !== "none"
+    const privacyBlock = isExternalRequest
+        ? `    privacy: {
+        executionMode: "external-request",
+        offlineCapable: false,
+        sensitiveInput: true,
+        externalRequest: {
+            required: true,
+            endpointType: "user_provided_url",
+            domains: ["example.com"],
+            purposeKey: "user_requested_lookup",
+            userDataSent: "user_provided_url",
+            disclosure: "Requests the URL or domain you provide only after you run the lookup action.",
+            consentRequired: true,
+        },
+    },`
+        : `    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: ${persistInput === false ? "true" : "false"},
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },`
     const optionalFields = [
         searchKeywords.length > 0 ? `    searchKeywords: ${asTsStringArray(searchKeywords)},` : "",
-        networkAccess && networkAccess !== "none" ? `    networkAccess: "${networkAccess}",` : "",
         persistInput !== undefined ? `    persistInput: ${asTsValue(persistInput)},` : "",
         pipelineAdapter ? `    // Add a matching adapter in src/features/pipeline/adapter-registry.ts before exposing this as pipeline-ready.` : "",
     ].filter(Boolean)
@@ -390,6 +414,7 @@ export const toolManifest = {
     slug: "${slug}",
     category: "${category}",
     relatedTools: ${asTsStringArray(relatedTools)},
+${privacyBlock}
     keywords: ${asTsStringArray(keywords)},
 ${optionalFields.length > 0 ? `${optionalFields.join("\n")}\n` : ""}} satisfies ToolMeta
 `;

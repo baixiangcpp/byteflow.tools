@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "photo-censor",
     category: "generators",
     relatedTools: ["image_filters", "image_cropper", "image_resizer", "scanned_pdf_converter"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["photo censor", "blur image area", "pixelate image region", "hide sensitive info image"],
 } satisfies ToolMeta

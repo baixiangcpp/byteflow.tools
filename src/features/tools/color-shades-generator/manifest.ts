@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "color-shades-generator",
     category: "generators",
     relatedTools: ["ai_color_palette_generator", "color_mixer", "color_converter", "css_gradient_generator"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["color shades generator", "tailwind color scale", "color ramp generator", "generate color tokens"],
 } satisfies ToolMeta

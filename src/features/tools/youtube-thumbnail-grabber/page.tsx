@@ -39,14 +39,15 @@ export function YouTubeThumbnailGrabberPage() {
     const [candidates, setCandidates] = React.useState<ThumbnailCandidate[]>([])
     const [selectedUrl, setSelectedUrl] = React.useState("")
     const [status, setStatus] = React.useState(statusIdle)
+    const [previewApproved, setPreviewApproved] = React.useState(false)
 
     React.useEffect(() => {
-        let cancelled = false
         const id = parseYouTubeVideoId(url)
         if (!id) {
             setVideoId("")
             setCandidates([])
             setSelectedUrl("")
+            setPreviewApproved(false)
             setStatus(url.trim() ? statusInvalid : statusIdle)
             return
         }
@@ -55,22 +56,8 @@ export function YouTubeThumbnailGrabberPage() {
         setVideoId(id)
         setCandidates(next)
         setSelectedUrl(next[0]?.url || "")
+        setPreviewApproved(false)
         setStatus(statusReady)
-
-        void (async () => {
-            const firstWorking = await probeFirstWorkingThumbnail(next)
-            if (cancelled) return
-            if (firstWorking) {
-                setSelectedUrl(firstWorking.url)
-                setStatus(statusAutoSelectedTemplate.replace("{label}", firstWorking.label))
-            } else {
-                setStatus(statusUnreachable)
-            }
-        })()
-
-        return () => {
-            cancelled = true
-        }
     }, [statusAutoSelectedTemplate, statusIdle, statusInvalid, statusReady, statusUnreachable, url])
 
     const output = React.useMemo(
@@ -89,6 +76,20 @@ export function YouTubeThumbnailGrabberPage() {
 
     const handleSample = () => setUrl(SAMPLE_URL)
     const handleReset = () => setUrl("")
+    const handleLoadPreview = () => {
+        if (candidates.length === 0) return
+        setPreviewApproved(true)
+        setStatus(statusReady)
+        void (async () => {
+            const firstWorking = await probeFirstWorkingThumbnail(candidates)
+            if (firstWorking) {
+                setSelectedUrl(firstWorking.url)
+                setStatus(statusAutoSelectedTemplate.replace("{label}", firstWorking.label))
+            } else {
+                setStatus(statusUnreachable)
+            }
+        })()
+    }
 
     const handleCopy = async () => {
         const result = await safeClipboardWrite(output)
@@ -112,8 +113,9 @@ export function YouTubeThumbnailGrabberPage() {
     const actions: ToolAction[] = [
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: handleSample },
         { id: "reset", label: t.common.reset, icon: Eraser, onClick: handleReset },
+        { id: "preview", label: t.common.preview, icon: ImageDown, onClick: handleLoadPreview, disabled: candidates.length === 0 },
         { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy() },
-        { id: "download", label: t.common.download, icon: Download, onClick: handleDownload, disabled: !selectedUrl },
+        { id: "download", label: t.common.download, icon: Download, onClick: handleDownload, disabled: !selectedUrl || !previewApproved },
     ]
 
     return (
@@ -185,7 +187,7 @@ export function YouTubeThumbnailGrabberPage() {
                         metadata={selectedUrl ? "JPG" : undefined}
                         className="rounded-none border-0 border-b"
                     >
-                        {selectedUrl ? (
+                        {selectedUrl && previewApproved ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img
                                 src={selectedUrl}

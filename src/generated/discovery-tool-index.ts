@@ -1461,8 +1461,8 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "social-metadata"
         ],
         "capabilities": [
-            "browser-local",
             "external-request",
+            "sensitive-input",
             "visual-output"
         ]
     },
@@ -1485,7 +1485,6 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "social-metadata"
         ],
         "capabilities": [
-            "browser-local",
             "external-request",
             "visual-output"
         ]
@@ -1509,7 +1508,6 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "url"
         ],
         "capabilities": [
-            "browser-local",
             "external-request",
             "visual-output"
         ]
@@ -2517,7 +2515,8 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "capabilities": [
             "browser-local",
             "offline-capable",
-            "pipeline-ready"
+            "pipeline-ready",
+            "sensitive-input"
         ]
     },
     "robots_txt_tester": {

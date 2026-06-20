@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "chmod-calculator",
     category: "network-web",
     relatedTools: ["env_parser", "regex_tester", "user_agent_parser", "cidr_subnet_calculator"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["chmod calculator", "unix permissions calculator", "file permissions chmod"],
 } satisfies ToolMeta

@@ -5,5 +5,14 @@ export const toolManifest = {
     slug: "qr-code-generator",
     category: "generators",
     relatedTools: ["uuid_generator", "password_generator", "url_encode_decode"],
+    privacy: {
+        executionMode: "browser-local",
+        offlineCapable: true,
+        sensitiveInput: false,
+        externalRequest: {
+            required: false,
+            endpointType: "none",
+        },
+    },
     keywords: ["qr code generator", "generate qr code online", "qr code maker"],
 } satisfies ToolMeta

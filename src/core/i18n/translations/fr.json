@@ -150,7 +150,8 @@
         "none": "Cette fonction n’envoie aucune saisie d’outil.",
         "user_provided_url": "L’URL que vous fournissez peut être demandée par votre navigateur.",
         "derived_url": "Une URL de ressource publique dérivée peut être demandée par votre navigateur."
-      }
+      },
+      "consent_required_message": "L'accès réseau ne démarre qu'après avoir choisi l'action de requête externe."
     },
     "local_data_controls": {
       "title": "Contrôles des données locales",
@@ -2686,6 +2687,8 @@
     "contact_issues_title": "Issues et retours",
     "contact_issues_desc": "Ouvrez une issue GitHub pour signaler un bug ou proposer une fonctionnalité.",
     "contact_email_title": "E-mail",
-    "contact_email_desc": "Pour les demandes commerciales ou de partenariat, contactez-nous par e-mail."
+    "contact_email_desc": "Pour les demandes commerciales ou de partenariat, contactez-nous par e-mail.",
+    "privacy_external_request_tools_title": "Outils à requête externe",
+    "privacy_external_request_tools_desc": "Cette liste est générée depuis les manifests d'outils. Ces outils peuvent contacter les domaines listés uniquement pour l'objectif indiqué et après avoir choisi l'action de requête externe."
   }
 }

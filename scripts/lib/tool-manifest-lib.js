@@ -6,9 +6,11 @@ export const FEATURE_TOOLS_DIR = path.join(ROOT_DIR, "src/features/tools")
 export const TOOL_MANIFESTS_PATH = path.join(ROOT_DIR, "src/core/registry/manifests.ts")
 export const TOOL_ORDER_PATH = path.join(ROOT_DIR, "src/core/registry/tool-order.json")
 
-const REQUIRED_FIELDS = ["key", "slug", "category", "relatedTools", "keywords"]
+const REQUIRED_FIELDS = ["key", "slug", "category", "relatedTools", "keywords", "privacy"]
 const NETWORK_ACCESS_VALUES = new Set(["none", "user_requested", "third_party_api"])
 const EXTERNAL_DATA_SENT_VALUES = new Set(["none", "user_provided_url", "derived_url"])
+const EXECUTION_MODE_VALUES = new Set(["browser-local", "external-request"])
+const EXTERNAL_REQUEST_ENDPOINT_TYPE_VALUES = new Set(["none", "user_provided_url", "derived_public_asset", "third_party_api"])
 const PERSIST_INPUT_VALUES = new Set(["true", "false", "\"opt-in\"", "'opt-in'"])
 
 function relative(filePath) {
@@ -194,8 +196,16 @@ function arrayField(source, fieldName, manifestPath, required = false) {
 }
 
 function objectField(source, fieldName) {
-    const match = new RegExp(`${fieldName}:\\s*\\{([\\s\\S]*?)\\n\\s*\\}`).exec(source)
-    return match ? match[1] : null
+    const match = new RegExp(`(?:^|[,\\n])\\s*${fieldName}:\\s*\\{`, "s").exec(source)
+    if (!match) return null
+
+    const openIndex = source.indexOf("{", match.index + match[0].length - 1)
+    if (openIndex === -1) return null
+
+    const closeIndex = findMatchingBrace(source, openIndex)
+    if (closeIndex === -1) return null
+
+    return source.slice(openIndex + 1, closeIndex)
 }
 
 function booleanOrOptInField(source, fieldName, manifestPath) {
@@ -299,6 +309,107 @@ function parseInputSizePolicy(source, manifestPath) {
     return policy
 }
 
+function parsePrivacy(source, manifestPath) {
+    const block = objectField(source, "privacy")
+    if (!block) {
+        throw manifestError(manifestPath, "privacy", "required field is missing")
+    }
+
+    const executionMode = stringField(block, "executionMode", manifestPath, true)
+    const offlineCapable = booleanField(block, "offlineCapable", manifestPath)
+    const sensitiveInput = booleanField(block, "sensitiveInput", manifestPath)
+    const externalRequestBlock = objectField(block, "externalRequest")
+
+    if (!EXECUTION_MODE_VALUES.has(executionMode)) {
+        throw manifestError(manifestPath, "privacy.executionMode", "must be browser-local or external-request")
+    }
+    if (offlineCapable === undefined) {
+        throw manifestError(manifestPath, "privacy.offlineCapable", "must be a boolean")
+    }
+    if (sensitiveInput === undefined) {
+        throw manifestError(manifestPath, "privacy.sensitiveInput", "must be a boolean")
+    }
+    if (!externalRequestBlock) {
+        throw manifestError(manifestPath, "privacy.externalRequest", "must be an object")
+    }
+
+    const required = booleanField(externalRequestBlock, "required", manifestPath)
+    const endpointType = stringField(externalRequestBlock, "endpointType", manifestPath)
+    const domains = arrayField(externalRequestBlock, "domains", manifestPath)
+    const purposeKey = stringField(externalRequestBlock, "purposeKey", manifestPath)
+    const userDataSent = stringField(externalRequestBlock, "userDataSent", manifestPath)
+    const disclosure = stringField(externalRequestBlock, "disclosure", manifestPath)
+    const consentRequired = booleanField(externalRequestBlock, "consentRequired", manifestPath)
+
+    if (required === undefined) {
+        throw manifestError(manifestPath, "privacy.externalRequest.required", "must be a boolean")
+    }
+    if (endpointType && !EXTERNAL_REQUEST_ENDPOINT_TYPE_VALUES.has(endpointType)) {
+        throw manifestError(manifestPath, "privacy.externalRequest.endpointType", "must be one of none, user_provided_url, derived_public_asset, or third_party_api")
+    }
+    if (domains.some((host) => !/^[a-z0-9.-]+$/i.test(host))) {
+        throw manifestError(manifestPath, "privacy.externalRequest.domains", "must contain hostname literals only")
+    }
+    if (userDataSent && !EXTERNAL_DATA_SENT_VALUES.has(userDataSent)) {
+        throw manifestError(manifestPath, "privacy.externalRequest.userDataSent", "must be one of none, user_provided_url, or derived_url")
+    }
+
+    if (required) {
+        if (executionMode !== "external-request") {
+            throw manifestError(manifestPath, "privacy.executionMode", "external request tools must use external-request executionMode")
+        }
+        if (offlineCapable) {
+            throw manifestError(manifestPath, "privacy.offlineCapable", "external request tools must not be offline capable unless a local fallback is modeled")
+        }
+        if (!endpointType || endpointType === "none") {
+            throw manifestError(manifestPath, "privacy.externalRequest.endpointType", "external request tools must declare an endpoint type")
+        }
+        if (domains.length === 0) {
+            throw manifestError(manifestPath, "privacy.externalRequest.domains", "external request tools must declare domains")
+        }
+        if (!purposeKey) {
+            throw manifestError(manifestPath, "privacy.externalRequest.purposeKey", "external request tools must declare a purpose key")
+        }
+        if (!userDataSent) {
+            throw manifestError(manifestPath, "privacy.externalRequest.userDataSent", "external request tools must declare userDataSent")
+        }
+        if (!disclosure) {
+            throw manifestError(manifestPath, "privacy.externalRequest.disclosure", "external request tools must declare disclosure copy")
+        }
+        if (consentRequired !== true) {
+            throw manifestError(manifestPath, "privacy.externalRequest.consentRequired", "external request tools must require consent")
+        }
+    } else {
+        if (executionMode !== "browser-local") {
+            throw manifestError(manifestPath, "privacy.executionMode", "non-external tools must use browser-local executionMode")
+        }
+        if (endpointType && endpointType !== "none") {
+            throw manifestError(manifestPath, "privacy.externalRequest.endpointType", "non-external tools must use endpointType none")
+        }
+        if (domains.length > 0) {
+            throw manifestError(manifestPath, "privacy.externalRequest.domains", "non-external tools must not declare domains")
+        }
+        if (purposeKey || userDataSent || disclosure || consentRequired !== undefined) {
+            throw manifestError(manifestPath, "privacy.externalRequest", "non-external tools must not declare request purpose/data/disclosure/consent")
+        }
+    }
+
+    const externalRequest = { required }
+    if (endpointType) externalRequest.endpointType = endpointType
+    if (domains.length > 0) externalRequest.domains = domains
+    if (purposeKey) externalRequest.purposeKey = purposeKey
+    if (userDataSent) externalRequest.userDataSent = userDataSent
+    if (disclosure) externalRequest.disclosure = disclosure
+    if (consentRequired !== undefined) externalRequest.consentRequired = consentRequired
+
+    return {
+        executionMode,
+        offlineCapable,
+        sensitiveInput,
+        externalRequest,
+    }
+}
+
 export function listManifestFiles() {
     return fs
         .readdirSync(FEATURE_TOOLS_DIR, { withFileTypes: true })
@@ -323,29 +434,58 @@ export function parseToolManifestFile(manifestPath) {
     const category = stringField(body, "category", manifestPath, true)
     const keywords = arrayField(body, "keywords", manifestPath, true)
     const relatedTools = arrayField(body, "relatedTools", manifestPath, true)
+    const privacy = parsePrivacy(body, manifestPath)
     const relatedWorkflows = parseRelatedWorkflows(body, manifestPath)
     const sampleInput = stringField(body, "sampleInput", manifestPath)
     const sampleMode = stringField(body, "sampleMode", manifestPath)
     const inputSizePolicy = parseInputSizePolicy(body, manifestPath)
     const searchKeywords = arrayField(body, "searchKeywords", manifestPath)
     const updatedAt = stringField(body, "updatedAt", manifestPath)
-    const networkAccess = stringField(body, "networkAccess", manifestPath)
-    const networkHosts = arrayField(body, "networkHosts", manifestPath)
-    const networkPurposeKey = stringField(body, "networkPurposeKey", manifestPath)
-    const allowUserProvidedUrl = booleanField(body, "allowUserProvidedUrl", manifestPath)
-    const requiresExplicitUserAction = booleanField(body, "requiresExplicitUserAction", manifestPath)
-    const externalDataSent = stringField(body, "externalDataSent", manifestPath)
+    const explicitNetworkAccess = stringField(body, "networkAccess", manifestPath)
+    const explicitNetworkHosts = arrayField(body, "networkHosts", manifestPath)
+    const explicitNetworkPurposeKey = stringField(body, "networkPurposeKey", manifestPath)
+    const explicitAllowUserProvidedUrl = booleanField(body, "allowUserProvidedUrl", manifestPath)
+    const explicitRequiresExplicitUserAction = booleanField(body, "requiresExplicitUserAction", manifestPath)
+    const explicitExternalDataSent = stringField(body, "externalDataSent", manifestPath)
     const persistInput = booleanOrOptInField(body, "persistInput", manifestPath)
     const deprecated = parseDeprecated(body, manifestPath)
 
-    if (networkAccess && !NETWORK_ACCESS_VALUES.has(networkAccess)) {
+    if (explicitNetworkAccess && !NETWORK_ACCESS_VALUES.has(explicitNetworkAccess)) {
         throw manifestError(manifestPath, "networkAccess", "must be one of none, user_requested, or third_party_api")
     }
-    if (externalDataSent && !EXTERNAL_DATA_SENT_VALUES.has(externalDataSent)) {
+    if (explicitExternalDataSent && !EXTERNAL_DATA_SENT_VALUES.has(explicitExternalDataSent)) {
         throw manifestError(manifestPath, "externalDataSent", "must be one of none, user_provided_url, or derived_url")
     }
-    if (networkHosts.some((host) => !/^[a-z0-9.-]+$/i.test(host))) {
+    if (explicitNetworkHosts.some((host) => !/^[a-z0-9.-]+$/i.test(host))) {
         throw manifestError(manifestPath, "networkHosts", "must contain hostname literals only")
+    }
+
+    const networkAccess = privacy.externalRequest.required
+        ? privacy.externalRequest.endpointType === "third_party_api" ? "third_party_api" : "user_requested"
+        : "none"
+    const networkHosts = privacy.externalRequest.domains ?? []
+    const networkPurposeKey = privacy.externalRequest.purposeKey
+    const allowUserProvidedUrl = privacy.externalRequest.endpointType === "user_provided_url"
+    const requiresExplicitUserAction = privacy.externalRequest.required ? privacy.externalRequest.consentRequired : undefined
+    const externalDataSent = privacy.externalRequest.userDataSent
+
+    if (explicitNetworkAccess && explicitNetworkAccess !== networkAccess) {
+        throw manifestError(manifestPath, "networkAccess", "must match privacy.externalRequest")
+    }
+    if (explicitNetworkHosts.length > 0 && JSON.stringify(explicitNetworkHosts) !== JSON.stringify(networkHosts)) {
+        throw manifestError(manifestPath, "networkHosts", "must match privacy.externalRequest.domains")
+    }
+    if (explicitNetworkPurposeKey && explicitNetworkPurposeKey !== networkPurposeKey) {
+        throw manifestError(manifestPath, "networkPurposeKey", "must match privacy.externalRequest.purposeKey")
+    }
+    if (explicitAllowUserProvidedUrl !== undefined && explicitAllowUserProvidedUrl !== allowUserProvidedUrl) {
+        throw manifestError(manifestPath, "allowUserProvidedUrl", "must match privacy.externalRequest.endpointType")
+    }
+    if (explicitRequiresExplicitUserAction !== undefined && explicitRequiresExplicitUserAction !== requiresExplicitUserAction) {
+        throw manifestError(manifestPath, "requiresExplicitUserAction", "must match privacy.externalRequest.consentRequired")
+    }
+    if (explicitExternalDataSent && explicitExternalDataSent !== externalDataSent) {
+        throw manifestError(manifestPath, "externalDataSent", "must match privacy.externalRequest.userDataSent")
     }
 
     const manifest = {
@@ -353,6 +493,7 @@ export function parseToolManifestFile(manifestPath) {
         slug,
         category,
         relatedTools,
+        privacy,
         keywords,
         sourceFile: relative(manifestPath),
     }
