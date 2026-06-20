@@ -7,8 +7,12 @@
  */
 const APP_VERSION = '__BUILD_ID__';
 const CACHE_NAME = `byteflow-v${APP_VERSION}`;
+const CACHE_META_NAME = `byteflow-meta-v${APP_VERSION}`;
 const OFFLINE_FALLBACK_URL = '/offline.html';
 const OFFLINE_FALLBACK_CANDIDATES = [OFFLINE_FALLBACK_URL, '/offline'];
+const MAX_RUNTIME_CACHE_ENTRIES = 120;
+const MAX_RUNTIME_CACHE_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+const CACHE_META_URL_PREFIX = '/__byteflow-cache-meta__?url=';
 
 const STATIC_ASSETS = [
     '/manifest.json',
@@ -51,6 +55,58 @@ function matchOfflineFallback() {
         ));
 }
 
+function cacheMetaRequest(request) {
+    return new Request(`${CACHE_META_URL_PREFIX}${encodeURIComponent(request.url)}`);
+}
+
+function rememberCachedRequest(request) {
+    return caches.open(CACHE_META_NAME)
+        .then((metaCache) => metaCache.put(cacheMetaRequest(request), new Response(String(Date.now()))));
+}
+
+function readCachedAt(metaCache, request) {
+    return metaCache.match(cacheMetaRequest(request))
+        .then((response) => response ? response.text() : '0')
+        .then((value) => {
+            const timestamp = Number(value);
+            return Number.isFinite(timestamp) ? timestamp : 0;
+        });
+}
+
+function pruneRuntimeCache() {
+    const now = Date.now();
+    return Promise.all([caches.open(CACHE_NAME), caches.open(CACHE_META_NAME)])
+        .then(([runtimeCache, metaCache]) => runtimeCache.keys()
+            .then((requests) => Promise.all(requests.map((request) =>
+                readCachedAt(metaCache, request).then((cachedAt) => ({ request, cachedAt }))
+            )))
+            .then((entries) => {
+                const entriesWithExpiry = entries.map((entry) => ({
+                    ...entry,
+                    expired: entry.cachedAt > 0 && now - entry.cachedAt > MAX_RUNTIME_CACHE_AGE_MS,
+                }));
+                const expired = entriesWithExpiry.filter((entry) => entry.expired);
+                const retained = entriesWithExpiry
+                    .filter((entry) => !entry.expired)
+                    .sort((a, b) => b.cachedAt - a.cachedAt);
+                const overflow = retained.slice(MAX_RUNTIME_CACHE_ENTRIES);
+                return Promise.all([...expired, ...overflow].map((entry) =>
+                    Promise.all([
+                        runtimeCache.delete(entry.request),
+                        metaCache.delete(cacheMetaRequest(entry.request)),
+                    ])
+                ));
+            }));
+}
+
+function putRuntimeCache(request, response) {
+    const clone = response.clone();
+    return caches.open(CACHE_NAME)
+        .then((cache) => cache.put(request, clone))
+        .then(() => rememberCachedRequest(request))
+        .then(() => pruneRuntimeCache());
+}
+
 // Install: cache critical static assets; waiting/activation is user-triggered from the app shell.
 self.addEventListener('install', (event) => {
     event.waitUntil(
@@ -70,7 +126,7 @@ self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((names) =>
             Promise.all(
-                names.filter((name) => name !== CACHE_NAME).map((name) => caches.delete(name))
+                names.filter((name) => ![CACHE_NAME, CACHE_META_NAME].includes(name)).map((name) => caches.delete(name))
             )
         ).then(() => {
             // Notify all open tabs that a new version is active
@@ -106,8 +162,7 @@ self.addEventListener('fetch', (event) => {
             fetch(event.request)
                 .then((response) => {
                     if (response.ok) {
-                        const clone = response.clone();
-                        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+                        putRuntimeCache(event.request, response);
                     }
                     return response;
                 })
@@ -125,8 +180,7 @@ self.addEventListener('fetch', (event) => {
                 if (cached) return cached;
                 return fetch(event.request).then((response) => {
                     if (response.ok) {
-                        const clone = response.clone();
-                        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+                        putRuntimeCache(event.request, response);
                     }
                     return response;
                 });
@@ -140,8 +194,7 @@ self.addEventListener('fetch', (event) => {
         fetch(event.request)
             .then((response) => {
                 if (response.ok) {
-                    const clone = response.clone();
-                    caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+                    putRuntimeCache(event.request, response);
                 }
                 return response;
             })
