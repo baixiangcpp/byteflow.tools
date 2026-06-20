@@ -21,6 +21,7 @@ export function ServerFooter({
         { key: "install-app", slug: "install-app", label: requireTranslationValue(translations.common.install_app_label, "common.install_app_label") },
         { key: "about", slug: "about", label: requireTranslationValue(translations.pages.about_title, "pages.about_title") },
         { key: "privacy", slug: "privacy", label: requireTranslationValue(translations.pages.privacy_title, "pages.privacy_title") },
+        { key: "trust-center", slug: "trust-center", label: requireTranslationValue(translations.pages.trust_center_title, "pages.trust_center_title") },
         { key: "terms", slug: "terms", label: requireTranslationValue(translations.pages.terms_title, "pages.terms_title") },
         { key: "contact", slug: "contact", label: requireTranslationValue(translations.pages.contact_title, "pages.contact_title") },
     ].map((page) => ({

@@ -2,7 +2,7 @@
   "counts": {
     "canonicalTools": 123,
     "aliasRoutes": 2,
-    "routeDirs": 181,
+    "routeDirs": 182,
     "unknownRouteDirs": 0
   },
   "canonicalTools": [
@@ -6377,6 +6377,14 @@
       "targetSlug": null,
       "inHubGroup": false,
       "inStaticGroup": false
+    },
+    {
+      "slug": "trust-center",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
     },
     {
       "slug": "tweet-generator",

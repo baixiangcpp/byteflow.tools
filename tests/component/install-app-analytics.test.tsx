@@ -58,6 +58,7 @@ describe("install app analytics", () => {
                 locale="en"
                 copy={copy}
                 allToolsLabel="All tools"
+                trustCenterLabel="Trust Center"
             />,
         )
 

@@ -58,6 +58,12 @@ describe("route context", () => {
             routeType: "content",
             slug: "about",
         })
+
+        expect(getRouteContext("/en/trust-center")).toEqual({
+            locale: "en",
+            routeType: "content",
+            slug: "trust-center",
+        })
     })
 
     it("classifies non-locale routes as other", () => {

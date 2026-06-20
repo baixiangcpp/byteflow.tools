@@ -126,6 +126,11 @@ export function ToolTrustHeader({
                         label={requireTranslationValue(copy.github_label, "common.tool_trust_header.github_label")}
                     />
                     <TrustLink
+                        href={`/${lang}/trust-center`}
+                        icon={<ShieldCheck className="h-4 w-4" aria-hidden="true" />}
+                        label={requireTranslationValue(copy.trust_center_link, "common.tool_trust_header.trust_center_link")}
+                    />
+                    <TrustLink
                         href={`/${lang}/about#privacy`}
                         icon={<Info className="h-4 w-4" aria-hidden="true" />}
                         label={requireTranslationValue(copy.devtools_link, "common.tool_trust_header.devtools_link")}
@@ -214,13 +219,22 @@ export function ToolTrustHeader({
                                     {requireTranslationValue(copy.consent_label, "common.tool_trust_header.consent_label")}
                                 </p>
                             ) : null}
-                            <Link
-                                href={`/${lang}/privacy`}
-                                className="mt-2 inline-flex min-h-9 items-center gap-1.5 text-sm font-medium text-primary underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                            >
-                                <Info className="h-4 w-4" aria-hidden="true" />
-                                {requireTranslationValue(copy.privacy_link, "common.tool_trust_header.privacy_link")}
-                            </Link>
+                            <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2">
+                                <Link
+                                    href={`/${lang}/trust-center`}
+                                    className="inline-flex min-h-9 items-center gap-1.5 text-sm font-medium text-primary underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                >
+                                    <ShieldCheck className="h-4 w-4" aria-hidden="true" />
+                                    {requireTranslationValue(copy.trust_center_link, "common.tool_trust_header.trust_center_link")}
+                                </Link>
+                                <Link
+                                    href={`/${lang}/privacy`}
+                                    className="inline-flex min-h-9 items-center gap-1.5 text-sm font-medium text-primary underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                >
+                                    <Info className="h-4 w-4" aria-hidden="true" />
+                                    {requireTranslationValue(copy.privacy_link, "common.tool_trust_header.privacy_link")}
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>

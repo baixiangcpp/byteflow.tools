@@ -44,6 +44,7 @@ function createMockLangValue(lang: string) {
         pricing_title: "Pricing",
         contact_title: "Contact",
         privacy_title: "Privacy",
+        trust_center_title: "Trust Center",
         terms_title: "Terms",
     }
 
@@ -230,6 +231,7 @@ describe("layout components", () => {
         expect(screen.getByRole("link", { name: "byteflow.tools" })).toHaveAttribute("href", "/en")
         expect(screen.getByRole("link", { name: "data_code_formats" })).toHaveAttribute("href", "/en/data-code-formats")
         expect(screen.getByRole("link", { name: "About" })).toHaveAttribute("href", "/en/about")
+        expect(screen.getByRole("link", { name: "Trust Center" })).toHaveAttribute("href", "/en/trust-center")
         expect(screen.queryByRole("link", { name: "json_formatter" })).not.toBeInTheDocument()
     })
 

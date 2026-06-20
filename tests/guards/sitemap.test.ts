@@ -81,5 +81,6 @@ describe("sitemap lastmod", () => {
 
         expect(urls.some((url) => url.endsWith("/en/contact"))).toBe(true)
         expect(urls.some((url) => url.endsWith("/en/privacy"))).toBe(true)
+        expect(urls.some((url) => url.endsWith("/en/trust-center"))).toBe(true)
     })
 })

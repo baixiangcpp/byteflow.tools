@@ -1,11 +1,12 @@
 "use client"
 
+import Link from "next/link"
 import { useLang } from "@/core/i18n/lang-provider"
 import { TOOL_REGISTRY } from "@/core/registry"
 import { LocalDataControls } from "@/features/privacy/local-data-controls"
 
 export default function PrivacyPage() {
-    const { t } = useLang()
+    const { t, lang } = useLang()
     const p = t.pages
 
     const sections = [
@@ -23,6 +24,12 @@ export default function PrivacyPage() {
             <section className="rounded-2xl border border-border/70 bg-card/55 p-6 backdrop-blur-sm sm:p-7">
                 <h1 className="text-3xl font-semibold tracking-tight">{p.privacy_title}</h1>
                 <p className="mt-2 text-sm text-muted-foreground">{p.privacy_last_updated}</p>
+                <Link
+                    href={`/${lang}/trust-center`}
+                    className="mt-4 inline-flex min-h-10 items-center rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                    {p.trust_center_title}
+                </Link>
             </section>
 
             <section className="grid gap-4">

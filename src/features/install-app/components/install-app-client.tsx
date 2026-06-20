@@ -33,9 +33,10 @@ type InstallAppClientProps = {
     locale: Locale
     copy: InstallPageCopy
     allToolsLabel: string
+    trustCenterLabel: string
 }
 
-export function InstallAppClient({ locale, copy, allToolsLabel }: InstallAppClientProps) {
+export function InstallAppClient({ locale, copy, allToolsLabel, trustCenterLabel }: InstallAppClientProps) {
     const [platform, setPlatform] = React.useState<GuidePlatform>("chrome_desktop")
     const [deferredPrompt, setDeferredPrompt] = React.useState<BeforeInstallPromptEvent | null>(null)
     const [installed, setInstalled] = React.useState(false)
@@ -237,6 +238,12 @@ export function InstallAppClient({ locale, copy, allToolsLabel }: InstallAppClie
                         <Link href={getAllToolsHref(locale)}>
                             <Globe className="mr-2 h-4 w-4" />
                             {allToolsLabel}
+                        </Link>
+                    </Button>
+                    <Button asChild variant="outline">
+                        <Link href={`/${locale}/trust-center`}>
+                            <Shield className="mr-2 h-4 w-4" />
+                            {trustCenterLabel}
                         </Link>
                     </Button>
                 </div>

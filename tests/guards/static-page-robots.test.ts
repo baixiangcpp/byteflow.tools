@@ -3,6 +3,7 @@ import { generateMetadata as generateAboutMetadata } from "@/app/[lang]/about/la
 import { generateMetadata as generatePricingMetadata } from "@/app/[lang]/pricing/layout"
 import { generateMetadata as generatePrivacyMetadata } from "@/app/[lang]/privacy/layout"
 import { generateMetadata as generateTermsMetadata } from "@/app/[lang]/terms/layout"
+import { generateMetadata as generateTrustCenterMetadata } from "@/app/[lang]/trust-center/layout"
 
 describe("static page robots metadata", () => {
     it("marks about page as noindex", async () => {
@@ -25,6 +26,12 @@ describe("static page robots metadata", () => {
 
     it("keeps privacy page indexable", async () => {
         const metadata = await generatePrivacyMetadata({ params: Promise.resolve({ lang: "zh-CN" }) })
+
+        expect(metadata.robots).toBeUndefined()
+    })
+
+    it("keeps trust center indexable", async () => {
+        const metadata = await generateTrustCenterMetadata({ params: Promise.resolve({ lang: "de" }) })
 
         expect(metadata.robots).toBeUndefined()
     })
