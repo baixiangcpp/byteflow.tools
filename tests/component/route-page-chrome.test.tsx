@@ -24,6 +24,29 @@ const mocks = vi.hoisted(() => {
                     derived_url: "Derived URL sent",
                 },
             },
+            tool_trust_header: {
+                title: "Tool trust status",
+                browser_local_label: "Browser-local",
+                browser_local_desc: "Local processing message",
+                external_request_label: "External request",
+                external_request_desc: "External request message",
+                offline_label: "Offline capability",
+                offline_desc: "Offline processing message",
+                network_required_desc: "Network required message",
+                sensitive_label: "Sensitive input",
+                sensitive_desc: "Sensitive input message",
+                standard_input_label: "Standard input",
+                standard_input_desc: "Standard input message",
+                devtools_label: "DevTools check",
+                devtools_desc: "DevTools message",
+                github_label: "Verify on GitHub",
+                devtools_link: "How to verify",
+                external_details: "External request details",
+                endpoints_label: "Endpoints",
+                sent_data_label: "Sent data",
+                consent_label: "Consent message",
+                privacy_link: "Privacy policy",
+            },
             install_guide: "Install guide",
             install_inline_description: "Install description",
             install_inline_title: "Install Byteflow",
@@ -67,29 +90,37 @@ describe("RoutePageChrome", () => {
         }
     })
 
-    it("shows an external network notice for user-requested network tools", () => {
+    it("shows manifest-driven trust status for user-requested network tools", () => {
         render(
             <RoutePageChrome pathname="/en/instagram-photo-downloader">
                 <main>tool body</main>
             </RoutePageChrome>,
         )
 
-        expect(screen.getByText("Localized network notice")).toBeInTheDocument()
-        expect(screen.getByText("Localized user requested URL message")).toBeInTheDocument()
+        expect(screen.getByText("Tool trust status")).toBeInTheDocument()
+        expect(screen.getByText("External request")).toBeInTheDocument()
+        expect(screen.getAllByText("External request message")).toHaveLength(2)
+        expect(screen.getByText("Network required message")).toBeInTheDocument()
+        expect(screen.getByText("Sensitive input")).toBeInTheDocument()
         expect(screen.getByText("instagram.com")).toBeInTheDocument()
         expect(screen.getByText("Localized authorized media purpose")).toBeInTheDocument()
         expect(screen.getByText("User URL sent")).toBeInTheDocument()
         expect(screen.getByText("Requests the Instagram URL you provide only after you confirm rights and click Download.")).toBeInTheDocument()
-        expect(screen.getByText("Runs only after consent")).toBeInTheDocument()
+        expect(screen.getByText("Consent message")).toBeInTheDocument()
     })
 
-    it("does not show an external network notice for local-only tools", () => {
+    it("shows local trust status for local-only tools", () => {
         render(
             <RoutePageChrome pathname="/en/json-formatter">
                 <main>tool body</main>
             </RoutePageChrome>,
         )
 
-        expect(screen.queryByText("Localized network notice")).not.toBeInTheDocument()
+        expect(screen.getByText("Tool trust status")).toBeInTheDocument()
+        expect(screen.getByText("Browser-local")).toBeInTheDocument()
+        expect(screen.getAllByText("Local processing message")).toHaveLength(2)
+        expect(screen.getByText("Offline processing message")).toBeInTheDocument()
+        expect(screen.getByText("Sensitive input")).toBeInTheDocument()
+        expect(screen.queryByText("External request details")).not.toBeInTheDocument()
     })
 })

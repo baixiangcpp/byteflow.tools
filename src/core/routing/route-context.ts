@@ -1,4 +1,5 @@
 import { LOCALES } from "@/core/i18n/i18n"
+import { isRouteSourceToolSlug } from "@/core/registry/tool-source"
 import { ROUTE_MENU_GROUP_HUB_SLUGS, getRouteToolBySlug } from "@/generated/route-tool-lookup"
 
 export type RouteType = "home" | "tool" | "hub" | "content" | "other"
@@ -40,7 +41,7 @@ export function getRouteContext(pathname: string): {
     }
 
     const slug = segments[1]
-    if (getRouteToolBySlug(slug)) {
+    if (getRouteToolBySlug(slug) || isRouteSourceToolSlug(slug)) {
         return { locale: localeSegment, routeType: "tool", slug }
     }
 

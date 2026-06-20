@@ -12,7 +12,7 @@ export type ToolExternalRequestEndpointType = "none" | "user_provided_url" | "de
 export type ToolExternalRequestManifest = {
     required: boolean
     endpointType?: ToolExternalRequestEndpointType
-    domains?: string[]
+    domains?: readonly string[]
     purposeKey?: string
     userDataSent?: ToolExternalDataSent
     disclosure?: string
@@ -66,7 +66,7 @@ export interface ToolMeta {
     /** Browser network behavior used by privacy UI and CI guards */
     networkAccess?: ToolNetworkAccess
     /** External hosts this tool may contact or embed from the browser */
-    networkHosts?: string[]
+    networkHosts?: readonly string[]
     /** Translation key under common.external_network_notice.purposes */
     networkPurposeKey?: string
     /** Whether the tool can request a URL supplied directly by the user */
