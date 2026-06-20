@@ -282,7 +282,8 @@ const COMMAND_SEARCH_INDEX: Record<string, CommandSearchIndexEntry> = {
             "browser-local",
             "file-input",
             "offline-capable",
-            "pipeline-ready"
+            "pipeline-ready",
+            "sensitive-input"
         ]
     },
     "markdown_preview": {

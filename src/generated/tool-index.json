@@ -316,7 +316,23 @@
         "structured_data_visualizer",
         "xml_formatter"
       ],
-      "relatedWorkflows": [],
+      "relatedWorkflows": [
+        {
+          "toolKey": "json_formatter",
+          "reasonKey": "format_converted_json",
+          "handoffSupported": true
+        },
+        {
+          "toolKey": "json_to_typescript",
+          "reasonKey": "typed_model_from_converted_json",
+          "handoffSupported": true
+        },
+        {
+          "toolKey": "structured_data_visualizer",
+          "reasonKey": "inspect_converted_structure",
+          "handoffSupported": true
+        }
+      ],
       "keywords": [
         "yaml to json",
         "json to yaml",
@@ -324,16 +340,21 @@
         "json to toml",
         "yaml json toml converter"
       ],
-      "sampleInput": null,
-      "sampleMode": null,
-      "inputSizePolicy": null,
+      "sampleInput": "name = \"byteflow\"\nports = [80, 443]\n\n[owner]\nteam = \"tools\"",
+      "sampleMode": "toml-to-json",
+      "inputSizePolicy": {
+        "warnAtBytes": 1048576,
+        "workerAtBytes": 5242880,
+        "hardLimitBytes": 10485760,
+        "streamingSupported": false
+      },
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,
       "allowUserProvidedUrl": null,
       "requiresExplicitUserAction": null,
       "externalDataSent": null,
-      "persistInput": null,
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/yaml-json-converter/manifest.ts"
     },
@@ -678,7 +699,23 @@
         "url_encode_decode",
         "hash_generator"
       ],
-      "relatedWorkflows": [],
+      "relatedWorkflows": [
+        {
+          "toolKey": "base64_encode_decode",
+          "reasonKey": "compare_base_encodings",
+          "handoffSupported": true
+        },
+        {
+          "toolKey": "hex_bytes_workbench",
+          "reasonKey": "inspect_encoded_bytes",
+          "handoffSupported": true
+        },
+        {
+          "toolKey": "hash_generator",
+          "reasonKey": "hash_decoded_payload",
+          "handoffSupported": true
+        }
+      ],
       "keywords": [
         "base32 encoder",
         "base32 decoder",
@@ -686,9 +723,14 @@
         "base58 decoder",
         "base encoding converter"
       ],
-      "sampleInput": null,
-      "sampleMode": null,
-      "inputSizePolicy": null,
+      "sampleInput": "byteflow-tools",
+      "sampleMode": "base32:encode",
+      "inputSizePolicy": {
+        "warnAtBytes": 1048576,
+        "workerAtBytes": 5242880,
+        "hardLimitBytes": 10485760,
+        "streamingSupported": false
+      },
       "networkAccess": "none",
       "networkHosts": [],
       "networkPurposeKey": null,

@@ -37,4 +37,10 @@ describe("yaml json converter utils", () => {
     it("rejects identical input and output formats", () => {
         expect(() => convertStructuredData("{}", { from: "json", to: "json" })).toThrow("Choose two different formats.")
     })
+
+    it("rejects malformed JSON, YAML, and TOML input", () => {
+        expect(() => convertStructuredData("{", { from: "json", to: "yaml" })).toThrow()
+        expect(() => convertStructuredData("name: [unterminated", { from: "yaml", to: "json" })).toThrow()
+        expect(() => convertStructuredData("name = \"unterminated", { from: "toml", to: "json" })).toThrow()
+    })
 })
