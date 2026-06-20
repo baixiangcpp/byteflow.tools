@@ -2582,6 +2582,28 @@
       "convert": "変換",
       "invalid_base32": "Base32 入力が無効です。文字とパディングを確認してください。",
       "invalid_base58": "Base58 入力が無効です。Base58 では 0、O、I、l は使いません。"
+    },
+    "public_key_jwk_helper": {
+      "title": "公開鍵 JWK ヘルパー",
+      "description": "PEM/SPKI 公開鍵と JWK をブラウザ内でローカル変換し、鍵メタデータの確認と RFC 7638 サムプリント計算を行います。鍵素材はアップロードされません。",
+      "input_format": "入力形式",
+      "output_format": "出力形式",
+      "swap_formats": "形式を入れ替え",
+      "convert_action": "鍵を変換",
+      "converting": "変換中...",
+      "source_key": "元の公開鍵",
+      "converted_key": "変換後の鍵",
+      "summary_title": "鍵サマリー",
+      "copy_summary": "サマリーをコピー",
+      "summary_copied_desc": "鍵サマリーをコピーしました。",
+      "key_type": "鍵タイプ",
+      "algorithm": "アルゴリズム",
+      "curve": "曲線",
+      "modulus_bits": "モジュラスビット数",
+      "key_use": "用途",
+      "key_ops": "鍵操作",
+      "key_id": "鍵 ID",
+      "thumbprint": "サムプリント"
     }
   },
   "categories": {

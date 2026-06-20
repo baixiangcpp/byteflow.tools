@@ -17,6 +17,7 @@ const SENSITIVE_TOOL_KEYS = [
     "local_log_parser",
     "header_diff",
     "http_request_builder",
+    "public_key_jwk_helper",
 ]
 
 describe("sensitive tool persistence policy", () => {

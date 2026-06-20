@@ -1,8 +1,8 @@
 {
   "counts": {
-    "canonicalTools": 122,
+    "canonicalTools": 123,
     "aliasRoutes": 1,
-    "routeDirs": 179,
+    "routeDirs": 180,
     "unknownRouteDirs": 0
   },
   "canonicalTools": [
@@ -3839,6 +3839,55 @@
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/unicode-inspector/manifest.ts"
+    },
+    {
+      "index": 123,
+      "key": "public_key_jwk_helper",
+      "slug": "public-key-jwk-helper",
+      "category": "network-web",
+      "relatedTools": [
+        "certificate_decoder",
+        "jwt_verifier",
+        "jwt_workbench",
+        "base64_encode_decode",
+        "asn1_der_inspector"
+      ],
+      "relatedWorkflows": [
+        {
+          "toolKey": "certificate_decoder",
+          "reasonKey": "inspect_certificate_material"
+        },
+        {
+          "toolKey": "jwt_verifier",
+          "reasonKey": "verify_token_signatures"
+        },
+        {
+          "toolKey": "asn1_der_inspector",
+          "reasonKey": "inspect_der_structure"
+        }
+      ],
+      "keywords": [
+        "jwk to pem",
+        "pem to jwk",
+        "public key converter",
+        "jwk thumbprint"
+      ],
+      "sampleInput": "-----BEGIN PUBLIC KEY-----",
+      "sampleMode": "pem-to-jwk",
+      "inputSizePolicy": {
+        "warnAtBytes": 65536,
+        "hardLimitBytes": 262144,
+        "streamingSupported": false
+      },
+      "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
+      "persistInput": false,
+      "updatedAt": null,
+      "sourceFile": "src/features/tools/public-key-jwk-helper/manifest.ts"
     }
   ],
   "aliases": [
@@ -4882,6 +4931,14 @@
       "targetSlug": null,
       "inHubGroup": false,
       "inStaticGroup": true
+    },
+    {
+      "slug": "public-key-jwk-helper",
+      "hasPage": true,
+      "kind": "canonical-tool",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
     },
     {
       "slug": "qr-code-generator",

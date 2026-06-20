@@ -2602,6 +2602,28 @@
       "convert": "Convert",
       "invalid_base32": "Invalid Base32 input. Check characters and padding.",
       "invalid_base58": "Invalid Base58 input. Base58 excludes 0, O, I, and l."
+    },
+    "public_key_jwk_helper": {
+      "title": "Public Key JWK Helper",
+      "description": "Convert public PEM/SPKI keys and JWKs locally, inspect key metadata, and compute RFC 7638 thumbprints without uploading key material.",
+      "input_format": "Input format",
+      "output_format": "Output format",
+      "swap_formats": "Swap formats",
+      "convert_action": "Convert key",
+      "converting": "Converting...",
+      "source_key": "Source public key",
+      "converted_key": "Converted key",
+      "summary_title": "Key summary",
+      "copy_summary": "Copy summary",
+      "summary_copied_desc": "The key summary has been copied.",
+      "key_type": "Key type",
+      "algorithm": "Algorithm",
+      "curve": "Curve",
+      "modulus_bits": "Modulus bits",
+      "key_use": "Use",
+      "key_ops": "Key operations",
+      "key_id": "Key ID",
+      "thumbprint": "Thumbprint"
     }
   },
   "pages": {

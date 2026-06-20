@@ -2894,6 +2894,35 @@ const COMMAND_SEARCH_INDEX: Record<string, CommandSearchIndexEntry> = {
             "browser-local",
             "offline-capable"
         ]
+    },
+    "public_key_jwk_helper": {
+        "key": "public_key_jwk_helper",
+        "slug": "public-key-jwk-helper",
+        "keywords": [
+            "jwk to pem",
+            "pem to jwk",
+            "public key converter",
+            "jwk thumbprint"
+        ],
+        "aliases": [],
+        "searchKeywords": [
+            "public key",
+            "jwk",
+            "pem",
+            "spki",
+            "rsa public key",
+            "ec public key",
+            "key thumbprint"
+        ],
+        "family": "security-tokens",
+        "tags": [
+            "security-tokens"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ]
     }
 }
 

@@ -1122,6 +1122,15 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
         "externalDataSent": null
+    },
+    "public_key_jwk_helper": {
+        "key": "public_key_jwk_helper",
+        "slug": "public-key-jwk-helper",
+        "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null
     }
 }
 
@@ -1247,7 +1256,8 @@ const ROUTE_TOOL_KEY_BY_SLUG: Record<string, string> = {
     "saml-decoder": "saml_decoder",
     "asn1-der-inspector": "asn1_der_inspector",
     "hex-bytes-workbench": "hex_bytes_workbench",
-    "unicode-inspector": "unicode_inspector"
+    "unicode-inspector": "unicode_inspector",
+    "public-key-jwk-helper": "public_key_jwk_helper"
 }
 
 export const ROUTE_MENU_GROUP_HUB_SLUGS: readonly string[] = [

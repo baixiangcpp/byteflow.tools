@@ -4940,6 +4940,70 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "browser-local",
             "offline-capable"
         ]
+    },
+    "public_key_jwk_helper": {
+        "key": "public_key_jwk_helper",
+        "slug": "public-key-jwk-helper",
+        "keywords": [
+            "jwk to pem",
+            "pem to jwk",
+            "public key converter",
+            "jwk thumbprint"
+        ],
+        "aliases": [],
+        "relatedToolKeys": [
+            "certificate_decoder",
+            "jwt_verifier",
+            "jwt_workbench",
+            "base64_encode_decode",
+            "asn1_der_inspector"
+        ],
+        "relatedWorkflows": [
+            {
+                "toolKey": "certificate_decoder",
+                "reasonKey": "inspect_certificate_material"
+            },
+            {
+                "toolKey": "jwt_verifier",
+                "reasonKey": "verify_token_signatures"
+            },
+            {
+                "toolKey": "asn1_der_inspector",
+                "reasonKey": "inspect_der_structure"
+            }
+        ],
+        "sampleInput": "-----BEGIN PUBLIC KEY-----",
+        "sampleMode": "pem-to-jwk",
+        "inputSizePolicy": {
+            "warnAtBytes": 65536,
+            "hardLimitBytes": 262144,
+            "streamingSupported": false
+        },
+        "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
+        "persistInput": false,
+        "family": "security-tokens",
+        "tags": [
+            "security-tokens"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ],
+        "searchKeywords": [
+            "public key",
+            "jwk",
+            "pem",
+            "spki",
+            "rsa public key",
+            "ec public key",
+            "key thumbprint"
+        ]
     }
 }
 
@@ -5065,7 +5129,8 @@ const CLIENT_TOOL_KEY_BY_SLUG: Record<string, string> = {
     "saml-decoder": "saml_decoder",
     "asn1-der-inspector": "asn1_der_inspector",
     "hex-bytes-workbench": "hex_bytes_workbench",
-    "unicode-inspector": "unicode_inspector"
+    "unicode-inspector": "unicode_inspector",
+    "public-key-jwk-helper": "public_key_jwk_helper"
 }
 
 export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
@@ -5232,6 +5297,10 @@ export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
             {
                 "key": "hex_bytes_workbench",
                 "slug": "hex-bytes-workbench"
+            },
+            {
+                "key": "public_key_jwk_helper",
+                "slug": "public-key-jwk-helper"
             }
         ]
     },

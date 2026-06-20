@@ -120,6 +120,7 @@ import { toolManifest as samlDecoderManifest } from "@/features/tools/saml-decod
 import { toolManifest as asn1DerInspectorManifest } from "@/features/tools/asn1-der-inspector/manifest"
 import { toolManifest as hexBytesWorkbenchManifest } from "@/features/tools/hex-bytes-workbench/manifest"
 import { toolManifest as unicodeInspectorManifest } from "@/features/tools/unicode-inspector/manifest"
+import { toolManifest as publicKeyJwkHelperManifest } from "@/features/tools/public-key-jwk-helper/manifest"
 import type { ToolMeta } from "./types"
 
 export const TOOL_MANIFESTS = [
@@ -245,4 +246,5 @@ export const TOOL_MANIFESTS = [
     asn1DerInspectorManifest,
     hexBytesWorkbenchManifest,
     unicodeInspectorManifest,
+    publicKeyJwkHelperManifest,
 ] satisfies ToolMeta[]

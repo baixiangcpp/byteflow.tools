@@ -1924,6 +1924,53 @@ export const TOP_TOOL_CONTENT_TEMPLATES: Record<string, ToolContentTemplateData>
             { q: "Can wildcard certs cover all subdomains?", a: "They cover one level, not nested multi-level subdomains." },
         ],
     },
+    "public-key-jwk-helper": {
+        toolKey: "public_key_jwk_helper",
+        intro: "Convert public PEM/SPKI keys and public JWK objects locally, inspect key metadata, and calculate RFC 7638 SHA-256 thumbprints for authentication, token verification, and key-distribution debugging workflows.",
+        whatThisToolDoes: [
+            "It imports SPKI public key PEM blocks and exports equivalent public JWK JSON for systems that use JSON Web Keys.",
+            "It imports public RSA, EC, and supported OKP JWKs and exports standard PUBLIC KEY PEM output for OpenSSL-style tooling.",
+            "It shows algorithm, curve or modulus details, key operations, key ID, and a deterministic JWK thumbprint for comparison across systems.",
+            "It rejects private and symmetric JWK material so the helper stays focused on public key review rather than secret handling.",
+        ],
+        useCases: [
+            "Convert an identity provider public JWK into PEM before testing a JWT verification library.",
+            "Convert a public PEM key into JWK before publishing a JWKS document or writing integration fixtures.",
+            "Compare RFC 7638 thumbprints when a key identifier differs between environments.",
+            "Document public key rotation checks in auth, SSO, and API security runbooks.",
+            "Verify that copied public keys are parseable before debugging token signature failures.",
+        ],
+        inputExamples: [
+            { label: "SPKI public key PEM", value: "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcD...\n-----END PUBLIC KEY-----" },
+            { label: "EC public JWK", value: "{\"kty\":\"EC\",\"crv\":\"P-256\",\"x\":\"...\",\"y\":\"...\"}" },
+            { label: "RSA public JWK", value: "{\"kty\":\"RSA\",\"n\":\"...\",\"e\":\"AQAB\",\"kid\":\"auth-key-2026-01\"}" },
+        ],
+        outputExamples: [
+            { label: "Public JWK output", value: "{\n  \"kty\": \"EC\",\n  \"crv\": \"P-256\",\n  \"x\": \"...\",\n  \"y\": \"...\"\n}" },
+            { label: "PEM output", value: "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----" },
+            { label: "Thumbprint summary", value: "JWK thumbprint (SHA-256): K8JlQcU6WJq4MFbMa0cEFADDTOMRrrG1yj0K3Xs2-4g" },
+        ],
+        commonErrors: [
+            { error: "Private JWK pasted into a public-key helper", fix: "Export only the public portion of the key before converting or sharing examples." },
+            { error: "PKCS#1 RSA PUBLIC KEY pasted instead of SPKI PUBLIC KEY", fix: "Convert to standard SPKI PUBLIC KEY PEM before importing." },
+            { error: "Key operations missing after PEM round trip", fix: "Remember that PEM carries public key material but not JWK metadata such as kid, use, or key_ops." },
+            { error: "Wrong curve expected by verifier", fix: "Compare the exported JWK crv value with the algorithm configured in your JWT or WebCrypto verifier." },
+            { error: "Thumbprint differs from service documentation", fix: "Confirm the service uses RFC 7638 canonical public-key members rather than a vendor-specific fingerprint." },
+        ],
+        privacyNotes: [
+            "Conversion and thumbprint calculation run locally in the browser without network access.",
+            "The tool is intended for public keys only; do not paste private keys or symmetric secrets.",
+            "Public keys can still reveal internal infrastructure names through kid values, so redact environment-specific identifiers before sharing screenshots.",
+            "Use certificate and JWKS publication controls outside this helper when rotating production trust material.",
+        ],
+        faqs: [
+            { q: "Does this verify JWT signatures?", a: "No. Use the JWT verifier for token validation; this helper prepares and inspects public key material." },
+            { q: "Can it convert private keys?", a: "No. Private and symmetric JWK fields are rejected to keep the workflow focused on public key inspection." },
+            { q: "Why did key_ops disappear after exporting PEM?", a: "PEM stores the public key bytes, while JWK metadata fields such as key_ops, use, and kid are separate JSON attributes." },
+            { q: "What is the JWK thumbprint used for?", a: "It provides a stable identifier derived from canonical public JWK members, useful for comparing keys across systems." },
+            { q: "Does the key leave my browser?", a: "No. Import, export, and thumbprint calculation use browser APIs locally." },
+        ],
+    },
     "user-agent-parser": {
         toolKey: "user_agent_parser",
         intro: "Parse user-agent strings into browser, OS, device, and engine metadata to support analytics QA, feature gating, and compatibility debugging.",
