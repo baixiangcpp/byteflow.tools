@@ -1,0 +1,28 @@
+import fs from "node:fs"
+import path from "node:path"
+import { describe, expect, it } from "vitest"
+
+const ROOT = process.cwd()
+
+function read(relativePath: string) {
+    return fs.readFileSync(path.join(ROOT, relativePath), "utf8")
+}
+
+describe("image resizer worker guard", () => {
+    it("keeps resize rendering behind the worker task with a DOM fallback", () => {
+        const pageSource = read("src/features/tools/image-resizer/page.tsx")
+        const taskSource = read("src/features/tools/image-resizer/image-resize-task.ts")
+        const workerSource = read("src/features/tools/image-resizer/image-resize-worker.ts")
+        const domSource = read("src/features/tools/image-resizer/image-resize-dom.ts")
+
+        expect(pageSource).toContain("runImageResizeTask({")
+        expect(pageSource).toContain("renderRequestIdRef")
+        expect(pageSource).not.toContain('document.createElement("canvas")')
+        expect(taskSource).toContain("new Worker(new URL(\"./image-resize-worker.ts\", import.meta.url)")
+        expect(taskSource).toContain("OffscreenCanvas")
+        expect(taskSource).toContain("renderImageResizeDataUrlDom(input)")
+        expect(workerSource).toContain("new OffscreenCanvas")
+        expect(workerSource).toContain("canvas.convertToBlob")
+        expect(domSource).toContain('document.createElement("canvas")')
+    })
+})

@@ -2487,6 +2487,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleMode": null,
         "inputSizePolicy": {
             "warnAtBytes": 6291456,
+            "workerAtBytes": 3145728,
             "hardLimitBytes": 12582912,
             "streamingSupported": false
         },

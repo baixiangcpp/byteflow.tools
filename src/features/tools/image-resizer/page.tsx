@@ -10,9 +10,8 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { createDemoImageDataUrl, fileToDataUrl, loadImageElement } from "@/core/utils/image-canvas-utils"
+import { runImageResizeTask } from "@/features/tools/image-resizer/image-resize-task"
 import {
-    calculateResizeDrawBox,
-    getOutputMimeType,
     normalizeResizeDimension,
     type ResizeFitMode,
     type ResizeFormat,
@@ -51,6 +50,7 @@ export function ImageResizerPage() {
     const outputFitModeCover = toolT.output_fit_mode_cover
     const outputFitModeStretch = toolT.output_fit_mode_stretch
     const fileInputRef = React.useRef<HTMLInputElement>(null)
+    const renderRequestIdRef = React.useRef(0)
     const [demoSrc, setDemoSrc] = React.useState("")
 
     const [imageSrc, setImageSrc] = React.useState("")
@@ -81,50 +81,31 @@ export function ImageResizerPage() {
     }, [])
 
     React.useEffect(() => {
+        const requestId = renderRequestIdRef.current + 1
+        renderRequestIdRef.current = requestId
+
         const render = async () => {
             const source = imageSrc || demoSrc
-            if (!source) return
-
-            const image = await loadImageElement(source)
-            if (sourceWidth !== image.width || sourceHeight !== image.height) {
-                setSourceWidth(image.width)
-                setSourceHeight(image.height)
+            if (!source) {
+                setOutputDataUrl("")
+                return
             }
 
-            const safeWidth = normalizeResizeDimension(targetWidth, image.width)
-            const safeHeight = normalizeResizeDimension(targetHeight, image.height)
-            const drawBox = calculateResizeDrawBox(image.width, image.height, safeWidth, safeHeight, fitMode)
-
-            const canvas = document.createElement("canvas")
-            canvas.width = drawBox.canvasWidth
-            canvas.height = drawBox.canvasHeight
-            const context = canvas.getContext("2d")
-            if (!context) return
-
-            context.clearRect(0, 0, drawBox.canvasWidth, drawBox.canvasHeight)
-            context.fillStyle = "rgba(15, 23, 42, 0)"
-            context.fillRect(0, 0, drawBox.canvasWidth, drawBox.canvasHeight)
-            context.imageSmoothingEnabled = true
-            context.imageSmoothingQuality = "high"
-            context.drawImage(
-                image,
-                0,
-                0,
-                image.width,
-                image.height,
-                drawBox.offsetX,
-                drawBox.offsetY,
-                drawBox.drawWidth,
-                drawBox.drawHeight,
-            )
-
-            const mime = getOutputMimeType(format)
-            const dataUrl = format === "png" ? canvas.toDataURL(mime) : canvas.toDataURL(mime, quality)
-            setOutputDataUrl(dataUrl)
+            try {
+                const result = await runImageResizeTask({ source, targetWidth, targetHeight, fitMode, format, quality })
+                if (renderRequestIdRef.current !== requestId) return
+                setSourceWidth((current) => current === result.sourceWidth ? current : result.sourceWidth)
+                setSourceHeight((current) => current === result.sourceHeight ? current : result.sourceHeight)
+                setOutputDataUrl(result.dataUrl)
+            } catch {
+                if (renderRequestIdRef.current === requestId) {
+                    setOutputDataUrl("")
+                }
+            }
         }
 
         void render()
-    }, [demoSrc, fitMode, format, imageSrc, quality, sourceHeight, sourceWidth, targetHeight, targetWidth])
+    }, [demoSrc, fitMode, format, imageSrc, quality, targetHeight, targetWidth])
 
     const output = React.useMemo(
         () =>

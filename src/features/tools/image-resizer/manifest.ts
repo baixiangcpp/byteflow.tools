@@ -7,6 +7,7 @@ export const toolManifest = {
     relatedTools: ["image_cropper", "image_filters", "image_base64", "code_to_image_converter"],
     inputSizePolicy: {
         warnAtBytes: 6291456,
+        workerAtBytes: 3145728,
         hardLimitBytes: 12582912,
         streamingSupported: false,
     },
