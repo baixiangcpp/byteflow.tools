@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
-import { LOCALES, type Locale } from "@/core/i18n/i18n"
+import type { Locale } from "@/core/i18n/i18n"
+import { buildCanonicalUrl, buildLocalizedAlternates } from "@/core/seo/urls"
 
 type LegacyToolRedirectCopy = {
     title: string
@@ -73,17 +74,6 @@ export function getLegacyToolRedirectCopy(lang: Locale): LegacyToolRedirectCopy 
     return LEGACY_TOOL_REDIRECT_COPY[lang]
 }
 
-function buildAlternateLanguages(canonicalSlug: string) {
-    const languages: Record<string, string> = {}
-
-    for (const locale of LOCALES) {
-        languages[locale] = `https://byteflow.tools/${locale}/${canonicalSlug}`
-    }
-
-    languages["x-default"] = `https://byteflow.tools/en/${canonicalSlug}`
-    return languages
-}
-
 export function buildLegacyToolRedirectMetadata(lang: Locale, canonicalSlug: string): Metadata {
     const copy = getLegacyToolRedirectCopy(lang)
 
@@ -96,8 +86,8 @@ export function buildLegacyToolRedirectMetadata(lang: Locale, canonicalSlug: str
             follow: true,
         },
         alternates: {
-            canonical: `/${lang}/${canonicalSlug}`,
-            languages: buildAlternateLanguages(canonicalSlug),
+            canonical: buildCanonicalUrl(lang, canonicalSlug),
+            languages: buildLocalizedAlternates({ slug: canonicalSlug }),
         },
     }
 }

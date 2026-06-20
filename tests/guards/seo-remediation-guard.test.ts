@@ -62,6 +62,9 @@ describe("SEO remediation guardrails", () => {
         expect(redirects).toContain("/en/cron-expression-generator /en/crontab-generator 301")
         expect(redirects).toContain("/zh-CN/cron-expression-generator /zh-CN/crontab-generator 301")
         expect(redirects).toContain("/fr/cron-expression-generator /fr/crontab-generator 301")
+        expect(redirects).toContain("/en/tls-chain-inspector /en/certificate-decoder 301")
+        expect(redirects).toContain("/zh-CN/tls-chain-inspector /zh-CN/certificate-decoder 301")
+        expect(redirects).toContain("/fr/tls-chain-inspector /fr/certificate-decoder 301")
     })
 
     it("keeps FAQPage schema behind an allowlist gate", () => {

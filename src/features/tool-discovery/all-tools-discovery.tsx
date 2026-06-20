@@ -150,7 +150,7 @@ export function AllToolsDiscovery({
     }, [])
 
     return (
-        <div className="space-y-5">
+        <div id="tool-discovery" className="space-y-5">
             <section className="rounded-xl border border-border/70 bg-card/55 p-4 backdrop-blur-sm">
                 <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_240px_auto]">
                     <div className="relative">

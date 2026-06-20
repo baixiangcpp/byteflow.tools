@@ -1,8 +1,8 @@
 {
   "counts": {
     "canonicalTools": 123,
-    "aliasRoutes": 1,
-    "routeDirs": 180,
+    "aliasRoutes": 2,
+    "routeDirs": 181,
     "unknownRouteDirs": 0
   },
   "canonicalTools": [
@@ -3939,6 +3939,13 @@
       "pagePath": "src/app/[lang]/cron-expression-generator/page.tsx",
       "inStaticGroup": false,
       "inHubGroup": false
+    },
+    {
+      "slug": "tls-chain-inspector",
+      "targetSlug": "certificate-decoder",
+      "pagePath": "src/app/[lang]/tls-chain-inspector/page.tsx",
+      "inStaticGroup": false,
+      "inHubGroup": false
     }
   ],
   "routeEntries": [
@@ -5220,6 +5227,14 @@
       "kind": "hub",
       "targetSlug": null,
       "inHubGroup": true,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "tls-chain-inspector",
+      "hasPage": true,
+      "kind": "alias-tool",
+      "targetSlug": "certificate-decoder",
+      "inHubGroup": false,
       "inStaticGroup": false
     },
     {

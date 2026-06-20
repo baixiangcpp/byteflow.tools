@@ -5,3 +5,10 @@
 /ko/cron-expression-generator /ko/crontab-generator 301
 /de/cron-expression-generator /de/crontab-generator 301
 /fr/cron-expression-generator /fr/crontab-generator 301
+/en/tls-chain-inspector /en/certificate-decoder 301
+/zh-CN/tls-chain-inspector /zh-CN/certificate-decoder 301
+/zh-TW/tls-chain-inspector /zh-TW/certificate-decoder 301
+/ja/tls-chain-inspector /ja/certificate-decoder 301
+/ko/tls-chain-inspector /ko/certificate-decoder 301
+/de/tls-chain-inspector /de/certificate-decoder 301
+/fr/tls-chain-inspector /fr/certificate-decoder 301

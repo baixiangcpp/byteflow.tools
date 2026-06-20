@@ -1,11 +1,15 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { AlertTriangle, Home, Layers } from "lucide-react"
+import { AlertTriangle, Home, Layers, Search, Wrench } from "lucide-react"
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
+import { MENU_GROUP_DEFS } from "@/core/registry/menu-groups"
 import { DEFAULT_OG_IMAGE } from "@/core/seo/seo"
 
 const TITLE = "Page not found | byteflow.tools"
 const DESCRIPTION = "The page does not exist. Choose a language and continue from the all-tools directory."
+const EN_DATA_CODE_FORMATS_HREF = `/en/${MENU_GROUP_DEFS.find((item) => item.key === "data_code_formats")?.slug ?? "all-tools"}`
+const EN_ENCODING_CRYPTO_HREF = `/en/${MENU_GROUP_DEFS.find((item) => item.key === "encoding_crypto")?.slug ?? "all-tools"}`
+const EN_WEB_API_HREF = `/en/${MENU_GROUP_DEFS.find((item) => item.key === "web_api_network")?.slug ?? "all-tools"}`
 
 export const metadata: Metadata = {
     title: { absolute: TITLE },
@@ -55,6 +59,27 @@ export default function RootNotFound() {
                     >
                         <Layers className="h-4 w-4" />
                         Browse all tools
+                    </Link>
+                    <Link
+                        href={`${getAllToolsHref("en")}#tool-discovery`}
+                        className="inline-flex items-center gap-2 rounded-md border border-border px-4 py-2 text-sm font-medium hover:border-primary/35"
+                    >
+                        <Search className="h-4 w-4" />
+                        Search tools
+                    </Link>
+                </div>
+                <div className="mt-6 grid gap-2 sm:grid-cols-3">
+                    <Link href={EN_DATA_CODE_FORMATS_HREF} className="inline-flex items-center gap-2 rounded-md border border-border/60 px-3 py-2 text-sm hover:border-primary/35">
+                        <Wrench className="h-4 w-4 text-primary" />
+                        Data & Code Formats
+                    </Link>
+                    <Link href={EN_ENCODING_CRYPTO_HREF} className="inline-flex items-center gap-2 rounded-md border border-border/60 px-3 py-2 text-sm hover:border-primary/35">
+                        <Wrench className="h-4 w-4 text-primary" />
+                        Encoding & Crypto
+                    </Link>
+                    <Link href={EN_WEB_API_HREF} className="inline-flex items-center gap-2 rounded-md border border-border/60 px-3 py-2 text-sm hover:border-primary/35">
+                        <Wrench className="h-4 w-4 text-primary" />
+                        Web & API
                     </Link>
                 </div>
             </section>
