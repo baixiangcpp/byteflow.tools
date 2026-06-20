@@ -31,9 +31,10 @@
 
 ## Why Byteflow
 
-Developers often need to inspect JSON, decode JWTs, format SQL, generate UUIDs, convert text, or validate data that should never be pasted into an opaque third-party service. Byteflow is built around a simple operating model: tool payloads are processed locally in the browser, and the app ships as a static export.
+Developers often need to inspect JSON, decode JWTs, format SQL, generate UUIDs, convert text, or validate data that should not be pasted into an opaque third-party service. Byteflow is built around a simple operating model: most tool payloads are processed locally in the browser, external-request tools are labeled, and the app ships as a static export.
 
-- Tool inputs and outputs stay in your browser.
+- Browser-local tool inputs and outputs stay in your browser.
+- Tools that need a user-triggered network request are labeled before use.
 - No account, upload, workspace, database, or tool-processing API.
 - Free to use, self-host, and contribute to under MIT.
 - Static hosting friendly through Next.js export.
@@ -125,7 +126,7 @@ Use `npm run create:tool` when possible, then follow [CONTRIBUTING.md](CONTRIBUT
 
 ## Privacy and Security
 
-Byteflow's core tools are designed to process payloads in the browser. Avoid sharing real secrets, production tokens, private customer data, or sensitive payloads in public issues, screenshots, logs, or reproduction cases.
+Byteflow's core tools are designed to process payloads in the browser. Tools marked External request disclose when a network lookup is needed. Avoid sharing real secrets, production tokens, private customer data, or sensitive payloads in public issues, screenshots, logs, or reproduction cases.
 
 Report vulnerabilities through the process in [SECURITY.md](SECURITY.md).
 

@@ -1391,7 +1391,6 @@ const COMMAND_SEARCH_INDEX: Record<string, CommandSearchIndexEntry> = {
         "capabilities": [
             "browser-local",
             "external-request",
-            "offline-capable",
             "visual-output"
         ]
     },
@@ -1414,7 +1413,6 @@ const COMMAND_SEARCH_INDEX: Record<string, CommandSearchIndexEntry> = {
         "capabilities": [
             "browser-local",
             "external-request",
-            "offline-capable",
             "visual-output"
         ]
     },
@@ -1437,7 +1435,6 @@ const COMMAND_SEARCH_INDEX: Record<string, CommandSearchIndexEntry> = {
         "capabilities": [
             "browser-local",
             "external-request",
-            "offline-capable",
             "visual-output"
         ]
     },

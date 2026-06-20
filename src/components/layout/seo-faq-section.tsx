@@ -11,7 +11,7 @@ const TOOL_FAQS: Record<string, { title: string; description: string; faqs: SeoF
     "json-formatter": {
         title: "JSON Formatter & Validator",
         description:
-            "Our JSON Formatter helps you format, validate, and beautify JSON data instantly. All processing happens locally in your browser — your data never leaves your machine.",
+            "Our JSON Formatter helps you format, validate, and beautify JSON data instantly. This browser-local tool processes JSON in your browser.",
         faqs: [
             {
                 q: "How does the JSON Formatter work?",
@@ -19,7 +19,7 @@ const TOOL_FAQS: Record<string, { title: string; description: string; faqs: SeoF
             },
             {
                 q: "Is my JSON data safe?",
-                a: "Yes. The JSON Formatter runs 100% in your browser. No data is ever sent to any server. You can even use it offline after the first load.",
+                a: "The JSON Formatter is browser-local: it processes JSON in your browser and does not upload tool input for processing. You can verify behavior in DevTools Network.",
             },
             {
                 q: "Can I minify JSON with this tool?",

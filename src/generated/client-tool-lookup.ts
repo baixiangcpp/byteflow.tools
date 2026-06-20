@@ -2418,7 +2418,6 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "capabilities": [
             "browser-local",
             "external-request",
-            "offline-capable",
             "visual-output"
         ]
     },
@@ -2461,7 +2460,6 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "capabilities": [
             "browser-local",
             "external-request",
-            "offline-capable",
             "visual-output"
         ]
     },
@@ -2505,7 +2503,6 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "capabilities": [
             "browser-local",
             "external-request",
-            "offline-capable",
             "visual-output"
         ]
     },

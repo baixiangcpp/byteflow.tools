@@ -51,7 +51,7 @@
   "scripts": {
     "dev": "next dev",
     "analyze": "ANALYZE=true next build --webpack",
-    "validate": "npm run check:sw-version && npm run check:sitemap-lastmod && npm run check:security-headers && npm run check:pwa-manifests && npm run check:runtime-scripts && npm run check:bundle-boundaries && npm run check:og-tool-images && npm run check:ia-stability && npm run check:analytics-taxonomy && npm run check:registry-manifests && npm run check:tool-index && npm run check:legacy-routes && npm run check:client-tool-lookup && npm run check:i18n && npm run check:types",
+    "validate": "npm run check:sw-version && npm run check:sitemap-lastmod && npm run check:security-headers && npm run check:pwa-manifests && npm run check:runtime-scripts && npm run check:bundle-boundaries && npm run check:og-tool-images && npm run check:ia-stability && npm run check:analytics-taxonomy && npm run check:registry-manifests && npm run check:tool-index && npm run check:legacy-routes && npm run check:client-tool-lookup && npm run check:privacy-copy && npm run check:i18n && npm run check:types",
     "build:app": "next build",
     "build:post": "npm run check:canonical && npm run check:hreflang && npm run check:legacy-routes && npm run check:metadata-localization && npm run check:jsonld-structured-data && npm run check:rendered-i18n-copy && npm run check:related-tools && npm run check:content-template:legacy-paths && npm run check:content-template && npm run check:content-template:quality && npm run check:faq-schema && npm run check:content-template:zh-cn && npm run check:content-template:quality:zh-cn && npm run check:faq-schema:zh-cn && npm run check:content-template:zh-tw && npm run check:content-template:quality:zh-tw && npm run check:faq-schema:zh-tw && npm run check:content-template:ja && npm run check:content-template:quality:ja && npm run check:faq-schema:ja && npm run check:content-template:ko && npm run check:content-template:quality:ko && npm run check:faq-schema:ko && npm run check:content-template:de && npm run check:content-template:quality:de && npm run check:faq-schema:de && npm run check:content-template:fr && npm run check:content-template:quality:fr && npm run check:faq-schema:fr && npm run postprocess:export-html-lang && npm run check:export-html-lang && npm run postprocess:export-robots-meta && npm run check:export-robots-meta && npm run build:sw",
     "build": "npm run validate && npm run build:app && npm run build:post",
@@ -77,6 +77,7 @@
     "generate:ia-baseline": "node scripts/generators/generate-ia-baseline.js",
     "check:ia-stability": "node scripts/gates/check-ia-stability.js",
     "check:analytics-taxonomy": "node scripts/gates/check-analytics-taxonomy.js",
+    "check:privacy-copy": "node scripts/gates/check-privacy-copy.js",
     "check:security-headers": "node scripts/gates/check-security-headers-config.js",
     "check:bundle-boundaries": "node scripts/gates/check-bundle-boundaries.js",
     "check:sw-version": "node scripts/gates/check-sw-version-bump.js",
