@@ -14,6 +14,8 @@ function parseYaml(input: string): unknown {
         .filter((document) => document.contents !== null)
 
     if (documents.length === 0) return null
+    const yamlError = documents.flatMap((document) => document.errors)[0]
+    if (yamlError) throw yamlError
     if (documents.length === 1) return documents[0].toJSON()
     return documents.map((document) => document.toJSON())
 }

@@ -36,5 +36,20 @@ describe("related workflow metadata", () => {
             "url_encode_decode",
             "hash_generator",
         ])
+        expect(toolsByKey.get("yaml_json_converter")?.relatedWorkflows?.map((workflow) => workflow.toolKey)).toEqual([
+            "json_formatter",
+            "json_to_typescript",
+            "structured_data_visualizer",
+        ])
+        expect(toolsByKey.get("base_encoding_converter")?.relatedWorkflows?.map((workflow) => workflow.toolKey)).toEqual([
+            "base64_encode_decode",
+            "hex_bytes_workbench",
+            "hash_generator",
+        ])
+        expect(toolsByKey.get("public_key_jwk_helper")?.relatedWorkflows?.map((workflow) => workflow.toolKey)).toEqual([
+            "certificate_decoder",
+            "jwt_verifier",
+            "asn1_der_inspector",
+        ])
     })
 })

@@ -261,10 +261,31 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "structured_data_visualizer",
             "xml_formatter"
         ],
-        "relatedWorkflows": [],
-        "sampleInput": null,
-        "sampleMode": null,
-        "inputSizePolicy": null,
+        "relatedWorkflows": [
+            {
+                "toolKey": "json_formatter",
+                "reasonKey": "format_converted_json",
+                "handoffSupported": true
+            },
+            {
+                "toolKey": "json_to_typescript",
+                "reasonKey": "typed_model_from_converted_json",
+                "handoffSupported": true
+            },
+            {
+                "toolKey": "structured_data_visualizer",
+                "reasonKey": "inspect_converted_structure",
+                "handoffSupported": true
+            }
+        ],
+        "sampleInput": "name = \"byteflow\"\nports = [80, 443]\n\n[owner]\nteam = \"tools\"",
+        "sampleMode": "toml-to-json",
+        "inputSizePolicy": {
+            "warnAtBytes": 1048576,
+            "workerAtBytes": 5242880,
+            "hardLimitBytes": 10485760,
+            "streamingSupported": false
+        },
         "family": "data-formats",
         "tags": [
             "data-formats",
@@ -275,7 +296,8 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "browser-local",
             "file-input",
             "offline-capable",
-            "pipeline-ready"
+            "pipeline-ready",
+            "sensitive-input"
         ]
     },
     "markdown_preview": {
@@ -549,10 +571,31 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "url_encode_decode",
             "hash_generator"
         ],
-        "relatedWorkflows": [],
-        "sampleInput": null,
-        "sampleMode": null,
-        "inputSizePolicy": null,
+        "relatedWorkflows": [
+            {
+                "toolKey": "base64_encode_decode",
+                "reasonKey": "compare_base_encodings",
+                "handoffSupported": true
+            },
+            {
+                "toolKey": "hex_bytes_workbench",
+                "reasonKey": "inspect_encoded_bytes",
+                "handoffSupported": true
+            },
+            {
+                "toolKey": "hash_generator",
+                "reasonKey": "hash_decoded_payload",
+                "handoffSupported": true
+            }
+        ],
+        "sampleInput": "byteflow-tools",
+        "sampleMode": "base32:encode",
+        "inputSizePolicy": {
+            "warnAtBytes": 1048576,
+            "workerAtBytes": 5242880,
+            "hardLimitBytes": 10485760,
+            "streamingSupported": false
+        },
         "family": "encoders-decoders",
         "tags": [
             "encoders-decoders"
