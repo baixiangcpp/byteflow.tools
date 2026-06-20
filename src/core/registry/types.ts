@@ -7,6 +7,12 @@ export type { ToolCapability, ToolFamily } from "./tool-taxonomy"
 export type ToolNetworkAccess = "none" | "user_requested" | "third_party_api"
 export type ToolExternalDataSent = "none" | "user_provided_url" | "derived_url"
 export type ToolInputPersistenceMode = true | false | "opt-in"
+export type ToolInputSizePolicy = {
+    warnAtBytes?: number
+    workerAtBytes?: number
+    hardLimitBytes?: number
+    streamingSupported?: boolean
+}
 export type RelatedToolWorkflow = {
     toolKey: string
     reasonKey: string
@@ -30,6 +36,8 @@ export interface ToolMeta {
     /** Lightweight example metadata used by quality gates and discovery surfaces */
     sampleInput?: string
     sampleMode?: string
+    /** Input-size thresholds used by performance UI and quality gates */
+    inputSizePolicy?: ToolInputSizePolicy
     /** SEO target keywords (English, used for meta keywords) */
     keywords: string[]
     /** Optional deterministic lastmod timestamp used by sitemap */

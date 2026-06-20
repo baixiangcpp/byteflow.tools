@@ -217,6 +217,17 @@ function booleanField(source, fieldName, manifestPath) {
     throw manifestError(manifestPath, fieldName, "must be true or false")
 }
 
+function positiveIntegerField(source, fieldName, manifestPath) {
+    const match = new RegExp(`(?:^|[,\\n])\\s*${fieldName}:\\s*(\\d+)`, "s").exec(source)
+    if (!match) return undefined
+
+    const value = Number.parseInt(match[1], 10)
+    if (!Number.isSafeInteger(value) || value <= 0) {
+        throw manifestError(manifestPath, fieldName, "must be a positive safe integer")
+    }
+    return value
+}
+
 function parseDeprecated(source, manifestPath) {
     const block = objectField(source, "deprecated")
     if (!block) return undefined
@@ -260,6 +271,34 @@ function parseRelatedWorkflows(source, manifestPath) {
     return entries
 }
 
+function parseInputSizePolicy(source, manifestPath) {
+    const block = objectField(source, "inputSizePolicy")
+    if (!block) return undefined
+
+    const policy = {}
+    const warnAtBytes = positiveIntegerField(block, "warnAtBytes", manifestPath)
+    const workerAtBytes = positiveIntegerField(block, "workerAtBytes", manifestPath)
+    const hardLimitBytes = positiveIntegerField(block, "hardLimitBytes", manifestPath)
+    const streamingSupported = booleanField(block, "streamingSupported", manifestPath)
+
+    if (warnAtBytes !== undefined) policy.warnAtBytes = warnAtBytes
+    if (workerAtBytes !== undefined) policy.workerAtBytes = workerAtBytes
+    if (hardLimitBytes !== undefined) policy.hardLimitBytes = hardLimitBytes
+    if (streamingSupported !== undefined) policy.streamingSupported = streamingSupported
+
+    if (Object.keys(policy).length === 0) {
+        throw manifestError(manifestPath, "inputSizePolicy", "must define at least one threshold or streamingSupported")
+    }
+    if (policy.warnAtBytes !== undefined && policy.hardLimitBytes !== undefined && policy.warnAtBytes > policy.hardLimitBytes) {
+        throw manifestError(manifestPath, "inputSizePolicy", "warnAtBytes must not exceed hardLimitBytes")
+    }
+    if (policy.workerAtBytes !== undefined && policy.hardLimitBytes !== undefined && policy.workerAtBytes > policy.hardLimitBytes) {
+        throw manifestError(manifestPath, "inputSizePolicy", "workerAtBytes must not exceed hardLimitBytes")
+    }
+
+    return policy
+}
+
 export function listManifestFiles() {
     return fs
         .readdirSync(FEATURE_TOOLS_DIR, { withFileTypes: true })
@@ -287,6 +326,7 @@ export function parseToolManifestFile(manifestPath) {
     const relatedWorkflows = parseRelatedWorkflows(body, manifestPath)
     const sampleInput = stringField(body, "sampleInput", manifestPath)
     const sampleMode = stringField(body, "sampleMode", manifestPath)
+    const inputSizePolicy = parseInputSizePolicy(body, manifestPath)
     const searchKeywords = arrayField(body, "searchKeywords", manifestPath)
     const updatedAt = stringField(body, "updatedAt", manifestPath)
     const networkAccess = stringField(body, "networkAccess", manifestPath)
@@ -319,6 +359,7 @@ export function parseToolManifestFile(manifestPath) {
 
     if (sampleInput) manifest.sampleInput = sampleInput
     if (sampleMode) manifest.sampleMode = sampleMode
+    if (inputSizePolicy) manifest.inputSizePolicy = inputSizePolicy
     if (relatedWorkflows.length > 0) manifest.relatedWorkflows = relatedWorkflows
     if (updatedAt) manifest.updatedAt = updatedAt
     if (searchKeywords.length > 0) manifest.searchKeywords = searchKeywords

@@ -12,6 +12,12 @@ export const toolManifest = {
     ],
     sampleInput: "{\"user\":{\"id\":1001,\"name\":\"Alice Chen\",\"active\":true}}",
     sampleMode: "format",
+    inputSizePolicy: {
+        warnAtBytes: 5242880,
+        workerAtBytes: 10485760,
+        hardLimitBytes: 52428800,
+        streamingSupported: false,
+    },
     keywords: ["json formatter", "json beautifier", "json prettify", "format json online"],
     searchKeywords: ["beautify", "pretty print", "validate", "美化", "格式化", "验证", "格式化", "フォーマット", "검증", "포맷"],
     persistInput: false,

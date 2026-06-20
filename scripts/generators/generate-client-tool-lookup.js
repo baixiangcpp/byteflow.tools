@@ -169,6 +169,7 @@ function buildClientLookupSource() {
                 relatedWorkflows: tool.relatedWorkflows || [],
                 sampleInput: tool.sampleInput || null,
                 sampleMode: tool.sampleMode || null,
+                inputSizePolicy: tool.inputSizePolicy || null,
                 networkAccess: tool.networkAccess || "none",
                 networkHosts: tool.networkHosts || [],
                 networkPurposeKey: tool.networkPurposeKey || null,
@@ -212,6 +213,7 @@ export type ClientToolLookupEntry = {
     relatedWorkflows: ReadonlyArray<{ toolKey: string; reasonKey: string; handoffSupported?: boolean }>
     sampleInput: string | null
     sampleMode: string | null
+    inputSizePolicy: Readonly<{ warnAtBytes?: number; workerAtBytes?: number; hardLimitBytes?: number; streamingSupported?: boolean }> | null
     networkAccess: "none" | "user_requested" | "third_party_api"
     networkHosts: readonly string[]
     networkPurposeKey: string | null

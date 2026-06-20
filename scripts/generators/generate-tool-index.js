@@ -171,6 +171,7 @@ function buildIndexData() {
                 keywords: tool.keywords,
                 sampleInput: tool.sampleInput || null,
                 sampleMode: tool.sampleMode || null,
+                inputSizePolicy: tool.inputSizePolicy || null,
                 networkAccess: tool.networkAccess || "none",
                 networkHosts: tool.networkHosts || [],
                 networkPurposeKey: tool.networkPurposeKey || null,
