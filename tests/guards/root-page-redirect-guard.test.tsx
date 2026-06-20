@@ -10,7 +10,7 @@ describe("root x-default page guard", () => {
         expect(pageSource).not.toContain("root-locale-redirect.js")
         expect(pageSource).toContain("Privacy-first local developer tools")
         expect(pageSource).toContain("Popular tools")
-        expect(pageSource).toContain("Eight curated categories")
+        expect(pageSource).toContain('formatToolRegistryStatsTemplate("{categoryCount} curated categories", stats)')
         expect(pageSource).toContain("Choose your language")
         expect(pageSource).toContain("ROOT_ALTERNATES[\"x-default\"] = SITE_URL")
     })

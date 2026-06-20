@@ -3,7 +3,7 @@
     "title": "byteflow.tools | 隐私优先的开发者工具",
     "description": "零延迟、完全本地运行的开发者工具，直接在浏览器中处理，无需服务器。",
     "hero_badge": "开源 · 100% 客户端 · 永久免费",
-    "hero_title_highlight": "100+ 个本地浏览器工具",
+    "hero_title_highlight": "{toolCount} 个本地浏览器工具",
     "hero_title_2": "专为开发者打造",
     "hero_subtitle": "格式化、转换、生成、调试 — 敏感数据不出浏览器。您的数据始终保留在本地。",
     "hero_tagline": "工具在本地处理。永久免费。开源透明。",
@@ -46,7 +46,7 @@
     "speed_title": "亚毫秒级响应",
     "speed_desc": "没有加载动画，没有等待。粘贴大量文本，实时格式化、哈希或编码。",
     "keyboard_title": "任务导向导航",
-    "keyboard_desc": "6 个一级分类配合工具数量直显，按任务快速定位到正确工具，减少来回查找。",
+    "keyboard_desc": "{categoryCount} 个精选分类配合工具数量直显，按任务快速定位到正确工具，减少来回查找。",
     "tools_title": "持续增长的工具集",
     "tools_desc": "从JSONPath查询、Cron可视化到二维码生成器和Chmod计算器。统一且不断扩展的工具套件。"
   },

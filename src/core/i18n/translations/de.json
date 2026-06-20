@@ -3,7 +3,7 @@
     "title": "byteflow.tools | Datenschutzorientierte Entwicklerwerkzeuge",
     "description": "Latenzfreie, vollständig lokale Entwicklerwerkzeuge direkt in Ihrem Browser.",
     "hero_badge": "Open Source · 100% Client-seitig · Immer kostenlos",
-    "hero_title_highlight": "100+ Lokale Browser-Tools",
+    "hero_title_highlight": "{toolCount} lokale Browser-Tools",
     "hero_title_2": "für Entwickler",
     "hero_subtitle": "Formatieren, konvertieren, generieren, überprüfen — ohne Daten an Server zu senden. Ihre sensiblen Daten bleiben in Ihrem Browser.",
     "hero_tagline": "Keine Server-Anfragen. Immer kostenlos. Open Source.",
@@ -46,7 +46,7 @@
     "speed_title": "Feedback unter einer Millisekunde",
     "speed_desc": "Keine Ladebalken, kein Warten. Fügen Sie Megabytes an Text ein und formatieren, hashen oder kodieren Sie in Echtzeit.",
     "keyboard_title": "Aufgabenorientierte Navigation",
-    "keyboard_desc": "Sechs Hauptkategorien mit sichtbarer Tool-Anzahl bringen Sie in Sekunden zum passenden Tool.",
+    "keyboard_desc": "{categoryCount} kuratierte Hauptkategorien mit sichtbarer Tool-Anzahl bringen Sie in Sekunden zum passenden Tool.",
     "tools_title": "Stetig wachsende Toolbox",
     "tools_desc": "Von JSONPath-Abfragen und Cron-Visualisierern bis zu QR-Generatoren und Chmod-Rechnern. Ein einheitliches, stetig wachsendes Toolkit."
   },

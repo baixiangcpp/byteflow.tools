@@ -19,6 +19,7 @@ import { LOCALES, isValidLocale, requireTranslationValue } from "@/core/i18n/i18
 import { SearchButton } from "./search-button"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { MENU_GROUP_DEFS, getMenuGroups } from "@/core/registry/menu-groups"
+import { formatToolRegistryStatsTemplate, getToolRegistryStats } from "@/core/registry/stats"
 import { PopularToolsSection } from "@/features/home/components/popular-tools-section"
 import { HomeCategoryPreview } from "@/features/home/components/home-category-preview"
 import { ALL_TOOLS_SECTION_ID } from "@/core/routing/all-tools-route"
@@ -64,6 +65,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
 
   const locale = lang
   const t = getTranslation(locale)
+  const registryStats = getToolRegistryStats()
   const heroSearchLabel = t.site.hero_search
   const commonLabels = t.common
   const installAppLinkLabel = requireTranslationValue(commonLabels.install_as_app, "common.install_as_app")
@@ -89,7 +91,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
       key: "keyboard",
       icon: Compass,
       title: t.features.keyboard_title,
-      description: t.features.keyboard_desc,
+      description: formatToolRegistryStatsTemplate(t.features.keyboard_desc, registryStats),
       iconClass: "border-amber-500/30 bg-amber-500/12 text-amber-400",
     },
     {
@@ -105,7 +107,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   const localizedTools = t.tools as Record<string, { title?: string; description?: string }>
   const menuGroups = getMenuGroups()
   const categoryToolCounts = Object.fromEntries(
-    menuGroups.map((group) => [group.key, group.items.length])
+    registryStats.categories.map((category) => [category.key, category.toolCount])
   ) as Record<string, number>
   const categoryIcons = {
     data_code_formats: Braces,
@@ -188,7 +190,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
 
             <h1 className="text-balance text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl xl:text-7xl">
               <span className="bg-gradient-to-r from-cyan-400 via-sky-400 to-amber-300 bg-clip-text text-transparent">
-                {t.site.hero_title_highlight}
+                {formatToolRegistryStatsTemplate(t.site.hero_title_highlight, registryStats)}
               </span>
               <br />
               {t.site.hero_title_2}

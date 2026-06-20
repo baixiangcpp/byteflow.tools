@@ -3,7 +3,7 @@
     "title": "byteflow.tools | Privacy-first Developer Tools",
     "description": "Zero-latency, completely local-first developer tools running directly in your browser.",
     "hero_badge": "Open Source · 100% Client-Side · Always Free",
-    "hero_title_highlight": "100+ Local Browser Tools",
+    "hero_title_highlight": "{toolCount} Local Browser Tools",
     "hero_title_2": "for Developers",
     "hero_subtitle": "Format, convert, generate, inspect — without sending data to servers. Your sensitive data stays in your browser.",
     "hero_tagline": "Tools process locally. Always free. Open source.",
@@ -46,7 +46,7 @@
     "speed_title": "Sub-Millisecond Feedback",
     "speed_desc": "No spinners, no loading bars. Paste megabytes of text and watch it format, hash, or encode in real time.",
     "keyboard_title": "Task-First Navigation",
-    "keyboard_desc": "Six top-level categories with visible tool counts help you jump to the right tool in seconds.",
+    "keyboard_desc": "{categoryCount} curated categories with visible tool counts help you jump to the right tool in seconds.",
     "tools_title": "Ever-Growing Toolkit",
     "tools_desc": "From JSONPath queries and Cron visualizers to QR generators and Chmod calculators. A unified, ever-expanding toolkit."
   },
