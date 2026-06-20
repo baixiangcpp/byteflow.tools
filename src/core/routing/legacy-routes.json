@@ -1,0 +1,14 @@
+[
+  {
+    "sourceSlug": "cron-expression-generator",
+    "targetSlug": "crontab-generator",
+    "status": 301,
+    "reason": "renamed"
+  },
+  {
+    "sourceSlug": "tls-chain-inspector",
+    "targetSlug": "certificate-decoder",
+    "status": 301,
+    "reason": "merged"
+  }
+]

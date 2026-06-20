@@ -1,3 +1,4 @@
 {
-  "cron-expression-generator": "crontab-generator"
+  "cron-expression-generator": "crontab-generator",
+  "tls-chain-inspector": "certificate-decoder"
 }
