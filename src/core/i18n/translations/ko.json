@@ -2582,6 +2582,28 @@
       "convert": "변환",
       "invalid_base32": "Base32 입력이 올바르지 않습니다. 문자와 패딩을 확인하세요.",
       "invalid_base58": "Base58 입력이 올바르지 않습니다. Base58은 0, O, I, l을 제외합니다."
+    },
+    "public_key_jwk_helper": {
+      "title": "공개 키 JWK 도우미",
+      "description": "PEM/SPKI 공개 키와 JWK를 브라우저에서 로컬로 변환하고 키 메타데이터와 RFC 7638 지문을 확인합니다. 키 자료는 업로드되지 않습니다.",
+      "input_format": "입력 형식",
+      "output_format": "출력 형식",
+      "swap_formats": "형식 바꾸기",
+      "convert_action": "키 변환",
+      "converting": "변환 중...",
+      "source_key": "원본 공개 키",
+      "converted_key": "변환된 키",
+      "summary_title": "키 요약",
+      "copy_summary": "요약 복사",
+      "summary_copied_desc": "키 요약을 복사했습니다.",
+      "key_type": "키 유형",
+      "algorithm": "알고리즘",
+      "curve": "곡선",
+      "modulus_bits": "모듈러스 비트",
+      "key_use": "용도",
+      "key_ops": "키 작업",
+      "key_id": "키 ID",
+      "thumbprint": "지문"
     }
   },
   "categories": {

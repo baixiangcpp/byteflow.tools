@@ -2582,6 +2582,28 @@
       "convert": "轉換",
       "invalid_base32": "Base32 輸入無效。請檢查字元與填充。",
       "invalid_base58": "Base58 輸入無效。Base58 不包含 0、O、I 和 l。"
+    },
+    "public_key_jwk_helper": {
+      "title": "公鑰 JWK 助手",
+      "description": "在瀏覽器本機轉換 PEM/SPKI 公鑰和 JWK，檢查金鑰中繼資料並計算 RFC 7638 指紋，無需上傳金鑰材料。",
+      "input_format": "輸入格式",
+      "output_format": "輸出格式",
+      "swap_formats": "交換格式",
+      "convert_action": "轉換金鑰",
+      "converting": "正在轉換...",
+      "source_key": "來源公鑰",
+      "converted_key": "轉換後的金鑰",
+      "summary_title": "金鑰摘要",
+      "copy_summary": "複製摘要",
+      "summary_copied_desc": "金鑰摘要已複製。",
+      "key_type": "金鑰類型",
+      "algorithm": "演算法",
+      "curve": "曲線",
+      "modulus_bits": "模數位元數",
+      "key_use": "用途",
+      "key_ops": "金鑰操作",
+      "key_id": "金鑰 ID",
+      "thumbprint": "指紋"
     }
   },
   "categories": {

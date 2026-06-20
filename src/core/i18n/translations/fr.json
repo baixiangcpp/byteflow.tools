@@ -2582,6 +2582,28 @@
       "convert": "Convertir",
       "invalid_base32": "Entrée Base32 invalide. Vérifiez les caractères et le padding.",
       "invalid_base58": "Entrée Base58 invalide. Base58 exclut 0, O, I et l."
+    },
+    "public_key_jwk_helper": {
+      "title": "Assistant clé publique JWK",
+      "description": "Convertissez localement les clés publiques PEM/SPKI et JWK, inspectez les métadonnées et calculez les empreintes RFC 7638 sans téléverser de matériau de clé.",
+      "input_format": "Format d’entrée",
+      "output_format": "Format de sortie",
+      "swap_formats": "Inverser les formats",
+      "convert_action": "Convertir la clé",
+      "converting": "Conversion...",
+      "source_key": "Clé publique source",
+      "converted_key": "Clé convertie",
+      "summary_title": "Résumé de la clé",
+      "copy_summary": "Copier le résumé",
+      "summary_copied_desc": "Le résumé de la clé a été copié.",
+      "key_type": "Type de clé",
+      "algorithm": "Algorithme",
+      "curve": "Courbe",
+      "modulus_bits": "Bits du module",
+      "key_use": "Usage",
+      "key_ops": "Opérations de clé",
+      "key_id": "ID de clé",
+      "thumbprint": "Empreinte"
     }
   },
   "categories": {

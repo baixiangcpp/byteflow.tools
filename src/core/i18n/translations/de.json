@@ -2582,6 +2582,28 @@
       "convert": "Konvertieren",
       "invalid_base32": "Ungültige Base32-Eingabe. Prüfen Sie Zeichen und Padding.",
       "invalid_base58": "Ungültige Base58-Eingabe. Base58 schließt 0, O, I und l aus."
+    },
+    "public_key_jwk_helper": {
+      "title": "Public-Key-JWK-Helfer",
+      "description": "Konvertiert öffentliche PEM/SPKI-Schlüssel und JWKs lokal im Browser, zeigt Schlüsselmetadaten und berechnet RFC-7638-Thumbprints ohne Upload von Schlüsselmaterial.",
+      "input_format": "Eingabeformat",
+      "output_format": "Ausgabeformat",
+      "swap_formats": "Formate tauschen",
+      "convert_action": "Schlüssel konvertieren",
+      "converting": "Konvertiert...",
+      "source_key": "Öffentlicher Quellschlüssel",
+      "converted_key": "Konvertierter Schlüssel",
+      "summary_title": "Schlüsselübersicht",
+      "copy_summary": "Übersicht kopieren",
+      "summary_copied_desc": "Die Schlüsselübersicht wurde kopiert.",
+      "key_type": "Schlüsseltyp",
+      "algorithm": "Algorithmus",
+      "curve": "Kurve",
+      "modulus_bits": "Modulus-Bits",
+      "key_use": "Verwendung",
+      "key_ops": "Schlüsseloperationen",
+      "key_id": "Schlüssel-ID",
+      "thumbprint": "Fingerabdruck"
     }
   },
   "categories": {

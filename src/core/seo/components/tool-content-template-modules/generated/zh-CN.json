@@ -12441,5 +12441,115 @@
       "分享前确认输出不包含真实令牌、密钥或个人信息。"
     ],
     "operationalNote": "Base32/Base58 转换器适合放在标识符调试、测试样例准备和文档复核环节，不能替代加密、签名或正规的自动化测试。"
+  },
+  "public-key-jwk-helper": {
+    "content": {
+      "toolKey": "public_key_jwk_helper",
+      "intro": "在浏览器本地转换 PEM/SPKI 公钥与公开 JWK，检查算法、曲线、模数、Key ID 和 RFC 7638 SHA-256 指纹，适合认证、令牌验签和密钥轮换排查。",
+      "whatThisToolDoes": [
+        "它导入标准 PUBLIC KEY PEM 块，并导出等价的公开 JWK JSON，方便接入 JWKS、JWT 验签和 WebCrypto 流程。",
+        "它导入 RSA、EC 以及受支持的 OKP 公开 JWK，并导出 OpenSSL 风格的 SPKI PEM。",
+        "它展示算法、曲线或模数位数、key_ops、kid 和确定性的 JWK 指纹，便于跨系统比对。",
+        "它拒绝私钥字段和对称密钥字段，让页面专注于公开密钥检查，而不是秘密材料处理。"
+      ],
+      "useCases": [
+        "把身份提供方的公开 JWK 转成 PEM，供 JWT 验签库或命令行工具测试。",
+        "把公开 PEM 转成 JWK，用于编写 JWKS 示例、校验样本或集成文档。",
+        "当 kid 在不同环境中不一致时，通过 RFC 7638 指纹确认是否为同一把公钥。",
+        "在认证、SSO 和 API 安全运行手册中记录公钥轮换检查步骤。",
+        "在排查签名失败前确认复制的公钥可被浏览器解析。"
+      ],
+      "inputExamples": [
+        {
+          "label": "SPKI 公钥 PEM",
+          "value": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcD...\n-----END PUBLIC KEY-----"
+        },
+        {
+          "label": "EC 公开 JWK",
+          "value": "{\"kty\":\"EC\",\"crv\":\"P-256\",\"x\":\"...\",\"y\":\"...\"}"
+        },
+        {
+          "label": "RSA 公开 JWK",
+          "value": "{\"kty\":\"RSA\",\"n\":\"...\",\"e\":\"AQAB\",\"kid\":\"auth-key-2026-01\"}"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "公开 JWK 输出",
+          "value": "{\n  \"kty\": \"EC\",\n  \"crv\": \"P-256\",\n  \"x\": \"...\",\n  \"y\": \"...\"\n}"
+        },
+        {
+          "label": "PEM 输出",
+          "value": "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----"
+        },
+        {
+          "label": "指纹摘要",
+          "value": "JWK thumbprint (SHA-256): K8JlQcU6WJq4MFbMa0cEFADDTOMRrrG1yj0K3Xs2-4g"
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "把私有 JWK 粘贴进公钥工具",
+          "fix": "先只导出公钥部分，再转换或编写共享示例。"
+        },
+        {
+          "error": "粘贴了 PKCS#1 RSA PUBLIC KEY 而不是 SPKI PUBLIC KEY",
+          "fix": "先转换为标准 SPKI PUBLIC KEY PEM，再导入。"
+        },
+        {
+          "error": "PEM 往返后 key_ops 消失",
+          "fix": "PEM 只保存公钥字节，kid、use、key_ops 是 JWK 的额外 JSON 元数据。"
+        },
+        {
+          "error": "验签器期望的曲线不一致",
+          "fix": "对比导出的 crv 值与 JWT 或 WebCrypto 验签配置。"
+        },
+        {
+          "error": "服务文档中的指纹不一致",
+          "fix": "确认对方是否使用 RFC 7638 规范字段，而不是供应商自定义指纹。"
+        }
+      ],
+      "privacyNotes": [
+        "转换和指纹计算在浏览器本地完成，不需要网络请求。",
+        "此页面只面向公钥；不要粘贴私钥、共享密钥或生产密钥材料。",
+        "公钥的 kid 可能暴露内部环境命名，分享截图前请脱敏。",
+        "生产信任材料轮换仍应通过证书、JWKS 发布和审计流程管理。"
+      ],
+      "faqs": [
+        {
+          "q": "这个工具会验证 JWT 签名吗？",
+          "a": "不会。请使用 JWT 验签工具验证令牌；这里用于准备和检查公开密钥材料。"
+        },
+        {
+          "q": "可以转换私钥吗？",
+          "a": "不可以。私钥和对称 JWK 字段会被拒绝，以避免秘密材料进入此工作流。"
+        },
+        {
+          "q": "为什么导出 PEM 后 key_ops 不见了？",
+          "a": "PEM 保存公钥字节，key_ops、use 和 kid 是 JWK 的 JSON 元数据。"
+        },
+        {
+          "q": "JWK 指纹有什么用？",
+          "a": "它从规范化的公开 JWK 字段计算稳定标识，方便跨系统确认同一把公钥。"
+        },
+        {
+          "q": "密钥会离开浏览器吗？",
+          "a": "不会。导入、导出和指纹计算都使用本地浏览器 API。"
+        }
+      ]
+    },
+    "workflowSteps": [
+      "粘贴公开 PEM 或公开 JWK，并确认没有私钥字段。",
+      "选择输入和输出格式，运行转换。",
+      "检查算法、曲线或模数位数，并记录 thumbprint。",
+      "把输出复制到测试配置或文档前，先脱敏 kid 等环境标识。"
+    ],
+    "qualityChecklist": [
+      "确认输入只包含公开密钥材料。",
+      "确认导出的格式能被目标库或命令行工具解析。",
+      "比较 thumbprint，避免误用另一环境的公钥。",
+      "对外分享前移除内部环境名称和示例域名。"
+    ],
+    "operationalNote": "公钥 JWK 助手适合作为认证集成和密钥轮换前的快速检查步骤，但生产信任发布仍应通过正式变更和审计流程。"
   }
 }

@@ -2989,6 +2989,47 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "browser-local",
             "offline-capable"
         ]
+    },
+    "public_key_jwk_helper": {
+        "key": "public_key_jwk_helper",
+        "slug": "public-key-jwk-helper",
+        "relatedToolKeys": [
+            "certificate_decoder",
+            "jwt_verifier",
+            "jwt_workbench",
+            "base64_encode_decode",
+            "asn1_der_inspector"
+        ],
+        "relatedWorkflows": [
+            {
+                "toolKey": "certificate_decoder",
+                "reasonKey": "inspect_certificate_material"
+            },
+            {
+                "toolKey": "jwt_verifier",
+                "reasonKey": "verify_token_signatures"
+            },
+            {
+                "toolKey": "asn1_der_inspector",
+                "reasonKey": "inspect_der_structure"
+            }
+        ],
+        "sampleInput": "-----BEGIN PUBLIC KEY-----",
+        "sampleMode": "pem-to-jwk",
+        "inputSizePolicy": {
+            "warnAtBytes": 65536,
+            "hardLimitBytes": 262144,
+            "streamingSupported": false
+        },
+        "family": "security-tokens",
+        "tags": [
+            "security-tokens"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ]
     }
 }
 
@@ -3156,6 +3197,10 @@ export const DISCOVERY_MENU_GROUPS: ReadonlyArray<DiscoveryMenuGroup> = [
             {
                 "key": "hex_bytes_workbench",
                 "slug": "hex-bytes-workbench"
+            },
+            {
+                "key": "public_key_jwk_helper",
+                "slug": "public-key-jwk-helper"
             }
         ]
     },

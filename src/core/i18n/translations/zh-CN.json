@@ -2582,6 +2582,28 @@
       "convert": "转换",
       "invalid_base32": "Base32 输入无效。请检查字符和填充。",
       "invalid_base58": "Base58 输入无效。Base58 不包含 0、O、I 和 l。"
+    },
+    "public_key_jwk_helper": {
+      "title": "公钥 JWK 助手",
+      "description": "在浏览器本地转换 PEM/SPKI 公钥和 JWK，检查密钥元数据并计算 RFC 7638 指纹，无需上传密钥材料。",
+      "input_format": "输入格式",
+      "output_format": "输出格式",
+      "swap_formats": "交换格式",
+      "convert_action": "转换密钥",
+      "converting": "正在转换...",
+      "source_key": "源公钥",
+      "converted_key": "转换后的密钥",
+      "summary_title": "密钥摘要",
+      "copy_summary": "复制摘要",
+      "summary_copied_desc": "密钥摘要已复制。",
+      "key_type": "密钥类型",
+      "algorithm": "算法",
+      "curve": "曲线",
+      "modulus_bits": "模数位数",
+      "key_use": "用途",
+      "key_ops": "密钥操作",
+      "key_id": "密钥 ID",
+      "thumbprint": "指纹"
     }
   },
   "categories": {

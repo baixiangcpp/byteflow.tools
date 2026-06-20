@@ -11044,5 +11044,115 @@
       "La sortie ne contient aucun token, clé ou donnée personnelle réelle avant partage."
     ],
     "operationalNote": "Le convertisseur Base32/Base58 convient au débogage d’identifiants, à la préparation de jeux de test et à la revue documentaire, mais ne remplace ni chiffrement, ni signature, ni tests automatisés."
+  },
+  "public-key-jwk-helper": {
+    "content": {
+      "toolKey": "public_key_jwk_helper",
+      "intro": "Convertissez localement les clés publiques PEM/SPKI et les JWK publics, inspectez algorithme, courbe, module, Key ID et empreinte SHA-256 RFC 7638 pour les flux d’authentification, de vérification de jetons et de rotation de clés.",
+      "whatThisToolDoes": [
+        "Il importe les blocs PUBLIC KEY PEM standard et exporte un JWK public équivalent pour les usages JWKS, JWT et WebCrypto.",
+        "Il importe les JWK publics RSA, EC et OKP pris en charge, puis exporte un PEM SPKI compatible avec les outils de type OpenSSL.",
+        "Il affiche l’algorithme, la courbe ou la taille du module, key_ops, kid et une empreinte JWK stable pour comparer les systèmes.",
+        "Il refuse les champs de clé privée et de clé symétrique afin de rester centré sur l’inspection de clés publiques."
+      ],
+      "useCases": [
+        "Transformer le JWK public d’un fournisseur d’identité en PEM avant de tester une bibliothèque de vérification JWT.",
+        "Transformer un PEM public en JWK pour préparer un exemple JWKS, des jeux de validation ou une documentation d’intégration.",
+        "Comparer les empreintes RFC 7638 quand les valeurs kid divergent entre environnements.",
+        "Documenter les contrôles de rotation de clés publiques dans les runbooks auth, SSO et sécurité API.",
+        "Confirmer qu’une clé publique copiée est analysable avant d’investiguer un échec de signature."
+      ],
+      "inputExamples": [
+        {
+          "label": "PEM de clé publique SPKI",
+          "value": "-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcD...\n-----END PUBLIC KEY-----"
+        },
+        {
+          "label": "JWK public EC",
+          "value": "{\"kty\":\"EC\",\"crv\":\"P-256\",\"x\":\"...\",\"y\":\"...\"}"
+        },
+        {
+          "label": "JWK public RSA",
+          "value": "{\"kty\":\"RSA\",\"n\":\"...\",\"e\":\"AQAB\",\"kid\":\"auth-key-2026-01\"}"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Sortie JWK publique",
+          "value": "{\n  \"kty\": \"EC\",\n  \"crv\": \"P-256\",\n  \"x\": \"...\",\n  \"y\": \"...\"\n}"
+        },
+        {
+          "label": "Sortie PEM",
+          "value": "-----BEGIN PUBLIC KEY-----\n...\n-----END PUBLIC KEY-----"
+        },
+        {
+          "label": "Résumé d’empreinte",
+          "value": "JWK thumbprint (SHA-256): K8JlQcU6WJq4MFbMa0cEFADDTOMRrrG1yj0K3Xs2-4g"
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Coller un JWK privé dans un assistant de clé publique",
+          "fix": "Exportez uniquement la partie publique avant de convertir ou de partager un exemple."
+        },
+        {
+          "error": "Coller une RSA PUBLIC KEY PKCS#1 au lieu d’une PUBLIC KEY SPKI",
+          "fix": "Convertissez d’abord vers un PEM SPKI PUBLIC KEY standard."
+        },
+        {
+          "error": "key_ops disparaît après un aller-retour PEM",
+          "fix": "PEM stocke les octets de clé publique ; kid, use et key_ops sont des métadonnées JSON JWK."
+        },
+        {
+          "error": "La courbe attendue par le vérificateur diffère",
+          "fix": "Comparez la valeur crv exportée avec la configuration JWT ou WebCrypto."
+        },
+        {
+          "error": "L’empreinte ne correspond pas à la documentation du service",
+          "fix": "Vérifiez si le service utilise RFC 7638 ou une empreinte propre au fournisseur."
+        }
+      ],
+      "privacyNotes": [
+        "La conversion et le calcul d’empreinte s’exécutent localement dans le navigateur, sans requête réseau.",
+        "Cet outil est destiné aux clés publiques ; ne collez pas de clé privée, secret partagé ou matériau de clé de production.",
+        "Un kid peut révéler des noms d’environnements internes ; masquez-les avant de partager une capture.",
+        "La rotation de confiance en production doit rester gérée par les processus certificat, publication JWKS et audit."
+      ],
+      "faqs": [
+        {
+          "q": "Cet outil vérifie-t-il les signatures JWT ?",
+          "a": "Non. Utilisez le vérificateur JWT pour valider un jeton ; cet assistant prépare et inspecte les clés publiques."
+        },
+        {
+          "q": "Peut-il convertir des clés privées ?",
+          "a": "Non. Les champs JWK privés et symétriques sont refusés."
+        },
+        {
+          "q": "Pourquoi key_ops disparaît-il après export PEM ?",
+          "a": "PEM contient les octets de clé publique, tandis que key_ops, use et kid sont des métadonnées JSON JWK."
+        },
+        {
+          "q": "À quoi sert l’empreinte JWK ?",
+          "a": "Elle fournit un identifiant stable calculé à partir des membres publics canoniques du JWK."
+        },
+        {
+          "q": "La clé quitte-t-elle le navigateur ?",
+          "a": "Non. Import, export et calcul d’empreinte utilisent les API locales du navigateur."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "Collez un PEM public ou un JWK public et vérifiez l’absence de champs privés.",
+      "Choisissez les formats d’entrée et de sortie, puis lancez la conversion.",
+      "Contrôlez l’algorithme, la courbe ou le module, puis notez le thumbprint.",
+      "Avant de copier dans des tests ou une documentation, masquez les identifiants d’environnement comme kid."
+    ],
+    "qualityChecklist": [
+      "Confirmer que l’entrée ne contient que du matériau de clé publique.",
+      "Vérifier que le format exporté est accepté par la bibliothèque ou l’outil cible.",
+      "Comparer le thumbprint pour éviter d’utiliser une clé d’un autre environnement.",
+      "Retirer les noms d’environnements internes et domaines d’exemple avant partage externe."
+    ],
+    "operationalNote": "L’assistant clé publique JWK est utile comme contrôle rapide avant une intégration auth ou une rotation de clé, mais la publication de confiance en production reste un processus formel de changement et d’audit."
   }
 }

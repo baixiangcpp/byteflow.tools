@@ -120,5 +120,6 @@
   "saml-decoder",
   "asn1-der-inspector",
   "hex-bytes-workbench",
-  "unicode-inspector"
+  "unicode-inspector",
+  "public-key-jwk-helper"
 ]
