@@ -64,6 +64,7 @@ export const INSTAGRAM_FILTER_PRESETS: InstagramFilterPreset[] = [
 const PRESET_BY_ID = new Map(INSTAGRAM_FILTER_PRESETS.map((preset) => [preset.id, preset]))
 
 const IMAGE_EXTENSION_RE = /\.(avif|bmp|gif|jpeg|jpg|png|webp)$/i
+const INSTAGRAM_ALLOWED_HOSTNAME_SUFFIXES = ["instagram.com"]
 
 export type InstagramInputKind = "direct_image" | "instagram_post" | "unsupported"
 
@@ -88,7 +89,10 @@ export function parseInstagramMediaInput(rawInput: string): ParsedInstagramInput
     const trimmed = rawInput.trim()
     if (!trimmed) return null
 
-    const safeUrl = parseSafeExternalUrl(trimmed, { requireHttps: false })
+    const safeUrl = parseSafeExternalUrl(trimmed, {
+        requireHttps: false,
+        allowedHostnameSuffixes: INSTAGRAM_ALLOWED_HOSTNAME_SUFFIXES,
+    })
     if (!safeUrl.ok) {
         return null
     }
