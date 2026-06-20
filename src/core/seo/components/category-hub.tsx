@@ -3,6 +3,7 @@ import { requireTranslationValue, type Locale } from "@/core/i18n/i18n"
 import { getToolsByCategory, type ToolCategory } from "@/core/registry"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { ArrowRight } from "lucide-react"
+import { CollectionPageJsonLd } from "./page-json-ld"
 
 interface CategoryHubProps {
     lang: Locale
@@ -25,9 +26,21 @@ export function CategoryHub({ lang, category, titleKey, descriptionKey }: Catego
         t.categories[descriptionKey as keyof typeof t.categories],
         `categories.${descriptionKey}`,
     )
+    const slugByCategory: Record<ToolCategory, string> = {
+        formatters: "formatters",
+        "text-string": "text-tools",
+        generators: "generators",
+        "network-web": "network-tools",
+    }
 
     return (
         <div className="flex max-h-full flex-col gap-7 overflow-y-auto pb-8">
+            <CollectionPageJsonLd
+                lang={lang}
+                slug={slugByCategory[category]}
+                title={title}
+                description={description}
+            />
             <header className="rounded-2xl border border-border/70 bg-card/55 p-5 backdrop-blur-sm">
                 <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h1>
                 {description && (
