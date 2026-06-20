@@ -11,7 +11,6 @@ const DANGEROUS_HTML_CALL = "dangerouslySetInnerHTML"
 
 const ALLOWED_DANGEROUS_HTML_FILES = [
     ...INLINE_SCRIPT_POLICY.map((entry) => entry.file),
-    "src/features/tools/svg-optimizer/page.tsx",
 ].filter((file) => INLINE_SCRIPT_POLICY.some((entry) => entry.file === file && entry.requiresUnsafeInline) || !INLINE_SCRIPT_POLICY.some((entry) => entry.file === file))
 
 function walk(dir: string): string[] {
@@ -64,17 +63,36 @@ describe("HTML injection surface guard", () => {
         expect(source).toContain("dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}")
     })
 
-    it("sanitizes user-provided SVG output before previewing it as HTML", () => {
+    it("sanitizes user-provided SVG output before previewing it as an isolated image", () => {
         const pageSource = readSource("src/features/tools/svg-optimizer/page.tsx")
         const logicSource = readSource("src/features/tools/svg-optimizer/logic.ts")
+        const sanitizerSource = readSource("src/core/security/sanitize.ts")
 
-        expect(logicSource).toContain("import DOMPurify from \"isomorphic-dompurify\"")
-        expect(logicSource).toContain("export function sanitizeSvg(svg: string): string")
-        expect(logicSource).toContain("DOMPurify.sanitize(svg")
-        expect(logicSource).toContain("FORBID_TAGS")
+        expect(logicSource).toContain("import { sanitizeSvg } from \"@/core/security/sanitize\"")
+        expect(sanitizerSource).toContain("import DOMPurify from \"isomorphic-dompurify\"")
+        expect(sanitizerSource).toContain("export function sanitizeSvg(svg: string): string")
+        expect(sanitizerSource).toContain("export function sanitizeSvgForPreview(svg: string): string")
+        expect(sanitizerSource).toContain("DOMPurify.sanitize(svg")
+        expect(sanitizerSource).toContain("FORBID_TAGS")
         expect(pageSource).toContain("setOutput(optimizeAndSanitizeSvg(input))")
-        expect(pageSource).toContain("dangerouslySetInnerHTML={{ __html: output }}")
-        expect(countMatches(pageSource, /dangerouslySetInnerHTML=\{\{/g)).toBe(1)
+        expect(pageSource).toContain("encodeURIComponent(output)")
+        expect(pageSource).toContain("src={outputDataUri}")
+        expect(countMatches(pageSource, /dangerouslySetInnerHTML=\{\{/g)).toBe(0)
+    })
+
+    it("keeps Markdown export and SVG conversion tools on the shared sanitizer", () => {
+        const markdownPageSource = readSource("src/features/tools/markdown-preview/page.tsx")
+        const markdownRendererSource = readSource("src/features/tool-templates/markdown-preview-renderer.tsx")
+        const svgRasterSource = readSource("src/features/tools/svg-to-png-converter/utils.ts")
+        const svgStrokeSource = readSource("src/features/tools/svg-stroke-to-fill-converter/utils.ts")
+
+        expect(markdownPageSource).toContain("import { sanitizeHtml } from \"@/core/security/sanitize\"")
+        expect(markdownPageSource).toContain("safeClipboardWrite(sanitizeHtml(previewEl.innerHTML))")
+        expect(markdownPageSource).toContain("const safeHtml = sanitizeHtml(previewEl.innerHTML)")
+        expect(markdownRendererSource).toContain("MARKDOWN_SANITIZE_SCHEMA")
+        expect(markdownRendererSource).toContain("[rehypeSanitize, MARKDOWN_SANITIZE_SCHEMA]")
+        expect(svgRasterSource).toContain("import { sanitizeSvgForPreview } from \"@/core/security/sanitize\"")
+        expect(svgStrokeSource).toContain("import { sanitizeSvgForPreview } from \"@/core/security/sanitize\"")
     })
 
     it("embeds dynamic redirect and runtime script data with JSON serialization only", () => {

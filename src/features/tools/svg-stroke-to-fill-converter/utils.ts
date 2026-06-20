@@ -1,3 +1,5 @@
+import { sanitizeSvgForPreview } from "@/core/security/sanitize"
+
 export type StrokeToFillResult = {
     svg: string
     converted: number
@@ -83,9 +85,26 @@ function lineToPolygonPoints(x1: number, y1: number, x2: number, y2: number, str
 
 export function convertStrokeToFill(svgText: string): StrokeToFillResult {
     const parser = new DOMParser()
-    const xml = parser.parseFromString(svgText, "image/svg+xml")
+    const originalXml = parser.parseFromString(svgText, "image/svg+xml")
+    if (originalXml.querySelector("parsererror")) {
+        return { svg: "", converted: 0, fallback: 0, error: "Invalid SVG input." }
+    }
+
+    let safeSvgText: string
+    try {
+        safeSvgText = sanitizeSvgForPreview(svgText)
+    } catch (error) {
+        return {
+            svg: "",
+            converted: 0,
+            fallback: 0,
+            error: error instanceof Error ? error.message : "Invalid SVG input.",
+        }
+    }
+
+    const xml = parser.parseFromString(safeSvgText, "image/svg+xml")
     if (xml.querySelector("parsererror")) {
-        return { svg: svgText, converted: 0, fallback: 0, error: "Invalid SVG input." }
+        return { svg: "", converted: 0, fallback: 0, error: "Invalid SVG input." }
     }
 
     const svg = xml.documentElement
@@ -165,5 +184,5 @@ export function convertStrokeToFill(svgText: string): StrokeToFillResult {
 
     const serializer = new XMLSerializer()
     const out = serializer.serializeToString(xml)
-    return { svg: out, converted, fallback }
+    return { svg: sanitizeSvgForPreview(out), converted, fallback }
 }

@@ -5,6 +5,7 @@ import dynamic from "next/dynamic"
 import { Copy, Eye, Code2, Download, Trash2 } from "lucide-react"
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { sanitizeHtml } from "@/core/security/sanitize"
 
 const SAMPLE_MARKDOWN_BY_LANG = {
     en: `# Hello, Markdown! 👋
@@ -190,7 +191,7 @@ export function MarkdownPreviewPage() {
     const handleCopyHtml = async () => {
         const previewEl = document.getElementById("markdown-preview")
         if (previewEl) {
-            const result = await safeClipboardWrite(previewEl.innerHTML)
+            const result = await safeClipboardWrite(sanitizeHtml(previewEl.innerHTML))
             if (!result.ok) {
                 await notifyError(t.common.copy_failed)
                 return
@@ -202,6 +203,7 @@ export function MarkdownPreviewPage() {
     const handleDownloadHtml = () => {
         const previewEl = document.getElementById("markdown-preview")
         if (!previewEl) return
+        const safeHtml = sanitizeHtml(previewEl.innerHTML)
         const html = `<!DOCTYPE html>
 <html lang="${lang}">
 <head>
@@ -220,7 +222,7 @@ img { max-width: 100%; }
 </style>
 </head>
 <body>
-${previewEl.innerHTML}
+${safeHtml}
 </body>
 </html>`
         const blob = new Blob([html], { type: "text/html" })

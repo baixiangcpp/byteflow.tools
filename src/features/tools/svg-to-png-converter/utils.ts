@@ -1,3 +1,5 @@
+import { sanitizeSvgForPreview } from "@/core/security/sanitize"
+
 export type SvgDimensions = {
     width: number
     height: number
@@ -62,7 +64,7 @@ export function ensureSvgMarkup(input: string): string {
     if (!value.toLowerCase().includes("<svg")) {
         throw new Error("Input does not contain an <svg> root element.")
     }
-    return value
+    return sanitizeSvgForPreview(value)
 }
 
 export async function rasterizeSvgToPngDataUrl({
