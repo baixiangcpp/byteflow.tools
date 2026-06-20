@@ -7,11 +7,12 @@ import { INLINE_RELATED_TOOLS_TOOL_SLUGS } from "./inline-related-tools-tool-slu
 import { Button } from "@/components/ui/button"
 import { useLang } from "@/core/i18n/lang-provider"
 import { requireTranslationValue } from "@/core/i18n/i18n"
+import { getToolSourceUrl, isRouteSourceToolSlug } from "@/core/registry/tool-source"
 import { getRouteIntentCopy } from "@/core/seo/route-intent-copy"
 import { getRouteContext } from "@/core/routing/route-context"
 import { recordRecentToolKey } from "@/core/storage/tool-discovery-state"
 import { getRouteToolBySlug } from "@/generated/route-tool-lookup"
-import { ExternalNetworkNotice } from "@/features/tool-shell/external-network-notice"
+import { ToolTrustHeader } from "@/features/tool-shell/tool-trust-header"
 
 const EXCLUDED_CONTENT_INTRO_SLUGS = new Set(["about", "pricing", "contact", "privacy", "terms", "install-app"])
 
@@ -27,16 +28,17 @@ function RoutePageChromeContent({ children, pathname }: RoutePageChromeProps) {
     const activeTool = useMemo(() => {
         if (routeContext.routeType !== "tool" || !routeContext.slug) return null
         const tool = getRouteToolBySlug(routeContext.slug)
+            ?? (isRouteSourceToolSlug(routeContext.slug) ? getRouteToolBySlug("hash-generator") : undefined)
         if (!tool) return null
         return {
             key: tool.key,
-            slug: tool.slug,
+            slug: routeContext.slug,
             privacy: tool.privacy,
             networkAccess: tool.networkAccess,
             networkHosts: tool.networkHosts,
             networkPurposeKey: tool.networkPurposeKey,
-            requiresExplicitUserAction: tool.requiresExplicitUserAction,
             externalDataSent: tool.externalDataSent,
+            sourceUrl: getToolSourceUrl(routeContext.slug),
         }
     }, [routeContext])
 
@@ -72,15 +74,15 @@ function RoutePageChromeContent({ children, pathname }: RoutePageChromeProps) {
                     {routeIntentCopy}
                 </div>
             ) : null}
-            {activeTool?.networkAccess && activeTool.networkAccess !== "none" ? (
-                <ExternalNetworkNotice
+            {activeTool ? (
+                <ToolTrustHeader
+                    slug={activeTool.slug}
+                    sourceUrl={activeTool.sourceUrl}
+                    privacy={activeTool.privacy}
                     networkAccess={activeTool.networkAccess}
                     networkHosts={activeTool.networkHosts}
                     networkPurposeKey={activeTool.networkPurposeKey}
-                    requiresExplicitUserAction={activeTool.requiresExplicitUserAction}
                     externalDataSent={activeTool.externalDataSent}
-                    disclosure={activeTool.privacy.externalRequest.disclosure}
-                    consentRequired={activeTool.privacy.externalRequest.consentRequired}
                 />
             ) : null}
             {children}

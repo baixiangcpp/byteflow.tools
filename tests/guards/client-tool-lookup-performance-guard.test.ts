@@ -24,6 +24,10 @@ const CLIENT_LOOKUP_BOUNDARIES = [
         importPath: "@/generated/route-tool-lookup",
     },
     {
+        file: "src/features/tool-shell/tool-trust-header.tsx",
+        importPath: "@/core/registry/types",
+    },
+    {
         file: "src/components/layout/route-page-chrome.tsx",
         importPath: "@/generated/route-tool-lookup",
     },
