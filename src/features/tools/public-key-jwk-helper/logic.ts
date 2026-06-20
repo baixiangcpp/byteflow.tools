@@ -15,15 +15,19 @@ type PublicJwk = JsonWebKey & {
     kid?: string
 }
 
+type BufferConstructorLike = {
+    from(value: Uint8Array<ArrayBuffer>): Uint8Array
+}
+
 function bytesToBase64(bytes: Uint8Array): string {
     let binary = ""
     for (const byte of bytes) binary += String.fromCharCode(byte)
     return btoa(binary)
 }
 
-function base64ToBytes(value: string): Uint8Array {
+function base64ToBytes(value: string): Uint8Array<ArrayBuffer> {
     const binary = atob(value)
-    const bytes = new Uint8Array(binary.length)
+    const bytes = new Uint8Array(binary.length) as Uint8Array<ArrayBuffer>
     for (let index = 0; index < binary.length; index += 1) {
         bytes[index] = binary.charCodeAt(index)
     }
@@ -39,7 +43,7 @@ function formatPem(label: string, bytes: Uint8Array): string {
     return `-----BEGIN ${label}-----\n${body}\n-----END ${label}-----`
 }
 
-function pemToDerBytes(input: string): Uint8Array {
+function pemToDerBytes(input: string): Uint8Array<ArrayBuffer> {
     const match = input.match(/-----BEGIN ([A-Z ]+)-----([\s\S]+?)-----END \1-----/)
     if (!match) {
         throw new Error("Input must be a PEM encoded public key.")
@@ -56,10 +60,9 @@ function pemToDerBytes(input: string): Uint8Array {
     return base64ToBytes(body)
 }
 
-function toArrayBuffer(bytes: Uint8Array): ArrayBuffer {
-    const copy = new Uint8Array(bytes.byteLength)
-    copy.set(bytes)
-    return copy.buffer
+function toSpkiImportData(bytes: Uint8Array<ArrayBuffer>): BufferSource {
+    const { Buffer: bufferConstructor } = globalThis as typeof globalThis & { Buffer?: BufferConstructorLike }
+    return (bufferConstructor ? bufferConstructor.from(bytes) : bytes) as BufferSource
 }
 
 function canonicalJson(value: unknown): string {
@@ -180,7 +183,7 @@ async function importPublicKey(input: string, inputFormat: PublicKeyInputFormat)
         try {
             const key = inputFormat === "jwk"
                 ? await crypto.subtle.importKey("jwk", jwk!, algorithm, true, [])
-                : await crypto.subtle.importKey("spki", toArrayBuffer(spki!), algorithm, true, [])
+                : await crypto.subtle.importKey("spki", toSpkiImportData(spki!), algorithm, true, [])
             return { key, jwkHint: jwk }
         } catch (error) {
             errors.push(error instanceof Error ? error.message : String(error))
