@@ -11,8 +11,9 @@ import { Textarea } from "@/components/ui/textarea"
 import { readStorageString, writeStorageString } from "@/core/storage/tool-persistence"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildToolHandoffLink } from "@/core/routing/tool-handoff"
+import { FILE_INPUT_POLICIES, describeFilePolicy, readArrayBufferWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { downloadBlob, downloadTextFile } from "./browser-actions"
-import { MAX_FILE_SIZE, MODE_STORAGE_KEY, OPERATION_STORAGE_KEY, OUTPUT_PREVIEW_LIMIT } from "./constants"
+import { MODE_STORAGE_KEY, OPERATION_STORAGE_KEY, OUTPUT_PREVIEW_LIMIT } from "./constants"
 import { BINARY_SAMPLE_BASE64, TEXT_SAMPLE_BASE64, TEXT_SAMPLE_INPUT, URL_SAFE_SAMPLE_BASE64, URL_SAFE_SAMPLE_INPUT } from "./samples"
 import type { Mode, Operation } from "./types"
 import { runBase64FileTask } from "./base64-task"
@@ -34,6 +35,7 @@ export function Base64Page() {
     const { isProcessing, runTextTask } = useBase64TextTask()
 
     const outputBytes = React.useMemo(() => new Blob([output]).size, [output])
+    const filePolicy = FILE_INPUT_POLICIES["base64-file"]
     const canDownload = output.length > 0 || decodedBlob !== null
     const outputPreviewTruncatedLabel = toolT.output_preview_truncated
     const isOutputPreviewTruncated = output.length > OUTPUT_PREVIEW_LIMIT
@@ -125,8 +127,9 @@ export function Base64Page() {
     }
 
     const handleFilePick = async (file: File) => {
-        if (file.size > MAX_FILE_SIZE) {
-            setError(text("error_file_too_large"))
+        const validation = validateFileAgainstPolicy(file, filePolicy)
+        if (!validation.ok) {
+            setError(validation.reason === "too_large" ? text("error_file_too_large") : validation.message)
             return
         }
         setError(null)
@@ -188,7 +191,7 @@ export function Base64Page() {
                 return
             }
             try {
-                const buffer = await sourceFile.arrayBuffer()
+                const buffer = await readArrayBufferWithPolicy(sourceFile, filePolicy)
                 const result = await runBase64FileTask({
                     task: "file",
                     operation: "encode",
@@ -385,12 +388,16 @@ export function Base64Page() {
                                     {sourceFile.name} ({(sourceFile.size / 1024).toFixed(1)} KB)
                                 </span>
                             ) : null}
+                            <span className="text-xs text-muted-foreground">
+                                {describeFilePolicy(filePolicy)}
+                            </span>
                         </>
                     ) : null}
                 </div>
                 <input
                     ref={fileInputRef}
                     type="file"
+                    accept={filePolicy.accept}
                     className="hidden"
                     onChange={(event) => {
                         const file = event.target.files?.[0]

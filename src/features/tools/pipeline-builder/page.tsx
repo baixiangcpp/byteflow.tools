@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { FILE_INPUT_POLICIES, readTextFileWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { getToolHandoffFromSearchParams } from "@/core/routing/tool-handoff"
 import { PIPELINE_TOOL_ADAPTERS } from "@/features/pipeline/adapter-registry"
 import { decodeRecipeFromUrlParam, encodeRecipeForShareUrl, recipeContainsRuntimeInput } from "@/features/pipeline/recipe-codec"
@@ -241,7 +242,12 @@ export function PipelineBuilderPage() {
     }, [recipe, text])
 
     const importRecipe = React.useCallback(async (file: File) => {
-        const source = await file.text()
+        const validation = validateFileAgainstPolicy(file, FILE_INPUT_POLICIES["recipe-json"])
+        if (!validation.ok) {
+            setImportError(validation.message)
+            return
+        }
+        const source = await readTextFileWithPolicy(file, FILE_INPUT_POLICIES["recipe-json"])
         const imported = importRecipeFromJson(source)
         if (!imported.ok) {
             const message = imported.errors.join("\n")

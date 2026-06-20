@@ -7,6 +7,8 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
+import { fileToDataUrl } from "@/core/utils/image-canvas-utils"
 import { parseBase64Image, sanitizeBase64 } from "@/features/tools/image-base64/utils"
 
 type OutputFormat =
@@ -17,7 +19,7 @@ type OutputFormat =
     | "hyperlink"
     | "favicon"
 
-const MAX_FILE_SIZE_BYTES = 10 * 1024 * 1024
+const MAX_FILE_SIZE_BYTES = FILE_INPUT_POLICIES["image-compact"].maxBytes
 
 const OUTPUT_FORMAT_ORDER: OutputFormat[] = [
     "data_uri",
@@ -107,7 +109,14 @@ export function ImageBase64Page() {
     const activeOutput = formatOutputs?.[outputFormat] || ""
     const activeOutputSize = activeOutput ? new Blob([activeOutput]).size : 0
 
-    const handleFileSelect = (file: File) => {
+    const handleFileSelect = async (file: File) => {
+        const validation = validateFileAgainstPolicy(file, FILE_INPUT_POLICIES["image-compact"])
+        if (!validation.ok) {
+            toast.error(validation.reason === "too_large" ? text("file_too_large_title") : text("invalid_file_title"), {
+                description: validation.reason === "too_large" ? text("file_too_large_desc") : text("invalid_file_desc"),
+            })
+            return
+        }
         const mimeFromName = getMimeFromFileName(file.name)
         const effectiveMime = file.type && file.type.startsWith("image/") ? file.type : mimeFromName
         if (!effectiveMime || !effectiveMime.startsWith("image/")) {
@@ -127,23 +136,23 @@ export function ImageBase64Page() {
         setFileSize(file.size)
         setDecodeError(null)
 
-        const reader = new FileReader()
-        reader.onload = (event) => {
-            const dataUrl = event.target?.result as string
+        try {
+            const dataUrl = await fileToDataUrl(file, FILE_INPUT_POLICIES["image-compact"])
             const normalizedDataUrl =
                 typeof dataUrl === "string" && dataUrl.startsWith("data:image/")
                     ? dataUrl
                     : `data:${effectiveMime};base64,${sanitizeBase64(String(dataUrl).split(",")[1] || "")}`
             setImageSrc(normalizedDataUrl)
             setBase64(normalizedDataUrl)
+        } catch {
+            toast.error(t.common.image_file_read_failed)
         }
-        reader.readAsDataURL(file)
     }
 
     const handleDrop = (event: React.DragEvent) => {
         event.preventDefault()
         const file = event.dataTransfer.files[0]
-        if (file) handleFileSelect(file)
+        if (file) void handleFileSelect(file)
     }
 
     const handleDecodeBase64 = (value: string) => {
@@ -295,9 +304,9 @@ export function ImageBase64Page() {
                                 <input
                                     ref={fileInputRef}
                                     type="file"
-                                    accept="image/*"
+                                    accept={FILE_INPUT_POLICIES["image-compact"].accept}
                                     className="hidden"
-                                    onChange={(event) => event.target.files?.[0] && handleFileSelect(event.target.files[0])}
+                                    onChange={(event) => event.target.files?.[0] && void handleFileSelect(event.target.files[0])}
                                 />
                             </div>
                         </div>

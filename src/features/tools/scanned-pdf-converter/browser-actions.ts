@@ -1,4 +1,5 @@
 import { loadImageElement } from "@/core/utils/image-canvas-utils"
+import { FILE_INPUT_POLICIES, readArrayBufferWithPolicy } from "@/core/files/file-input-policy"
 
 export type LoadedScanImageFile = {
     bytes: ArrayBuffer
@@ -10,7 +11,7 @@ export type LoadedScanImageFile = {
 }
 
 export async function loadScanImageFile(file: File): Promise<LoadedScanImageFile> {
-    const bytes = await file.arrayBuffer()
+    const bytes = await readArrayBufferWithPolicy(file, FILE_INPUT_POLICIES["scan-image"])
     const objectUrl = URL.createObjectURL(file)
     try {
         const image = await loadImageElement(objectUrl)

@@ -18,6 +18,7 @@ import {
     type StandardHashAlgorithm,
 } from "@/core/utils/hash-utils"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { FILE_INPUT_POLICIES, describeFilePolicy, readArrayBufferWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 
 type HashMode = "text" | "file" | "hmac" | "batch"
 
@@ -78,6 +79,7 @@ export function FocusedHashToolPage({
     const [fileSize, setFileSize] = React.useState(0)
     const [fileBytes, setFileBytes] = React.useState<Uint8Array | null>(null)
     const [fileError, setFileError] = React.useState<string | null>(null)
+    const filePolicy = FILE_INPUT_POLICIES["hash-file"]
 
     const visibleModes = React.useMemo<HashMode[]>(() => {
         const next: HashMode[] = ["text"]
@@ -212,8 +214,16 @@ export function FocusedHashToolPage({
 
     const handleFileSelect = async (file: File | null) => {
         if (!file) return
+        const validation = validateFileAgainstPolicy(file, filePolicy)
+        if (!validation.ok) {
+            setFileBytes(null)
+            setFileName("")
+            setFileSize(0)
+            setFileError(validation.message)
+            return
+        }
         try {
-            const buffer = await file.arrayBuffer()
+            const buffer = await readArrayBufferWithPolicy(file, filePolicy)
             setFileBytes(new Uint8Array(buffer))
             setFileName(file.name)
             setFileSize(file.size)
@@ -285,6 +295,7 @@ export function FocusedHashToolPage({
                                         <span>{t.common.hash_tool.select_file}</span>
                                         <input
                                             type="file"
+                                            accept={filePolicy.accept}
                                             className="hidden"
                                             onChange={(event) => {
                                                 const file = event.target.files?.[0] || null
@@ -295,6 +306,7 @@ export function FocusedHashToolPage({
                                     <div className="rounded-md border bg-background/80 p-3 text-xs text-muted-foreground">
                                         {fileName ? `${fileName} (${fileSize} ${t.common.hash_tool.bytes})` : t.common.hash_tool.no_file_selected}
                                     </div>
+                                    <div className="text-xs text-muted-foreground">{describeFilePolicy(filePolicy)}</div>
                                     {fileError ? <div className="text-xs text-red-600 dark:text-red-300">{fileError}</div> : null}
                                 </>
                             ) : (

@@ -9,14 +9,15 @@ import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { FILE_INPUT_POLICIES, filterFilesByPolicy, formatFilePolicyLimit } from "@/core/files/file-input-policy"
 import {
     type ScanEnhanceConfig,
 } from "@/features/tools/scanned-pdf-converter/utils"
 import { runScanEnhanceTask } from "@/features/tools/scanned-pdf-converter/scan-enhance-task"
 import { downloadPdfBytes, loadScanImageFile } from "@/features/tools/scanned-pdf-converter/browser-actions"
 
-const MAX_FILE_SIZE = 12 * 1024 * 1024
-const MAX_FILES = 20
+const SCAN_FILE_POLICY = FILE_INPUT_POLICIES["scan-image"]
+const MAX_FILES = SCAN_FILE_POLICY.maxFiles ?? 20
 let pdfLibPromise: Promise<typeof import("pdf-lib")> | null = null
 
 type ScanPage = {
@@ -154,14 +155,11 @@ export function ScannedPdfConverterPage() {
 
     const handleFiles = async (files: FileList | null) => {
         if (!files || files.length === 0) return
-        const accepted = Array.from(files).slice(0, MAX_FILES)
+        const { accepted } = filterFilesByPolicy(Array.from(files), SCAN_FILE_POLICY)
         const results: ScanPage[] = []
         const nextObjectUrls: string[] = []
 
         for (const file of accepted) {
-            if (!file.type.startsWith("image/")) continue
-            if (file.size > MAX_FILE_SIZE) continue
-
             const loaded = await loadScanImageFile(file)
             nextObjectUrls.push(loaded.objectUrl)
             results.push({
@@ -282,14 +280,14 @@ export function ScannedPdfConverterPage() {
                             ref={fileInputRef}
                             type="file"
                             multiple
-                            accept="image/*"
+                            accept={SCAN_FILE_POLICY.accept}
                             className="hidden"
                             onChange={(event) => void handleFiles(event.target.files)}
                         />
                         <div className="text-center text-muted-foreground">
                             <Upload className="mx-auto mb-3 h-10 w-10 opacity-60" />
                             <p className="text-sm font-medium">{toolT.drop_scanned_images_or_click_upload}</p>
-                            <p className="mt-1 text-xs">{toolT.upload_limit_hint.replace("{count}", String(MAX_FILES)).replace("{size}", "12MB")}</p>
+                            <p className="mt-1 text-xs">{toolT.upload_limit_hint.replace("{count}", String(MAX_FILES)).replace("{size}", formatFilePolicyLimit(SCAN_FILE_POLICY))}</p>
                         </div>
                     </div>
 

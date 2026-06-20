@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { FILE_INPUT_POLICIES, describeFilePolicy, readTextFileWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { extractSvgDimensions, rasterizeSvgToPngDataUrl } from "@/features/tools/svg-to-png-converter/utils"
 
 const SAMPLE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 700" width="1200" height="700">
@@ -49,6 +50,7 @@ export function SvgToPngConverterPage() {
     const controlOn = toolT.control_on
     const controlOff = toolT.control_off
     const fileInputRef = React.useRef<HTMLInputElement>(null)
+    const filePolicy = FILE_INPUT_POLICIES.svg
 
     const initialDims = React.useMemo(() => extractSvgDimensions(SAMPLE_SVG), [])
 
@@ -153,11 +155,12 @@ export function SvgToPngConverterPage() {
     }
 
     const handleFileUpload = async (file: File) => {
-        if (!file.name.toLowerCase().endsWith(".svg") && file.type !== "image/svg+xml") {
+        const validation = validateFileAgainstPolicy(file, filePolicy)
+        if (!validation.ok) {
             toast.error(t.common.svg_file_required)
             return
         }
-        const text = await file.text()
+        const text = await readTextFileWithPolicy(file, filePolicy)
         setSvgInput(text)
         const dims = extractSvgDimensions(text)
         setWidth(dims.width)
@@ -245,13 +248,14 @@ export function SvgToPngConverterPage() {
                         <input
                             ref={fileInputRef}
                             type="file"
-                            accept=".svg,image/svg+xml"
+                            accept={filePolicy.accept}
                             className="hidden"
                             onChange={(event) => {
                                 const file = event.target.files?.[0]
                                 if (file) void handleFileUpload(file)
                             }}
                         />
+                        <span className="text-xs text-muted-foreground">{describeFilePolicy(filePolicy)}</span>
                     </div>
 
                     <div className="grid gap-3 sm:grid-cols-2">

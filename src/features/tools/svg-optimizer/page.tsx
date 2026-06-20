@@ -9,6 +9,7 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
+import { FILE_INPUT_POLICIES, readTextFileWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { optimizeAndSanitizeSvg } from "./logic"
 
 const SAMPLE_SVG = `<?xml version="1.0" encoding="UTF-8"?>
@@ -35,6 +36,7 @@ export function SvgOptimizerPage() {
     const [input, setInput] = React.useState(SAMPLE_SVG)
     const [output, setOutput] = React.useState("")
     const fileInputRef = React.useRef<HTMLInputElement>(null)
+    const filePolicy = FILE_INPUT_POLICIES.svg
     const { theme } = useThemePreference()
     const monacoTheme = getByteflowMonacoThemeName(theme)
 
@@ -54,10 +56,17 @@ export function SvgOptimizerPage() {
         [output],
     )
 
-    const handleFile = (file: File) => {
-        const reader = new FileReader()
-        reader.onload = (event) => setInput(event.target?.result as string)
-        reader.readAsText(file)
+    const handleFile = async (file: File) => {
+        const validation = validateFileAgainstPolicy(file, filePolicy)
+        if (!validation.ok) {
+            toast.error(validation.reason === "unsupported_type" ? t.common.svg_file_required : validation.message)
+            return
+        }
+        try {
+            setInput(await readTextFileWithPolicy(file, filePolicy))
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : t.common.svg_file_required)
+        }
     }
 
     const handleCopy = async () => {
@@ -108,11 +117,11 @@ export function SvgOptimizerPage() {
                 <input
                     ref={fileInputRef}
                     type="file"
-                    accept=".svg"
+                    accept={filePolicy.accept}
                     className="hidden"
                     onChange={(event) => {
                         const file = event.target.files?.[0]
-                        if (file) handleFile(file)
+                        if (file) void handleFile(file)
                     }}
                 />
             </div>
