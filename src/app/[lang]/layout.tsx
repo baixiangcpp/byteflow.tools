@@ -7,6 +7,7 @@ import { ServerNavbar } from "@/components/layout/server-navbar";
 import { LangProvider } from "@/core/i18n/lang-provider";
 import { SiteJsonLd } from "@/core/seo/components/site-json-ld";
 import { buildSiteKeywords, getOgLocale } from "@/core/seo/seo";
+import { SITE_URL, buildCanonicalUrl, buildLocalizedAlternates } from "@/core/seo/urls";
 import { getEnglishToolSearchAliases, getTranslation } from "@/core/i18n/translations/catalog";
 import { ToolPrivacyFooterSlot } from "@/features/tool-shell/tool-privacy-footer-slot";
 
@@ -25,9 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     const locale = lang;
     const t = getTranslation(locale);
 
-    const languages: Record<string, string> = {};
-    LOCALES.forEach((l) => { languages[l] = `https://byteflow.tools/${l}`; });
-    languages["x-default"] = "https://byteflow.tools/en";
+    const canonicalUrl = buildCanonicalUrl(locale);
 
     return {
         title: { default: t.site.title, template: `%s | byteflow.tools` },
@@ -36,21 +35,21 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
         openGraph: {
             title: t.site.title,
             description: t.site.description,
-            url: `https://byteflow.tools/${locale}`,
+            url: canonicalUrl,
             siteName: "byteflow.tools",
             locale: getOgLocale(locale),
             type: "website",
-            images: ["https://byteflow.tools/icon-512.png"],
+            images: [`${SITE_URL}/icon-512.png`],
         },
         twitter: {
             card: "summary_large_image",
             title: t.site.title,
             description: t.site.description,
-            images: ["https://byteflow.tools/icon-512.png"],
+            images: [`${SITE_URL}/icon-512.png`],
         },
         alternates: {
-            canonical: `https://byteflow.tools/${locale}`,
-            languages,
+            canonical: canonicalUrl,
+            languages: buildLocalizedAlternates(),
         },
     };
 }

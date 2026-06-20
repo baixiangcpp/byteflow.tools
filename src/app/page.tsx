@@ -17,14 +17,7 @@ import { getTranslation } from "@/core/i18n/translations/catalog"
 import { MENU_GROUP_DEFS } from "@/core/registry/menu-groups"
 import { formatToolRegistryStatsTemplate, getToolRegistryStats } from "@/core/registry/stats"
 import { TOOL_REGISTRY } from "@/core/registry"
-
-const SITE_URL = "https://byteflow.tools"
-
-const ROOT_ALTERNATES = Object.fromEntries(
-    LOCALES.map((locale) => [locale, `${SITE_URL}/${locale}`])
-) as Record<string, string>
-
-ROOT_ALTERNATES["x-default"] = SITE_URL
+import { SITE_URL, buildLocalizedAlternates } from "@/core/seo/urls"
 
 const CATEGORY_ICONS = {
     data_code_formats: Braces,
@@ -53,7 +46,7 @@ export const metadata: Metadata = {
     description: "Privacy-first local developer tools that run in your browser. No account, installable PWA, open source, and built for sensitive JSON, JWT, Base64, hashing, URL, and workflow tasks.",
     alternates: {
         canonical: SITE_URL,
-        languages: ROOT_ALTERNATES,
+        languages: buildLocalizedAlternates(),
     },
     robots: {
         index: true,

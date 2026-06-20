@@ -1,6 +1,10 @@
 import sitemap from "@/app/sitemap"
 import sitemapLastmod from "@/lib/sitemap-lastmod.json"
+import routeGroups from "@/lib/sitemap-route-groups.json"
+import { LOCALES } from "@/core/i18n/i18n"
 import { TOOL_REGISTRY } from "@/core/registry"
+import { TOOL_ALIAS_TO_CANONICAL_SLUG } from "@/core/registry/tool-aliases"
+import { SITE_URL, buildCanonicalUrl } from "@/core/seo/urls"
 import { describe, expect, it } from "vitest"
 
 function normalizeLastModified(value: Date | string | undefined): string {
@@ -39,6 +43,32 @@ describe("sitemap lastmod", () => {
         expect(entries.some((entry) => entry.url.endsWith("/en"))).toBe(true)
         expect(entries.some((entry) => entry.url.includes("/en/json-formatter"))).toBe(true)
         expect(entries.length).toBeGreaterThan(TOOL_REGISTRY.length)
+    })
+
+    it("contains every locale home and every canonical tool URL", () => {
+        const urls = new Set(sitemap().map((entry) => entry.url))
+
+        expect(urls.has(`${SITE_URL}/`)).toBe(true)
+        for (const locale of LOCALES) {
+            expect(urls.has(buildCanonicalUrl(locale))).toBe(true)
+            for (const tool of TOOL_REGISTRY) {
+                expect(urls.has(buildCanonicalUrl(locale, tool.slug))).toBe(true)
+            }
+        }
+    })
+
+    it("contains current hub pages and excludes legacy alias sources", () => {
+        const urls = new Set(sitemap().map((entry) => entry.url))
+
+        for (const locale of LOCALES) {
+            for (const hub of routeGroups.hubSlugs) {
+                expect(urls.has(buildCanonicalUrl(locale, hub))).toBe(true)
+            }
+
+            for (const legacySlug of Object.keys(TOOL_ALIAS_TO_CANONICAL_SLUG)) {
+                expect(urls.has(buildCanonicalUrl(locale, legacySlug))).toBe(false)
+            }
+        }
     })
 
     it("excludes noindex static pages from sitemap output", () => {

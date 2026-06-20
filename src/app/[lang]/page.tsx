@@ -15,7 +15,7 @@ import {
   Share2,
 } from "lucide-react"
 import { notFound } from "next/navigation"
-import { LOCALES, isValidLocale, requireTranslationValue } from "@/core/i18n/i18n"
+import { isValidLocale, requireTranslationValue } from "@/core/i18n/i18n"
 import { SearchButton } from "./search-button"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { MENU_GROUP_DEFS, getMenuGroups } from "@/core/registry/menu-groups"
@@ -23,14 +23,7 @@ import { formatToolRegistryStatsTemplate, getToolRegistryStats } from "@/core/re
 import { PopularToolsSection } from "@/features/home/components/popular-tools-section"
 import { HomeCategoryPreview } from "@/features/home/components/home-category-preview"
 import { ALL_TOOLS_SECTION_ID } from "@/core/routing/all-tools-route"
-
-const SITE_URL = "https://byteflow.tools"
-
-const HOME_ALTERNATES = Object.fromEntries(
-  LOCALES.map((locale) => [locale, `${SITE_URL}/${locale}`])
-) as Record<string, string>
-
-HOME_ALTERNATES["x-default"] = SITE_URL
+import { buildCanonicalUrl, buildLocalizedAlternates } from "@/core/seo/urls"
 
 type FeatureCard = {
   key: "privacy" | "speed" | "keyboard" | "tools"
@@ -51,8 +44,8 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
       absolute: getTranslation(lang).site.title,
     },
     alternates: {
-      canonical: `${SITE_URL}/${lang}`,
-      languages: HOME_ALTERNATES,
+      canonical: buildCanonicalUrl(lang),
+      languages: buildLocalizedAlternates(),
     },
   }
 }

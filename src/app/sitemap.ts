@@ -1,12 +1,12 @@
 import type { MetadataRoute } from "next"
 import { LOCALES } from "@/core/i18n/i18n"
 import { TOOL_REGISTRY } from "@/core/registry"
+import { SITE_URL, buildCanonicalUrl, buildLocalizedAlternates } from "@/core/seo/urls"
 import routeGroups from "@/lib/sitemap-route-groups.json"
 import sitemapLastmod from "@/lib/sitemap-lastmod.json"
 
 export const dynamic = "force-static"
 
-const BASE_URL = "https://byteflow.tools"
 const HUB_SLUGS = Array.from(new Set(routeGroups.hubSlugs))
 const STATIC_SLUGS = routeGroups.staticSlugs
 const NOINDEX_STATIC_SLUGS = new Set(["about", "pricing", "terms"])
@@ -63,63 +63,53 @@ function getToolLastmod(locale: Locale, slug: string, homeFallback: Date): Date 
     )
 }
 
-function buildAlternates(pathBuilder: (locale: Locale) => string, xDefaultUrl = pathBuilder("en")) {
-    return Object.fromEntries([
-        ...LOCALES.map((locale) => [locale, pathBuilder(locale)]),
-        ["x-default", xDefaultUrl],
-    ])
-}
-
 function buildCoreEntries(): MetadataRoute.Sitemap {
     const entries: MetadataRoute.Sitemap = []
     const manifestFallback = parseIsoDate(LASTMOD_MANIFEST.home?.en) ?? new Date("2026-02-25T00:00:00.000Z")
     const rootLastmod = getHomeLastmod("en", manifestFallback)
 
     entries.push({
-        url: `${BASE_URL}/`,
+        url: `${SITE_URL}/`,
         lastModified: rootLastmod,
         changeFrequency: "weekly",
         priority: 1,
         alternates: {
-            languages: Object.fromEntries([
-                ...LOCALES.map((locale) => [locale, `${BASE_URL}/${locale}`]),
-                ["x-default", BASE_URL],
-            ]),
+            languages: buildLocalizedAlternates(),
         },
     })
 
     for (const locale of LOCALES) {
         const homeLastmod = getHomeLastmod(locale, manifestFallback)
         entries.push({
-            url: `${BASE_URL}/${locale}`,
+            url: buildCanonicalUrl(locale),
             lastModified: homeLastmod,
             changeFrequency: "weekly",
             priority: 1,
             alternates: {
-                languages: buildAlternates((l) => `${BASE_URL}/${l}`, BASE_URL),
+                languages: buildLocalizedAlternates(),
             },
         })
 
         for (const hub of HUB_SLUGS) {
             entries.push({
-                url: `${BASE_URL}/${locale}/${hub}`,
+                url: buildCanonicalUrl(locale, hub),
                 lastModified: getHubLastmod(locale, hub, homeLastmod),
                 changeFrequency: "weekly",
                 priority: 0.9,
                 alternates: {
-                    languages: buildAlternates((l) => `${BASE_URL}/${l}/${hub}`),
+                    languages: buildLocalizedAlternates({ slug: hub }),
                 },
             })
         }
 
         for (const slug of SITEMAP_STATIC_SLUGS) {
             entries.push({
-                url: `${BASE_URL}/${locale}/${slug}`,
+                url: buildCanonicalUrl(locale, slug),
                 lastModified: getStaticLastmod(locale, slug, homeLastmod),
                 changeFrequency: "monthly",
                 priority: 0.6,
                 alternates: {
-                    languages: buildAlternates((l) => `${BASE_URL}/${l}/${slug}`),
+                    languages: buildLocalizedAlternates({ slug }),
                 },
             })
         }
@@ -135,12 +125,12 @@ function buildToolEntries(locale: Locale): MetadataRoute.Sitemap {
     return TOOL_REGISTRY.map((tool) => {
         const lastModified = parseIsoDate(tool.updatedAt) ?? getToolLastmod(locale, tool.slug, homeLastmod)
         return {
-            url: `${BASE_URL}/${locale}/${tool.slug}`,
+            url: buildCanonicalUrl(locale, tool.slug),
             lastModified,
             changeFrequency: "monthly",
             priority: 0.8,
             alternates: {
-                languages: buildAlternates((l) => `${BASE_URL}/${l}/${tool.slug}`),
+                languages: buildLocalizedAlternates({ slug: tool.slug }),
             },
         }
     })

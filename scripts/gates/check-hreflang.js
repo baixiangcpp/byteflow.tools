@@ -50,7 +50,11 @@ function toPosixPath(filePath) {
 }
 
 function parseRoute(relativePath) {
-    if (relativePath === "index.html" || relativePath === "404.html" || relativePath === "_not-found.html") {
+    if (relativePath === "index.html") {
+        return { locale: null, slug: null }
+    }
+
+    if (relativePath === "404.html" || relativePath === "_not-found.html") {
         return null
     }
 
@@ -156,7 +160,7 @@ function main() {
     }
 
     if (checkedCount === 0) {
-        console.error(`[check:hreflang] No locale pages were checked under ${scanDir}`)
+        console.error(`[check:hreflang] No indexable pages were checked under ${scanDir}`)
         process.exit(1)
     }
 

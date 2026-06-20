@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import type { Locale } from "@/core/i18n/i18n";
-import { LOCALES, requireTranslationValue } from "@/core/i18n/i18n";
+import { requireTranslationValue } from "@/core/i18n/i18n";
 import { CATEGORIES, getToolBySlug, type ToolMeta } from "@/core/registry";
 import { getTranslation } from "@/core/i18n/translations/catalog";
 import { getLocalizedMetaCopy } from "@/core/seo/localized-meta-copy";
+import { SITE_URL, buildCanonicalUrl, buildLocalizedAlternates } from "@/core/seo/urls";
 import { getRouteIntentCopy as getLocalizedRouteIntentCopy, type RouteIntentType } from "./route-intent-copy";
 
-const SITE_URL = "https://byteflow.tools";
 const SITE_NAME = "byteflow.tools";
 const SITE_TITLE_SUFFIX = ` | ${SITE_NAME}`;
 const DEFAULT_OG_IMAGE = `${SITE_URL}/icon-512.png`;
@@ -192,15 +192,6 @@ export function getOgLocale(lang: Locale) {
 
 export { DEFAULT_OG_IMAGE };
 
-function buildAlternates(slug: string) {
-    const languages: Record<string, string> = {};
-    LOCALES.forEach((l) => {
-        languages[l] = `${SITE_URL}/${l}/${slug}`;
-    });
-    languages["x-default"] = `${SITE_URL}/en/${slug}`;
-    return languages;
-}
-
 function uniqueKeywords(values: string[]) {
     const seen = new Set<string>();
     const keywords: string[] = [];
@@ -335,10 +326,10 @@ export function buildToolMetadata({
         title: base.title,
         description: base.description,
     });
-    const canonicalUrl = `${SITE_URL}/${lang}/${slug}`;
+    const canonicalUrl = buildCanonicalUrl(lang, slug);
 
     // Build hreflang alternates for all locales + x-default
-    const languages = buildAlternates(slug);
+    const languages = buildLocalizedAlternates({ slug });
     const ogLocale = getOgLocale(lang);
     const categoryTitle = getNavTranslation(lang, CATEGORIES[tool.category].labelKey);
     const ogImage = buildToolOgImageUrl(lang, slug);
@@ -387,7 +378,7 @@ export function buildHubMetadata({
     description: string;
 }): Metadata {
     const boosted = applySeoSnippetAngle({ lang, routeType: "hub", title, description });
-    const canonicalUrl = `${SITE_URL}/${lang}/${slug}`;
+    const canonicalUrl = buildCanonicalUrl(lang, slug);
 
     return {
         title: buildPageTitle(boosted.title),
@@ -399,7 +390,7 @@ export function buildHubMetadata({
         }),
         alternates: {
             canonical: canonicalUrl,
-            languages: buildAlternates(slug),
+            languages: buildLocalizedAlternates({ slug }),
         },
         openGraph: {
             title: withSiteName(boosted.title),
@@ -442,7 +433,7 @@ export function buildContentMetadata({
         title: localized.title,
         description: localized.description,
     });
-    const canonicalUrl = `${SITE_URL}/${lang}/${slug}`;
+    const canonicalUrl = buildCanonicalUrl(lang, slug);
 
     return {
         title: buildPageTitle(boosted.title),
@@ -454,7 +445,7 @@ export function buildContentMetadata({
         }),
         alternates: {
             canonical: canonicalUrl,
-            languages: buildAlternates(slug),
+            languages: buildLocalizedAlternates({ slug }),
         },
         openGraph: {
             title: withSiteName(boosted.title),
@@ -487,8 +478,8 @@ export function buildStaticPageMetadata({
     description: string;
     noindex?: boolean;
 }): Metadata {
-    const canonicalUrl = `${SITE_URL}/${lang}/${slug}`;
-    const languages = buildAlternates(slug);
+    const canonicalUrl = buildCanonicalUrl(lang, slug);
+    const languages = buildLocalizedAlternates({ slug });
 
     return {
         title: buildPageTitle(title),
