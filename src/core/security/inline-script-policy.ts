@@ -9,14 +9,6 @@ export type InlineScriptPolicyEntry = {
 
 export const INLINE_SCRIPT_POLICY: readonly InlineScriptPolicyEntry[] = [
     {
-        id: "root-locale-redirect",
-        file: "src/app/page.tsx",
-        purpose: "Static export root locale redirect before React hydration.",
-        requiresUnsafeInline: false,
-        migrationPath: "Implemented as a same-origin runtime script to avoid inline execution in the root route.",
-        externalScript: "/runtime/root-locale-redirect.js",
-    },
-    {
         id: "theme-manifest-bootstrap",
         file: "src/app/layout.tsx",
         purpose: "Set locale lang, color scheme, theme-color, and localized manifest before first paint.",

@@ -32,7 +32,7 @@ describe("localized home metadata", () => {
 
     it("pins the root landing page title as an absolute title", () => {
         expect(rootPageMetadata.title).toEqual({
-            absolute: "byteflow.tools | Privacy-first Developer Tools",
+            absolute: "byteflow.tools | Privacy-first Local Developer Tools",
         })
     })
 
