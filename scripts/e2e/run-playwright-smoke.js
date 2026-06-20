@@ -474,7 +474,7 @@ async function assertMobileBase64(page) {
         "mobile Base64 output copy",
     );
 
-    await page.getByRole("tab", { name: /^Decode$/ }).first().click();
+    await page.getByRole("radio", { name: /^Decode$/ }).first().click();
     await input.fill("%%%");
     await page.getByRole("button", { name: /^Decode Base64$/ }).first().click();
     await page.getByText(/Invalid Base64 input/i).first()
