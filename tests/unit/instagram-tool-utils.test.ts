@@ -26,7 +26,7 @@ describe("instagram-tool-utils", () => {
     })
 
     it("parses direct image urls as download candidates when authorized", () => {
-        const parsed = parseInstagramMediaInput("https://example.com/public/photo.jpg?token=abc")
+        const parsed = parseInstagramMediaInput("https://cdn.instagram.com/public/photo.jpg")
         expect(parsed?.kind).toBe("direct_image")
         expect(canDownloadAuthorizedInstagramMedia(parsed || null, true)).toBe(true)
         expect(canDownloadAuthorizedInstagramMedia(parsed || null, false)).toBe(false)
@@ -37,21 +37,26 @@ describe("instagram-tool-utils", () => {
         expect(parseInstagramMediaInput("data:image/png;base64,AAAA")).toBeNull()
         expect(parseInstagramMediaInput("ftp://example.com/photo.jpg")).toBeNull()
 
-        const insecure = parseInstagramMediaInput("http://example.com/photo.jpg")
+        const insecure = parseInstagramMediaInput("http://cdn.instagram.com/photo.jpg")
         expect(insecure?.kind).toBe("direct_image")
         expect(insecure?.isHttps).toBe(false)
         expect(canDownloadAuthorizedInstagramMedia(insecure || null, true)).toBe(false)
     })
 
     it("marks unsupported external assets as non-downloadable", () => {
-        const parsed = parseInstagramMediaInput("https://example.com/photo.svg")
+        const parsed = parseInstagramMediaInput("https://cdn.instagram.com/photo.svg")
         expect(parsed?.kind).toBe("unsupported")
         expect(canDownloadAuthorizedInstagramMedia(parsed || null, true)).toBe(false)
     })
 
+    it("rejects direct image hosts outside the disclosed Instagram domain", () => {
+        expect(parseInstagramMediaInput("https://example.com/public/photo.jpg")).toBeNull()
+        expect(parseInstagramMediaInput("https://notinstagram.com/public/photo.jpg")).toBeNull()
+    })
+
     it("derives safe filename from media url", () => {
-        expect(getInstagramMediaFilename("https://example.com/my photo!.png")).toBe("my-photo.png")
+        expect(getInstagramMediaFilename("https://cdn.instagram.com/my photo!.png")).toBe("my-photo.png")
         expect(getInstagramMediaFilename("javascript:alert(1)")).toBe("instagram-photo.jpg")
-        expect(getInstagramMediaFilename("https://example.com/%E0%A4%A.png")).toBe("instagram-photo.jpg")
+        expect(getInstagramMediaFilename("https://cdn.instagram.com/%E0%A4%A.png")).toBe("instagram-photo.jpg")
     })
 })

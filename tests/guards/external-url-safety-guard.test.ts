@@ -62,6 +62,7 @@ describe("external URL safety guard", () => {
         expect(source).toContain("if (!parsed || !canDownload)")
         expect(source).toContain("fetch(parsed.normalizedUrl)")
         expect(source).toContain("openExternalUrl(parsed.normalizedUrl)")
+        expect(utils).toContain("allowedHostnameSuffixes: INSTAGRAM_ALLOWED_HOSTNAME_SUFFIXES")
         expect(utils).toContain('parsed.kind === "direct_image" && parsed.isHttps && hasRightsConfirmed')
     })
 })

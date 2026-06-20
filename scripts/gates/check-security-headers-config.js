@@ -1,5 +1,6 @@
 import fs from "node:fs"
 import path from "node:path"
+import { loadOrderedToolManifests } from "../lib/tool-manifest-lib.js"
 
 const CONFIG_PATH = path.join(process.cwd(), "public", "_headers")
 const INLINE_SCRIPT_POLICY_PATH = path.join(process.cwd(), "src", "core", "security", "inline-script-policy.ts")
@@ -11,6 +12,8 @@ const REQUIRED_HEADERS = {
             "object-src 'none'",
             "base-uri 'self'",
             "frame-ancestors 'none'",
+            "frame-src 'none'",
+            "child-src 'none'",
             "https://cloudflareinsights.com",
         ],
     },
@@ -107,6 +110,58 @@ function externalHttpsSourcesForDirective(cspDirectives, directiveName) {
         .sort((a, b) => a.localeCompare(b))
 }
 
+function sourceHost(source) {
+    try {
+        return new URL(source).hostname.toLowerCase()
+    } catch {
+        return null
+    }
+}
+
+function sourceMatchesHostname(source, hostname) {
+    const normalizedHost = hostname.toLowerCase()
+    const sourceHostname = sourceHost(source)
+    if (!sourceHostname) return false
+    if (sourceHostname.startsWith("*.")) {
+        const suffix = sourceHostname.slice(2)
+        return normalizedHost === suffix || normalizedHost.endsWith(`.${suffix}`)
+    }
+    return sourceHostname === normalizedHost || sourceHostname.endsWith(`.${normalizedHost}`)
+}
+
+function externalManifestHosts() {
+    return [...new Set(loadOrderedToolManifests()
+        .flatMap((tool) => tool.privacy.externalRequest.required ? tool.privacy.externalRequest.domains || [] : [])
+        .map((host) => host.toLowerCase()))].sort((a, b) => a.localeCompare(b))
+}
+
+function assertNoForbiddenCspSources(cspDirectives, failures) {
+    const forbiddenTokens = ["*", "http:", "https:", "'unsafe-eval'"]
+    for (const [directiveName, tokens] of cspDirectives.entries()) {
+        for (const token of tokens) {
+            if (forbiddenTokens.includes(token)) {
+                failures.push(`content-security-policy: ${directiveName} must not include ${token}`)
+            }
+        }
+    }
+    const scriptSrc = cspDirectives.get("script-src") || []
+    if (scriptSrc.includes("*") || scriptSrc.includes("https:")) {
+        failures.push("content-security-policy: script-src must not allow arbitrary script sources")
+    }
+}
+
+function assertExternalSourcesAreDeclared(cspDirectives, failures) {
+    const manifestHosts = externalManifestHosts()
+    const externalConnectSources = externalHttpsSourcesForDirective(cspDirectives, "connect-src")
+
+    for (const source of externalConnectSources) {
+        if (source.includes("cloudflare")) continue
+        if (!manifestHosts.some((host) => sourceMatchesHostname(source, host))) {
+            failures.push(`content-security-policy: connect-src source "${source}" has no external-request manifest domain`)
+        }
+    }
+}
+
 function parseCloudflareHeadersConfig(fileContent) {
     const rules = []
     let currentRule = null
@@ -199,6 +254,8 @@ function main() {
 
     const hasUnsafeInlineScript = /(?:^|;)\s*script-src\b[^;]*'unsafe-inline'/.test(cspValue)
     const scriptSrc = cspDirectives.get("script-src") || []
+    assertNoForbiddenCspSources(cspDirectives, failures)
+    assertExternalSourcesAreDeclared(cspDirectives, failures)
     if (hasUnsafeInlineScript && !inlineScriptPolicyRequiresUnsafeInline()) {
         failures.push("content-security-policy: script-src contains 'unsafe-inline' but inline policy has no active rationale")
     }
@@ -216,7 +273,7 @@ function main() {
         }
     }
 
-    for (const [directiveName, allowlistKey] of [["script-src", "scriptSrc"], ["connect-src", "connectSrc"]]) {
+    for (const [directiveName, allowlistKey] of [["script-src", "scriptSrc"], ["connect-src", "connectSrc"], ["img-src", "imgSrc"]]) {
         const allowedSources = externalSourceAllowlist[allowlistKey] || {}
         for (const source of externalHttpsSourcesForDirective(cspDirectives, directiveName)) {
             if (!allowedSources[source]) {
