@@ -376,7 +376,9 @@
     "local_row_limit_exceeded": "행이 너무 많아 로컬에서 안전하게 처리할 수 없습니다. {count}행 이하로 줄이세요.",
     "local_results_truncated": "성능 보호를 위해 결과를 잘랐습니다. 처음 {count}개 항목을 표시합니다.",
     "command_actions": "작업",
-    "command_action_badge": "[작업]"
+    "command_action_badge": "[작업]",
+    "command_recommended_tools": "추천 도구",
+    "request_tool": "도구 요청"
   },
   "tools": {
     "json_formatter": {

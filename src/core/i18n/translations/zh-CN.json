@@ -376,7 +376,9 @@
     "local_row_limit_exceeded": "行数过多，无法在本地安全处理。请控制在 {count} 行以内。",
     "local_results_truncated": "为保证性能，结果已截断。当前显示前 {count} 项。",
     "command_actions": "操作",
-    "command_action_badge": "[操作]"
+    "command_action_badge": "[操作]",
+    "command_recommended_tools": "推荐工具",
+    "request_tool": "请求工具"
   },
   "tools": {
     "json_formatter": {

@@ -376,7 +376,9 @@
     "local_row_limit_exceeded": "列數過多，無法在本機安全處理。請控制在 {count} 列以內。",
     "local_results_truncated": "為確保效能，結果已截斷。目前顯示前 {count} 項。",
     "command_actions": "操作",
-    "command_action_badge": "[操作]"
+    "command_action_badge": "[操作]",
+    "command_recommended_tools": "推薦工具",
+    "request_tool": "請求工具"
   },
   "tools": {
     "json_formatter": {

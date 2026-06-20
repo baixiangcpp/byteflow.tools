@@ -60,6 +60,17 @@ function createMockLangValue(lang: string) {
         command_clear_history: "Clear Tool History",
         command_actions: "Actions",
         command_action_badge: "[ACTION]",
+        command_recommended_tools: "Recommended tools",
+        common_workflows: "Common workflows",
+        no_results_suggestion: "Try another keyword.",
+        request_tool: "Request a tool",
+        capability_browser_local: "Browser-local",
+        capability_external_request: "External request",
+        capability_file_input: "File input",
+        capability_pipeline_ready: "Pipeline ready",
+        workflow_api_payload_cleanup: "API payload cleanup",
+        workflow_security_token_review: "Security token review",
+        workflow_image_social_export: "Image and social export",
         add_favorite: "Add to favorites",
         remove_favorite: "Remove from favorites",
         theme: "Theme",
@@ -191,6 +202,17 @@ vi.mock("@/components/ui/command", () => ({
     CommandSeparator: () => <hr />,
 }))
 
+function getCommandButtonByValue(label: RegExp | string): HTMLElement {
+    const button = screen.getAllByRole("button", { name: label }).find((button) => {
+        const value = button.getAttribute("data-value") || ""
+        return value.length > 0
+    })
+    if (!button) {
+        throw new Error(`Unable to find command button for ${String(label)}`)
+    }
+    return button
+}
+
 describe("layout components", () => {
     beforeEach(() => {
         mocks.pathname = "/en"
@@ -254,13 +276,33 @@ describe("layout components", () => {
         render(<CommandPalette />)
 
         fireEvent.keyDown(document, { key: "k", ctrlKey: true })
-        const jsonFormatterItem = screen.getByRole("button", { name: "title-json_formatter" })
+        const jsonFormatterItem = getCommandButtonByValue(/title-json_formatter/)
         const searchValue = jsonFormatterItem.getAttribute("data-value") || ""
 
         expect(searchValue).toContain("desc-json_formatter")
         expect(searchValue).toContain("json-formatter")
         expect(searchValue).toContain("data-formats")
         expect(searchValue).toContain("pipeline-ready")
+        expect(jsonFormatterItem).toHaveTextContent("Browser-local")
+        expect(jsonFormatterItem).toHaveTextContent("File input")
+        expect(jsonFormatterItem).toHaveTextContent("Pipeline ready")
+    })
+
+    it("searches navigation, category hubs, static pages, and workflow templates", () => {
+        render(<CommandPalette />)
+
+        fireEvent.keyDown(document, { key: "k", ctrlKey: true })
+
+        const allToolsItem = screen.getByRole("button", { name: "All tools" })
+        expect(allToolsItem).toHaveAttribute("data-value", expect.stringContaining("directory"))
+
+        const categoryItem = screen.getByRole("button", { name: "data_code_formats" })
+        expect(categoryItem).toHaveAttribute("data-value", expect.stringContaining("category"))
+
+        const workflowItem = screen.getByRole("button", { name: /API payload cleanup/ })
+        expect(workflowItem).toHaveAttribute("data-value", expect.stringContaining("workflow"))
+        fireEvent.click(workflowItem)
+        expect(mocks.push).toHaveBeenLastCalledWith("/en/pipeline-builder")
     })
 
     it("keeps English tool names as search aliases without replacing localized labels", () => {
@@ -275,7 +317,7 @@ describe("layout components", () => {
 
         fireEvent.keyDown(document, { key: "k", ctrlKey: true })
 
-        const jsonFormatterItem = screen.getByRole("button", { name: "Formateur JSON" })
+        const jsonFormatterItem = getCommandButtonByValue(/Formateur JSON/)
         const searchValue = jsonFormatterItem.getAttribute("data-value") || ""
 
         expect(searchValue).toContain("JSON Formatter")

@@ -80,7 +80,7 @@ export function Navbar({
                     <Button
                         variant="outline"
                         size="icon"
-                        className="inline-flex h-11 w-11 rounded-lg lg:hidden"
+                        className="inline-flex h-11 w-11 rounded-lg sm:hidden"
                         data-command-palette-trigger
                         aria-label={labels.search}
                     >

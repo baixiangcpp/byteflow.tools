@@ -219,15 +219,20 @@ async function assertCommandPaletteJourney(context, baseUrl, locale) {
     await page.getByRole("button", { name: /search tools/i }).first().waitFor({ state: "visible", timeout: 15_000 });
 
     const commandInput = await openCommandPalette(page);
-    await commandInput.fill("json formatter");
+    await page.keyboard.press("Escape");
+    await commandInput.waitFor({ state: "hidden", timeout: 5_000 });
+
+    const reopenedInput = await openCommandPalette(page);
+    await reopenedInput.fill("json formatter");
 
     const jsonFormatterItem = page.locator('[data-slot="command-item"]').filter({ hasText: /JSON Formatter/i }).first();
     await jsonFormatterItem.waitFor({ state: "visible", timeout: 15_000 });
 
     const toolRoute = `${baseUrl}/${locale}/json-formatter`;
+    await jsonFormatterItem.focus();
     await Promise.all([
         page.waitForURL(toolRoute, { timeout: 15_000 }),
-        jsonFormatterItem.click(),
+        page.keyboard.press("Enter"),
     ]);
 
     await page.waitForSelector("main", { timeout: 15_000 });
