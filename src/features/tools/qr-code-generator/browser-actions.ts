@@ -1,4 +1,5 @@
 import type { ErrorCorrectionLevel } from "./types"
+import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 
 let qrCodePromise: Promise<typeof import("qrcode")> | null = null
 let toastPromise: Promise<typeof import("sonner")["toast"]> | null = null
@@ -52,9 +53,13 @@ export function injectLogoIntoSvg(svg: string, options: { dataUrl: string; size:
 }
 
 export function readFileAsDataUrl(file: File): Promise<string> {
-    return new Promise((resolve) => {
+    const validation = validateFileAgainstPolicy(file, FILE_INPUT_POLICIES["image-logo"])
+    if (!validation.ok) return Promise.reject(new Error(validation.message))
+
+    return new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.onload = () => resolve(String(reader.result || ""))
+        reader.onerror = () => reject(reader.error || new Error("Failed to read file"))
         reader.readAsDataURL(file)
     })
 }

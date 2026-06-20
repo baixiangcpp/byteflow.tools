@@ -23,7 +23,7 @@ describe("image resizer worker guard", () => {
         expect(pageSource).not.toContain("URL.createObjectURL(file)")
         expect(pageSource).not.toContain("file.arrayBuffer()")
         expect(pageSource).not.toContain("fileToDataUrl")
-        expect(browserActionsSource).toContain("file.arrayBuffer()")
+        expect(browserActionsSource).toContain('readArrayBufferWithPolicy(file, FILE_INPUT_POLICIES["image-standard"])')
         expect(browserActionsSource).toContain("URL.createObjectURL(file)")
         expect(pageSource).toContain("renderRequestIdRef")
         expect(pageSource).toContain("renderAbortControllerRef")

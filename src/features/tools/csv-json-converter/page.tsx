@@ -10,6 +10,7 @@ import { RelatedTools } from "@/core/seo/components/related-tools"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildToolHandoffLink } from "@/core/routing/tool-handoff"
 import { buildInputTooLargeMessage, countNonEmptyLines, isOverUtf8Budget, TOOL_RUNTIME_BUDGETS } from "@/core/performance/tool-runtime-budgets"
+import { FILE_INPUT_POLICIES, readTextFileWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { readStorageString, removeStorageKey, writeStorageString } from "@/core/storage/tool-persistence"
 import {
     Select,
@@ -214,21 +215,20 @@ export function CsvJsonConverterPage() {
     const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0]
         if (!file) return
-        if (file.size > TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes) {
-            setError(buildInputTooLargeMessage(t.common.local_input_too_large, TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes))
+        const policy = FILE_INPUT_POLICIES["csv-json"]
+        const validation = validateFileAgainstPolicy(file, policy)
+        if (!validation.ok) {
+            setError(validation.reason === "too_large" ? buildInputTooLargeMessage(t.common.local_input_too_large, TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes) : validation.message)
             e.target.value = ""
             return
         }
-        const reader = new FileReader()
-        reader.onload = (ev) => {
-            const text = ev.target?.result
-            if (typeof text === "string") {
+        void readTextFileWithPolicy(file, policy)
+            .then((text) => {
                 cancelPendingConversion()
                 setInput(text)
                 setError(null)
-            }
-        }
-        reader.readAsText(file)
+            })
+            .catch((error) => setError(error instanceof Error ? error.message : t.common.image_file_read_failed))
         // reset input so re-selecting the same file works
         e.target.value = ""
     }
@@ -375,7 +375,7 @@ export function CsvJsonConverterPage() {
                     <div className="tool-pane-header tool-pane-header-between">
                         <span>{t.common.input} ({inputFormatLabel})</span>
                         <label className="cursor-pointer">
-                            <input type="file" className="hidden" accept={direction === "csv-to-json" ? ".csv,.tsv,.txt" : ".json"} onChange={handleFileUpload} />
+                            <input type="file" className="hidden" accept={FILE_INPUT_POLICIES["csv-json"].accept} onChange={handleFileUpload} />
                             <span className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
                                 <Upload className="h-3.5 w-3.5" />
                                 {toolT.input_upload_action}

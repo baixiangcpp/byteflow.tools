@@ -1,4 +1,8 @@
-export async function fileToDataUrl(file: File): Promise<string> {
+import { FILE_INPUT_POLICIES, validateFileAgainstPolicy, type FileInputPolicy } from "@/core/files/file-input-policy"
+
+export async function fileToDataUrl(file: File, policy: FileInputPolicy = FILE_INPUT_POLICIES["image-standard"]): Promise<string> {
+    const validation = validateFileAgainstPolicy(file, policy)
+    if (!validation.ok) throw new Error(validation.message)
     return new Promise((resolve, reject) => {
         const reader = new FileReader()
         reader.onload = () => resolve(String(reader.result || ""))

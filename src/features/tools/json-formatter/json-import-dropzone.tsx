@@ -1,6 +1,8 @@
 import * as React from "react"
 import { Upload } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { FilePolicyHint } from "@/core/files/file-policy-hint"
+import { FILE_INPUT_POLICIES } from "@/core/files/file-input-policy"
 import { TEXT_FILE_IMPORT_ACCEPT } from "@/core/files/text-file-import"
 
 type JsonImportDropzoneProps = {
@@ -40,9 +42,12 @@ export function JsonImportDropzone({
             }}
         >
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                <p className="text-sm text-muted-foreground">
-                    {text("drag_drop_import_hint")}
-                </p>
+                <div className="space-y-1">
+                    <p className="text-sm text-muted-foreground">
+                        {text("drag_drop_import_hint")}
+                    </p>
+                    <FilePolicyHint policy={FILE_INPUT_POLICIES.text} />
+                </div>
                 <Button variant="outline" size="sm" onClick={onOpenImportPicker}>
                     <Upload className="mr-2 h-4 w-4" />
                     {text("import_file")}

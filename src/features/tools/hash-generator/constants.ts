@@ -1,6 +1,7 @@
 import type { StandardHashAlgorithm } from "@/core/utils/hash-utils"
+import { FILE_INPUT_POLICIES } from "@/core/files/file-input-policy"
 
-export const MAX_HASH_FILE_SIZE = 50 * 1024 * 1024
+export const MAX_HASH_FILE_SIZE = FILE_INPUT_POLICIES["hash-file"].maxBytes
 
 export const BATCH_ALGORITHMS: Array<{ key: StandardHashAlgorithm; label: string }> = [
     { key: "md5", label: "MD5" },

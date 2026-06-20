@@ -17,11 +17,12 @@ import {
 import { ModeSelector } from "@/features/tool-shell/mode-selector"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { FILE_INPUT_POLICIES, describeFilePolicy, readArrayBufferWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import {
     type StandardHashAlgorithm,
 } from "@/core/utils/hash-utils"
 import { downloadTextFile } from "./browser-actions"
-import { BATCH_ALGORITHMS, MAX_HASH_FILE_SIZE } from "./constants"
+import { BATCH_ALGORITHMS } from "./constants"
 import type { HashTaskInput } from "./hash-task-logic"
 import type { HashMode } from "./types"
 import { useHashTask } from "./use-hash-task"
@@ -38,6 +39,7 @@ export function HashGeneratorPage() {
     const [fileError, setFileError] = React.useState<string | null>(null)
     const [fileBytes, setFileBytes] = React.useState<Uint8Array | null>(null)
     const [batchAlgorithm, setBatchAlgorithm] = React.useState<StandardHashAlgorithm>("sha256")
+    const filePolicy = FILE_INPUT_POLICIES["hash-file"]
     const sha1Warning = toolT.sha1_warning
     const buildCopyActionLabel = React.useCallback((label: string) => `${t.common.copy} ${label}`, [t.common.copy])
     const modeOptions = React.useMemo(() => [
@@ -79,15 +81,16 @@ export function HashGeneratorPage() {
 
     const handleFileSelect = async (file: File | null) => {
         if (!file) return
-        if (file.size > MAX_HASH_FILE_SIZE) {
+        const validation = validateFileAgainstPolicy(file, filePolicy)
+        if (!validation.ok) {
             setFileBytes(null)
             setFileName("")
             setFileSize(0)
-            setFileError(toolT.file_error)
+            setFileError(validation.reason === "too_large" ? toolT.file_error : validation.message)
             return
         }
         try {
-            const buffer = await file.arrayBuffer()
+            const buffer = await readArrayBufferWithPolicy(file, filePolicy)
             setFileBytes(new Uint8Array(buffer))
             setFileName(file.name)
             setFileSize(file.size)
@@ -212,6 +215,7 @@ export function HashGeneratorPage() {
                                 <span>{toolT.select_file}</span>
                                 <input
                                     type="file"
+                                    accept={filePolicy.accept}
                                     className="hidden"
                                     onChange={(event) => {
                                         const file = event.target.files?.[0] || null
@@ -219,7 +223,7 @@ export function HashGeneratorPage() {
                                     }}
                                 />
                             </label>
-                            <p className="text-xs text-muted-foreground">{toolT.file_hint}</p>
+                            <p className="text-xs text-muted-foreground">{toolT.file_hint} {describeFilePolicy(filePolicy)}</p>
                             {fileName ? <p className="text-xs font-medium text-foreground">{fileName} ({(fileSize / 1024).toFixed(1)} KB)</p> : null}
                             {fileError ? <p className="text-xs text-destructive">{fileError}</p> : null}
                         </div>

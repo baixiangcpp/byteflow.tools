@@ -25,7 +25,7 @@ describe("scanned pdf worker guard", () => {
         expect(pageSource).not.toContain("file.arrayBuffer()")
         expect(pageSource).not.toContain("fileToDataUrl")
         expect(pageSource).not.toContain("dataUrlToUint8Array")
-        expect(browserActionsSource).toContain("file.arrayBuffer()")
+        expect(browserActionsSource).toContain('readArrayBufferWithPolicy(file, FILE_INPUT_POLICIES["scan-image"])')
         expect(browserActionsSource).toContain("URL.createObjectURL(file)")
         expect(browserActionsSource).toContain("URL.createObjectURL(blob)")
         expect(pageSource).toContain("previewRequestIdRef")
