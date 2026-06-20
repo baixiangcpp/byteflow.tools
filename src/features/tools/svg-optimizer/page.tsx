@@ -49,6 +49,10 @@ export function SvgOptimizerPage() {
     const originalSize = new Blob([input]).size
     const optimizedSize = new Blob([output]).size
     const saved = originalSize > 0 ? ((1 - optimizedSize / originalSize) * 100).toFixed(1) : "0"
+    const outputDataUri = React.useMemo(
+        () => (output ? `data:image/svg+xml;utf8,${encodeURIComponent(output)}` : ""),
+        [output],
+    )
 
     const handleFile = (file: File) => {
         const reader = new FileReader()
@@ -157,9 +161,11 @@ export function SvgOptimizerPage() {
                     <div className="flex flex-1 flex-col overflow-hidden">
                         <div className="flex h-48 shrink-0 items-center justify-center border-b bg-muted/20 p-4">
                             {output ? (
-                                <div
-                                    dangerouslySetInnerHTML={{ __html: output }}
-                                    className="flex h-full w-full items-center justify-center [&_svg]:max-h-full [&_svg]:max-w-full [&_svg]:drop-shadow-sm"
+                                // eslint-disable-next-line @next/next/no-img-element
+                                <img
+                                    src={outputDataUri}
+                                    alt={toolT.title}
+                                    className="max-h-full max-w-full object-contain drop-shadow-sm"
                                 />
                             ) : (
                                 <div className="text-sm text-muted-foreground">{t.common.no_output}</div>

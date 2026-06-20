@@ -1,4 +1,4 @@
-import DOMPurify from "isomorphic-dompurify"
+import { sanitizeSvg } from "@/core/security/sanitize"
 
 export function optimizeSvg(svg: string): string {
     let result = svg
@@ -14,14 +14,6 @@ export function optimizeSvg(svg: string): string {
     result = result.replace(/\s+>/g, ">")
     result = result.replace(/\s+\/>/g, "/>")
     return result.trim()
-}
-
-export function sanitizeSvg(svg: string): string {
-    return DOMPurify.sanitize(svg, {
-        USE_PROFILES: { svg: true, svgFilters: true },
-        FORBID_TAGS: ["script", "foreignObject", "iframe", "object", "embed"],
-        FORBID_ATTR: ["onload", "onclick", "onerror", "onmouseover", "onfocus", "onbegin", "onend"],
-    }).trim()
 }
 
 export function optimizeAndSanitizeSvg(svg: string): string {
