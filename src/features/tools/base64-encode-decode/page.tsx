@@ -4,10 +4,10 @@ import * as React from "react"
 import { ArrowLeft, ArrowRight, Binary, Download, FileUp, Share2, TestTube2, RotateCcw, Workflow } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
+import { ModeSelector } from "@/features/tool-shell/mode-selector"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { useLang } from "@/core/i18n/lang-provider"
 import { Textarea } from "@/components/ui/textarea"
-import { decodeBase64ToBytes, decodeBase64ToText, encodeBytesToBase64, encodeTextToBase64 } from "@/core/utils/base64-utils"
 import { readStorageString, writeStorageString } from "@/core/storage/tool-persistence"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildToolHandoffLink } from "@/core/routing/tool-handoff"
@@ -15,11 +15,13 @@ import { downloadBlob, downloadTextFile } from "./browser-actions"
 import { MAX_FILE_SIZE, MODE_STORAGE_KEY, OPERATION_STORAGE_KEY, OUTPUT_PREVIEW_LIMIT } from "./constants"
 import { BINARY_SAMPLE_BASE64, TEXT_SAMPLE_BASE64, TEXT_SAMPLE_INPUT, URL_SAFE_SAMPLE_BASE64, URL_SAFE_SAMPLE_INPUT } from "./samples"
 import type { Mode, Operation } from "./types"
+import { runBase64FileTask } from "./base64-task"
+import { useBase64TextTask } from "./use-base64-text-task"
 
 export function Base64Page() {
     const { t, lang } = useLang()
     const toolT = t.tools["base64_encode_decode"] as Record<string, string>
-    const text = (key: string) => toolT[key]
+    const text = React.useCallback((key: string) => toolT[key], [toolT])
     const [mode, setMode] = React.useState<Mode>("text")
     const [operation, setOperation] = React.useState<Operation>("encode")
     const [input, setInput] = React.useState("")
@@ -29,6 +31,7 @@ export function Base64Page() {
     const [decodedBlob, setDecodedBlob] = React.useState<Blob | null>(null)
     const [decodedFileName, setDecodedFileName] = React.useState("decoded.bin")
     const fileInputRef = React.useRef<HTMLInputElement>(null)
+    const { isProcessing, runTextTask } = useBase64TextTask()
 
     const outputBytes = React.useMemo(() => new Blob([output]).size, [output])
     const canDownload = output.length > 0 || decodedBlob !== null
@@ -39,6 +42,15 @@ export function Base64Page() {
         const hiddenChars = output.length - OUTPUT_PREVIEW_LIMIT
         return `${output.slice(0, OUTPUT_PREVIEW_LIMIT)}\n\n[${outputPreviewTruncatedLabel.replace("{hidden}", String(hiddenChars))}]`
     }, [isOutputPreviewTruncated, output, outputPreviewTruncatedLabel])
+    const operationOptions = React.useMemo(() => [
+        { value: "encode" as const, label: text("operation_encode") },
+        { value: "decode" as const, label: text("operation_decode") },
+    ], [text])
+    const modeOptions = React.useMemo(() => [
+        { value: "text" as const, label: text("mode_text") },
+        { value: "file" as const, label: text("mode_file") },
+        { value: "url-safe" as const, label: text("mode_url_safe") },
+    ], [text])
 
     React.useEffect(() => {
         const savedMode = readStorageString(MODE_STORAGE_KEY)
@@ -175,11 +187,22 @@ export function Base64Page() {
                 setOutput("")
                 return
             }
-            const buffer = await sourceFile.arrayBuffer()
-            const encoded = encodeBytesToBase64(new Uint8Array(buffer))
-            setOutput(encoded)
-            setError(null)
-            setDecodedBlob(null)
+            try {
+                const buffer = await sourceFile.arrayBuffer()
+                const result = await runBase64FileTask({
+                    task: "file",
+                    operation: "encode",
+                    bytes: buffer,
+                    urlSafe: false,
+                })
+                setOutput(result.operation === "encode" ? result.output : "")
+                setError(null)
+                setDecodedBlob(null)
+            } catch {
+                setOutput("")
+                setError(text("error_encode_failed"))
+                setDecodedBlob(null)
+            }
             return
         }
 
@@ -189,57 +212,71 @@ export function Base64Page() {
             return
         }
 
-        try {
-            const encoded = encodeTextToBase64(input, mode === "url-safe")
-            setOutput(encoded)
-            setError(null)
-            setDecodedBlob(null)
-        } catch {
-            setError(text("error_encode_failed"))
-        }
+        await runTextTask({
+            input,
+            operation: "encode",
+            urlSafe: mode === "url-safe",
+            onSuccess: (encoded) => {
+                setOutput(encoded)
+                setError(null)
+                setDecodedBlob(null)
+            },
+            onError: () => setError(text("error_encode_failed")),
+        })
     }
 
-    const decodeBase64 = () => {
+    const decodeBase64 = async () => {
         if (!input.trim()) {
             setOutput("")
             setError(null)
             return
         }
-        try {
-            if (mode === "file") {
-                const bytes = decodeBase64ToBytes(input.trim())
-                const safeBuffer = Uint8Array.from(bytes).buffer as ArrayBuffer
-                const blob = new Blob([safeBuffer], { type: sourceFile?.type || "application/octet-stream" })
-                const baseName = sourceFile?.name ? sourceFile.name.replace(/\.[^.]+$/, "") : "decoded"
-                setDecodedFileName(`${baseName}.bin`)
+
+        if (mode === "file") {
+            try {
+                const result = await runBase64FileTask({
+                    task: "file",
+                    operation: "decode",
+                    input,
+                    urlSafe: false,
+                })
+                const bytes = result.operation === "decode" ? result.bytes : new ArrayBuffer(0)
+                const blob = new Blob([bytes], { type: sourceFile?.type || "application/octet-stream" })
+                setDecodedFileName(`${sourceFile?.name ? sourceFile.name.replace(/\.[^.]+$/, "") : "decoded"}.bin`)
                 setDecodedBlob(blob)
                 setOutput(
                     text("decode_binary_success")
-                        .replace("{bytes}", String(bytes.length)),
+                        .replace("{bytes}", String(bytes.byteLength)),
                 )
                 setError(null)
-                return
+            } catch {
+                setError(text("error_invalid_base64"))
+                setDecodedBlob(null)
             }
-
-            const decoded = decodeBase64ToText(input.trim(), mode === "url-safe")
-            setOutput(decoded)
-            setError(null)
-            setDecodedBlob(null)
-        } catch {
-            setError(
-                mode === "url-safe"
-                    ? text("error_invalid_base64url")
-                    : text("error_invalid_base64"),
-            )
-            setDecodedBlob(null)
+            return
         }
+
+        await runTextTask({
+            input,
+            operation: "decode",
+            urlSafe: mode === "url-safe",
+            onSuccess: (decoded) => {
+                setOutput(decoded)
+                setError(null)
+                setDecodedBlob(null)
+            },
+            onError: () => {
+                setError(mode === "url-safe" ? text("error_invalid_base64url") : text("error_invalid_base64"))
+                setDecodedBlob(null)
+            },
+        })
     }
 
     const handleExecute = () => {
         if (operation === "encode") {
             void encodeBase64()
         } else {
-            decodeBase64()
+            void decodeBase64()
         }
     }
 
@@ -308,55 +345,11 @@ export function Base64Page() {
             <div className="flex flex-col gap-4">
                 <div className="grid gap-3 rounded-lg border border-border/70 bg-card/40 p-4 sm:grid-cols-[1.2fr_1fr]">
                     <div className="rounded-lg border border-primary/30 bg-primary/5 p-3">
-                        <label className="mb-2 block text-sm font-bold text-foreground">{text("operation_label")}</label>
-                        <div className="inline-flex w-full rounded-lg border border-primary/30 bg-background/60 p-1 sm:w-auto">
-                            <button
-                                type="button"
-                                onClick={() => handleOperationChange("encode")}
-                                className={`flex-1 rounded-md px-4 py-2 text-sm font-semibold transition-colors sm:flex-none ${
-                                    operation === "encode"
-                                        ? "bg-primary text-primary-foreground shadow-sm"
-                                        : "text-muted-foreground hover:text-foreground"
-                                }`}
-                            >
-                                {text("operation_encode")}
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => handleOperationChange("decode")}
-                                className={`flex-1 rounded-md px-4 py-2 text-sm font-semibold transition-colors sm:flex-none ${
-                                    operation === "decode"
-                                        ? "bg-primary text-primary-foreground shadow-sm"
-                                        : "text-muted-foreground hover:text-foreground"
-                                }`}
-                            >
-                                {text("operation_decode")}
-                            </button>
-                        </div>
+                        <ModeSelector label={text("operation_label")} value={operation} options={operationOptions} onChange={handleOperationChange} />
                     </div>
 
                     <div className="rounded-lg border border-border/50 bg-muted/20 p-3">
-                        <label className="mb-2 block text-xs font-medium uppercase tracking-wide text-muted-foreground">{text("input_type_label")}</label>
-                        <div className="inline-flex w-full rounded-lg border border-border/70 bg-background/60 p-1 sm:w-auto">
-                            {(["text", "file", "url-safe"] as Mode[]).map((item) => (
-                                <button
-                                    key={item}
-                                    type="button"
-                                    onClick={() => handleModeChange(item)}
-                                    className={`flex-1 rounded-md px-3 py-1.5 text-xs font-medium transition-colors sm:flex-none ${
-                                        mode === item
-                                            ? "bg-background text-foreground shadow-sm"
-                                            : "text-muted-foreground hover:text-foreground"
-                                    }`}
-                                >
-                                    {item === "text"
-                                        ? text("mode_text")
-                                        : item === "file"
-                                            ? text("mode_file")
-                                            : text("mode_url_safe")}
-                                </button>
-                            ))}
-                        </div>
+                        <ModeSelector label={text("input_type_label")} value={mode} options={modeOptions} onChange={handleModeChange} size="sm" />
                         {mode === "url-safe" && (
                             <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                                 {text("url_safe_hint")}
@@ -368,7 +361,7 @@ export function Base64Page() {
                 <ToolActionBar actions={standardActions} handoffPayload={handoffPayload} />
 
                 <div className="flex flex-wrap items-center gap-2">
-                    <Button size="sm" onClick={handleExecute}>
+                    <Button size="sm" onClick={handleExecute} disabled={isProcessing}>
                         {operation === "encode" ? (
                             <>
                                 {text("encode_action")}

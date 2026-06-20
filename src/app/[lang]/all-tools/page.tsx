@@ -120,7 +120,9 @@ export default async function AllToolsPage({ params }: { params: Promise<{ lang:
                     noResultsSuggestion: requireTranslationValue(t.common.no_results_suggestion, "common.no_results_suggestion"),
                     open: requireTranslationValue(t.common.open, "common.open"),
                     popularTags: requireTranslationValue(t.common.popular_tags, "common.popular_tags"),
+                    clearRecentTools: requireTranslationValue(t.common.clear_recent_tools, "common.clear_recent_tools"),
                     recentTools: requireTranslationValue(t.common.recent_tools, "common.recent_tools"),
+                    recentToolsPrivacy: requireTranslationValue(t.common.recent_tools_local_only, "common.recent_tools_local_only"),
                     searchPlaceholder: requireTranslationValue(t.nav.search, "nav.search"),
                     toolsLabel: requireTranslationValue(t.common.tools, "common.tools"),
                 }}

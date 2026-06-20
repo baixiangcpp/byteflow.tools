@@ -445,7 +445,7 @@ Secondary: "格式化、转换、生成、调试 — 敏感数据不出浏览器
 
 **Example tools affected**: Base64, Hash (HMAC mode), URL Encode/Decode
 
-#### 3. Search and Tool Discovery (Partially Completed)
+#### 3. Search and Tool Discovery ✅ SUBSTANTIALLY COMPLETED
 **Problem**: 111 tools with only category navigation isn't enough. Users need:
 - Fuzzy search with typo tolerance
 - Chinese/English search terms
@@ -455,18 +455,18 @@ Secondary: "格式化、转换、生成、调试 — 敏感数据不出浏览器
 **Status**: 
 - ✅ Popular tools section added to homepage (9 high-traffic tools)
 - ✅ Category preview shows 4 tools per category for better discovery
-- Command palette search exists but needs fuzzy matching and multilingual search terms
-- 🔄 Recently used tools tracking not yet implemented
+- ✅ Recently used tools tracking implemented in localStorage and surfaced in discovery UIs
+- ✅ Command palette ranking supports exact/prefix matches, slug/use-case keywords, typo tolerance, and multilingual search terms
+- ✅ Recent tools can be cleared independently from favorites, with local-only privacy copy and tests
 
 **Remaining work**:
-- Add search terms or aliases to the tool manifest/alias registry
-- Implement fuzzy matching (consider Fuse.js)
-- Track recently used tools in localStorage
+- Expand search aliases for long-tail tools as user queries are observed
+- Add deeper recent/favorite grouping only if analytics or feedback shows discovery friction
 
 **Files to modify**:
-- `src/core/registry/types.ts` — add aliases or search terms if the registry model supports them
+- `src/core/registry/types.ts` — maintain `searchKeywords`, `sampleInput`, and workflow metadata
 - `src/components/layout/command-palette.tsx` — enhance search algorithm
-- `src/core/utils/search-index.ts` — new file for search logic
+- `src/core/search/command-search.ts` — command palette scoring logic
 
 #### 4. Feedback Widget Positioning ✅ COMPLETED (2026-06-06)
 **Problem**: Right-bottom floating "Was this tool helpful?" can block output area, especially on mobile or small screens.
@@ -546,16 +546,17 @@ Secondary: "格式化、转换、生成、调试 — 敏感数据不出浏览器
 - `src/features/tool-shell/monaco-editors.tsx`
 - Tool-specific input components
 
-#### 10. Example/Sample Data Buttons
-**Problem**: Users need to see tool in action before inputting their data. Add "Try Example" button for every tool.
+#### 10. Example/Sample Data Buttons (Partially Completed)
+**Problem**: Users need to see high-value tools in action before inputting their data. Expand example coverage without introducing unsafe sample secrets.
 
 **Solution**: 
-- Define sample inputs per tool
-- Add "Load Example" button
-- Show expected output for sample
+- ✅ Define manifest-level sample metadata for high-traffic tools
+- ✅ Guard high-traffic samples against sensitive-looking payloads
+- Add "Load Example" behavior to more tools as their UX is standardized
+- Show expected output for samples where it is stable and cheap to compute
 
 **Files to modify**:
-- `src/core/registry/types.ts` — add `sampleInput?: string`
+- `src/core/registry/types.ts` — maintain `sampleInput?: string` and `sampleMode?: string`
 - Tool components — add example button
 - Translations — add example button labels
 
@@ -628,13 +629,13 @@ Goal: Make high-traffic tools exceptionally smooth
 - Add auto-run toggle where appropriate
 - Enhance error messages with specifics
 - Improve input area focus behavior
-- Add "Try Example" to all tools
+- Expand "Try Example" coverage beyond the high-traffic tools already covered by manifest guards
 
 ### Phase 3: Discovery and Retention
 Goal: Help users find tools and return frequently
-- Build favorites/bookmark system (localStorage)
-- Track recently used tools
-- Add tool tags and advanced filtering
+- ✅ Build favorites/bookmark system (localStorage)
+- ✅ Add recently used tools tracking, clearing controls, local-only privacy copy, and tests
+- ✅ Add tool tags, capabilities, family labels, and advanced filtering
 - Optimize PWA install flow
 - Build task-based tool recommendations
 

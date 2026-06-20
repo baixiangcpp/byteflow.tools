@@ -9,11 +9,13 @@ const ROOT = process.cwd()
 const FEATURE_TOOLS_DIR = path.join(ROOT, "src/features/tools")
 const SOURCE_EXTENSIONS = new Set([".ts", ".tsx"])
 const EXECUTABLE_NETWORK_CALLS = new Set(["fetch", "openExternalUrl"])
+const EXECUTABLE_NETWORK_CONSTRUCTORS = new Set(["EventSource", "WebSocket", "XMLHttpRequest"])
 const EXECUTABLE_NETWORK_PROPERTY_CALLS = new Set(["window.open", "navigator.sendBeacon"])
 const EXTERNAL_TARGET_PATTERNS = [
     /\btarget\s*=\s*["']_blank["']/,
     /\.\s*target\s*=\s*["']_blank["']/,
 ]
+const STATIC_EXTERNAL_URL_PATTERN = /\bhttps:\/\/([a-z0-9.-]+)(?=[:/?#"']|\b)/gi
 
 function walkFiles(dir: string): string[] {
     if (!fs.existsSync(dir)) return []
@@ -48,6 +50,13 @@ function hasExecutableNetworkCall(source: string): boolean {
                 }
             }
         }
+        if (ts.isNewExpression(node)) {
+            const expression = node.expression
+            if (ts.isIdentifier(expression) && EXECUTABLE_NETWORK_CONSTRUCTORS.has(expression.text)) {
+                found = true
+                return
+            }
+        }
         ts.forEachChild(node, visit)
     }
 
@@ -60,6 +69,21 @@ function hasNetworkBehavior(source: string): boolean {
         hasExecutableNetworkCall(source) ||
         EXTERNAL_TARGET_PATTERNS.some((pattern) => pattern.test(source))
     )
+}
+
+function collectStaticExternalHosts(source: string): string[] {
+    const hosts = new Set<string>()
+    for (const match of source.matchAll(STATIC_EXTERNAL_URL_PATTERN)) {
+        hosts.add(match[1].toLowerCase())
+    }
+    return [...hosts].sort()
+}
+
+function isHostCovered(host: string, declaredHosts: readonly string[] | undefined): boolean {
+    return Boolean(declaredHosts?.some((declaredHost) => {
+        const normalized = declaredHost.toLowerCase()
+        return host === normalized || host.endsWith(`.${normalized}`)
+    }))
 }
 
 describe("tool network access metadata", () => {
@@ -83,6 +107,42 @@ describe("tool network access metadata", () => {
             const files = walkFiles(path.join(FEATURE_TOOLS_DIR, tool.slug))
             const hasNetwork = files.some((file) => hasNetworkBehavior(fs.readFileSync(file, "utf8")))
             return hasNetwork ? [] : [`${tool.slug}: declares ${tool.networkAccess} but no guarded network behavior was found`]
+        })
+
+        expect(offenders).toEqual([])
+    })
+
+    it("requires host and purpose details for network-enabled tools", () => {
+        const tools = TOOL_MANIFESTS as readonly ToolMeta[]
+        const offenders = tools.flatMap((tool) => {
+            if (!tool.networkAccess || tool.networkAccess === "none") return []
+
+            const problems: string[] = []
+            if (!tool.networkHosts || tool.networkHosts.length === 0) problems.push("missing networkHosts")
+            if (!tool.networkPurposeKey) problems.push("missing networkPurposeKey")
+            if (tool.allowUserProvidedUrl === undefined) problems.push("missing allowUserProvidedUrl")
+            if (tool.requiresExplicitUserAction === undefined) problems.push("missing requiresExplicitUserAction")
+            if (!tool.externalDataSent) problems.push("missing externalDataSent")
+
+            return problems.map((problem) => `${tool.slug}: ${problem}`)
+        })
+
+        expect(offenders).toEqual([])
+    })
+
+    it("requires static external hosts in tool source to be covered by network metadata", () => {
+        const tools = TOOL_MANIFESTS as readonly ToolMeta[]
+        const offenders = tools.flatMap((tool) => {
+            if (!tool.networkAccess || tool.networkAccess === "none") return []
+
+            const files = walkFiles(path.join(FEATURE_TOOLS_DIR, tool.slug))
+            return files.flatMap((file) => {
+                const source = fs.readFileSync(file, "utf8")
+                const hosts = collectStaticExternalHosts(source)
+                return hosts
+                    .filter((host) => !isHostCovered(host, tool.networkHosts))
+                    .map((host) => `${tool.slug}: ${path.relative(ROOT, file)} references ${host} without networkHosts coverage`)
+            })
         })
 
         expect(offenders).toEqual([])

@@ -14,22 +14,17 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { ModeSelector } from "@/features/tool-shell/mode-selector"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import {
-    emptyHmacHashes,
-    emptyStandardHashes,
-    hashBytes,
-    hashHmac,
-    hashText,
-    hashTextByAlgorithm,
-    type HmacHashes,
     type StandardHashAlgorithm,
-    type StandardHashes,
 } from "@/core/utils/hash-utils"
 import { downloadTextFile } from "./browser-actions"
-import { BATCH_ALGORITHMS } from "./constants"
+import { BATCH_ALGORITHMS, MAX_HASH_FILE_SIZE } from "./constants"
+import type { HashTaskInput } from "./hash-task-logic"
 import type { HashMode } from "./types"
+import { useHashTask } from "./use-hash-task"
 
 export function HashGeneratorPage() {
     const { t, lang } = useLang()
@@ -45,30 +40,21 @@ export function HashGeneratorPage() {
     const [batchAlgorithm, setBatchAlgorithm] = React.useState<StandardHashAlgorithm>("sha256")
     const sha1Warning = toolT.sha1_warning
     const buildCopyActionLabel = React.useCallback((label: string) => `${t.common.copy} ${label}`, [t.common.copy])
+    const modeOptions = React.useMemo(() => [
+        { value: "text" as const, label: toolT.mode_text },
+        { value: "hmac" as const, label: toolT.mode_hmac },
+        { value: "file" as const, label: toolT.mode_file },
+        { value: "batch" as const, label: toolT.mode_batch },
+    ], [toolT])
 
-    const standardHashes = React.useMemo<StandardHashes>(() => {
-        if (mode === "text") return hashText(input)
-        if (mode === "file" && fileBytes) return hashBytes(fileBytes)
-        return emptyStandardHashes()
-    }, [mode, input, fileBytes])
-
-    const hmacHashes = React.useMemo<HmacHashes>(() => {
-        if (mode !== "hmac") return emptyHmacHashes()
-        return hashHmac(input, secret)
-    }, [mode, input, secret])
-
-    const batchRows = React.useMemo(() => {
-        if (mode !== "batch" || !input.trim()) return []
-        return input
-            .split(/\r?\n/)
-            .map((line) => line.trim())
-            .filter((line) => line.length > 0)
-            .map((line, index) => ({
-                index: index + 1,
-                line,
-                hash: hashTextByAlgorithm(line, batchAlgorithm),
-            }))
-    }, [mode, input, batchAlgorithm])
+    const hashTaskInput = React.useMemo<HashTaskInput | null>(() => {
+        if (mode === "text") return { mode, input }
+        if (mode === "file" && fileBytes) return { mode, bytes: fileBytes }
+        if (mode === "hmac") return { mode, input, secret }
+        if (mode === "batch") return { mode, input, algorithm: batchAlgorithm }
+        return null
+    }, [batchAlgorithm, fileBytes, input, mode, secret])
+    const { standardHashes, hmacHashes, batchRows, isHashing } = useHashTask(hashTaskInput)
 
     const handleCopy = async (text: string, label: string) => {
         if (!text) return
@@ -93,6 +79,13 @@ export function HashGeneratorPage() {
 
     const handleFileSelect = async (file: File | null) => {
         if (!file) return
+        if (file.size > MAX_HASH_FILE_SIZE) {
+            setFileBytes(null)
+            setFileName("")
+            setFileSize(0)
+            setFileError(toolT.file_error)
+            return
+        }
         try {
             const buffer = await file.arrayBuffer()
             setFileBytes(new Uint8Array(buffer))
@@ -164,15 +157,7 @@ export function HashGeneratorPage() {
             </div>
 
             <div className="rounded-lg border bg-card p-3">
-                <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                    {toolT.mode_label}
-                </div>
-                <div className="flex flex-wrap gap-2">
-                    <ModeButton active={mode === "text"} onClick={() => setMode("text")} label={toolT.mode_text} />
-                    <ModeButton active={mode === "hmac"} onClick={() => setMode("hmac")} label={toolT.mode_hmac} />
-                    <ModeButton active={mode === "file"} onClick={() => setMode("file")} label={toolT.mode_file} />
-                    <ModeButton active={mode === "batch"} onClick={() => setMode("batch")} label={toolT.mode_batch} />
-                </div>
+                <ModeSelector label={toolT.mode_label} value={mode} options={modeOptions} onChange={setMode} size="sm" />
             </div>
 
             <div className="rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
@@ -241,7 +226,7 @@ export function HashGeneratorPage() {
                     ) : null}
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-4" aria-busy={isHashing}>
                     {(mode === "text" || mode === "file") ? (
                         <>
                             <HashOutputBox
@@ -366,20 +351,6 @@ export function HashGeneratorPage() {
                 </div>
             </div>
         </div>
-    )
-}
-
-function ModeButton({ active, onClick, label }: { active: boolean; onClick: () => void; label: string }) {
-    return (
-        <button
-            type="button"
-            onClick={onClick}
-            className={`rounded px-3 py-1.5 text-sm transition-colors ${
-                active ? "bg-primary text-primary-foreground" : "border bg-background text-muted-foreground hover:text-foreground"
-            }`}
-        >
-            {label}
-        </button>
     )
 }
 

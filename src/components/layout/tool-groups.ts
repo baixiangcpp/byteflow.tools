@@ -1,6 +1,6 @@
-import { CLIENT_MENU_GROUPS } from "@/generated/client-tool-lookup"
+import { DISCOVERY_MENU_GROUPS } from "@/generated/discovery-tool-index"
 
-export const toolGroups = CLIENT_MENU_GROUPS.map((group) => ({
+export const toolGroups = DISCOVERY_MENU_GROUPS.map((group) => ({
     key: group.key,
     navKey: group.navKey,
     hubSlug: group.hubSlug,

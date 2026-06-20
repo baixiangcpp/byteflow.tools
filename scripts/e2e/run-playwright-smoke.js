@@ -18,6 +18,10 @@ const DEFAULT_ROUTES = [
     "/en/pipeline-builder",
     "/en/csv-json-converter",
 ];
+const MOBILE_TOOL_VIEWPORTS = [
+    { width: 390, height: 844 },
+    { width: 430, height: 932 },
+];
 
 function parseArgs(argv) {
     const args = {
@@ -383,6 +387,172 @@ async function assertBasicAccessibility(page, routeLabel) {
     }
 }
 
+async function assertNoHorizontalOverflow(page, routeLabel) {
+    const overflow = await page.evaluate(() => {
+        const documentElement = document.documentElement;
+        const body = document.body;
+        const viewportWidth = window.innerWidth;
+        const scrollWidth = Math.max(documentElement.scrollWidth, body?.scrollWidth || 0);
+        return {
+            viewportWidth,
+            scrollWidth,
+            overflowPx: scrollWidth - viewportWidth,
+        };
+    });
+
+    if (overflow.overflowPx > 2) {
+        throw new Error(
+            `Mobile layout overflow for ${routeLabel}: scrollWidth ${overflow.scrollWidth}px exceeds viewport ${overflow.viewportWidth}px.`,
+        );
+    }
+}
+
+async function clickCopyAndExpectToast(page, button, label) {
+    await button.waitFor({ state: "visible", timeout: 15_000 });
+    await page.waitForTimeout(2500);
+    await button.click();
+
+    const copiedToast = page.getByText(/copied/i).first();
+    await copiedToast.waitFor({ state: "visible", timeout: 5_000 }).catch(() => {
+        throw new Error(`Expected copied toast after ${label}.`);
+    });
+
+    await page.locator("[data-sonner-toast]").filter({ hasText: /copied/i }).first()
+        .waitFor({ state: "hidden", timeout: 8_000 })
+        .catch(() => {});
+}
+
+async function assertMobileToolJourney(context, baseUrl, viewport, route, runJourney) {
+    const page = await context.newPage();
+    const runtimeErrors = [];
+    const routeLabel = `${route} mobile ${viewport.width}x${viewport.height}`;
+    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+
+    try {
+        await page.goto(`${baseUrl}${route}`, { waitUntil: "domcontentloaded" });
+        await page.waitForSelector("main", { timeout: 15_000 });
+
+        await runJourney(page, routeLabel);
+        await assertBasicAccessibility(page, routeLabel);
+        await assertNoHorizontalOverflow(page, routeLabel);
+
+        if (runtimeErrors.length > 0) {
+            throw new Error(`${routeLabel} triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
+        }
+    } finally {
+        await page.close();
+    }
+}
+
+async function assertMobileJsonFormatter(page) {
+    const input = page.locator("textarea").first();
+    await input.waitFor({ state: "visible", timeout: 15_000 });
+    await input.fill("{\"name\":\"Ada\",\"roles\":[\"admin\"]}");
+    await page.getByRole("button", { name: /^Format$/ }).first().click();
+    await expectTextareaValue(page, /"name": "Ada"/, "mobile json formatter output");
+    await clickCopyAndExpectToast(
+        page,
+        page.getByRole("button", { name: /copy output/i }).first(),
+        "mobile JSON output copy",
+    );
+
+    await input.fill("{\"name\":}");
+    await page.getByRole("button", { name: /^Format$/ }).first().click();
+    await page.getByText(/Invalid JSON|Unexpected token|Expected token|Trailing comma/i).first()
+        .waitFor({ state: "visible", timeout: 15_000 });
+}
+
+async function assertMobileBase64(page) {
+    const input = page.locator("textarea").first();
+    await input.waitFor({ state: "visible", timeout: 15_000 });
+    await input.fill("hello mobile");
+    await page.getByRole("button", { name: /^Encode Base64$/ }).first().click();
+    await expectTextareaValue(page, /aGVsbG8gbW9iaWxl/, "mobile base64 output");
+    await clickCopyAndExpectToast(
+        page,
+        page.getByRole("button", { name: /^Copy$/ }).first(),
+        "mobile Base64 output copy",
+    );
+
+    await page.getByRole("radio", { name: /^Decode$/ }).first().click();
+    await input.fill("%%%");
+    await page.getByRole("button", { name: /^Decode Base64$/ }).first().click();
+    await page.getByText(/Invalid Base64 input/i).first()
+        .waitFor({ state: "visible", timeout: 15_000 });
+}
+
+async function assertMobileJwtDecoder(page) {
+    await page.getByRole("button", { name: /Try Example/i }).first().click();
+    await expectTextareaValue(page, /"name": "Alice Chen"/, "mobile jwt decoded payload");
+    await clickCopyAndExpectToast(
+        page,
+        page.getByRole("button", { name: /^Copy$/ }).first(),
+        "mobile JWT header copy",
+    );
+
+    await page.locator("textarea").first().fill("bad.token");
+    await page.getByText(/Invalid JWT format/i).first()
+        .waitFor({ state: "visible", timeout: 15_000 });
+}
+
+async function assertMobileRegexTester(page) {
+    const pattern = page.locator('input[placeholder="pattern"]').first();
+    const flags = page.locator('input[placeholder="g, i, m"]').first();
+    const testString = page.locator('textarea[placeholder="Paste text here to test against the regular expression..."]').first();
+
+    await pattern.fill("([A-Z][a-z]+)(\\d)");
+    await flags.fill("g");
+    await testString.fill("Ada1 Bob2");
+    await page.getByText("Ada1").first().waitFor({ state: "visible", timeout: 15_000 });
+    await page.getByText("Bob2").first().waitFor({ state: "visible", timeout: 15_000 });
+
+    await pattern.fill("[");
+    await page.getByText(/Fix syntax to view matches/i).first().waitFor({ state: "visible", timeout: 15_000 });
+}
+
+async function assertMobileCrontabGenerator(page) {
+    const rawExpression = page.getByRole("textbox", { name: /^Raw Expression Input$/ }).first();
+    await rawExpression.waitFor({ state: "visible", timeout: 15_000 });
+    await rawExpression.fill("*/15 * * * *");
+    await page.getByText(/Every 15 minutes/i).first().waitFor({ state: "visible", timeout: 15_000 });
+    await clickCopyAndExpectToast(
+        page,
+        page.getByRole("button", { name: /^Copy Expression$/ }).first(),
+        "mobile cron expression copy",
+    );
+
+    await rawExpression.fill("* *");
+    await page.getByText(/Invalid cron expression/i).first()
+        .waitFor({ state: "visible", timeout: 15_000 });
+}
+
+async function assertMobileToolPageJourneys(browser, baseUrl) {
+    const journeys = [
+        { route: "/en/json-formatter", run: assertMobileJsonFormatter },
+        { route: "/en/base64-encode-decode", run: assertMobileBase64 },
+        { route: "/en/jwt-decoder", run: assertMobileJwtDecoder },
+        { route: "/en/regex-tester", run: assertMobileRegexTester },
+        { route: "/en/crontab-generator", run: assertMobileCrontabGenerator },
+    ];
+
+    for (const viewport of MOBILE_TOOL_VIEWPORTS) {
+        const context = await browser.newContext({
+            serviceWorkers: "block",
+            viewport,
+            isMobile: true,
+        });
+
+        try {
+            await context.grantPermissions(["clipboard-read", "clipboard-write"], { origin: baseUrl });
+            for (const journey of journeys) {
+                await assertMobileToolJourney(context, baseUrl, viewport, journey.route, journey.run);
+            }
+        } finally {
+            await context.close();
+        }
+    }
+}
+
 async function assertBase64PipelineHandoffJourney(context, baseUrl) {
     const page = await context.newPage();
     const runtimeErrors = [];
@@ -696,6 +866,9 @@ async function runSmoke(baseUrl) {
 
         await assertMobileCommandPaletteJourney(browser, baseUrl);
         console.log("[playwright-smoke] PASS mobile journey: command palette -> /en/base64-encode-decode");
+
+        await assertMobileToolPageJourneys(browser, baseUrl);
+        console.log("[playwright-smoke] PASS mobile journeys: JSON/Base64/JWT/Regex/Cron tool pages");
     } finally {
         await context.close();
         await browser.close();

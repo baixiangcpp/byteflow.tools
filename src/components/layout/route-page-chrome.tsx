@@ -10,7 +10,7 @@ import { requireTranslationValue } from "@/core/i18n/i18n"
 import { getRouteIntentCopy } from "@/core/seo/route-intent-copy"
 import { getRouteContext } from "@/core/routing/route-context"
 import { recordRecentToolKey } from "@/core/storage/tool-discovery-state"
-import { getClientToolBySlug } from "@/generated/client-tool-lookup"
+import { getRouteToolBySlug } from "@/generated/route-tool-lookup"
 import { ExternalNetworkNotice } from "@/features/tool-shell/external-network-notice"
 
 const EXCLUDED_CONTENT_INTRO_SLUGS = new Set(["about", "pricing", "contact", "privacy", "terms", "install-app"])
@@ -26,9 +26,17 @@ function RoutePageChromeContent({ children, pathname }: RoutePageChromeProps) {
 
     const activeTool = useMemo(() => {
         if (routeContext.routeType !== "tool" || !routeContext.slug) return null
-        const tool = getClientToolBySlug(routeContext.slug)
+        const tool = getRouteToolBySlug(routeContext.slug)
         if (!tool) return null
-        return { key: tool.key, slug: tool.slug, networkAccess: tool.networkAccess }
+        return {
+            key: tool.key,
+            slug: tool.slug,
+            networkAccess: tool.networkAccess,
+            networkHosts: tool.networkHosts,
+            networkPurposeKey: tool.networkPurposeKey,
+            requiresExplicitUserAction: tool.requiresExplicitUserAction,
+            externalDataSent: tool.externalDataSent,
+        }
     }, [routeContext])
 
     useEffect(() => {
@@ -64,7 +72,13 @@ function RoutePageChromeContent({ children, pathname }: RoutePageChromeProps) {
                 </div>
             ) : null}
             {activeTool?.networkAccess && activeTool.networkAccess !== "none" ? (
-                <ExternalNetworkNotice networkAccess={activeTool.networkAccess} />
+                <ExternalNetworkNotice
+                    networkAccess={activeTool.networkAccess}
+                    networkHosts={activeTool.networkHosts}
+                    networkPurposeKey={activeTool.networkPurposeKey}
+                    requiresExplicitUserAction={activeTool.requiresExplicitUserAction}
+                    externalDataSent={activeTool.externalDataSent}
+                />
             ) : null}
             {children}
             {routeContext.routeType === "tool" ? (

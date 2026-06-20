@@ -8,6 +8,7 @@ export const TOOL_ORDER_PATH = path.join(ROOT_DIR, "src/core/registry/tool-order
 
 const REQUIRED_FIELDS = ["key", "slug", "category", "relatedTools", "keywords"]
 const NETWORK_ACCESS_VALUES = new Set(["none", "user_requested", "third_party_api"])
+const EXTERNAL_DATA_SENT_VALUES = new Set(["none", "user_provided_url", "derived_url"])
 const PERSIST_INPUT_VALUES = new Set(["true", "false", "\"opt-in\"", "'opt-in'"])
 
 function relative(filePath) {
@@ -208,6 +209,25 @@ function booleanOrOptInField(source, fieldName, manifestPath) {
     return "opt-in"
 }
 
+function booleanField(source, fieldName, manifestPath) {
+    const match = new RegExp(`(?:^|[,\\n])\\s*${fieldName}:\\s*(true|false)`, "s").exec(source)
+    if (!match) return undefined
+    if (match[1] === "true") return true
+    if (match[1] === "false") return false
+    throw manifestError(manifestPath, fieldName, "must be true or false")
+}
+
+function positiveIntegerField(source, fieldName, manifestPath) {
+    const match = new RegExp(`(?:^|[,\\n])\\s*${fieldName}:\\s*(\\d+)`, "s").exec(source)
+    if (!match) return undefined
+
+    const value = Number.parseInt(match[1], 10)
+    if (!Number.isSafeInteger(value) || value <= 0) {
+        throw manifestError(manifestPath, fieldName, "must be a positive safe integer")
+    }
+    return value
+}
+
 function parseDeprecated(source, manifestPath) {
     const block = objectField(source, "deprecated")
     if (!block) return undefined
@@ -222,6 +242,61 @@ function parseDeprecated(source, manifestPath) {
     if (reason) deprecated.reason = reason
 
     return Object.keys(deprecated).length > 0 ? deprecated : {}
+}
+
+function parseRelatedWorkflows(source, manifestPath) {
+    const match = new RegExp(`(?:^|[,\\n])\\s*relatedWorkflows:\\s*\\[([\\s\\S]*?)\\n\\s*\\]`, "s").exec(source)
+    if (!match) return []
+
+    const entries = []
+    const entryPattern = /\{([\s\S]*?)\}/g
+    for (const entryMatch of match[1].matchAll(entryPattern)) {
+        const block = entryMatch[1]
+        const toolKey = stringField(block, "toolKey", manifestPath)
+        const reasonKey = stringField(block, "reasonKey", manifestPath)
+        const handoffSupported = booleanField(block, "handoffSupported", manifestPath)
+
+        if (!toolKey) throw manifestError(manifestPath, "relatedWorkflows", "entries must include toolKey")
+        if (!reasonKey) throw manifestError(manifestPath, "relatedWorkflows", "entries must include reasonKey")
+
+        const entry = { toolKey, reasonKey }
+        if (handoffSupported !== undefined) entry.handoffSupported = handoffSupported
+        entries.push(entry)
+    }
+
+    if (entries.length === 0 && match[1].trim().length > 0) {
+        throw manifestError(manifestPath, "relatedWorkflows", "must be an array of simple object literals")
+    }
+
+    return entries
+}
+
+function parseInputSizePolicy(source, manifestPath) {
+    const block = objectField(source, "inputSizePolicy")
+    if (!block) return undefined
+
+    const policy = {}
+    const warnAtBytes = positiveIntegerField(block, "warnAtBytes", manifestPath)
+    const workerAtBytes = positiveIntegerField(block, "workerAtBytes", manifestPath)
+    const hardLimitBytes = positiveIntegerField(block, "hardLimitBytes", manifestPath)
+    const streamingSupported = booleanField(block, "streamingSupported", manifestPath)
+
+    if (warnAtBytes !== undefined) policy.warnAtBytes = warnAtBytes
+    if (workerAtBytes !== undefined) policy.workerAtBytes = workerAtBytes
+    if (hardLimitBytes !== undefined) policy.hardLimitBytes = hardLimitBytes
+    if (streamingSupported !== undefined) policy.streamingSupported = streamingSupported
+
+    if (Object.keys(policy).length === 0) {
+        throw manifestError(manifestPath, "inputSizePolicy", "must define at least one threshold or streamingSupported")
+    }
+    if (policy.warnAtBytes !== undefined && policy.hardLimitBytes !== undefined && policy.warnAtBytes > policy.hardLimitBytes) {
+        throw manifestError(manifestPath, "inputSizePolicy", "warnAtBytes must not exceed hardLimitBytes")
+    }
+    if (policy.workerAtBytes !== undefined && policy.hardLimitBytes !== undefined && policy.workerAtBytes > policy.hardLimitBytes) {
+        throw manifestError(manifestPath, "inputSizePolicy", "workerAtBytes must not exceed hardLimitBytes")
+    }
+
+    return policy
 }
 
 export function listManifestFiles() {
@@ -248,14 +323,29 @@ export function parseToolManifestFile(manifestPath) {
     const category = stringField(body, "category", manifestPath, true)
     const keywords = arrayField(body, "keywords", manifestPath, true)
     const relatedTools = arrayField(body, "relatedTools", manifestPath, true)
+    const relatedWorkflows = parseRelatedWorkflows(body, manifestPath)
+    const sampleInput = stringField(body, "sampleInput", manifestPath)
+    const sampleMode = stringField(body, "sampleMode", manifestPath)
+    const inputSizePolicy = parseInputSizePolicy(body, manifestPath)
     const searchKeywords = arrayField(body, "searchKeywords", manifestPath)
     const updatedAt = stringField(body, "updatedAt", manifestPath)
     const networkAccess = stringField(body, "networkAccess", manifestPath)
+    const networkHosts = arrayField(body, "networkHosts", manifestPath)
+    const networkPurposeKey = stringField(body, "networkPurposeKey", manifestPath)
+    const allowUserProvidedUrl = booleanField(body, "allowUserProvidedUrl", manifestPath)
+    const requiresExplicitUserAction = booleanField(body, "requiresExplicitUserAction", manifestPath)
+    const externalDataSent = stringField(body, "externalDataSent", manifestPath)
     const persistInput = booleanOrOptInField(body, "persistInput", manifestPath)
     const deprecated = parseDeprecated(body, manifestPath)
 
     if (networkAccess && !NETWORK_ACCESS_VALUES.has(networkAccess)) {
         throw manifestError(manifestPath, "networkAccess", "must be one of none, user_requested, or third_party_api")
+    }
+    if (externalDataSent && !EXTERNAL_DATA_SENT_VALUES.has(externalDataSent)) {
+        throw manifestError(manifestPath, "externalDataSent", "must be one of none, user_provided_url, or derived_url")
+    }
+    if (networkHosts.some((host) => !/^[a-z0-9.-]+$/i.test(host))) {
+        throw manifestError(manifestPath, "networkHosts", "must contain hostname literals only")
     }
 
     const manifest = {
@@ -267,9 +357,18 @@ export function parseToolManifestFile(manifestPath) {
         sourceFile: relative(manifestPath),
     }
 
+    if (sampleInput) manifest.sampleInput = sampleInput
+    if (sampleMode) manifest.sampleMode = sampleMode
+    if (inputSizePolicy) manifest.inputSizePolicy = inputSizePolicy
+    if (relatedWorkflows.length > 0) manifest.relatedWorkflows = relatedWorkflows
     if (updatedAt) manifest.updatedAt = updatedAt
     if (searchKeywords.length > 0) manifest.searchKeywords = searchKeywords
     if (networkAccess) manifest.networkAccess = networkAccess
+    if (networkHosts.length > 0) manifest.networkHosts = networkHosts
+    if (networkPurposeKey) manifest.networkPurposeKey = networkPurposeKey
+    if (allowUserProvidedUrl !== undefined) manifest.allowUserProvidedUrl = allowUserProvidedUrl
+    if (requiresExplicitUserAction !== undefined) manifest.requiresExplicitUserAction = requiresExplicitUserAction
+    if (externalDataSent) manifest.externalDataSent = externalDataSent
     if (persistInput !== undefined) manifest.persistInput = persistInput
     if (deprecated) manifest.deprecated = deprecated
 

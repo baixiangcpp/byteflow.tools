@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it } from "vitest"
 import {
+    clearHistory,
+    clearRecentToolKeys,
     readFavoriteToolKeys,
     readRecentToolKeys,
     recordRecentToolKey,
@@ -54,6 +56,26 @@ describe("tool-discovery-state", () => {
 
         expect(readRecentToolKeys()).toHaveLength(10)
         expect(readRecentToolKeys()[0]).toBe("tool_11")
+    })
+
+    it("clears recent tools without clearing favorites", () => {
+        toggleFavoriteToolKey("json_formatter")
+        recordRecentToolKey("json_formatter")
+        recordRecentToolKey("list_randomizer")
+
+        expect(clearRecentToolKeys()).toEqual([])
+        expect(readRecentToolKeys()).toEqual([])
+        expect(readFavoriteToolKeys()).toEqual(["json_formatter"])
+    })
+
+    it("keeps full history clearing available for local data controls", () => {
+        toggleFavoriteToolKey("json_formatter")
+        recordRecentToolKey("json_formatter")
+
+        clearHistory()
+
+        expect(readFavoriteToolKeys()).toEqual([])
+        expect(readRecentToolKeys()).toEqual([])
     })
 
     it("emits discovery update event when state changes", () => {

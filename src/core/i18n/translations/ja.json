@@ -134,6 +134,32 @@
     "all_tools": "すべてのツール",
     "install_as_app": "アプリとしてインストール",
     "try_example": "サンプルを試す",
+    "external_network_notice": {
+      "title": "外部ネットワーク通知",
+      "third_party_api_message": "このツールは、ワークフローの一部としてブラウザからサードパーティサービスに接続する場合があります。",
+      "user_requested_message": "このツールは、明示的に実行した操作でのみ、指定した URL をブラウザからリクエストまたは開く場合があります。",
+      "user_input_preview_message": "対応する URL を入力すると、このツールはブラウザから外部プレビュー資産を読み込む場合があります。",
+      "hosts_label": "ホスト",
+      "purpose_label": "目的",
+      "data_sent_label": "送信されるデータ",
+      "purposes": {
+        "authorized_media_download": "利用権限を確認した後、入力した URL からメディアをダウンロードします。",
+        "thumbnail_preview": "入力した動画リンクから公開サムネイル画像 URL を生成してプレビューします。"
+      },
+      "external_data": {
+        "none": "この機能ではツール入力は送信されません。",
+        "user_provided_url": "入力した URL がブラウザからリクエストされる場合があります。",
+        "derived_url": "派生した公開アセット URL がブラウザからリクエストされる場合があります。"
+      }
+    },
+    "local_data_controls": {
+      "title": "ローカルデータ管理",
+      "description": "Byteflow の処理はブラウザ内に留まります。一部の設定や機密性の低いツール設定はローカルに保存される場合がありますが、機密 payload は既定で永続化されないよう設定されています。",
+      "clear_button": "保存済みツールデータをクリア",
+      "cleared_one_message": "保存済み Byteflow 項目を {count} 件クリアしました。",
+      "cleared_many_message": "保存済み Byteflow 項目を {count} 件クリアしました。",
+      "none_found_message": "保存済み Byteflow データは見つかりませんでした。"
+    },
     "privacy_badge": {
       "label": "ローカル実行",
       "title": "🛡️ プライバシー第一",
@@ -187,6 +213,8 @@
     "recent_tools": "最近使ったツール",
     "no_favorites": "まだお気に入りはありません。最近使ったツールからスターを付けて追加できます。",
     "no_recent_tools": "いずれかのツールを開くと、最近使ったツールがここに表示されます。",
+    "recent_tools_local_only": "このブラウザ内にのみ保存されます。",
+    "clear_recent_tools": "最近使ったツールを消去",
     "add_favorite": "お気に入りに追加",
     "remove_favorite": "お気に入りから削除",
     "about": "について",
@@ -321,7 +349,9 @@
     "suggested_alternatives": "推奨される代替案",
     "local_input_too_large": "入力が大きすぎるためローカルで安全に処理できません。{size} 以下にしてください。",
     "local_row_limit_exceeded": "行数が多すぎるためローカルで安全に処理できません。{count} 行以下にしてください。",
-    "local_results_truncated": "パフォーマンス保護のため結果を切り詰めました。最初の {count} 件を表示しています。"
+    "local_results_truncated": "パフォーマンス保護のため結果を切り詰めました。最初の {count} 件を表示しています。",
+    "command_actions": "アクション",
+    "command_action_badge": "[操作]"
   },
   "tools": {
     "json_formatter": {

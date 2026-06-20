@@ -7,166 +7,40 @@ import { loadOrderedToolManifests } from "../lib/tool-manifest-lib.js"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, "../..")
-const MENU_GROUPS_PATH = path.join(ROOT, "src/core/registry/menu-groups.ts")
+const TAXONOMY_CONFIG_PATH = path.join(ROOT, "src/core/registry/tool-taxonomy-config.json")
 const OUTPUT_PATH = path.join(ROOT, "src/generated/client-tool-lookup.ts")
+const ROUTE_OUTPUT_PATH = path.join(ROOT, "src/generated/route-tool-lookup.ts")
+const COMMAND_SEARCH_OUTPUT_PATH = path.join(ROOT, "src/generated/command-search-index.ts")
+const DISCOVERY_OUTPUT_PATH = path.join(ROOT, "src/generated/discovery-tool-index.ts")
 const TOOL_INDEX_PATH = path.join(ROOT, "src/generated/tool-index.json")
 
-const MENU_GROUP_DEF_RE = /{ key: "([^"]+)", navKey: "([^"]+)", slug: "([^"]+)", descriptionKey: "([^"]+)" }/g
-const FAMILY_GROUP_RE = /^\s*"([^"]+)":\s*"([^"]+)",?\s*$/gm
-const FAMILY_BY_TOOL_KEY = {
-    ai_color_palette_generator: "images-media",
-    asn1_der_inspector: "security-tokens",
-    barcode_generator: "generators",
-    base_encoding_converter: "encoders-decoders",
-    base64_encode_decode: "encoders-decoders",
-    certificate_decoder: "security-tokens",
-    chmod_calculator: "devops-logs",
-    cidr_subnet_calculator: "network-http",
-    code_to_image_converter: "images-media",
-    color_converter: "svg-css-visual",
-    color_mixer: "svg-css-visual",
-    color_shades_generator: "svg-css-visual",
-    cron_visualizer: "devops-logs",
-    crontab_generator: "devops-logs",
-    css_background_pattern_generator: "svg-css-visual",
-    css_border_radius_generator: "svg-css-visual",
-    css_box_shadow_generator: "svg-css-visual",
-    css_checkbox_generator: "svg-css-visual",
-    css_clip_path_generator: "svg-css-visual",
-    css_cubic_bezier_generator: "svg-css-visual",
-    css_glassmorphism_generator: "svg-css-visual",
-    css_gradient_generator: "svg-css-visual",
-    css_loader_generator: "svg-css-visual",
-    css_switch_generator: "svg-css-visual",
-    css_text_glitch_effect_generator: "svg-css-visual",
-    css_triangle_generator: "svg-css-visual",
-    csp_parser: "security-tokens",
-    csv_diff: "data-formats",
-    csv_json_converter: "data-formats",
-    curl_to_code: "network-http",
-    docker_run_to_compose: "devops-logs",
-    env_parser: "devops-logs",
-    fake_iban_generator: "generators",
-    google_fonts_pair_finder: "svg-css-visual",
-    gzip_brotli_lab: "encoders-decoders",
-    har_viewer_sanitizer: "network-http",
-    hash_generator: "security-tokens",
-    header_diff: "network-http",
-    hex_bytes_workbench: "encoders-decoders",
-    html_encoder_decoder: "encoders-decoders",
-    html_to_markdown: "text-strings",
-    http_request_builder: "network-http",
-    http_status_codes: "network-http",
-    id_generator: "generators",
-    image_average_color_finder: "images-media",
-    image_base64: "encoders-decoders",
-    image_caption_generator: "images-media",
-    image_color_extractor: "images-media",
-    image_color_picker: "images-media",
-    image_cropper: "images-media",
-    image_filters: "images-media",
-    image_resizer: "images-media",
-    instagram_filters: "social-metadata",
-    instagram_photo_downloader: "social-metadata",
-    instagram_post_generator: "social-metadata",
-    instagram_story_generator: "social-metadata",
-    invisible_chars_detector: "text-strings",
-    jq_playground: "data-formats",
-    json_diff_viewer: "data-formats",
-    json_formatter: "data-formats",
-    json_to_typescript: "data-formats",
-    jsonpath_playground: "data-formats",
-    jwt_decoder: "security-tokens",
-    jwt_verifier: "security-tokens",
-    jwt_workbench: "security-tokens",
-    list_randomizer: "generators",
-    local_log_parser: "devops-logs",
-    log_scrubber: "devops-logs",
-    markdown_preview: "text-strings",
-    md5_generator: "security-tokens",
-    ndjson_formatter: "data-formats",
-    open_graph_meta_generator: "social-metadata",
-    openapi_mock: "network-http",
-    openapi_viewer: "network-http",
-    password_generator: "generators",
-    photo_censor: "images-media",
-    pipeline_builder: "workbench-pipeline",
-    qr_code_generator: "generators",
-    react_native_shadow_generator: "svg-css-visual",
-    regex_generator: "text-strings",
-    regex_tester: "text-strings",
-    robots_txt_tester: "network-http",
-    saml_decoder: "security-tokens",
-    scanned_pdf_converter: "images-media",
-    security_header_analyzer: "security-tokens",
-    slugify_case_converter: "text-strings",
-    structured_data_visualizer: "data-formats",
-    svg_blob_generator: "svg-css-visual",
-    svg_optimizer: "svg-css-visual",
-    svg_pattern_generator: "svg-css-visual",
-    svg_stroke_to_fill_converter: "svg-css-visual",
-    svg_to_png_converter: "svg-css-visual",
-    text_diff_checker: "text-strings",
-    text_to_handwriting_converter: "images-media",
-    totp_generator: "security-tokens",
-    tweet_generator: "social-metadata",
-    tweet_to_image_converter: "social-metadata",
-    twitter_ad_revenue_generator: "social-metadata",
-    unicode_inspector: "text-strings",
-    unix_timestamp: "generators",
-    url_encode_decode: "encoders-decoders",
-    url_parser: "network-http",
-    user_agent_parser: "network-http",
-    uuid_generator: "generators",
-    vimeo_thumbnail_grabber: "social-metadata",
-    yaml_json_converter: "data-formats",
-    yaml_merge_patch_explorer: "data-formats",
-    youtube_thumbnail_grabber: "social-metadata",
-    yq_playground: "data-formats",
-}
-
-const PIPELINE_READY_TOOL_KEYS = new Set([
-    "base64_encode_decode",
-    "csv_json_converter",
-    "env_parser",
-    "hash_generator",
-    "html_to_markdown",
-    "invisible_chars_detector",
-    "json_formatter",
-    "jwt_decoder",
-    "log_scrubber",
-    "multiple_whitespace_remover",
-    "ndjson_formatter",
-    "regex_tester",
-    "slugify_case_converter",
-    "unix_timestamp",
-    "url_encode_decode",
-    "yaml_json_converter",
+const taxonomyConfig = JSON.parse(fs.readFileSync(TAXONOMY_CONFIG_PATH, "utf8"))
+const FAMILY_BY_TOOL_KEY = taxonomyConfig.familyByToolKey
+const PIPELINE_READY_TOOL_KEYS = new Set(taxonomyConfig.pipelineReadyToolKeys)
+const TOOL_FAMILIES = new Set([
+    "formatters-validators",
+    "encoders-decoders",
+    "text-strings",
+    "data-formats",
+    "security-tokens",
+    "network-http",
+    "devops-logs",
+    "generators",
+    "images-media",
+    "svg-css-visual",
+    "social-metadata",
+    "workbench-pipeline",
 ])
 
 function parseMenuGroups() {
-    const source = fs.readFileSync(MENU_GROUPS_PATH, "utf8")
-    const defsBlock = source.match(/export const MENU_GROUP_DEFS:[\s\S]*?=\s*\[([\s\S]*?)\]/)
-    if (!defsBlock) {
-        throw new Error("Unable to parse MENU_GROUP_DEFS from src/core/registry/menu-groups.ts")
+    return {
+        defs: taxonomyConfig.primaryMenuGroupDefs.map((group) => ({
+            key: group.key,
+            navKey: group.navKey,
+            slug: group.slug,
+        })),
+        primaryGroupByFamily: taxonomyConfig.primaryGroupByFamily,
     }
-
-    const defs = [...defsBlock[1].matchAll(MENU_GROUP_DEF_RE)].map((match) => ({
-        key: match[1],
-        navKey: match[2],
-        slug: match[3],
-    }))
-
-    const familyBlock = source.match(/const PRIMARY_GROUP_BY_FAMILY:[\s\S]*?=\s*{([\s\S]*?)}/)
-    if (!familyBlock) {
-        throw new Error("Unable to parse PRIMARY_GROUP_BY_FAMILY from src/core/registry/menu-groups.ts")
-    }
-
-    const primaryGroupByFamily = Object.fromEntries(
-        [...familyBlock[1].matchAll(FAMILY_GROUP_RE)].map((match) => [match[1], match[2]]),
-    )
-
-    return { defs, primaryGroupByFamily }
 }
 
 function classifyToolToMenuGroup(tool, primaryGroupByFamily) {
@@ -178,6 +52,36 @@ function classifyToolToMenuGroup(tool, primaryGroupByFamily) {
     if (tool.category === "formatters") return "data_code_formats"
     if (tool.category === "generators") return "generators_calculators"
     return "text_regex"
+}
+
+function assertTaxonomyConfig(orderedTools) {
+    const toolKeys = new Set(orderedTools.map((tool) => tool.key))
+    const primaryGroupKeys = new Set(taxonomyConfig.primaryMenuGroupDefs.map((group) => group.key))
+    const legacyGroupKeys = new Set(taxonomyConfig.legacyMenuGroupDefs.map((group) => group.key))
+    const problems = []
+
+    for (const [toolKey, family] of Object.entries(taxonomyConfig.familyByToolKey)) {
+        if (!toolKeys.has(toolKey)) problems.push(`familyByToolKey references unknown tool: ${toolKey}`)
+        if (!TOOL_FAMILIES.has(family)) problems.push(`familyByToolKey.${toolKey} uses unknown family: ${family}`)
+    }
+
+    for (const toolKey of taxonomyConfig.pipelineReadyToolKeys) {
+        if (!toolKeys.has(toolKey)) problems.push(`pipelineReadyToolKeys references unknown tool: ${toolKey}`)
+    }
+
+    for (const [family, groupKey] of Object.entries(taxonomyConfig.primaryGroupByFamily)) {
+        if (!TOOL_FAMILIES.has(family)) problems.push(`primaryGroupByFamily uses unknown family: ${family}`)
+        if (!primaryGroupKeys.has(groupKey)) problems.push(`primaryGroupByFamily.${family} uses unknown menu group: ${groupKey}`)
+    }
+
+    for (const [toolKey, groupKey] of Object.entries(taxonomyConfig.legacyOverrideGroupByToolKey)) {
+        if (!toolKeys.has(toolKey)) problems.push(`legacyOverrideGroupByToolKey references unknown tool: ${toolKey}`)
+        if (!legacyGroupKeys.has(groupKey)) problems.push(`legacyOverrideGroupByToolKey.${toolKey} uses unknown legacy group: ${groupKey}`)
+    }
+
+    if (problems.length > 0) {
+        throw new Error(`[tool-taxonomy-config] ${problems.join("; ")}`)
+    }
 }
 
 function fallbackFamily(tool) {
@@ -251,33 +155,41 @@ function loadAliases() {
     return new Map(index.canonicalTools.map((t) => [t.key, t.aliases || []]))
 }
 
-function buildClientLookupSource() {
+function buildGeneratedLookupData() {
     const orderedTools = loadOrderedToolManifests()
+    assertTaxonomyConfig(orderedTools)
     const aliasesByKey = loadAliases()
 
-    const byKey = Object.fromEntries(
-        orderedTools.map((tool) => {
-            const taxonomy = getToolTaxonomy(tool)
-            const entry = {
-                key: tool.key,
-                slug: tool.slug,
-                keywords: tool.keywords,
-                aliases: aliasesByKey.get(tool.key) || [],
-                relatedToolKeys: tool.relatedTools,
-                networkAccess: tool.networkAccess || "none",
-                persistInput: tool.persistInput ?? null,
-                family: taxonomy.family,
-                tags: taxonomy.tags,
-                capabilities: taxonomy.capabilities,
-            }
-            if (tool.searchKeywords) {
-                entry.searchKeywords = tool.searchKeywords
-            }
-            return [tool.key, entry]
-        }),
-    )
-
-    const bySlug = Object.fromEntries(orderedTools.map((tool) => [tool.slug, tool.key]))
+    const entries = orderedTools.map((tool) => {
+        const taxonomy = getToolTaxonomy(tool)
+        const entry = {
+            key: tool.key,
+            slug: tool.slug,
+            keywords: tool.keywords,
+            aliases: aliasesByKey.get(tool.key) || [],
+            relatedToolKeys: tool.relatedTools,
+            relatedWorkflows: tool.relatedWorkflows || [],
+            sampleInput: tool.sampleInput || null,
+            sampleMode: tool.sampleMode || null,
+            inputSizePolicy: tool.inputSizePolicy || null,
+            networkAccess: tool.networkAccess || "none",
+            networkHosts: tool.networkHosts || [],
+            networkPurposeKey: tool.networkPurposeKey || null,
+            allowUserProvidedUrl: tool.allowUserProvidedUrl ?? null,
+            requiresExplicitUserAction: tool.requiresExplicitUserAction ?? null,
+            externalDataSent: tool.externalDataSent || null,
+            persistInput: tool.persistInput ?? null,
+            family: taxonomy.family,
+            tags: taxonomy.tags,
+            capabilities: taxonomy.capabilities,
+        }
+        if (tool.searchKeywords) {
+            entry.searchKeywords = tool.searchKeywords
+        }
+        return entry
+    })
+    const byKey = Object.fromEntries(entries.map((entry) => [entry.key, entry]))
+    const bySlug = Object.fromEntries(entries.map((entry) => [entry.slug, entry.key]))
     const { defs, primaryGroupByFamily } = parseMenuGroups()
     const menuGroups = defs.map((group) => ({
         key: group.key,
@@ -287,6 +199,163 @@ function buildClientLookupSource() {
             .filter((tool) => classifyToolToMenuGroup(tool, primaryGroupByFamily) === group.key)
             .map((tool) => ({ key: tool.key, slug: tool.slug })),
     }))
+
+    return {
+        byKey,
+        bySlug,
+        entries,
+        menuGroups,
+    }
+}
+
+function buildRouteLookupSource(data = buildGeneratedLookupData()) {
+    const routeEntries = Object.fromEntries(
+        data.entries.map((tool) => [tool.key, {
+            key: tool.key,
+            slug: tool.slug,
+            networkAccess: tool.networkAccess,
+            networkHosts: tool.networkHosts,
+            networkPurposeKey: tool.networkPurposeKey,
+            requiresExplicitUserAction: tool.requiresExplicitUserAction,
+            externalDataSent: tool.externalDataSent,
+        }]),
+    )
+    const hubSlugs = data.menuGroups.map((group) => group.hubSlug)
+
+    return `/**
+ * Generated by scripts/generators/generate-client-tool-lookup.js
+ * Do not edit manually.
+ */
+
+export type RouteToolLookupEntry = {
+    key: string
+    slug: string
+    networkAccess: "none" | "user_requested" | "third_party_api"
+    networkHosts: readonly string[]
+    networkPurposeKey: string | null
+    requiresExplicitUserAction: boolean | null
+    externalDataSent: "none" | "user_provided_url" | "derived_url" | null
+}
+
+const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = ${JSON.stringify(routeEntries, null, 4)}
+
+const ROUTE_TOOL_KEY_BY_SLUG: Record<string, string> = ${JSON.stringify(data.bySlug, null, 4)}
+
+export const ROUTE_MENU_GROUP_HUB_SLUGS: readonly string[] = ${JSON.stringify(hubSlugs, null, 4)}
+
+export function getRouteToolByKey(key: string): RouteToolLookupEntry | undefined {
+    return ROUTE_TOOL_LOOKUP[key]
+}
+
+export function getRouteToolBySlug(slug: string): RouteToolLookupEntry | undefined {
+    const key = ROUTE_TOOL_KEY_BY_SLUG[slug]
+    return key ? ROUTE_TOOL_LOOKUP[key] : undefined
+}
+`
+}
+
+function buildCommandSearchIndexSource(data = buildGeneratedLookupData()) {
+    const entries = Object.fromEntries(
+        data.entries.map((tool) => [tool.key, {
+            key: tool.key,
+            slug: tool.slug,
+            keywords: tool.keywords,
+            aliases: tool.aliases,
+            searchKeywords: tool.searchKeywords || [],
+            family: tool.family,
+            tags: tool.tags,
+            capabilities: tool.capabilities,
+        }]),
+    )
+
+    return `/**
+ * Generated by scripts/generators/generate-client-tool-lookup.js
+ * Do not edit manually.
+ */
+
+export type CommandSearchIndexEntry = {
+    key: string
+    slug: string
+    keywords: readonly string[]
+    aliases: readonly string[]
+    searchKeywords: readonly string[]
+    family: string
+    tags: readonly string[]
+    capabilities: readonly string[]
+}
+
+const COMMAND_SEARCH_INDEX: Record<string, CommandSearchIndexEntry> = ${JSON.stringify(entries, null, 4)}
+
+export function getCommandSearchToolByKey(key: string): CommandSearchIndexEntry | undefined {
+    return COMMAND_SEARCH_INDEX[key]
+}
+`
+}
+
+function buildDiscoveryToolIndexSource(data = buildGeneratedLookupData()) {
+    const entries = Object.fromEntries(
+        data.entries.map((tool) => [tool.key, {
+            key: tool.key,
+            slug: tool.slug,
+            relatedToolKeys: tool.relatedToolKeys,
+            relatedWorkflows: tool.relatedWorkflows,
+            sampleInput: tool.sampleInput,
+            sampleMode: tool.sampleMode,
+            inputSizePolicy: tool.inputSizePolicy,
+            family: tool.family,
+            tags: tool.tags,
+            capabilities: tool.capabilities,
+        }]),
+    )
+
+    return `/**
+ * Generated by scripts/generators/generate-client-tool-lookup.js
+ * Do not edit manually.
+ */
+
+export type DiscoveryToolIndexEntry = {
+    key: string
+    slug: string
+    relatedToolKeys: readonly string[]
+    relatedWorkflows: ReadonlyArray<{ toolKey: string; reasonKey: string; handoffSupported?: boolean }>
+    sampleInput: string | null
+    sampleMode: string | null
+    inputSizePolicy: Readonly<{ warnAtBytes?: number; workerAtBytes?: number; hardLimitBytes?: number; streamingSupported?: boolean }> | null
+    family: string
+    tags: readonly string[]
+    capabilities: readonly string[]
+}
+
+export type DiscoveryMenuGroup = {
+    key: string
+    navKey: string
+    hubSlug: string
+    items: ReadonlyArray<{ key: string; slug: string }>
+}
+
+const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = ${JSON.stringify(entries, null, 4)}
+
+export const DISCOVERY_MENU_GROUPS: ReadonlyArray<DiscoveryMenuGroup> = ${JSON.stringify(data.menuGroups, null, 4)}
+
+export function getDiscoveryToolByKey(key: string): DiscoveryToolIndexEntry | undefined {
+    return DISCOVERY_TOOL_INDEX[key]
+}
+
+export function getDiscoveryRelatedTools(toolKey: string): DiscoveryToolIndexEntry[] {
+    const tool = DISCOVERY_TOOL_INDEX[toolKey]
+    if (!tool) return []
+
+    return tool.relatedToolKeys
+        .map((key) => DISCOVERY_TOOL_INDEX[key])
+        .filter((entry): entry is DiscoveryToolIndexEntry => Boolean(entry))
+}
+`
+}
+
+function buildClientLookupSource(data = buildGeneratedLookupData()) {
+    const byKey = Object.fromEntries(
+        data.entries.map((tool) => [tool.key, tool]),
+    )
 
     return `/**
  * Generated by scripts/generators/generate-client-tool-lookup.js
@@ -299,7 +368,16 @@ export type ClientToolLookupEntry = {
     keywords: readonly string[]
     aliases: readonly string[]
     relatedToolKeys: readonly string[]
+    relatedWorkflows: ReadonlyArray<{ toolKey: string; reasonKey: string; handoffSupported?: boolean }>
+    sampleInput: string | null
+    sampleMode: string | null
+    inputSizePolicy: Readonly<{ warnAtBytes?: number; workerAtBytes?: number; hardLimitBytes?: number; streamingSupported?: boolean }> | null
     networkAccess: "none" | "user_requested" | "third_party_api"
+    networkHosts: readonly string[]
+    networkPurposeKey: string | null
+    allowUserProvidedUrl: boolean | null
+    requiresExplicitUserAction: boolean | null
+    externalDataSent: "none" | "user_provided_url" | "derived_url" | null
     persistInput: true | false | "opt-in" | null
     family: string
     tags: readonly string[]
@@ -316,9 +394,9 @@ export type ClientMenuGroup = {
 
 const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = ${JSON.stringify(byKey, null, 4)}
 
-const CLIENT_TOOL_KEY_BY_SLUG: Record<string, string> = ${JSON.stringify(bySlug, null, 4)}
+const CLIENT_TOOL_KEY_BY_SLUG: Record<string, string> = ${JSON.stringify(data.bySlug, null, 4)}
 
-export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = ${JSON.stringify(menuGroups, null, 4)}
+export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = ${JSON.stringify(data.menuGroups, null, 4)}
 
 export function getClientToolByKey(key: string): ClientToolLookupEntry | undefined {
     return CLIENT_TOOL_LOOKUP[key]
@@ -340,18 +418,47 @@ export function getClientRelatedTools(toolKey: string): ClientToolLookupEntry[] 
 `
 }
 
-const nextOutput = `${buildClientLookupSource().trim()}\n`
+function buildGeneratedOutputs() {
+    const data = buildGeneratedLookupData()
+    return [
+        {
+            path: OUTPUT_PATH,
+            source: `${buildClientLookupSource(data).trim()}\n`,
+        },
+        {
+            path: ROUTE_OUTPUT_PATH,
+            source: `${buildRouteLookupSource(data).trim()}\n`,
+        },
+        {
+            path: COMMAND_SEARCH_OUTPUT_PATH,
+            source: `${buildCommandSearchIndexSource(data).trim()}\n`,
+        },
+        {
+            path: DISCOVERY_OUTPUT_PATH,
+            source: `${buildDiscoveryToolIndexSource(data).trim()}\n`,
+        },
+    ]
+}
+
+const nextOutputs = buildGeneratedOutputs()
 
 if (process.argv.includes("--check")) {
-    const currentOutput = fs.existsSync(OUTPUT_PATH) ? fs.readFileSync(OUTPUT_PATH, "utf8") : ""
-    if (currentOutput !== nextOutput) {
-        console.error("[check:client-tool-lookup] Found stale src/generated/client-tool-lookup.ts. Run `npm run generate:client-tool-lookup`.")
+    const staleOutputs = nextOutputs
+        .filter((output) => !fs.existsSync(output.path) || fs.readFileSync(output.path, "utf8") !== output.source)
+        .map((output) => path.relative(ROOT, output.path).replace(/\\/g, "/"))
+    if (staleOutputs.length > 0) {
+        console.error("[check:client-tool-lookup] Found stale generated tool lookup files. Run `npm run generate:client-tool-lookup`.")
+        for (const staleOutput of staleOutputs) {
+            console.error(`- ${staleOutput}`)
+        }
         process.exit(1)
     }
 
-    console.log("[check:client-tool-lookup] OK: lightweight client tool lookup is up to date.")
+    console.log("[check:client-tool-lookup] OK: generated tool lookup files are up to date.")
     process.exit(0)
 }
 
-fs.writeFileSync(OUTPUT_PATH, nextOutput)
-console.log("[generate:client-tool-lookup] OK: refreshed src/generated/client-tool-lookup.ts")
+for (const output of nextOutputs) {
+    fs.writeFileSync(output.path, output.source)
+}
+console.log("[generate:client-tool-lookup] OK: refreshed generated tool lookup files")

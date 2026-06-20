@@ -69,6 +69,18 @@ export function recordRecentToolKey(toolKey: string): string[] {
     return next
 }
 
+export function clearRecentToolKeys(): string[] {
+    writeStorageJson(RECENT_TOOL_KEYS_STORAGE_KEY, [])
+    emitUpdateEvent()
+    return []
+}
+
+export function clearFavoriteToolKeys(): string[] {
+    writeStorageJson(FAVORITE_TOOL_KEYS_STORAGE_KEY, [])
+    emitUpdateEvent()
+    return []
+}
+
 export function clearHistory() {
     writeStorageJson(FAVORITE_TOOL_KEYS_STORAGE_KEY, [])
     writeStorageJson(RECENT_TOOL_KEYS_STORAGE_KEY, [])

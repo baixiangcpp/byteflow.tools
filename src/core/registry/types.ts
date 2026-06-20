@@ -5,7 +5,19 @@ export type { ToolCategory } from "./categories"
 export type { ToolCapability, ToolFamily } from "./tool-taxonomy"
 
 export type ToolNetworkAccess = "none" | "user_requested" | "third_party_api"
+export type ToolExternalDataSent = "none" | "user_provided_url" | "derived_url"
 export type ToolInputPersistenceMode = true | false | "opt-in"
+export type ToolInputSizePolicy = {
+    warnAtBytes?: number
+    workerAtBytes?: number
+    hardLimitBytes?: number
+    streamingSupported?: boolean
+}
+export type RelatedToolWorkflow = {
+    toolKey: string
+    reasonKey: string
+    handoffSupported?: boolean
+}
 
 /**
  * Tool metadata used by registry, sitemap, SEO, breadcrumbs, and related tools.
@@ -19,6 +31,13 @@ export interface ToolMeta {
     category: ToolCategory
     /** Related tool keys for internal linking (4-6 recommended) */
     relatedTools: string[]
+    /** Optional structured next-step workflow metadata for richer related-tool UX */
+    relatedWorkflows?: RelatedToolWorkflow[]
+    /** Lightweight example metadata used by quality gates and discovery surfaces */
+    sampleInput?: string
+    sampleMode?: string
+    /** Input-size thresholds used by performance UI and quality gates */
+    inputSizePolicy?: ToolInputSizePolicy
     /** SEO target keywords (English, used for meta keywords) */
     keywords: string[]
     /** Optional deterministic lastmod timestamp used by sitemap */
@@ -27,6 +46,16 @@ export interface ToolMeta {
     searchKeywords?: string[]
     /** Browser network behavior used by privacy UI and CI guards */
     networkAccess?: ToolNetworkAccess
+    /** External hosts this tool may contact or embed from the browser */
+    networkHosts?: string[]
+    /** Translation key under common.external_network_notice.purposes */
+    networkPurposeKey?: string
+    /** Whether the tool can request a URL supplied directly by the user */
+    allowUserProvidedUrl?: boolean
+    /** Whether network activity only starts after an explicit user action */
+    requiresExplicitUserAction?: boolean
+    /** What kind of data may leave the browser when network access is used */
+    externalDataSent?: ToolExternalDataSent
     /** Input payload persistence behavior used by privacy UI and CI guards */
     persistInput?: ToolInputPersistenceMode
     /** Practical discovery family derived from manifest metadata */

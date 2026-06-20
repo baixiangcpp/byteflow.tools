@@ -152,6 +152,7 @@ export function CrontabGeneratorPage() {
                         {toolT.raw_expression_input}
                     </label>
                     <Input
+                        aria-label={toolT.raw_expression_input}
                         value={cronString}
                         onChange={(e) => setCronString(e.target.value)}
                         className={`font-mono text-lg h-12 text-center tracking-widest ${error ? 'border-destructive focus-visible:ring-destructive' : ''}`}
@@ -190,6 +191,7 @@ function CronPartInput({ label, value, hint, onChange }: { label: string, value:
                 {label}
             </label>
             <Input
+                aria-label={label}
                 type="text"
                 className="font-mono text-center text-lg sm:text-xl h-12 sm:h-14 px-1"
                 value={value}

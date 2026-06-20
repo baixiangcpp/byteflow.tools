@@ -45,6 +45,9 @@ jobs:
       - name: Run Unit Tests
         run: npm run test
 
+      - name: Run Coverage Thresholds
+        run: npm run test:coverage
+
       - name: Run Validate Checks
         run: npm run validate
 
@@ -59,3 +62,6 @@ jobs:
 
       - name: Run Playwright Smoke
         run: npm run test:e2e:smoke
+
+      - name: Run PWA Smoke
+        run: npm run test:e2e:pwa

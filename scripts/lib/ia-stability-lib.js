@@ -7,7 +7,7 @@ import { fileURLToPath } from "node:url"
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT_DIR = path.join(__dirname, "../..")
 
-const MENU_GROUPS_PATH = path.join(ROOT_DIR, "src/core/registry/menu-groups.ts")
+const TAXONOMY_CONFIG_PATH = path.join(ROOT_DIR, "src/core/registry/tool-taxonomy-config.json")
 const TOOL_CATEGORIES_PATH = path.join(ROOT_DIR, "src/core/registry/categories.ts")
 const SITEMAP_ROUTE_GROUPS_PATH = path.join(ROOT_DIR, "src/lib/sitemap-route-groups.json")
 
@@ -22,12 +22,8 @@ function stableSort(values) {
 }
 
 function extractMenuGroupHubs() {
-    const source = fs.readFileSync(MENU_GROUPS_PATH, "utf8")
-    const defsBlock = source.match(/export const MENU_GROUP_DEFS:[\s\S]*?=\s*\[([\s\S]*?)\]/)
-    if (!defsBlock) return []
-
-    const matches = [...defsBlock[1].matchAll(/slug:\s*"([^"]+)"/g)].map((m) => m[1])
-    return unique(matches)
+    const config = JSON.parse(fs.readFileSync(TAXONOMY_CONFIG_PATH, "utf8"))
+    return unique(config.primaryMenuGroupDefs.map((group) => group.slug))
 }
 
 function extractToolCategoryHubs() {

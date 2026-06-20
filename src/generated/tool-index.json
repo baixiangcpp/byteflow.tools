@@ -1,5 +1,4 @@
 {
-  "generatedAt": "2026-06-18T17:54:14.868Z",
   "counts": {
     "canonicalTools": 122,
     "aliasRoutes": 1,
@@ -18,13 +17,43 @@
         "json_to_typescript",
         "yaml_json_converter"
       ],
+      "relatedWorkflows": [
+        {
+          "toolKey": "json_to_typescript",
+          "reasonKey": "typed_model_from_formatted_json",
+          "handoffSupported": true
+        },
+        {
+          "toolKey": "jsonpath_playground",
+          "reasonKey": "query_formatted_json",
+          "handoffSupported": true
+        },
+        {
+          "toolKey": "json_diff_viewer",
+          "reasonKey": "compare_after_formatting",
+          "handoffSupported": true
+        }
+      ],
       "keywords": [
         "json formatter",
         "json beautifier",
         "json prettify",
         "format json online"
       ],
+      "sampleInput": "{\"user\":{\"id\":1001,\"name\":\"Alice Chen\",\"active\":true}}",
+      "sampleMode": "format",
+      "inputSizePolicy": {
+        "warnAtBytes": 5242880,
+        "workerAtBytes": 10485760,
+        "hardLimitBytes": 52428800,
+        "streamingSupported": false
+      },
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/json-formatter/manifest.ts"
@@ -40,13 +69,22 @@
         "yaml_json_converter",
         "sql_formatter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "xml formatter",
         "xml beautifier",
         "format xml online",
         "xml pretty print"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/xml-formatter/manifest.ts"
@@ -61,13 +99,22 @@
         "xml_formatter",
         "html_css_beautifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "sql formatter",
         "sql beautifier",
         "format sql online",
         "sql pretty print"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/sql-formatter/manifest.ts"
@@ -83,13 +130,22 @@
         "sql_formatter",
         "markdown_preview"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "javascript formatter",
         "js formatter",
         "beautify javascript",
         "format javascript online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/javascript-formatter/manifest.ts"
@@ -105,13 +161,22 @@
         "html_formatter",
         "json_formatter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "javascript minifier",
         "js minify",
         "minify javascript",
         "compress javascript online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/javascript-minifier/manifest.ts"
@@ -127,13 +192,22 @@
         "css_minifier",
         "javascript_minifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "html minifier",
         "minify html",
         "html compressor",
         "compress html online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/html-minifier/manifest.ts"
@@ -149,13 +223,22 @@
         "url_encode_decode",
         "base64_encode_decode"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "html encoder",
         "html decoder",
         "html entities encode",
         "html entities decode"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/html-encoder-decoder/manifest.ts"
@@ -171,13 +254,22 @@
         "svg_optimizer",
         "xml_formatter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "html beautifier",
         "css formatter",
         "html formatter online",
         "beautify html css"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/html-css-beautifier/manifest.ts"
@@ -193,13 +285,22 @@
         "css_minifier",
         "markdown_preview"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "html formatter",
         "beautify html",
         "format html online",
         "html pretty print"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/html-formatter/manifest.ts"
@@ -215,6 +316,7 @@
         "structured_data_visualizer",
         "xml_formatter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "yaml to json",
         "json to yaml",
@@ -222,7 +324,15 @@
         "json to toml",
         "yaml json toml converter"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/yaml-json-converter/manifest.ts"
@@ -238,13 +348,22 @@
         "text_diff_checker",
         "lorem_ipsum"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "markdown preview",
         "markdown editor online",
         "markdown to html",
         "gfm preview"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/markdown-preview/manifest.ts"
@@ -260,13 +379,22 @@
         "html_encoder_decoder",
         "text_diff_checker"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "html to markdown",
         "convert html to markdown",
         "html markdown converter",
         "html2md online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/html-to-markdown/manifest.ts"
@@ -281,13 +409,22 @@
         "yaml_json_converter",
         "jsonpath_playground"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "json to typescript",
         "json to interface",
         "generate typescript types",
         "json to ts"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/json-to-typescript/manifest.ts"
@@ -302,13 +439,22 @@
         "svg_optimizer",
         "json_formatter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css minifier",
         "minify css online",
         "css compressor",
         "css optimize"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-minifier/manifest.ts"
@@ -323,13 +469,22 @@
         "html_css_beautifier",
         "image_base64"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "svg optimizer",
         "svgo online",
         "optimize svg",
         "compress svg"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/svg-optimizer/manifest.ts"
@@ -345,13 +500,22 @@
         "json_to_typescript",
         "yaml_json_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "jsonpath tester",
         "jsonpath playground",
         "jsonpath query",
         "json path online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/jsonpath-playground/manifest.ts"
@@ -366,13 +530,22 @@
         "yaml_json_converter",
         "jsonpath_playground"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "openapi viewer",
         "swagger viewer online",
         "openapi explorer",
         "api spec viewer"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/openapi-viewer/manifest.ts"
@@ -387,13 +560,22 @@
         "text_diff_checker",
         "jsonpath_playground"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "json diff",
         "compare json online",
         "json diff viewer",
         "json compare tool"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/json-diff-viewer/manifest.ts"
@@ -409,13 +591,27 @@
         "json_to_typescript",
         "text_diff_checker"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "csv to json",
         "json to csv",
         "csv converter online",
         "csv json transform"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": {
+        "warnAtBytes": 524288,
+        "workerAtBytes": 262144,
+        "hardLimitBytes": 1048576,
+        "streamingSupported": false
+      },
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/csv-json-converter/manifest.ts"
@@ -431,12 +627,42 @@
         "hash_generator",
         "image_base64"
       ],
+      "relatedWorkflows": [
+        {
+          "toolKey": "jwt_decoder",
+          "reasonKey": "inspect_decoded_token",
+          "handoffSupported": true
+        },
+        {
+          "toolKey": "url_encode_decode",
+          "reasonKey": "decode_url_payloads",
+          "handoffSupported": true
+        },
+        {
+          "toolKey": "hash_generator",
+          "reasonKey": "verify_decoded_payload",
+          "handoffSupported": true
+        }
+      ],
       "keywords": [
         "base64 encode",
         "base64 decode",
         "base64 converter online"
       ],
+      "sampleInput": "user_001|zh-CN|text",
+      "sampleMode": "text:encode",
+      "inputSizePolicy": {
+        "warnAtBytes": 5242880,
+        "workerAtBytes": 1048576,
+        "hardLimitBytes": 10485760,
+        "streamingSupported": false
+      },
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/base64-encode-decode/manifest.ts"
@@ -452,6 +678,7 @@
         "url_encode_decode",
         "hash_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "base32 encoder",
         "base32 decoder",
@@ -459,7 +686,15 @@
         "base58 decoder",
         "base encoding converter"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/base-encoding-converter/manifest.ts"
@@ -474,13 +709,22 @@
         "jwt_decoder",
         "user_agent_parser"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "url encode",
         "url decode",
         "percent encoding",
         "url encoder online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/url-encode-decode/manifest.ts"
@@ -496,13 +740,22 @@
         "hash_generator",
         "url_encode_decode"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "jwt decoder",
         "decode jwt online",
         "jwt parser",
         "json web token decoder"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/jwt-decoder/manifest.ts"
@@ -518,13 +771,22 @@
         "base64_encode_decode",
         "hash_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "jwt workbench",
         "jwt encode decode verify",
         "jwt hs256 signer",
         "jwt all in one tool"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/jwt-workbench/manifest.ts"
@@ -540,13 +802,27 @@
         "jwt_decoder",
         "password_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "hash generator",
         "md5 hash",
         "sha256 hash online",
         "sha512 generator"
       ],
+      "sampleInput": "Byteflow sample checksum",
+      "sampleMode": "text:sha256",
+      "inputSizePolicy": {
+        "warnAtBytes": 5242880,
+        "workerAtBytes": 1048576,
+        "hardLimitBytes": 52428800,
+        "streamingSupported": false
+      },
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/hash-generator/manifest.ts"
@@ -562,13 +838,22 @@
         "text_diff_checker",
         "password_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "md5 generator",
         "md5 hash online",
         "md5 checksum",
         "md5 encoder"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/md5-generator/manifest.ts"
@@ -583,13 +868,22 @@
         "markdown_preview",
         "base64_encode_decode"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "text diff",
         "compare text online",
         "diff checker",
         "text comparison tool"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/text-diff-checker/manifest.ts"
@@ -605,13 +899,22 @@
         "markdown_preview",
         "lorem_ipsum"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "remove extra spaces",
         "whitespace remover",
         "collapse whitespace",
         "trim text online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/multiple-whitespace-remover/manifest.ts"
@@ -627,13 +930,22 @@
         "lorem_ipsum",
         "slugify_case_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "letter counter",
         "character counter",
         "word counter",
         "text analyzer"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/letter-counter/manifest.ts"
@@ -649,13 +961,22 @@
         "markdown_preview",
         "text_diff_checker"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "bionic reading converter",
         "speed reading text",
         "bionic text generator",
         "focus reading tool"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/bionic-reading-converter/manifest.ts"
@@ -671,13 +992,22 @@
         "code_to_image_converter",
         "open_graph_meta_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "google fonts pair finder",
         "font pairing generator",
         "typography pairing",
         "font combination tool"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/google-fonts-pair-finder/manifest.ts"
@@ -693,13 +1023,22 @@
         "image_caption_generator",
         "instagram_post_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "text to handwriting converter",
         "handwriting generator",
         "typed text to handwritten",
         "handwriting png"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/text-to-handwriting-converter/manifest.ts"
@@ -715,13 +1054,22 @@
         "json_formatter",
         "html_formatter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "code to image",
         "snippet to png",
         "source code screenshot",
         "code image generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/code-to-image-converter/manifest.ts"
@@ -736,12 +1084,21 @@
         "svg_optimizer",
         "qr_code_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "image to base64",
         "base64 to image",
         "convert image base64 online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/image-base64/manifest.ts"
@@ -756,13 +1113,22 @@
         "cron_visualizer",
         "crontab_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "unix timestamp",
         "epoch converter",
         "timestamp to date",
         "unix time online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/unix-timestamp/manifest.ts"
@@ -777,13 +1143,22 @@
         "unix_timestamp",
         "lorem_ipsum"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "uuid generator",
         "uuid v4 generator",
         "generate uuid online",
         "guid generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/uuid-generator/manifest.ts"
@@ -798,12 +1173,21 @@
         "uuid_generator",
         "markdown_preview"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "lorem ipsum generator",
         "dummy text generator",
         "placeholder text"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/lorem-ipsum/manifest.ts"
@@ -818,12 +1202,21 @@
         "uuid_generator",
         "lorem_ipsum"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "password generator",
         "random password",
         "strong password generator online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/password-generator/manifest.ts"
@@ -838,13 +1231,22 @@
         "html_css_beautifier",
         "svg_optimizer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "color converter",
         "hex to rgb",
         "hsl converter",
         "color picker online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/color-converter/manifest.ts"
@@ -860,13 +1262,22 @@
         "css_border_radius_generator",
         "color_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "react native shadow generator",
         "ios shadowoffset shadowradius",
         "android elevation generator",
         "react native style shadow"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/react-native-shadow-generator/manifest.ts"
@@ -882,13 +1293,22 @@
         "color_converter",
         "css_gradient_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "ai color palette generator",
         "brand palette generator",
         "color scheme creator",
         "palette maker online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/ai-color-palette-generator/manifest.ts"
@@ -904,13 +1324,22 @@
         "ai_color_palette_generator",
         "css_gradient_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "color mixer",
         "mix two colors",
         "rgb color blend",
         "hsl color blend"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/color-mixer/manifest.ts"
@@ -926,13 +1355,22 @@
         "color_converter",
         "css_gradient_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "color shades generator",
         "tailwind color scale",
         "color ramp generator",
         "generate color tokens"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/color-shades-generator/manifest.ts"
@@ -948,13 +1386,22 @@
         "color_shades_generator",
         "color_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "image average color finder",
         "average image color",
         "dominant average hex",
         "image color analyzer"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/image-average-color-finder/manifest.ts"
@@ -970,13 +1417,22 @@
         "image_average_color_finder",
         "color_mixer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "image caption generator",
         "add text to image",
         "caption maker",
         "image quote generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/image-caption-generator/manifest.ts"
@@ -992,13 +1448,22 @@
         "ai_color_palette_generator",
         "color_mixer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "image color extractor",
         "extract color palette from image",
         "image palette generator",
         "dominant colors from photo"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/image-color-extractor/manifest.ts"
@@ -1014,13 +1479,22 @@
         "color_converter",
         "color_mixer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "image color picker",
         "pick color from image",
         "image hex picker",
         "sample image color"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/image-color-picker/manifest.ts"
@@ -1036,13 +1510,22 @@
         "code_to_image_converter",
         "image_base64"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "image cropper",
         "crop image online",
         "photo crop tool",
         "crop png jpg"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/image-cropper/manifest.ts"
@@ -1058,13 +1541,22 @@
         "image_caption_generator",
         "image_color_extractor"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "image filters",
         "photo filter editor",
         "adjust brightness contrast image",
         "image effects online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/image-filters/manifest.ts"
@@ -1080,13 +1572,22 @@
         "image_filters",
         "instagram_photo_downloader"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "instagram filters",
         "ig filters online",
         "instagram style photo editor",
         "photo preset filters"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/instagram-filters/manifest.ts"
@@ -1102,13 +1603,22 @@
         "instagram_filters",
         "open_graph_meta_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "instagram post generator",
         "instagram mockup maker",
         "social post generator",
         "instagram post template"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/instagram-post-generator/manifest.ts"
@@ -1124,13 +1634,22 @@
         "instagram_filters",
         "open_graph_meta_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "instagram story generator",
         "instagram story template",
         "story mockup generator",
         "social story maker"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/instagram-story-generator/manifest.ts"
@@ -1146,13 +1665,22 @@
         "instagram_post_generator",
         "instagram_story_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "open graph meta generator",
         "og tags generator",
         "twitter card meta tags",
         "social preview meta"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/open-graph-meta-generator/manifest.ts"
@@ -1168,13 +1696,22 @@
         "twitter_ad_revenue_generator",
         "instagram_post_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "tweet generator",
         "twitter post generator",
         "tweet image maker",
         "social tweet mockup"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/tweet-generator/manifest.ts"
@@ -1190,13 +1727,22 @@
         "instagram_post_generator",
         "code_to_image_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "tweet to image converter",
         "convert tweet to png",
         "tweet image converter",
         "x post image maker"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/tweet-to-image-converter/manifest.ts"
@@ -1212,13 +1758,22 @@
         "open_graph_meta_generator",
         "id_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "twitter ad revenue generator",
         "x ad revenue calculator",
         "social ad revenue forecast",
         "cpm ctr calculator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/twitter-ad-revenue-generator/manifest.ts"
@@ -1234,13 +1789,24 @@
         "instagram_filters",
         "image_resizer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "instagram photo downloader",
         "download instagram image",
         "instagram media saver",
         "authorized ig image download"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "user_requested",
+      "networkHosts": [
+        "instagram.com"
+      ],
+      "networkPurposeKey": "authorized_media_download",
+      "allowUserProvidedUrl": true,
+      "requiresExplicitUserAction": true,
+      "externalDataSent": "user_provided_url",
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/instagram-photo-downloader/manifest.ts"
@@ -1256,13 +1822,26 @@
         "open_graph_meta_generator",
         "image_resizer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "vimeo thumbnail grabber",
         "vimeo thumbnail downloader",
         "vimeo cover image",
         "get vimeo video thumbnail"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "user_requested",
+      "networkHosts": [
+        "vimeo.com",
+        "player.vimeo.com",
+        "vumbnail.com"
+      ],
+      "networkPurposeKey": "thumbnail_preview",
+      "allowUserProvidedUrl": true,
+      "requiresExplicitUserAction": false,
+      "externalDataSent": "derived_url",
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/vimeo-thumbnail-grabber/manifest.ts"
@@ -1278,13 +1857,27 @@
         "open_graph_meta_generator",
         "image_resizer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "youtube thumbnail grabber",
         "youtube thumbnail downloader",
         "youtube video thumbnail",
         "get youtube thumbnail url"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "user_requested",
+      "networkHosts": [
+        "youtube.com",
+        "youtube-nocookie.com",
+        "youtu.be",
+        "i.ytimg.com"
+      ],
+      "networkPurposeKey": "thumbnail_preview",
+      "allowUserProvidedUrl": true,
+      "requiresExplicitUserAction": false,
+      "externalDataSent": "derived_url",
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/youtube-thumbnail-grabber/manifest.ts"
@@ -1300,13 +1893,27 @@
         "image_base64",
         "code_to_image_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "image resizer",
         "resize image online",
         "change photo dimensions",
         "image resize tool"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": {
+        "warnAtBytes": 6291456,
+        "workerAtBytes": 3145728,
+        "hardLimitBytes": 12582912,
+        "streamingSupported": false
+      },
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/image-resizer/manifest.ts"
@@ -1322,13 +1929,22 @@
         "image_resizer",
         "scanned_pdf_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "photo censor",
         "blur image area",
         "pixelate image region",
         "hide sensitive info image"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/photo-censor/manifest.ts"
@@ -1344,13 +1960,27 @@
         "image_resizer",
         "image_base64"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "scanned pdf converter",
         "scan to pdf",
         "enhance scanned document",
         "multi page pdf exporter"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": {
+        "warnAtBytes": 6291456,
+        "workerAtBytes": 3145728,
+        "hardLimitBytes": 12582912,
+        "streamingSupported": false
+      },
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/scanned-pdf-converter/manifest.ts"
@@ -1366,13 +1996,22 @@
         "svg_optimizer",
         "css_clip_path_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "svg blob generator",
         "organic svg shape",
         "blob path generator",
         "random blob svg"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/svg-blob-generator/manifest.ts"
@@ -1388,13 +2027,22 @@
         "css_background_pattern_generator",
         "css_gradient_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "svg pattern generator",
         "seamless svg pattern",
         "tileable pattern svg",
         "svg texture generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/svg-pattern-generator/manifest.ts"
@@ -1410,13 +2058,22 @@
         "svg_pattern_generator",
         "svg_to_png_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "svg stroke to fill",
         "convert stroke to fill svg",
         "outline to fill svg",
         "svg path converter"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/svg-stroke-to-fill-converter/manifest.ts"
@@ -1432,13 +2089,22 @@
         "svg_blob_generator",
         "svg_stroke_to_fill_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "svg to png converter",
         "convert svg to png",
         "svg rasterizer",
         "export svg as png"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/svg-to-png-converter/manifest.ts"
@@ -1454,13 +2120,22 @@
         "color_converter",
         "css_minifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css background pattern generator",
         "css texture generator",
         "css background maker",
         "pattern css online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-background-pattern-generator/manifest.ts"
@@ -1476,13 +2151,22 @@
         "color_converter",
         "css_minifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css border radius generator",
         "rounded corner generator",
         "border radius css",
         "radius generator online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-border-radius-generator/manifest.ts"
@@ -1498,13 +2182,22 @@
         "color_converter",
         "css_minifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css box shadow generator",
         "shadow generator",
         "css shadow builder",
         "box shadow css online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-box-shadow-generator/manifest.ts"
@@ -1520,13 +2213,22 @@
         "css_background_pattern_generator",
         "color_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css checkbox generator",
         "custom checkbox css",
         "checkbox style maker",
         "checkbox ui generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-checkbox-generator/manifest.ts"
@@ -1542,13 +2244,22 @@
         "color_converter",
         "svg_optimizer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css clip path generator",
         "polygon clip path",
         "clip-path css",
         "shape generator css"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-clip-path-generator/manifest.ts"
@@ -1564,13 +2275,22 @@
         "css_checkbox_generator",
         "css_minifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css cubic bezier generator",
         "easing curve generator",
         "transition timing function",
         "cubic bezier tool"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-cubic-bezier-generator/manifest.ts"
@@ -1586,13 +2306,22 @@
         "css_border_radius_generator",
         "color_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css glassmorphism generator",
         "glass effect css",
         "frosted glass ui",
         "backdrop filter generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-glassmorphism-generator/manifest.ts"
@@ -1608,13 +2337,22 @@
         "css_background_pattern_generator",
         "css_minifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css gradient generator",
         "linear gradient css",
         "radial gradient generator",
         "gradient maker online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-gradient-generator/manifest.ts"
@@ -1630,13 +2368,22 @@
         "css_box_shadow_generator",
         "css_minifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css loader generator",
         "spinner css generator",
         "loading animation css",
         "css preloaders"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-loader-generator/manifest.ts"
@@ -1652,13 +2399,22 @@
         "css_glassmorphism_generator",
         "color_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css switch generator",
         "toggle switch css",
         "custom switch styles",
         "switch ui generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-switch-generator/manifest.ts"
@@ -1674,13 +2430,22 @@
         "code_to_image_converter",
         "css_minifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css text glitch effect",
         "glitch text css",
         "neon glitch generator",
         "animated text effect css"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-text-glitch-effect-generator/manifest.ts"
@@ -1696,13 +2461,22 @@
         "css_border_radius_generator",
         "css_minifier"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "css triangle generator",
         "triangle arrow css",
         "tooltip arrow css",
         "directional triangle css"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/css-triangle-generator/manifest.ts"
@@ -1717,12 +2491,21 @@
         "password_generator",
         "url_encode_decode"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "qr code generator",
         "generate qr code online",
         "qr code maker"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/qr-code-generator/manifest.ts"
@@ -1738,13 +2521,22 @@
         "fake_iban_generator",
         "list_randomizer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "barcode generator",
         "code128 generator",
         "ean13 generator",
         "barcode png svg export"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/barcode-generator/manifest.ts"
@@ -1760,13 +2552,22 @@
         "id_generator",
         "password_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "fake iban generator",
         "test iban data",
         "iban checksum generator",
         "dummy bank iban"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/fake-iban-generator/manifest.ts"
@@ -1782,13 +2583,22 @@
         "lorem_ipsum",
         "password_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "list randomizer",
         "shuffle list online",
         "random sample picker",
         "seeded random list"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/list-randomizer/manifest.ts"
@@ -1803,12 +2613,21 @@
         "markdown_preview",
         "text_diff_checker"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "ascii art generator",
         "text to ascii art",
         "figlet online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/ascii-art-generator/manifest.ts"
@@ -1823,13 +2642,22 @@
         "yaml_json_converter",
         "base64_encode_decode"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "env parser",
         "dotenv parser",
         "parse .env file online",
         "environment variable viewer"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/env-parser/manifest.ts"
@@ -1845,13 +2673,22 @@
         "unix_timestamp",
         "hash_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "uuid v7 generator",
         "ulid generator",
         "nanoid generator",
         "unique id generator online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/id-generator/manifest.ts"
@@ -1866,13 +2703,22 @@
         "text_diff_checker",
         "url_encode_decode"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "regex tester",
         "regex online",
         "test regular expression",
         "regex debugger"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/regex-tester/manifest.ts"
@@ -1888,13 +2734,22 @@
         "jsonpath_playground",
         "url_encode_decode"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "regex generator",
         "generate regex",
         "regex pattern builder",
         "regular expression generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/regex-generator/manifest.ts"
@@ -1909,12 +2764,21 @@
         "unix_timestamp",
         "regex_tester"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "crontab generator",
         "cron expression builder",
         "cron maker online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/crontab-generator/manifest.ts"
@@ -1930,12 +2794,21 @@
         "url_parser",
         "chmod_calculator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "user agent parser",
         "parse user agent",
         "ua string analyzer online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/user-agent-parser/manifest.ts"
@@ -1950,12 +2823,21 @@
         "unix_timestamp",
         "regex_tester"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "cron visualizer",
         "cron schedule viewer",
         "visualize cron expression"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/cron-visualizer/manifest.ts"
@@ -1971,12 +2853,21 @@
         "url_parser",
         "http_request_builder"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "http status codes",
         "http response codes list",
         "status code reference"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/http-status-codes/manifest.ts"
@@ -1992,12 +2883,21 @@
         "user_agent_parser",
         "cidr_subnet_calculator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "chmod calculator",
         "unix permissions calculator",
         "file permissions chmod"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/chmod-calculator/manifest.ts"
@@ -2013,13 +2913,22 @@
         "chmod_calculator",
         "http_status_codes"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "cidr calculator",
         "subnet calculator",
         "ipv4 cidr to range",
         "network broadcast calculator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/cidr-subnet-calculator/manifest.ts"
@@ -2035,13 +2944,22 @@
         "user_agent_parser",
         "http_request_builder"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "url parser",
         "url decoder",
         "query string parser",
         "url components breakdown"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/url-parser/manifest.ts"
@@ -2057,13 +2975,22 @@
         "http_status_codes",
         "security_header_analyzer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "pem decoder",
         "x509 certificate viewer",
         "ssl certificate decoder online",
         "certificate parser"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/certificate-decoder/manifest.ts"
@@ -2079,13 +3006,22 @@
         "url_encode_decode",
         "user_agent_parser"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "http request builder",
         "curl generator",
         "api request builder",
         "rest client online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/http-request-builder/manifest.ts"
@@ -2101,13 +3037,22 @@
         "http_status_codes",
         "jwt_decoder"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "curl to code",
         "curl to javascript",
         "curl to python",
         "curl converter online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/curl-to-code/manifest.ts"
@@ -2123,13 +3068,22 @@
         "json_diff_viewer",
         "jsonpath_playground"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "ndjson formatter",
         "newline json",
         "jsonl formatter",
         "ndjson to json array"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/ndjson-formatter/manifest.ts"
@@ -2146,13 +3100,22 @@
         "base64_encode_decode",
         "certificate_decoder"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "jwt verify",
         "jwt signature verifier",
         "hmac jwt verify",
         "jwt validator online"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/jwt-verifier/manifest.ts"
@@ -2168,13 +3131,22 @@
         "hash_generator",
         "text_diff_checker"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "slugify",
         "case converter",
         "camelcase converter",
         "snake case to camel case"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/slugify-case-converter/manifest.ts"
@@ -2190,6 +3162,7 @@
         "base64_encode_decode",
         "url_encode_decode"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "invisible characters detector",
         "zero width space",
@@ -2197,7 +3170,15 @@
         "unicode detector",
         "hidden characters finder"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/invisible-characters-detector/manifest.ts"
@@ -2213,13 +3194,22 @@
         "url_parser",
         "csp_parser"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "robots.txt tester",
         "robots txt checker",
         "robots txt validator",
         "crawler access tester"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/robots-txt-tester/manifest.ts"
@@ -2235,13 +3225,22 @@
         "header_diff",
         "robots_txt_tester"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "csp parser",
         "content security policy analyzer",
         "csp validator",
         "csp checker"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/csp-parser/manifest.ts"
@@ -2257,13 +3256,22 @@
         "json_diff_viewer",
         "header_diff"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "csv diff",
         "csv compare",
         "csv difference checker",
         "spreadsheet diff"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/csv-diff/manifest.ts"
@@ -2279,13 +3287,22 @@
         "csp_parser",
         "text_diff_checker"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "header diff",
         "http header compare",
         "request diff",
         "header comparison"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/header-diff/manifest.ts"
@@ -2301,13 +3318,22 @@
         "http_status_codes",
         "certificate_decoder"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "security header analyzer",
         "http security headers",
         "csp hsts checker",
         "header security audit"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/security-header-analyzer/manifest.ts"
@@ -2323,13 +3349,22 @@
         "uuid_generator",
         "id_generator"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "totp generator",
         "hotp generator",
         "2fa code",
         "authenticator code generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/totp-generator/manifest.ts"
@@ -2345,13 +3380,22 @@
         "json_formatter",
         "curl_to_code"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "openapi mock",
         "swagger mock",
         "api mock generator",
         "mock response generator"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/openapi-mock/manifest.ts"
@@ -2367,13 +3411,22 @@
         "chmod_calculator",
         "curl_to_code"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "docker run to compose",
         "docker compose converter",
         "docker command to yaml",
         "containerize"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/docker-run-to-compose/manifest.ts"
@@ -2389,6 +3442,7 @@
         "regex_tester",
         "text_diff_checker"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "log parser",
         "log analyzer",
@@ -2396,7 +3450,15 @@
         "ndjson logs",
         "log viewer"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/local-log-parser/manifest.ts"
@@ -2412,6 +3474,7 @@
         "json_to_typescript",
         "yaml_json_converter"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "jq playground",
         "jq online",
@@ -2419,7 +3482,15 @@
         "jq filter",
         "json transform"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/jq-playground/manifest.ts"
@@ -2435,13 +3506,22 @@
         "jwt_decoder",
         "text_diff_checker"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "log scrubber",
         "log redaction",
         "secret redaction",
         "pii remover"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/log-scrubber/manifest.ts"
@@ -2457,13 +3537,22 @@
         "http_request_builder",
         "local_log_parser"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "gzip brotli lab",
         "gzip decoder",
         "brotli compression",
         "http compression"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/gzip-brotli-lab/manifest.ts"
@@ -2479,13 +3568,22 @@
         "openapi_viewer",
         "docker_run_to_compose"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "yaml merge",
         "yaml patch",
         "json merge patch",
         "kubernetes yaml"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/yaml-merge-patch-explorer/manifest.ts"
@@ -2501,6 +3599,7 @@
         "jq_playground",
         "jsonpath_playground"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "yq playground",
         "yaml query",
@@ -2508,7 +3607,15 @@
         "yq online",
         "yaml transform"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/yq-playground/manifest.ts"
@@ -2524,6 +3631,7 @@
         "xml_formatter",
         "jsonpath_playground"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "structured data visualizer",
         "json tree",
@@ -2531,7 +3639,15 @@
         "xml tree",
         "data graph"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/structured-data-visualizer/manifest.ts"
@@ -2547,6 +3663,7 @@
         "http_status_codes",
         "security_header_analyzer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "har viewer",
         "har sanitizer",
@@ -2554,7 +3671,15 @@
         "network log sanitizer",
         "har redaction"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/har-viewer-sanitizer/manifest.ts"
@@ -2570,6 +3695,7 @@
         "url_encode_decode",
         "log_scrubber"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "pipeline builder",
         "recipe builder",
@@ -2577,7 +3703,15 @@
         "local workflow",
         "developer workbench"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/pipeline-builder/manifest.ts"
@@ -2593,13 +3727,22 @@
         "base64_encode_decode",
         "security_header_analyzer"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "saml decoder",
         "saml response decoder",
         "saml request parser",
         "saml assertion viewer"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/saml-decoder/manifest.ts"
@@ -2615,13 +3758,22 @@
         "hex_bytes_workbench",
         "jwt_decoder"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "asn1 der inspector",
         "der parser",
         "asn.1 viewer",
         "certificate der decoder"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/asn1-der-inspector/manifest.ts"
@@ -2637,13 +3789,22 @@
         "hash_generator",
         "unicode_inspector"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "hex bytes workbench",
         "hex decoder",
         "bytes inspector",
         "utf8 hex converter"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/hex-bytes-workbench/manifest.ts"
@@ -2659,13 +3820,22 @@
         "hex_bytes_workbench",
         "multiple_whitespace_remover"
       ],
+      "relatedWorkflows": [],
       "keywords": [
         "unicode inspector",
         "code point inspector",
         "unicode analyzer",
         "utf8 inspector"
       ],
+      "sampleInput": null,
+      "sampleMode": null,
+      "inputSizePolicy": null,
       "networkAccess": "none",
+      "networkHosts": [],
+      "networkPurposeKey": null,
+      "allowUserProvidedUrl": null,
+      "requiresExplicitUserAction": null,
+      "externalDataSent": null,
       "persistInput": null,
       "updatedAt": null,
       "sourceFile": "src/features/tools/unicode-inspector/manifest.ts"

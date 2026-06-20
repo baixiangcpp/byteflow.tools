@@ -134,6 +134,32 @@
     "all_tools": "Tous les outils",
     "install_as_app": "Installer en tant qu'application",
     "try_example": "Essayer un exemple",
+    "external_network_notice": {
+      "title": "Avis de réseau externe",
+      "third_party_api_message": "Cet outil peut contacter un service tiers depuis votre navigateur dans le cadre de son flux de travail.",
+      "user_requested_message": "Cet outil peut demander ou ouvrir une URL que vous fournissez depuis votre navigateur lorsque vous lancez explicitement cette action.",
+      "user_input_preview_message": "Cet outil peut charger des ressources d’aperçu externes depuis votre navigateur après la saisie d’une URL prise en charge.",
+      "hosts_label": "Hôtes",
+      "purpose_label": "Objectif",
+      "data_sent_label": "Données envoyées",
+      "purposes": {
+        "authorized_media_download": "Télécharger un média depuis une URL que vous fournissez après confirmation de votre droit d’utilisation.",
+        "thumbnail_preview": "Générer et prévisualiser des URL d’images miniatures publiques dérivées du lien vidéo saisi."
+      },
+      "external_data": {
+        "none": "Cette fonction n’envoie aucune saisie d’outil.",
+        "user_provided_url": "L’URL que vous fournissez peut être demandée par votre navigateur.",
+        "derived_url": "Une URL de ressource publique dérivée peut être demandée par votre navigateur."
+      }
+    },
+    "local_data_controls": {
+      "title": "Contrôles des données locales",
+      "description": "Le traitement Byteflow reste dans votre navigateur. Certaines préférences et certains réglages non sensibles peuvent être enregistrés localement ; les payloads sensibles sont configurés pour ne pas être conservés par défaut.",
+      "clear_button": "Effacer les données d’outils enregistrées",
+      "cleared_one_message": "{count} élément Byteflow enregistré a été effacé.",
+      "cleared_many_message": "{count} éléments Byteflow enregistrés ont été effacés.",
+      "none_found_message": "Aucune donnée Byteflow enregistrée n’a été trouvée."
+    },
     "privacy_badge": {
       "label": "Exécution locale",
       "title": "🛡️ Confidentialité d'abord",
@@ -187,6 +213,8 @@
     "recent_tools": "Outils récents",
     "no_favorites": "Aucun favori pour le moment. Ajoutez-en depuis votre liste récente.",
     "no_recent_tools": "Ouvrez n'importe quel outil pour afficher ici votre liste récente.",
+    "recent_tools_local_only": "Stocké uniquement dans ce navigateur.",
+    "clear_recent_tools": "Effacer les outils récents",
     "add_favorite": "Ajouter aux favoris",
     "remove_favorite": "Retirer des favoris",
     "about": "À propos",
@@ -321,7 +349,9 @@
     "suggested_alternatives": "Alternatives suggérées",
     "local_input_too_large": "L’entrée est trop volumineuse pour un traitement local sûr. Gardez-la sous {size}.",
     "local_row_limit_exceeded": "Trop de lignes pour un traitement local sûr. Gardez-les sous {count} lignes.",
-    "local_results_truncated": "Résultats tronqués pour préserver les performances. Affichage des {count} premiers éléments."
+    "local_results_truncated": "Résultats tronqués pour préserver les performances. Affichage des {count} premiers éléments.",
+    "command_actions": "Commandes",
+    "command_action_badge": "[COMMANDE]"
   },
   "tools": {
     "json_formatter": {

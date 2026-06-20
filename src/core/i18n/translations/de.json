@@ -130,6 +130,32 @@
     "all_tools": "Alle Tools",
     "install_as_app": "Als App installieren",
     "try_example": "Beispiel ausprobieren",
+    "external_network_notice": {
+      "title": "Hinweis zu externen Netzwerkzugriffen",
+      "third_party_api_message": "Dieses Tool kann im Rahmen seines Workflows über Ihren Browser einen Drittanbieterdienst kontaktieren.",
+      "user_requested_message": "Dieses Tool kann eine von Ihnen angegebene URL über Ihren Browser anfragen oder öffnen, wenn Sie diese Aktion ausdrücklich ausführen.",
+      "user_input_preview_message": "Dieses Tool kann externe Vorschau-Assets über Ihren Browser laden, nachdem Sie eine unterstützte URL eingegeben haben.",
+      "hosts_label": "Zielhosts",
+      "purpose_label": "Zweck",
+      "data_sent_label": "Gesendete Daten",
+      "purposes": {
+        "authorized_media_download": "Medien von einer von Ihnen angegebenen URL herunterladen, nachdem Sie die Nutzungsberechtigung bestätigt haben.",
+        "thumbnail_preview": "Öffentliche Thumbnail-Bild-URLs aus dem eingegebenen Videolink erzeugen und anzeigen."
+      },
+      "external_data": {
+        "none": "Diese Funktion sendet keine Tool-Eingaben.",
+        "user_provided_url": "Die von Ihnen angegebene URL kann von Ihrem Browser angefragt werden.",
+        "derived_url": "Eine abgeleitete öffentliche Asset-URL kann von Ihrem Browser angefragt werden."
+      }
+    },
+    "local_data_controls": {
+      "title": "Lokale Datenverwaltung",
+      "description": "Die Verarbeitung in Byteflow bleibt in Ihrem Browser. Einige Einstellungen und nicht sensible Tool-Optionen können lokal gespeichert werden; sensible Payloads werden standardmäßig nicht dauerhaft gespeichert.",
+      "clear_button": "Gespeicherte Tool-Daten löschen",
+      "cleared_one_message": "{count} gespeichertes Byteflow-Element wurde gelöscht.",
+      "cleared_many_message": "{count} gespeicherte Byteflow-Elemente wurden gelöscht.",
+      "none_found_message": "Es wurden keine gespeicherten Byteflow-Daten gefunden."
+    },
     "privacy_badge": {
       "label": "Lokal ausgeführt",
       "title": "🛡️ Datenschutz zuerst",
@@ -183,6 +209,8 @@
     "recent_tools": "Zuletzt verwendete Tools",
     "no_favorites": "Noch keine Favoriten. Markieren Sie Tools aus Ihrer letzten Liste mit einem Stern.",
     "no_recent_tools": "Öffnen Sie ein beliebiges Tool, um hier Ihre zuletzt verwendeten Tools zu sehen.",
+    "recent_tools_local_only": "Nur in diesem Browser gespeichert.",
+    "clear_recent_tools": "Zuletzt verwendete Tools löschen",
     "add_favorite": "Zu Favoriten hinzufügen",
     "remove_favorite": "Aus Favoriten entfernen",
     "about": "Über",
@@ -321,7 +349,9 @@
     "suggested_alternatives": "Vorgeschlagene Alternativen",
     "local_input_too_large": "Die Eingabe ist fuer lokale Verarbeitung zu gross. Bitte unter {size} halten.",
     "local_row_limit_exceeded": "Zu viele Zeilen fuer lokale Verarbeitung. Bitte unter {count} Zeilen halten.",
-    "local_results_truncated": "Ergebnisse wurden aus Performancegruenden gekuerzt. Es werden die ersten {count} Eintraege angezeigt."
+    "local_results_truncated": "Ergebnisse wurden aus Performancegruenden gekuerzt. Es werden die ersten {count} Eintraege angezeigt.",
+    "command_actions": "Aktionen",
+    "command_action_badge": "[AKTION]"
   },
   "tools": {
     "json_formatter": {

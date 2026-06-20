@@ -134,6 +134,32 @@
     "all_tools": "所有工具",
     "install_as_app": "安裝為應用",
     "try_example": "試試範例",
+    "external_network_notice": {
+      "title": "外部網路提示",
+      "third_party_api_message": "此工具可能會在工作流程中從你的瀏覽器請求第三方服務。",
+      "user_requested_message": "此工具只會在你明確執行該操作時，從瀏覽器請求或開啟你提供的 URL。",
+      "user_input_preview_message": "當你輸入支援的 URL 後，此工具可能會從你的瀏覽器載入外部預覽資源。",
+      "hosts_label": "主機",
+      "purpose_label": "用途",
+      "data_sent_label": "傳送的資料",
+      "purposes": {
+        "authorized_media_download": "在你確認有權使用後，從你提供的 URL 下載媒體。",
+        "thumbnail_preview": "根據你輸入的影片連結產生並預覽公開縮圖網址。"
+      },
+      "external_data": {
+        "none": "此功能不會傳送工具輸入。",
+        "user_provided_url": "你提供的 URL 可能會由瀏覽器請求。",
+        "derived_url": "瀏覽器可能會請求衍生出的公開資源 URL。"
+      }
+    },
+    "local_data_controls": {
+      "title": "本地資料控制",
+      "description": "Byteflow 的處理保留在你的瀏覽器中。部分偏好和非敏感工具設定可能會保存在本地；敏感 payload 預設設定為不持久化。",
+      "clear_button": "清除已保存的工具資料",
+      "cleared_one_message": "已清除 {count} 筆保存的 Byteflow 項目。",
+      "cleared_many_message": "已清除 {count} 筆保存的 Byteflow 項目。",
+      "none_found_message": "未找到已保存的 Byteflow 資料。"
+    },
     "privacy_badge": {
       "label": "本地執行",
       "title": "🛡️ 隱私優先",
@@ -187,6 +213,8 @@
     "recent_tools": "最近使用的工具",
     "no_favorites": "尚無收藏。可在最近使用清單中將工具加入收藏。",
     "no_recent_tools": "開啟任一工具後，這裡會顯示最近使用紀錄。",
+    "recent_tools_local_only": "僅儲存在目前瀏覽器中。",
+    "clear_recent_tools": "清除最近使用紀錄",
     "add_favorite": "加入收藏",
     "remove_favorite": "從收藏移除",
     "about": "關於",
@@ -321,7 +349,9 @@
     "suggested_alternatives": "建議的替代方案",
     "local_input_too_large": "輸入過大，無法在本機安全處理。請控制在 {size} 以內。",
     "local_row_limit_exceeded": "列數過多，無法在本機安全處理。請控制在 {count} 列以內。",
-    "local_results_truncated": "為確保效能，結果已截斷。目前顯示前 {count} 項。"
+    "local_results_truncated": "為確保效能，結果已截斷。目前顯示前 {count} 項。",
+    "command_actions": "操作",
+    "command_action_badge": "[操作]"
   },
   "tools": {
     "json_formatter": {

@@ -7,8 +7,12 @@
  */
 const APP_VERSION = '__BUILD_ID__';
 const CACHE_NAME = `byteflow-v${APP_VERSION}`;
+const CACHE_META_NAME = `byteflow-meta-v${APP_VERSION}`;
 const OFFLINE_FALLBACK_URL = '/offline.html';
 const OFFLINE_FALLBACK_CANDIDATES = [OFFLINE_FALLBACK_URL, '/offline'];
+const MAX_RUNTIME_CACHE_ENTRIES = 120;
+const MAX_RUNTIME_CACHE_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+const CACHE_META_URL_PREFIX = '/__byteflow-cache-meta__?url=';
 
 const STATIC_ASSETS = [
     '/manifest.json',
@@ -29,17 +33,37 @@ const STATIC_ASSETS = [
 ];
 
 const SENSITIVE_QUERY_PARAMS = [
+    'access_token',
+    'apikey',
+    'api_key',
+    'auth',
+    'auth_token',
+    'credential',
     'handoff',
     'handoff_ref',
-    'token',
-    'secret',
-    'payload',
+    'id_token',
+    'jwt',
     'key',
     'authorization',
+    'password',
+    'passwd',
+    'payload',
+    'pwd',
+    'refresh_token',
+    'secret',
+    'session',
+    'session_id',
+    'sessionid',
+    'signature',
+    'token',
 ];
 
 function hasSensitiveQuery(url) {
-    return SENSITIVE_QUERY_PARAMS.some((param) => url.searchParams.has(param));
+    const sensitiveParams = new Set(SENSITIVE_QUERY_PARAMS);
+    for (const param of url.searchParams.keys()) {
+        if (sensitiveParams.has(param.toLowerCase())) return true;
+    }
+    return false;
 }
 
 function matchOfflineFallback() {
@@ -49,6 +73,58 @@ function matchOfflineFallback() {
             '<!doctype html><html lang="en"><head><meta charset="utf-8"><title>Offline | byteflow.tools</title></head><body><main><h1>You are offline</h1><p>Reconnect and refresh, or open a page you have visited before.</p></main></body></html>',
             { headers: { 'Content-Type': 'text/html; charset=utf-8' } },
         ));
+}
+
+function cacheMetaRequest(request) {
+    return new Request(`${CACHE_META_URL_PREFIX}${encodeURIComponent(request.url)}`);
+}
+
+function rememberCachedRequest(request) {
+    return caches.open(CACHE_META_NAME)
+        .then((metaCache) => metaCache.put(cacheMetaRequest(request), new Response(String(Date.now()))));
+}
+
+function readCachedAt(metaCache, request) {
+    return metaCache.match(cacheMetaRequest(request))
+        .then((response) => response ? response.text() : '0')
+        .then((value) => {
+            const timestamp = Number(value);
+            return Number.isFinite(timestamp) ? timestamp : 0;
+        });
+}
+
+function pruneRuntimeCache() {
+    const now = Date.now();
+    return Promise.all([caches.open(CACHE_NAME), caches.open(CACHE_META_NAME)])
+        .then(([runtimeCache, metaCache]) => runtimeCache.keys()
+            .then((requests) => Promise.all(requests.map((request) =>
+                readCachedAt(metaCache, request).then((cachedAt) => ({ request, cachedAt }))
+            )))
+            .then((entries) => {
+                const entriesWithExpiry = entries.map((entry) => ({
+                    ...entry,
+                    expired: entry.cachedAt > 0 && now - entry.cachedAt > MAX_RUNTIME_CACHE_AGE_MS,
+                }));
+                const expired = entriesWithExpiry.filter((entry) => entry.expired);
+                const retained = entriesWithExpiry
+                    .filter((entry) => !entry.expired)
+                    .sort((a, b) => b.cachedAt - a.cachedAt);
+                const overflow = retained.slice(MAX_RUNTIME_CACHE_ENTRIES);
+                return Promise.all([...expired, ...overflow].map((entry) =>
+                    Promise.all([
+                        runtimeCache.delete(entry.request),
+                        metaCache.delete(cacheMetaRequest(entry.request)),
+                    ])
+                ));
+            }));
+}
+
+function putRuntimeCache(request, response) {
+    const clone = response.clone();
+    return caches.open(CACHE_NAME)
+        .then((cache) => cache.put(request, clone))
+        .then(() => rememberCachedRequest(request))
+        .then(() => pruneRuntimeCache());
 }
 
 // Install: cache critical static assets; waiting/activation is user-triggered from the app shell.
@@ -70,7 +146,7 @@ self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((names) =>
             Promise.all(
-                names.filter((name) => name !== CACHE_NAME).map((name) => caches.delete(name))
+                names.filter((name) => ![CACHE_NAME, CACHE_META_NAME].includes(name)).map((name) => caches.delete(name))
             )
         ).then(() => {
             // Notify all open tabs that a new version is active
@@ -106,8 +182,7 @@ self.addEventListener('fetch', (event) => {
             fetch(event.request)
                 .then((response) => {
                     if (response.ok) {
-                        const clone = response.clone();
-                        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+                        event.waitUntil(putRuntimeCache(event.request, response).catch(() => undefined));
                     }
                     return response;
                 })
@@ -125,8 +200,7 @@ self.addEventListener('fetch', (event) => {
                 if (cached) return cached;
                 return fetch(event.request).then((response) => {
                     if (response.ok) {
-                        const clone = response.clone();
-                        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+                        event.waitUntil(putRuntimeCache(event.request, response).catch(() => undefined));
                     }
                     return response;
                 });
@@ -140,8 +214,7 @@ self.addEventListener('fetch', (event) => {
         fetch(event.request)
             .then((response) => {
                 if (response.ok) {
-                    const clone = response.clone();
-                    caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+                    event.waitUntil(putRuntimeCache(event.request, response).catch(() => undefined));
                 }
                 return response;
             })

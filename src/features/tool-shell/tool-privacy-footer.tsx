@@ -3,7 +3,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useLang } from "@/core/i18n/lang-provider"
 import { getToolSourceUrl, isRouteSourceToolSlug } from "@/core/registry/tool-source"
-import { getClientToolBySlug } from "@/generated/client-tool-lookup"
+import { getRouteToolBySlug } from "@/generated/route-tool-lookup"
 
 function getToolSlugFromPathname(pathname: string): string | null {
   const segments = pathname.split("/").filter(Boolean)
@@ -16,7 +16,7 @@ export function ToolPrivacyFooter() {
   const footerT = t.common.privacy_footer as Record<string, string> | undefined
   const slug = getToolSlugFromPathname(pathname)
 
-  if (!slug || (!getClientToolBySlug(slug) && !isRouteSourceToolSlug(slug))) {
+  if (!slug || (!getRouteToolBySlug(slug) && !isRouteSourceToolSlug(slug))) {
     return null
   }
 

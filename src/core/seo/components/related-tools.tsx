@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useLang } from "@/core/i18n/lang-provider"
-import { getClientRelatedTools } from "@/generated/client-tool-lookup"
+import { getDiscoveryRelatedTools } from "@/generated/discovery-tool-index"
 import { requireTranslationValue } from "@/core/i18n/i18n"
 import { ArrowRight } from "lucide-react"
 
@@ -18,7 +18,7 @@ export function RelatedTools({
     source?: "inline" | "fallback"
 }) {
     const { t, lang } = useLang()
-    const related = getClientRelatedTools(toolKey)
+    const related = getDiscoveryRelatedTools(toolKey)
 
     if (related.length === 0) return null
 

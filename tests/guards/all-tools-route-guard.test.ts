@@ -50,9 +50,15 @@ describe("all-tools route guard", () => {
         expect(pageSource).toContain("TOOL_FAMILY_LABELS")
         expect(pageSource).toContain("AllToolsDiscovery")
         expect(discoverySource).toContain("readRecentToolKeys")
+        expect(discoverySource).toContain("clearRecentToolKeys")
+        expect(discoverySource).toContain("labels.recentToolsPrivacy")
+        expect(discoverySource).toContain("labels.clearRecentTools")
         expect(discoverySource).toContain("selectedTags")
         expect(discoverySource).toContain("selectedFamily")
         expect(discoverySource).toContain("capabilities")
+        expect(discoverySource).toContain("scoreToolSearch")
+        expect(discoverySource).toContain(".sort((left, right) => right.score - left.score")
+        expect(discoverySource).not.toContain(".toLowerCase().includes(query)")
     })
 
     it("keeps home all-tools section id aligned to shared constant", () => {

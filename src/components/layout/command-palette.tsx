@@ -18,9 +18,10 @@ import {
 import { toolGroups } from "./tool-groups"
 import { DialogTitle } from "@/components/ui/dialog"
 import { useLang } from "@/core/i18n/lang-provider"
-import { getClientToolByKey } from "@/generated/client-tool-lookup"
+import { getCommandSearchToolByKey } from "@/generated/command-search-index"
 import { readFavoriteToolKeys, readRecentToolKeys, TOOL_DISCOVERY_UPDATED_EVENT } from "@/core/storage/tool-discovery-state"
 import { useSystemCommands } from "@/core/commands/registry"
+import { scoreCommandSearch } from "@/core/search/command-search"
 
 const STATIC_PAGES = [
     { slug: "about", key: "about_title" },
@@ -36,7 +37,7 @@ function buildSearchValue(parts: Array<string | undefined>): string {
         .join(" ")
 }
 
-type ToolCommandItem = { toolKey: string; title: string; href: string; searchValue: string }
+type ToolCommandItem = { toolKey: string; title: string; href: string; searchValue: string; searchKeywords: string[] }
 
 type CommandPaletteProps = {
     open?: boolean
@@ -57,6 +58,31 @@ function isEditableShortcutTarget(target: EventTarget | null): boolean {
     return Boolean(target.closest("input, textarea, select, [role='textbox'], .monaco-editor, .monaco-diff-editor"))
 }
 
+function buildToolSearchKeywords(toolKey: string, title: string, searchValue: string): string[] {
+    const tool = getCommandSearchToolByKey(toolKey)
+    return [
+        title,
+        searchValue,
+        toolKey,
+        tool?.slug,
+        ...(tool?.keywords ?? []),
+        ...(tool?.aliases ?? []),
+        ...(tool?.searchKeywords ?? []),
+        tool?.family,
+        ...(tool?.tags ?? []),
+        ...(tool?.capabilities ?? []),
+    ].filter((value): value is string => typeof value === "string" && value.trim().length > 0)
+}
+
+function resolveSystemCommandLabel(
+    labelKey: string,
+    labels: { common: Record<string, string>; nav: Record<string, string> },
+): string {
+    const [namespace, key] = labelKey.split(".")
+    const source = namespace === "nav" ? labels.nav : labels.common
+    return requireTranslationValue(source?.[key], labelKey)
+}
+
 export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = true }: CommandPaletteProps = {}) {
     const [internalOpen, setInternalOpen] = React.useState(false)
     const [favoriteToolKeys, setFavoriteToolKeys] = React.useState<string[]>([])
@@ -69,6 +95,8 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
     const noResultsLabel = requireTranslationValue(commonLabels.no_results, "common.no_results")
     const favoritesLabel = requireTranslationValue(commonLabels.favorites, "common.favorites")
     const recentToolsLabel = requireTranslationValue(commonLabels.recent_tools, "common.recent_tools")
+    const commandActionsLabel = requireTranslationValue(commonLabels.command_actions, "common.command_actions")
+    const commandActionBadgeLabel = requireTranslationValue(commonLabels.command_action_badge, "common.command_action_badge")
 
     const isControlled = typeof openProp === "boolean"
     const open = isControlled ? openProp : internalOpen
@@ -123,7 +151,7 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
         const values = new Map<string, string>()
         for (const group of toolGroups) {
             for (const item of group.items) {
-                const tool = getClientToolByKey(item.key)
+                const tool = getCommandSearchToolByKey(item.key)
                 const localizedTool = t.tools[item.key] as { title?: string; description?: string } | undefined
                 const englishTool = englishToolSearchAliases?.[item.key]
                 values.set(
@@ -151,14 +179,16 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
     const favoriteCommands = React.useMemo(() => {
         return favoriteToolKeys
             .map((toolKey) => {
-                const tool = getClientToolByKey(toolKey)
+                const tool = getCommandSearchToolByKey(toolKey)
                 if (!tool) return null
                 const title = requireTranslationValue(t.tools[tool.key]?.title, `tools.${tool.key}.title`)
+                const searchValue = toolSearchValues.get(tool.key) || title
                 return {
                     toolKey: tool.key,
                     title,
                     href: `/${lang}/${tool.slug}`,
-                    searchValue: toolSearchValues.get(tool.key) || title,
+                    searchValue,
+                    searchKeywords: buildToolSearchKeywords(tool.key, title, searchValue),
                 }
             })
             .filter((item): item is ToolCommandItem => item !== null)
@@ -169,14 +199,16 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
         return recentToolKeys
             .filter((toolKey) => !favoriteKeySet.has(toolKey))
             .map((toolKey) => {
-                const tool = getClientToolByKey(toolKey)
+                const tool = getCommandSearchToolByKey(toolKey)
                 if (!tool) return null
                 const title = requireTranslationValue(t.tools[tool.key]?.title, `tools.${tool.key}.title`)
+                const searchValue = toolSearchValues.get(tool.key) || title
                 return {
                     toolKey: tool.key,
                     title,
                     href: `/${lang}/${tool.slug}`,
-                    searchValue: toolSearchValues.get(tool.key) || title,
+                    searchValue,
+                    searchKeywords: buildToolSearchKeywords(tool.key, title, searchValue),
                 }
             })
             .filter((item): item is ToolCommandItem => item !== null)
@@ -192,6 +224,7 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
             onOpenChange={setOpen}
             title={navigationLabel}
             description={searchLabel}
+            filter={scoreCommandSearch}
         >
             <DialogTitle className="sr-only">{navigationLabel}</DialogTitle>
             <CommandInput 
@@ -203,10 +236,12 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
                 <CommandEmpty>{noResultsLabel}</CommandEmpty>
 
                 {isCommandMode ? (
-                    <CommandGroup heading="Actions">
+                    <CommandGroup heading={commandActionsLabel}>
                         {systemCommands.map((cmd) => {
-                            const labelKey = cmd.labelKey.split(".")[1]
-                            const label = requireTranslationValue((commonLabels as unknown as Record<string, string>)[labelKey], cmd.labelKey)
+                            const label = resolveSystemCommandLabel(cmd.labelKey, {
+                                common: commonLabels as unknown as Record<string, string>,
+                                nav: t.nav as unknown as Record<string, string>,
+                            })
                             return (
                                 <CommandItem
                                     key={cmd.id}
@@ -218,7 +253,7 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
                                 >
                                     <cmd.icon className="mr-2 h-4 w-4" />
                                     <span>{label}</span>
-                                    <span className="ml-auto text-xs text-muted-foreground font-mono tracking-tighter opacity-70">[ACTION]</span>
+                                    <span className="ml-auto text-xs text-muted-foreground font-mono tracking-tighter opacity-70">{commandActionBadgeLabel}</span>
                                 </CommandItem>
                             )
                         })}
@@ -232,6 +267,7 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
                                         <CommandItem
                                             key={`favorite-${item.toolKey}`}
                                             value={item.searchValue}
+                                            keywords={item.searchKeywords}
                                             onSelect={() => runCommand(() => router.push(item.href))}
                                         >
                                             <Star className="mr-2 h-4 w-4" />
@@ -250,6 +286,7 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
                                         <CommandItem
                                             key={`recent-${item.toolKey}`}
                                             value={item.searchValue}
+                                            keywords={item.searchKeywords}
                                             onSelect={() => runCommand(() => router.push(item.href))}
                                         >
                                             <History className="mr-2 h-4 w-4" />
@@ -298,6 +335,7 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
                                             <CommandItem
                                                 key={tool.href}
                                                 value={toolSearchValues.get(tool.key) || title}
+                                                keywords={buildToolSearchKeywords(tool.key, title, toolSearchValues.get(tool.key) || title)}
                                                 onSelect={() => runCommand(() => router.push(`/${lang}${tool.href}`))}
                                             >
                                                 <Search className="mr-2 h-4 w-4" />

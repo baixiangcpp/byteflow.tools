@@ -152,7 +152,6 @@ function loadRouteIndex(registrySlugSet) {
 }
 
 function buildIndexData() {
-    const generatedAt = new Date().toISOString()
     const { manifests, map: metaMap, duplicateKeys, duplicateSlugs } = loadToolMetaData()
     const registryOrder = manifests.map((tool) => tool.key)
     const missingRegistryMetaKeys = registryOrder.filter((key) => !metaMap.has(key))
@@ -168,8 +167,17 @@ function buildIndexData() {
                 slug: tool.slug,
                 category: tool.category,
                 relatedTools: tool.relatedTools,
+                relatedWorkflows: tool.relatedWorkflows || [],
                 keywords: tool.keywords,
+                sampleInput: tool.sampleInput || null,
+                sampleMode: tool.sampleMode || null,
+                inputSizePolicy: tool.inputSizePolicy || null,
                 networkAccess: tool.networkAccess || "none",
+                networkHosts: tool.networkHosts || [],
+                networkPurposeKey: tool.networkPurposeKey || null,
+                allowUserProvidedUrl: tool.allowUserProvidedUrl ?? null,
+                requiresExplicitUserAction: tool.requiresExplicitUserAction ?? null,
+                externalDataSent: tool.externalDataSent || null,
                 persistInput: tool.persistInput ?? null,
                 updatedAt: tool.updatedAt || null,
                 sourceFile: tool.sourceFile,
@@ -187,7 +195,6 @@ function buildIndexData() {
         .map((entry) => entry.slug)
 
     return {
-        generatedAt,
         counts: {
             canonicalTools: canonicalTools.length,
             aliasRoutes: aliases.length,
@@ -208,9 +215,13 @@ function buildIndexData() {
     }
 }
 
+function buildOutputSource(data) {
+    return `${JSON.stringify(data, null, 2)}\n`
+}
+
 function writeOutputs(data) {
     ensureDirForFile(OUTPUT_JSON_PATH)
-    fs.writeFileSync(OUTPUT_JSON_PATH, `${JSON.stringify(data, null, 2)}\n`)
+    fs.writeFileSync(OUTPUT_JSON_PATH, buildOutputSource(data))
 }
 
 function runCheck(data) {
@@ -223,6 +234,13 @@ function runCheck(data) {
 
     if (problems.length > 0) {
         console.error(`[check:tool-index] FAILED: ${problems.join(", ")}`)
+        process.exit(1)
+    }
+
+    const currentOutput = fs.existsSync(OUTPUT_JSON_PATH) ? readText(OUTPUT_JSON_PATH) : ""
+    const nextOutput = buildOutputSource(data)
+    if (currentOutput !== nextOutput) {
+        console.error(`[check:tool-index] FAILED: stale ${OUTPUT_JSON_PATH}. Run \`npm run generate:tool-index\`.`)
         process.exit(1)
     }
 

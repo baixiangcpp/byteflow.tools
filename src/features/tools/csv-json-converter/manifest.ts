@@ -5,5 +5,11 @@ export const toolManifest = {
     slug: "csv-json-converter",
     category: "formatters",
     relatedTools: ["json_formatter", "yaml_json_converter", "json_to_typescript", "text_diff_checker"],
+    inputSizePolicy: {
+        warnAtBytes: 524288,
+        workerAtBytes: 262144,
+        hardLimitBytes: 1048576,
+        streamingSupported: false,
+    },
     keywords: ["csv to json", "json to csv", "csv converter online", "csv json transform"],
 } satisfies ToolMeta

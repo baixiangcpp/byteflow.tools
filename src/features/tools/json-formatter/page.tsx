@@ -29,6 +29,7 @@ import { importTextFile } from "@/core/files/text-file-import"
 import { buildToolHandoffLink, getToolHandoffFromSearchParams } from "@/core/routing/tool-handoff"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildJsonParseErrorMessage } from "@/features/tools/json-formatter/error-utils"
+import { runJsonFormatTask, type JsonFormatMode } from "@/features/tools/json-formatter/format-json-task"
 import { PrivacyBadge } from "@/features/tool-shell/privacy-badge"
 import { PrivacyFAQ } from "@/features/tool-shell/privacy-faq"
 import { JsonImportDropzone } from "./json-import-dropzone"
@@ -46,6 +47,7 @@ import {
     updateValueAtPath,
 } from "./logic"
 import { JsonTreeNode } from "./components"
+import { SAMPLE_JSON_SOURCE } from "./samples"
 import type { JsonPath, JsonValue, TreeDialogState, ViewMode } from "./types"
 
 export function JsonFormatterPage() {
@@ -62,6 +64,7 @@ export function JsonFormatterPage() {
     const [treeDialog, setTreeDialog] = React.useState<TreeDialogState>(null)
     const [searchQuery, setSearchQuery] = React.useState("")
     const [isSearchOpen, setIsSearchOpen] = React.useState(false)
+    const [isFormatting, setIsFormatting] = React.useState(false)
 
     const searchResults = React.useMemo(() => {
         if (!treeData || !searchQuery.trim()) return { matched: new Set<string>(), parents: new Set<string>() }
@@ -84,6 +87,8 @@ export function JsonFormatterPage() {
     const fileInputRef = React.useRef<HTMLInputElement | null>(null)
     const outputPaneRef = React.useRef<HTMLDivElement | null>(null)
     const appliedHandoffRef = React.useRef<string | null>(null)
+    const formatRequestIdRef = React.useRef(0)
+    const formatAbortControllerRef = React.useRef<AbortController | null>(null)
     React.useEffect(() => {
         const savedMode = readStorageString(VIEW_MODE_STORAGE_KEY)
         if (savedMode === "text" || savedMode === "tree") {
@@ -160,42 +165,62 @@ export function JsonFormatterPage() {
         return true
     }, [input, output, parseSource])
 
-    const formatJsonSource = React.useCallback((source: string) => {
+    const scrollOutputIntoViewOnMobile = React.useCallback(() => {
+        if (window.innerWidth < 1024) {
+            window.requestAnimationFrame(() => {
+                outputPaneRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+            })
+        }
+    }, [])
+
+    const runJsonFormat = React.useCallback(async (source: string, mode: JsonFormatMode) => {
+        const requestId = formatRequestIdRef.current + 1
+        formatRequestIdRef.current = requestId
+        formatAbortControllerRef.current?.abort()
+
         if (!source.trim()) {
+            formatAbortControllerRef.current = null
             setOutput("")
             setTreeData(null)
             setError(null)
             return
         }
 
-        const parsed = parseSource(source)
-        if (parsed === null) return
-        setOutput(JSON.stringify(parsed, null, 2))
-        setTreeData(parsed)
-        if (window.innerWidth < 1024) {
-            window.requestAnimationFrame(() => {
-                outputPaneRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-            })
+        const controller = new AbortController()
+        formatAbortControllerRef.current = controller
+        setIsFormatting(true)
+        try {
+            const result = await runJsonFormatTask(source, mode, { signal: controller.signal })
+            if (formatRequestIdRef.current !== requestId) return
+            setOutput(result.output)
+            setTreeData(result.parsed)
+            setError(null)
+            scrollOutputIntoViewOnMobile()
+        } catch (err) {
+            if (formatRequestIdRef.current !== requestId) return
+            const errorMessage = buildJsonParseErrorMessage(source, err, text)
+            setError(errorMessage)
+        } finally {
+            if (formatRequestIdRef.current === requestId) {
+                formatAbortControllerRef.current = null
+                setIsFormatting(false)
+            }
         }
-    }, [parseSource])
+    }, [scrollOutputIntoViewOnMobile, text])
+
+    const formatJsonSource = React.useCallback((source: string) => {
+        void runJsonFormat(source, "format")
+    }, [runJsonFormat])
 
     const formatJson = React.useCallback(() => {
-        formatJsonSource(input)
-    }, [formatJsonSource, input])
+        void runJsonFormat(input, "format")
+    }, [input, runJsonFormat])
 
     const minifyJson = React.useCallback(() => {
         if (!input.trim()) return
 
-        const parsed = parseSource(input)
-        if (parsed === null) return
-        setOutput(JSON.stringify(parsed))
-        setTreeData(parsed)
-        if (window.innerWidth < 1024) {
-            window.requestAnimationFrame(() => {
-                outputPaneRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
-            })
-        }
-    }, [input, parseSource])
+        void runJsonFormat(input, "minify")
+    }, [input, runJsonFormat])
 
     const handleCopy = React.useCallback(async () => {
         const copyText = viewMode === "tree" && treeData !== null
@@ -310,27 +335,10 @@ export function JsonFormatterPage() {
     }, [output, treeData, formatJson, minifyJson, handleCopy, viewMode])
 
     const handleUseSample = () => {
-        const sampleJson = {
-            "user": {
-                "id": 1001,
-                "name": "Alice Chen",
-                "email": "alice@example.com",
-                "active": true,
-                "roles": ["admin", "developer"],
-                "metadata": {
-                    "lastLogin": "2026-06-04T10:30:00Z",
-                    "preferences": {
-                        "theme": "dark",
-                        "language": "en"
-                    }
-                }
-            }
-        }
-        const source = JSON.stringify(sampleJson)
-        setInput(source)
+        setInput(SAMPLE_JSON_SOURCE)
         setExpanded(new Set(["$"]))
         setError(null)
-        formatJsonSource(source)
+        formatJsonSource(SAMPLE_JSON_SOURCE)
     }
 
     const actions: ToolAction[] = [
@@ -373,6 +381,7 @@ export function JsonFormatterPage() {
             label: t.common.minify,
             icon: AlignLeft,
             onClick: minifyJson,
+            disabled: isFormatting,
         },
         {
             id: "format",
@@ -380,6 +389,7 @@ export function JsonFormatterPage() {
             icon: Play,
             onClick: formatJson,
             variant: "default",
+            disabled: isFormatting,
         },
     ]
 

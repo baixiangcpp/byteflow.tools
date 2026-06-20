@@ -134,6 +134,32 @@
     "all_tools": "모든 도구",
     "install_as_app": "앱으로 설치",
     "try_example": "예제 보기",
+    "external_network_notice": {
+      "title": "외부 네트워크 알림",
+      "third_party_api_message": "이 도구는 워크플로의 일부로 브라우저에서 제3자 서비스에 접속할 수 있습니다.",
+      "user_requested_message": "이 도구는 사용자가 명시적으로 실행한 작업에서만 브라우저에서 제공한 URL을 요청하거나 열 수 있습니다.",
+      "user_input_preview_message": "지원되는 URL을 입력하면 이 도구가 브라우저에서 외부 미리보기 자산을 불러올 수 있습니다.",
+      "hosts_label": "호스트",
+      "purpose_label": "목적",
+      "data_sent_label": "전송되는 데이터",
+      "purposes": {
+        "authorized_media_download": "사용 권한을 확인한 뒤 사용자가 제공한 URL에서 미디어를 다운로드합니다.",
+        "thumbnail_preview": "입력한 동영상 링크에서 공개 썸네일 이미지 URL을 생성하고 미리 봅니다."
+      },
+      "external_data": {
+        "none": "이 기능은 도구 입력을 전송하지 않습니다.",
+        "user_provided_url": "사용자가 제공한 URL이 브라우저에서 요청될 수 있습니다.",
+        "derived_url": "파생된 공개 자산 URL이 브라우저에서 요청될 수 있습니다."
+      }
+    },
+    "local_data_controls": {
+      "title": "로컬 데이터 관리",
+      "description": "Byteflow 처리는 브라우저 안에 머뭅니다. 일부 환경설정과 민감하지 않은 도구 설정은 로컬에 저장될 수 있으며, 민감한 payload는 기본적으로 유지되지 않도록 설정되어 있습니다.",
+      "clear_button": "저장된 도구 데이터 지우기",
+      "cleared_one_message": "저장된 Byteflow 항목 {count}개를 지웠습니다.",
+      "cleared_many_message": "저장된 Byteflow 항목 {count}개를 지웠습니다.",
+      "none_found_message": "저장된 Byteflow 데이터를 찾을 수 없습니다."
+    },
     "privacy_badge": {
       "label": "로컬 실행",
       "title": "🛡️ 프라이버시 우선",
@@ -187,6 +213,8 @@
     "recent_tools": "최근 사용한 도구",
     "no_favorites": "아직 즐겨찾기가 없습니다. 최근 사용한 도구 목록에서 별표를 눌러 추가하세요.",
     "no_recent_tools": "아무 도구나 열면 최근 사용한 도구가 여기에 표시됩니다.",
+    "recent_tools_local_only": "이 브라우저에만 저장됩니다.",
+    "clear_recent_tools": "최근 사용 기록 지우기",
     "add_favorite": "즐겨찾기에 추가",
     "remove_favorite": "즐겨찾기에서 제거",
     "about": "소개",
@@ -321,7 +349,9 @@
     "suggested_alternatives": "제안된 대안",
     "local_input_too_large": "입력이 너무 커서 로컬에서 안전하게 처리할 수 없습니다. {size} 이하로 줄이세요.",
     "local_row_limit_exceeded": "행이 너무 많아 로컬에서 안전하게 처리할 수 없습니다. {count}행 이하로 줄이세요.",
-    "local_results_truncated": "성능 보호를 위해 결과를 잘랐습니다. 처음 {count}개 항목을 표시합니다."
+    "local_results_truncated": "성능 보호를 위해 결과를 잘랐습니다. 처음 {count}개 항목을 표시합니다.",
+    "command_actions": "작업",
+    "command_action_badge": "[작업]"
   },
   "tools": {
     "json_formatter": {

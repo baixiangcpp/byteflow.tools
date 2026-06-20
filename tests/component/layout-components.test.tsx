@@ -56,8 +56,13 @@ function createMockLangValue(lang: string) {
         recent_tools: "Recent tools",
         no_favorites: "No favorites yet.",
         no_recent_tools: "No recent tools yet.",
+        command_clear_history: "Clear Tool History",
+        command_actions: "Actions",
+        command_action_badge: "[ACTION]",
         add_favorite: "Add to favorites",
         remove_favorite: "Remove from favorites",
+        theme: "Theme",
+        copy: "Copy",
     }
 
     const tools: Record<string, { title: string; description: string }> = {}
@@ -144,8 +149,16 @@ vi.mock("@/components/ui/dialog", () => ({
 }))
 
 vi.mock("@/components/ui/command", () => ({
-    CommandDialog: ({ open, children }: { open: boolean; children: React.ReactNode }) =>
-        open ? <div data-testid="command-dialog">{children}</div> : null,
+    CommandDialog: ({
+        open,
+        children,
+        filter,
+    }: {
+        open: boolean
+        children: React.ReactNode
+        filter?: unknown
+    }) =>
+        open ? <div data-testid="command-dialog" data-has-filter={typeof filter === "function" ? "true" : "false"}>{children}</div> : null,
     CommandEmpty: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
     CommandGroup: ({ heading, children }: { heading: string; children: React.ReactNode }) => (
         <section>
@@ -153,7 +166,21 @@ vi.mock("@/components/ui/command", () => ({
             {children}
         </section>
     ),
-    CommandInput: ({ placeholder }: { placeholder: string }) => <input placeholder={placeholder} />,
+    CommandInput: ({
+        placeholder,
+        onValueChange,
+        value,
+    }: {
+        placeholder: string
+        onValueChange?: (value: string) => void
+        value?: string
+    }) => (
+        <input
+            placeholder={placeholder}
+            value={value ?? ""}
+            onChange={(event) => onValueChange?.(event.target.value)}
+        />
+    ),
     CommandItem: ({ children, onSelect, value }: { children: React.ReactNode; onSelect?: () => void; value?: string }) => (
         <button type="button" data-value={value ?? ""} onClick={() => onSelect?.()}>
             {children}
@@ -213,6 +240,7 @@ describe("layout components", () => {
 
         fireEvent.keyDown(document, { key: "k", ctrlKey: true })
         expect(screen.getByTestId("command-dialog")).toBeInTheDocument()
+        expect(screen.getByTestId("command-dialog")).toHaveAttribute("data-has-filter", "true")
 
         fireEvent.click(screen.getByRole("button", { name: "Home" }))
 
@@ -250,6 +278,16 @@ describe("layout components", () => {
 
         expect(searchValue).toContain("JSON Formatter")
         expect(screen.queryByRole("button", { name: "JSON Formatter" })).not.toBeInTheDocument()
+    })
+
+    it("uses command namespaces when rendering system action labels", () => {
+        render(<CommandPalette />)
+
+        fireEvent.keyDown(document, { key: "k", ctrlKey: true })
+        fireEvent.change(screen.getByPlaceholderText("Search"), { target: { value: ">" } })
+
+        expect(screen.getByRole("button", { name: /Clear Tool History/ })).toBeInTheDocument()
+        expect(screen.getByRole("button", { name: /Home/ })).toBeInTheDocument()
     })
 
     it("does not open command palette while typing in an input", () => {
