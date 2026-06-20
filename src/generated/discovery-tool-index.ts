@@ -1000,7 +1000,8 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         ],
         "capabilities": [
             "browser-local",
-            "offline-capable"
+            "offline-capable",
+            "sensitive-input"
         ]
     },
     "color_converter": {

@@ -1589,7 +1589,7 @@
       "privacy": {
         "executionMode": "browser-local",
         "offlineCapable": true,
-        "sensitiveInput": false,
+        "sensitiveInput": true,
         "externalRequest": {
           "required": false,
           "endpointType": "none"
@@ -1601,7 +1601,7 @@
       "allowUserProvidedUrl": null,
       "requiresExplicitUserAction": null,
       "externalDataSent": null,
-      "persistInput": null,
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/password-generator/manifest.ts"
     },
@@ -2369,7 +2369,7 @@
       "allowUserProvidedUrl": true,
       "requiresExplicitUserAction": true,
       "externalDataSent": "user_provided_url",
-      "persistInput": null,
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/instagram-photo-downloader/manifest.ts"
     },
@@ -4156,7 +4156,7 @@
       "allowUserProvidedUrl": null,
       "requiresExplicitUserAction": null,
       "externalDataSent": null,
-      "persistInput": null,
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/invisible-characters-detector/manifest.ts"
     },
@@ -4224,7 +4224,7 @@
       "privacy": {
         "executionMode": "browser-local",
         "offlineCapable": true,
-        "sensitiveInput": false,
+        "sensitiveInput": true,
         "externalRequest": {
           "required": false,
           "endpointType": "none"
@@ -4236,7 +4236,7 @@
       "allowUserProvidedUrl": null,
       "requiresExplicitUserAction": null,
       "externalDataSent": null,
-      "persistInput": null,
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/csp-parser/manifest.ts"
     },
@@ -4910,7 +4910,7 @@
       "privacy": {
         "executionMode": "browser-local",
         "offlineCapable": true,
-        "sensitiveInput": false,
+        "sensitiveInput": true,
         "externalRequest": {
           "required": false,
           "endpointType": "none"
@@ -4922,7 +4922,7 @@
       "allowUserProvidedUrl": null,
       "requiresExplicitUserAction": null,
       "externalDataSent": null,
-      "persistInput": null,
+      "persistInput": false,
       "updatedAt": null,
       "sourceFile": "src/features/tools/asn1-der-inspector/manifest.ts"
     },

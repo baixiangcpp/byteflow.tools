@@ -8,11 +8,12 @@ export const toolManifest = {
     privacy: {
         executionMode: "browser-local",
         offlineCapable: true,
-        sensitiveInput: false,
+        sensitiveInput: true,
         externalRequest: {
             required: false,
             endpointType: "none",
         },
     },
     keywords: ["asn1 der inspector", "der parser", "asn.1 viewer", "certificate der decoder"],
+    persistInput: false,
 } satisfies ToolMeta

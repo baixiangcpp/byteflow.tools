@@ -965,7 +965,8 @@ const COMMAND_SEARCH_INDEX: Record<string, CommandSearchIndexEntry> = {
         ],
         "capabilities": [
             "browser-local",
-            "offline-capable"
+            "offline-capable",
+            "sensitive-input"
         ]
     },
     "color_converter": {

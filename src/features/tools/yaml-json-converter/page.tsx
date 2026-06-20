@@ -9,7 +9,7 @@ import { useThemePreference } from "@/hooks/use-theme-preference"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
 import { readStorageString, removeStorageKey, writeStorageString } from "@/core/storage/tool-persistence"
-import { buildToolHandoffLink } from "@/core/routing/tool-handoff"
+import { buildSensitiveToolHandoffLink } from "@/core/routing/tool-handoff"
 import { importTextFile, TEXT_FILE_IMPORT_ACCEPT } from "@/core/files/text-file-import"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { convertStructuredData, type StructuredDataFormat } from "./utils"
@@ -161,8 +161,8 @@ export function YamlJsonConverterPage() {
     const outputLang = monacoLanguage(toFormat)
     const jsonFormatterHandoffPayload = toFormat === "json" ? output : ""
     const jsonFormatterHandoff = React.useMemo(
-        () => buildToolHandoffLink(lang, "json-formatter", jsonFormatterHandoffPayload),
-        [jsonFormatterHandoffPayload, lang],
+        () => buildSensitiveToolHandoffLink(lang, "json-formatter"),
+        [lang],
     )
     const jsonFormatterLabel = `${t.common.open} ${t.tools["json_formatter"].title}`
 

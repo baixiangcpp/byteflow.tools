@@ -48,7 +48,6 @@ export function RouteAnalytics() {
                 trackSeoLanding({
                     locale: context.locale,
                     routeType: context.routeType,
-                    pagePath: pathname,
                 })
                 sessionStorage.setItem(SEO_LANDING_SESSION_KEY, "1")
             }

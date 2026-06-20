@@ -239,8 +239,7 @@ function parseCertificate(pem: string): CertInfo | null {
             signatureAlgorithm, publicKeyAlgorithm, publicKeyBits,
             extensions, isValid, isSelfSigned: subject === issuer,
         }
-    } catch (e) {
-        console.error("Certificate parse error:", e)
+    } catch {
         return null
     }
 }

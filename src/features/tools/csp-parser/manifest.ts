@@ -8,11 +8,12 @@ export const toolManifest = {
     privacy: {
         executionMode: "browser-local",
         offlineCapable: true,
-        sensitiveInput: false,
+        sensitiveInput: true,
         externalRequest: {
             required: false,
             endpointType: "none",
         },
     },
     keywords: ["csp parser", "content security policy analyzer", "csp validator", "csp checker"],
+    persistInput: false,
 } satisfies ToolMeta

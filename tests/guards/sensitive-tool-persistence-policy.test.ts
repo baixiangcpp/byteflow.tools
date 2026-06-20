@@ -9,8 +9,11 @@ const SENSITIVE_TOOL_KEYS = [
     "jwt_verifier",
     "saml_decoder",
     "certificate_decoder",
+    "asn1_der_inspector",
+    "csp_parser",
     "har_viewer_sanitizer",
     "log_scrubber",
+    "password_generator",
     "security_header_analyzer",
     "totp_generator",
     "env_parser",
@@ -28,6 +31,15 @@ describe("sensitive tool persistence policy", () => {
             if (!tool) return [`${key}: missing manifest`]
             return tool.persistInput === false ? [] : [`${key}: persistInput must be false`]
         })
+
+        expect(offenders).toEqual([])
+    })
+
+    it("requires every sensitive manifest to opt out of input persistence", () => {
+        const offenders = (TOOL_MANIFESTS as readonly ToolMeta[])
+            .filter((tool) => tool.privacy.sensitiveInput)
+            .filter((tool) => tool.persistInput !== false)
+            .map((tool) => tool.key)
 
         expect(offenders).toEqual([])
     })

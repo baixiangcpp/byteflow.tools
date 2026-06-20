@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
-import { buildToolHandoffLink } from "@/core/routing/tool-handoff"
+import { buildSensitiveToolHandoffLink } from "@/core/routing/tool-handoff"
 import {
     DEFAULT_SCRUB_OPTIONS,
     scrubLogs,
@@ -45,8 +45,8 @@ export function LogScrubberPage() {
     const summary = React.useMemo(() => summarizeFindings(findings), [findings])
     const handoffPayload = output || input
     const pipelineHandoff = React.useMemo(
-        () => buildToolHandoffLink(lang, "pipeline-builder", handoffPayload),
-        [handoffPayload, lang],
+        () => buildSensitiveToolHandoffLink(lang, "pipeline-builder"),
+        [lang],
     )
 
     const updateOption = React.useCallback((key: OptionKey, checked: boolean) => {
