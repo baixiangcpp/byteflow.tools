@@ -3,7 +3,7 @@
     "title": "byteflow.tools | Outils développeur axés sur la confidentialité",
     "description": "Outils développeur à latence nulle, entièrement locaux, directement dans votre navigateur.",
     "hero_badge": "Open Source · 100 % côté client · Toujours gratuit",
-    "hero_title_highlight": "100+ Outils de navigateur locaux",
+    "hero_title_highlight": "{toolCount} outils de navigateur locaux",
     "hero_title_2": "pour les développeurs",
     "hero_subtitle": "Formater, convertir, générer, inspecter — sans envoyer de données aux serveurs. Vos données sensibles restent dans votre navigateur.",
     "hero_tagline": "Zéro requête serveur. Toujours gratuit. Open source.",
@@ -46,7 +46,7 @@
     "speed_title": "Retour en moins d'une milliseconde",
     "speed_desc": "Pas de chargement, pas d'attente. Collez des mégaoctets de texte et formatez, hachez ou encodez en temps réel.",
     "keyboard_title": "Navigation orientée tâches",
-    "keyboard_desc": "Six catégories principales avec le nombre d'outils visible permettent d'atteindre le bon outil en quelques secondes.",
+    "keyboard_desc": "{categoryCount} categories organisees avec le nombre d'outils visible permettent d'atteindre le bon outil en quelques secondes.",
     "tools_title": "Boîte à outils en expansion",
     "tools_desc": "Des requêtes JSONPath aux visualiseurs Cron, en passant par les générateurs QR et calculateurs Chmod. Un toolkit unifié et en constante expansion."
   },

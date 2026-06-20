@@ -3,7 +3,7 @@
     "title": "byteflow.tools | 隱私優先的開發者工具",
     "description": "零延遲、完全本地運行的開發者工具，直接在瀏覽器中處理，無需伺服器。",
     "hero_badge": "開源 · 100% 客戶端 · 永久免費",
-    "hero_title_highlight": "100+ 個本地瀏覽器工具",
+    "hero_title_highlight": "{toolCount} 個本地瀏覽器工具",
     "hero_title_2": "專為開發者打造",
     "hero_subtitle": "格式化、轉換、生成、調試 — 敏感資料不出瀏覽器。您的資料始終保留在本地。",
     "hero_tagline": "工具在本地處理。永久免費。開源透明。",
@@ -46,7 +46,7 @@
     "speed_title": "亞毫秒級回應",
     "speed_desc": "沒有載入動畫，沒有等待。貼上大量文字，即時格式化、雜湊或編碼。",
     "keyboard_title": "任務導向導覽",
-    "keyboard_desc": "6 個一級分類搭配工具數量直顯，依任務快速定位到正確工具，減少來回查找。",
+    "keyboard_desc": "{categoryCount} 個精選分類搭配工具數量直顯，依任務快速定位到正確工具，減少來回查找。",
     "tools_title": "持續增長的工具集",
     "tools_desc": "從JSONPath查詢、Cron視覺化到QR碼產生器和Chmod計算機。統一且不斷擴展的工具套件。"
   },

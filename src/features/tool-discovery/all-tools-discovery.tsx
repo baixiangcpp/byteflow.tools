@@ -62,6 +62,7 @@ type AllToolsDiscoveryProps = {
     labels: AllToolsDiscoveryLabels
     locale: string
     tags: string[]
+    totalTools: number
     workflows: DiscoveryWorkflow[]
 }
 
@@ -83,6 +84,7 @@ export function AllToolsDiscovery({
     labels,
     locale,
     tags,
+    totalTools,
     workflows,
 }: AllToolsDiscoveryProps) {
     const [query, setQuery] = React.useState("")
@@ -132,8 +134,10 @@ export function AllToolsDiscovery({
             .filter((group) => group.tools.length > 0)
     }, [groups, query, selectedFamily, selectedTags])
 
-    const resultCount = filteredGroups.reduce((count, group) => count + group.tools.length, 0)
     const hasFilters = Boolean(query || selectedFamily || selectedTags.length > 0)
+    const resultCount = hasFilters
+        ? filteredGroups.reduce((count, group) => count + group.tools.length, 0)
+        : totalTools
 
     const clearFilters = React.useCallback(() => {
         setQuery("")

@@ -14,7 +14,8 @@ import {
 } from "lucide-react"
 import { LOCALES, LOCALE_NAMES } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
-import { MENU_GROUP_DEFS, getMenuGroups } from "@/core/registry/menu-groups"
+import { MENU_GROUP_DEFS } from "@/core/registry/menu-groups"
+import { formatToolRegistryStatsTemplate, getToolRegistryStats } from "@/core/registry/stats"
 import { TOOL_REGISTRY } from "@/core/registry"
 
 const SITE_URL = "https://byteflow.tools"
@@ -62,9 +63,9 @@ export const metadata: Metadata = {
 
 export default function RootPage() {
     const t = getTranslation("en")
-    const menuGroups = getMenuGroups()
+    const stats = getToolRegistryStats()
     const categoryToolCounts = Object.fromEntries(
-        menuGroups.map((group) => [group.key, group.items.length])
+        stats.categories.map((category) => [category.key, category.toolCount])
     ) as Record<string, number>
     const toolsByKey = new Map(TOOL_REGISTRY.map((tool) => [tool.key, tool]))
     const localizedTools = t.tools as Record<string, { title?: string; description?: string }>
@@ -160,7 +161,7 @@ export default function RootPage() {
                 <section className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4" aria-labelledby="root-categories">
                     <div className="sm:col-span-2 lg:col-span-4">
                         <h2 id="root-categories" className="text-xl font-semibold tracking-tight">
-                            Eight curated categories
+                            {formatToolRegistryStatsTemplate("{categoryCount} curated categories", stats)}
                         </h2>
                         <p className="mt-1 text-sm text-muted-foreground">
                             Browse tools by task family, runtime privacy, and developer workflow.

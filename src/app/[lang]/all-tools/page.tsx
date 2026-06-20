@@ -2,6 +2,7 @@ import { notFound } from "next/navigation"
 import { isValidLocale, requireTranslationValue } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { getMenuGroups } from "@/core/registry/menu-groups"
+import { getToolRegistryStats } from "@/core/registry/stats"
 import { TOOL_CAPABILITY_LABELS, TOOL_FAMILY_LABELS, type ToolCapability, type ToolFamily } from "@/core/registry"
 import { AllToolsDiscovery } from "@/features/tool-discovery/all-tools-discovery"
 
@@ -54,6 +55,7 @@ export default async function AllToolsPage({ params }: { params: Promise<{ lang:
     const locale = lang
     const t = getTranslation(locale)
     const groups = getMenuGroups()
+    const registryStats = getToolRegistryStats()
     const toolTranslations = t.tools as Record<string, { title?: string; description?: string }>
     const commonTranslations = t.common as unknown as Record<string, string>
     const familyLabels = Object.fromEntries(
@@ -127,6 +129,7 @@ export default async function AllToolsPage({ params }: { params: Promise<{ lang:
                     toolsLabel: requireTranslationValue(t.common.tools, "common.tools"),
                 }}
                 locale={locale}
+                totalTools={registryStats.totalTools}
                 tags={POPULAR_DISCOVERY_TAGS}
                 workflows={COMMON_WORKFLOWS.map((workflow) => ({
                     id: workflow.id,

@@ -1,4 +1,5 @@
-import { TOOL_REGISTRY, type ToolMeta } from "@/core/registry"
+import { TOOL_REGISTRY } from "./registry"
+import type { ToolMeta } from "./types"
 import taxonomyConfig from "./tool-taxonomy-config.json"
 
 export type PrimaryMenuGroupKey =
