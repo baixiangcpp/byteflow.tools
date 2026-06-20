@@ -17,6 +17,7 @@ const WORKER_BACKED_TOOL_KEYS = [
     "hash_generator",
     "csv_json_converter",
     "image_resizer",
+    "scanned_pdf_converter",
 ] as const
 
 describe("tool input size policies", () => {

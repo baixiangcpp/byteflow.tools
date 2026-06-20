@@ -11,11 +11,10 @@ import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { fileToDataUrl, loadImageElement } from "@/core/utils/image-canvas-utils"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import {
-    applyThresholdToRgba,
-    buildScanFilterString,
     dataUrlToUint8Array,
     type ScanEnhanceConfig,
 } from "@/features/tools/scanned-pdf-converter/utils"
+import { runScanEnhanceTask } from "@/features/tools/scanned-pdf-converter/scan-enhance-task"
 
 const MAX_FILE_SIZE = 12 * 1024 * 1024
 const MAX_FILES = 20
@@ -70,28 +69,6 @@ async function buildSampleScanPage(title: string, subtitle: string): Promise<Sca
     }
 }
 
-async function enhanceImageForScan(src: string, enhance: ScanEnhanceConfig): Promise<string> {
-    const image = await loadImageElement(src)
-    const canvas = document.createElement("canvas")
-    canvas.width = image.width
-    canvas.height = image.height
-    const context = canvas.getContext("2d")
-    if (!context) throw new Error("Canvas context unavailable")
-
-    context.filter = buildScanFilterString(enhance)
-    context.drawImage(image, 0, 0, image.width, image.height)
-    context.filter = "none"
-
-    if (enhance.thresholdEnabled) {
-        const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
-        const thresholded = applyThresholdToRgba(imageData.data, enhance.threshold)
-        imageData.data.set(thresholded)
-        context.putImageData(imageData, 0, 0)
-    }
-
-    return canvas.toDataURL("image/jpeg", 0.92)
-}
-
 async function loadPdfLib() {
     pdfLibPromise ??= import("pdf-lib")
     return pdfLibPromise
@@ -101,6 +78,7 @@ export function ScannedPdfConverterPage() {
     const { t } = useLang()
     const toolT = t.tools["scanned_pdf_converter"] as Record<string, string>
     const fileInputRef = React.useRef<HTMLInputElement>(null)
+    const previewRequestIdRef = React.useRef(0)
 
     const [pages, setPages] = React.useState<ScanPage[]>([])
     const [selectedIndex, setSelectedIndex] = React.useState(0)
@@ -111,16 +89,23 @@ export function ScannedPdfConverterPage() {
     const selectedPage = pages[selectedIndex]
 
     React.useEffect(() => {
+        const requestId = previewRequestIdRef.current + 1
+        previewRequestIdRef.current = requestId
+
         const renderPreview = async () => {
             if (!selectedPage) {
                 setPreviewSrc("")
                 return
             }
             try {
-                const dataUrl = await enhanceImageForScan(selectedPage.src, enhance)
-                setPreviewSrc(dataUrl)
+                const result = await runScanEnhanceTask({ source: selectedPage.src, enhance })
+                if (previewRequestIdRef.current === requestId) {
+                    setPreviewSrc(result.dataUrl)
+                }
             } catch {
-                setPreviewSrc("")
+                if (previewRequestIdRef.current === requestId) {
+                    setPreviewSrc("")
+                }
             }
         }
 
@@ -203,8 +188,8 @@ export function ScannedPdfConverterPage() {
             const pdf = await PDFDocument.create()
 
             for (const page of pages) {
-                const enhanced = await enhanceImageForScan(page.src, enhance)
-                const imageBytes = dataUrlToUint8Array(enhanced)
+                const enhanced = await runScanEnhanceTask({ source: page.src, enhance })
+                const imageBytes = dataUrlToUint8Array(enhanced.dataUrl)
                 const jpg = await pdf.embedJpg(imageBytes)
                 const pdfPage = pdf.addPage([jpg.width, jpg.height])
                 pdfPage.drawImage(jpg, {

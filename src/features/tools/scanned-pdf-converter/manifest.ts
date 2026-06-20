@@ -7,6 +7,7 @@ export const toolManifest = {
     relatedTools: ["photo_censor", "image_filters", "image_resizer", "image_base64"],
     inputSizePolicy: {
         warnAtBytes: 6291456,
+        workerAtBytes: 3145728,
         hardLimitBytes: 12582912,
         streamingSupported: false,
     },
