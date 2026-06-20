@@ -157,3 +157,34 @@ export function scoreCommandSearch(value: string, search: string, keywords: read
     const orderBonus = haystack.indexOf(queryTokens[0]) <= 8 ? 8 : 0
     return 24 + coverage * 48 + orderBonus
 }
+
+export type ToolSearchDocument = {
+    title: string
+    description?: string
+    slug?: string
+    key?: string
+    family?: string
+    familyLabel?: string
+    keywords?: readonly string[]
+    aliases?: readonly string[]
+    tags?: readonly string[]
+    capabilities?: readonly string[]
+}
+
+export function buildToolSearchKeywords(tool: ToolSearchDocument): string[] {
+    return [
+        tool.description,
+        tool.slug,
+        tool.key,
+        tool.family,
+        tool.familyLabel,
+        ...(tool.keywords ?? []),
+        ...(tool.aliases ?? []),
+        ...(tool.tags ?? []),
+        ...(tool.capabilities ?? []),
+    ].filter((value): value is string => typeof value === "string" && value.trim().length > 0)
+}
+
+export function scoreToolSearch(tool: ToolSearchDocument, search: string): number {
+    return scoreCommandSearch(tool.title, search, buildToolSearchKeywords(tool))
+}

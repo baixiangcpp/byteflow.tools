@@ -2,6 +2,8 @@ import type { ScanEnhanceConfig } from "./utils"
 
 export type ScanEnhanceTaskInput = {
     source: string
+    sourceBytes?: ArrayBuffer
+    sourceMime?: string
     enhance: ScanEnhanceConfig
 }
 

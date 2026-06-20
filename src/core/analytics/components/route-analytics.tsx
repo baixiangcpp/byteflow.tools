@@ -11,7 +11,7 @@ import {
     trackDownloadOutput,
     detectInteractionAnalyticsAction,
 } from "@/core/analytics/analytics"
-import { getClientToolBySlug } from "@/generated/client-tool-lookup"
+import { getRouteToolBySlug } from "@/generated/route-tool-lookup"
 import { getRouteContext } from "@/core/routing/route-context"
 
 const SEO_LANDING_SESSION_KEY = "byteflow:seo_landing_tracked"
@@ -57,7 +57,7 @@ export function RouteAnalytics() {
         }
 
         if (!context.slug) return
-        const tool = getClientToolBySlug(context.slug)
+        const tool = getRouteToolBySlug(context.slug)
         if (tool) {
             trackToolOpen(tool.key)
         }
@@ -66,7 +66,7 @@ export function RouteAnalytics() {
     React.useEffect(() => {
         const context = getRouteContext(pathname)
         if (!context.slug) return
-        const tool = getClientToolBySlug(context.slug)
+        const tool = getRouteToolBySlug(context.slug)
         if (!tool) return
 
         const handleClick = (event: MouseEvent) => {

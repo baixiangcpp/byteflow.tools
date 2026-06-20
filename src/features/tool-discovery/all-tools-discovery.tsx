@@ -5,6 +5,7 @@ import Link from "next/link"
 import { History, Network, Search, ShieldCheck, Tag, Trash2, WifiOff, Workflow, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { scoreToolSearch } from "@/core/search/command-search"
 import { clearRecentToolKeys, readRecentToolKeys, TOOL_DISCOVERY_UPDATED_EVENT } from "@/core/storage/tool-discovery-state"
 
 type DiscoveryTool = {
@@ -71,24 +72,6 @@ const CAPABILITY_ICONS: Record<string, React.ComponentType<{ className?: string 
     "pipeline-ready": Workflow,
 }
 
-function normalize(value: string): string {
-    return value.trim().toLowerCase()
-}
-
-function includesSearch(tool: DiscoveryTool, query: string): boolean {
-    if (!query) return true
-    return [
-        tool.key,
-        tool.slug,
-        tool.title,
-        tool.description,
-        tool.family,
-        tool.familyLabel,
-        ...tool.tags,
-        ...tool.capabilities,
-    ].some((part) => part.toLowerCase().includes(query))
-}
-
 function toggleTag(current: string[], tag: string): string[] {
     return current.includes(tag) ? current.filter((item) => item !== tag) : [...current, tag]
 }
@@ -128,15 +111,23 @@ export function AllToolsDiscovery({
     )
 
     const filteredGroups = React.useMemo(() => {
-        const normalizedQuery = normalize(query)
+        const normalizedQuery = query.trim()
         return groups
             .map((group) => ({
                 ...group,
-                tools: group.tools.filter((tool) => {
-                    if (selectedFamily && tool.family !== selectedFamily) return false
-                    if (selectedTags.some((tag) => !tool.tags.includes(tag) && !tool.capabilities.includes(tag))) return false
-                    return includesSearch(tool, normalizedQuery)
-                }),
+                tools: group.tools
+                    .map((tool, index) => ({
+                        index,
+                        score: normalizedQuery ? scoreToolSearch(tool, normalizedQuery) : 1,
+                        tool,
+                    }))
+                    .filter(({ score, tool }) => {
+                        if (selectedFamily && tool.family !== selectedFamily) return false
+                        if (selectedTags.some((tag) => !tool.tags.includes(tag) && !tool.capabilities.includes(tag))) return false
+                        return score > 0
+                    })
+                    .sort((left, right) => right.score - left.score || left.index - right.index)
+                    .map(({ tool }) => tool),
             }))
             .filter((group) => group.tools.length > 0)
     }, [groups, query, selectedFamily, selectedTags])

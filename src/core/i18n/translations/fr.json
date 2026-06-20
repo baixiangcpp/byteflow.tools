@@ -349,7 +349,9 @@
     "suggested_alternatives": "Alternatives suggérées",
     "local_input_too_large": "L’entrée est trop volumineuse pour un traitement local sûr. Gardez-la sous {size}.",
     "local_row_limit_exceeded": "Trop de lignes pour un traitement local sûr. Gardez-les sous {count} lignes.",
-    "local_results_truncated": "Résultats tronqués pour préserver les performances. Affichage des {count} premiers éléments."
+    "local_results_truncated": "Résultats tronqués pour préserver les performances. Affichage des {count} premiers éléments.",
+    "command_actions": "Commandes",
+    "command_action_badge": "[COMMANDE]"
   },
   "tools": {
     "json_formatter": {

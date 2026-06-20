@@ -10,6 +10,11 @@ export type ImageResizeRenderResult = {
     outputHeight: number
 }
 
+type ImageResizeTaskOptions = {
+    signal?: AbortSignal
+    timeoutMs?: number
+}
+
 function blobToDataUrl(blob: Blob): Promise<string> {
     return new Promise((resolve, reject) => {
         const reader = new FileReader()
@@ -19,7 +24,7 @@ function blobToDataUrl(blob: Blob): Promise<string> {
     })
 }
 
-async function renderWithWorker(input: ImageResizeTaskInput): Promise<ImageResizeRenderResult> {
+async function renderWithWorker(input: ImageResizeTaskInput, options: ImageResizeTaskOptions): Promise<ImageResizeRenderResult> {
     const result = await runWorkerTask<ImageResizeTaskInput, {
         mime: string
         bytes: ArrayBuffer
@@ -30,7 +35,7 @@ async function renderWithWorker(input: ImageResizeTaskInput): Promise<ImageResiz
     }>(
         () => new Worker(new URL("./image-resize-worker.ts", import.meta.url), { type: "module" }),
         input,
-        { timeoutMs: 20_000 },
+        { signal: options.signal, timeoutMs: options.timeoutMs ?? 20_000, transfer: input.sourceBytes ? [input.sourceBytes] : undefined },
     )
 
     return {
@@ -42,7 +47,7 @@ async function renderWithWorker(input: ImageResizeTaskInput): Promise<ImageResiz
     }
 }
 
-export async function runImageResizeTask(input: ImageResizeTaskInput): Promise<ImageResizeRenderResult> {
+export async function runImageResizeTask(input: ImageResizeTaskInput, options: ImageResizeTaskOptions = {}): Promise<ImageResizeRenderResult> {
     if (
         typeof Worker === "undefined" ||
         typeof OffscreenCanvas === "undefined" ||
@@ -52,9 +57,9 @@ export async function runImageResizeTask(input: ImageResizeTaskInput): Promise<I
     }
 
     try {
-        return await renderWithWorker(input)
+        return await renderWithWorker(input, options)
     } catch (error) {
-        if (error instanceof Error && error.message === "WORKER_TIMEOUT") {
+        if (error instanceof Error && (error.message === "WORKER_TIMEOUT" || error.message === "WORKER_ABORTED")) {
             throw error
         }
         return renderImageResizeDataUrlDom(input)

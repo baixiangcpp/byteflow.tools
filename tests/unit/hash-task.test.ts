@@ -3,9 +3,42 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 import { runHashTask } from "@/features/tools/hash-generator/hash-task"
 import { runHashTaskSync } from "@/features/tools/hash-generator/hash-task-logic"
 
+class MockHashWorker {
+    static mode: "success" | "error" | "idle" = "success"
+    static lastTransfer: Transferable[] | undefined
+    onmessage: ((event: MessageEvent<unknown>) => void) | null = null
+    onerror: ((event: ErrorEvent) => void) | null = null
+    onmessageerror: ((event: MessageEvent<unknown>) => void) | null = null
+    terminated = false
+
+    postMessage(input: unknown, transfer?: Transferable[]) {
+        MockHashWorker.lastTransfer = transfer
+        if (MockHashWorker.mode === "idle") return
+        queueMicrotask(() => {
+            if (this.terminated) return
+            if (MockHashWorker.mode === "error") {
+                this.onmessage?.({ data: { ok: false, error: "HASH_WORKER_FAILED" } } as MessageEvent)
+                return
+            }
+            this.onmessage?.({
+                data: {
+                    ok: true,
+                    value: runHashTaskSync(input as Parameters<typeof runHashTaskSync>[0]),
+                },
+            } as MessageEvent)
+        })
+    }
+
+    terminate() {
+        this.terminated = true
+    }
+}
+
 describe("hash task", () => {
     afterEach(() => {
         vi.unstubAllGlobals()
+        MockHashWorker.mode = "success"
+        MockHashWorker.lastTransfer = undefined
     })
 
     it("computes standard text hashes", () => {
@@ -65,5 +98,59 @@ describe("hash task", () => {
                 md5: "5d41402abc4b2a76b9719d911017c592",
             },
         })
+    })
+
+    it("uses the worker result when workers are available", async () => {
+        vi.stubGlobal("Worker", MockHashWorker)
+
+        await expect(runHashTask({ mode: "text", input: "hello" })).resolves.toMatchObject({
+            standardHashes: {
+                md5: "5d41402abc4b2a76b9719d911017c592",
+            },
+        })
+    })
+
+    it("transfers file buffers to the worker", async () => {
+        vi.stubGlobal("Worker", MockHashWorker)
+        const bytes = Uint8Array.from([1, 2, 3])
+
+        await runHashTask({ mode: "file", bytes })
+
+        expect(MockHashWorker.lastTransfer).toEqual([bytes.buffer])
+    })
+
+    it("falls back to sync computation on non-timeout worker failures", async () => {
+        MockHashWorker.mode = "error"
+        vi.stubGlobal("Worker", MockHashWorker)
+
+        await expect(runHashTask({ mode: "text", input: "hello" })).resolves.toMatchObject({
+            standardHashes: {
+                md5: "5d41402abc4b2a76b9719d911017c592",
+            },
+        })
+    })
+
+    it("does not fall back to sync computation when aborted", async () => {
+        MockHashWorker.mode = "idle"
+        vi.stubGlobal("Worker", MockHashWorker)
+        const controller = new AbortController()
+        const task = runHashTask({ mode: "text", input: "hello" }, { signal: controller.signal })
+
+        controller.abort()
+
+        await expect(task).rejects.toMatchObject({ code: "WORKER_ABORTED" })
+    })
+
+    it("does not fall back to sync computation on worker timeout", async () => {
+        vi.useFakeTimers()
+        MockHashWorker.mode = "idle"
+        vi.stubGlobal("Worker", MockHashWorker)
+        const task = runHashTask({ mode: "text", input: "hello" }, { timeoutMs: 10 })
+        const expectation = expect(task).rejects.toMatchObject({ code: "WORKER_TIMEOUT" })
+
+        await vi.advanceTimersByTimeAsync(10)
+
+        await expectation
+        vi.useRealTimers()
     })
 })

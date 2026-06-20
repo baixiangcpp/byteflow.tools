@@ -65,6 +65,10 @@ function inlineScriptPolicyRequiresUnsafeInline() {
     if (!source.includes("migrationPath:")) {
         fail("Inline script policy entries must include migrationPath rationale")
     }
+    const jsonLdUnsafeInlineEntry = /id:\s*["']json-ld-structured-data["'][\s\S]*?requiresUnsafeInline:\s*true/.test(source)
+    if (trueCount > 1 || !jsonLdUnsafeInlineEntry) {
+        fail("Inline script policy may only keep the JSON-LD structured-data entry as an unsafe-inline exception")
+    }
     return trueCount > 0
 }
 

@@ -349,7 +349,9 @@
     "suggested_alternatives": "建議的替代方案",
     "local_input_too_large": "輸入過大，無法在本機安全處理。請控制在 {size} 以內。",
     "local_row_limit_exceeded": "列數過多，無法在本機安全處理。請控制在 {count} 列以內。",
-    "local_results_truncated": "為確保效能，結果已截斷。目前顯示前 {count} 項。"
+    "local_results_truncated": "為確保效能，結果已截斷。目前顯示前 {count} 項。",
+    "command_actions": "操作",
+    "command_action_badge": "[操作]"
   },
   "tools": {
     "json_formatter": {

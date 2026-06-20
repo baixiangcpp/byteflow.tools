@@ -57,6 +57,8 @@ function createMockLangValue(lang: string) {
         no_favorites: "No favorites yet.",
         no_recent_tools: "No recent tools yet.",
         command_clear_history: "Clear Tool History",
+        command_actions: "Actions",
+        command_action_badge: "[ACTION]",
         add_favorite: "Add to favorites",
         remove_favorite: "Remove from favorites",
         theme: "Theme",

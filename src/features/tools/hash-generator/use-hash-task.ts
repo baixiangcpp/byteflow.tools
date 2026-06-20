@@ -11,12 +11,15 @@ export function useHashTask(input: HashTaskInput | null) {
     const [batchRows, setBatchRows] = React.useState<HashBatchRow[]>([])
     const [isHashing, setIsHashing] = React.useState(false)
     const taskRequestIdRef = React.useRef(0)
+    const taskAbortControllerRef = React.useRef<AbortController | null>(null)
 
     React.useEffect(() => {
         const requestId = taskRequestIdRef.current + 1
         taskRequestIdRef.current = requestId
+        taskAbortControllerRef.current?.abort()
 
         if (!input) {
+            taskAbortControllerRef.current = null
             setStandardHashes(emptyStandardHashes())
             setHmacHashes(emptyHmacHashes())
             setBatchRows([])
@@ -24,8 +27,10 @@ export function useHashTask(input: HashTaskInput | null) {
             return
         }
 
+        const controller = new AbortController()
+        taskAbortControllerRef.current = controller
         setIsHashing(true)
-        void runHashTask(input)
+        void runHashTask(input, { signal: controller.signal })
             .then((result) => {
                 if (taskRequestIdRef.current !== requestId) return
                 setStandardHashes(result.standardHashes)
@@ -40,9 +45,14 @@ export function useHashTask(input: HashTaskInput | null) {
             })
             .finally(() => {
                 if (taskRequestIdRef.current === requestId) {
+                    taskAbortControllerRef.current = null
                     setIsHashing(false)
                 }
             })
+
+        return () => {
+            controller.abort()
+        }
     }, [input])
 
     return { standardHashes, hmacHashes, batchRows, isHashing }

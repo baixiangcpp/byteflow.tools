@@ -349,7 +349,9 @@
     "suggested_alternatives": "Suggested Alternatives",
     "local_input_too_large": "Input is too large for local processing. Keep it under {size}.",
     "local_row_limit_exceeded": "Too many rows for local processing. Keep it under {count} rows.",
-    "local_results_truncated": "Results truncated for performance. Showing first {count} items."
+    "local_results_truncated": "Results truncated for performance. Showing first {count} items.",
+    "command_actions": "Actions",
+    "command_action_badge": "[ACTION]"
   },
   "categories": {
     "formatters_desc": "Format, beautify, and transform code and data files including JSON, XML, SQL, HTML, CSS, and YAML.",

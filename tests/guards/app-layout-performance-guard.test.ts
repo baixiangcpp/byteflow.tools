@@ -88,7 +88,8 @@ describe("app layout performance guard", () => {
 
         expect(source).toContain('import { RelatedTools } from "@/core/seo/components/related-tools"')
         expect(source).toContain('import { INLINE_RELATED_TOOLS_TOOL_SLUGS } from "./inline-related-tools-tool-slugs"')
-        expect(source).toContain('import { getClientToolBySlug } from "@/generated/client-tool-lookup"')
+        expect(source).toContain('import { getRouteToolBySlug } from "@/generated/route-tool-lookup"')
+        expect(source).not.toContain('import { getClientToolBySlug } from "@/generated/client-tool-lookup"')
         expect(source).not.toContain('import { getToolBySlug } from "@/core/registry/tool-meta"')
         expect(source).toContain('import { getRouteContext } from "@/core/routing/route-context"')
         expect(source).toContain('import { recordRecentToolKey } from "@/core/storage/tool-discovery-state"')

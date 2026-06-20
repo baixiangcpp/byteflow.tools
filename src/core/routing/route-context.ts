@@ -1,5 +1,5 @@
 import { LOCALES } from "@/core/i18n/i18n"
-import { CLIENT_MENU_GROUPS, getClientToolBySlug } from "@/generated/client-tool-lookup"
+import { ROUTE_MENU_GROUP_HUB_SLUGS, getRouteToolBySlug } from "@/generated/route-tool-lookup"
 
 export type RouteType = "home" | "tool" | "hub" | "content" | "other"
 
@@ -14,7 +14,7 @@ const LEGACY_MENU_GROUP_HUB_SLUGS = [
 ] as const
 const HUB_SLUGS = new Set([
     ...CATEGORY_HUB_SLUGS,
-    ...CLIENT_MENU_GROUPS.map((group) => group.hubSlug),
+    ...ROUTE_MENU_GROUP_HUB_SLUGS,
     ...LEGACY_MENU_GROUP_HUB_SLUGS,
 ])
 const CONTENT_ROUTE_SLUGS = new Set(["about", "pricing", "contact", "privacy", "terms"])
@@ -40,7 +40,7 @@ export function getRouteContext(pathname: string): {
     }
 
     const slug = segments[1]
-    if (getClientToolBySlug(slug)) {
+    if (getRouteToolBySlug(slug)) {
         return { locale: localeSegment, routeType: "tool", slug }
     }
 

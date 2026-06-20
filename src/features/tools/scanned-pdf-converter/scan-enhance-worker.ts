@@ -1,13 +1,17 @@
 import { applyThresholdToRgba, buildScanFilterString } from "./utils"
 import type { ScanEnhanceTaskInput, ScanEnhanceTaskResult } from "./scan-enhance-task-types"
 
+type WorkerPostMessage = (message: unknown, transfer?: Transferable[]) => void
+
+const postWorkerMessage = self.postMessage.bind(self) as WorkerPostMessage
+
 self.onmessage = (event: MessageEvent<ScanEnhanceTaskInput>) => {
     void enhanceScan(event.data)
         .then((result) => {
-            self.postMessage({ ok: true, value: result })
+            postWorkerMessage({ ok: true, value: result }, [result.bytes])
         })
         .catch((error) => {
-            self.postMessage({
+            postWorkerMessage({
                 ok: false,
                 error: error instanceof Error ? error.message : "SCAN_ENHANCE_TASK_FAILED",
             })
@@ -28,12 +32,19 @@ function dataUrlToBlob(dataUrl: string): Blob {
     return new Blob([bytes], { type: match[1] })
 }
 
-async function enhanceScan({ source, enhance }: ScanEnhanceTaskInput): Promise<ScanEnhanceTaskResult> {
+function inputToBlob(input: ScanEnhanceTaskInput): Blob {
+    if (input.sourceBytes) {
+        return new Blob([input.sourceBytes], { type: input.sourceMime || "application/octet-stream" })
+    }
+    return dataUrlToBlob(input.source)
+}
+
+async function enhanceScan(input: ScanEnhanceTaskInput): Promise<ScanEnhanceTaskResult> {
     if (typeof createImageBitmap !== "function" || typeof OffscreenCanvas === "undefined") {
         throw new Error("SCAN_ENHANCE_WORKER_UNSUPPORTED")
     }
 
-    const bitmap = await createImageBitmap(dataUrlToBlob(source))
+    const bitmap = await createImageBitmap(inputToBlob(input))
     const canvas = new OffscreenCanvas(bitmap.width, bitmap.height)
     const context = canvas.getContext("2d")
     if (!context) {
@@ -41,13 +52,13 @@ async function enhanceScan({ source, enhance }: ScanEnhanceTaskInput): Promise<S
         throw new Error("SCAN_ENHANCE_CONTEXT_UNAVAILABLE")
     }
 
-    context.filter = buildScanFilterString(enhance)
+    context.filter = buildScanFilterString(input.enhance)
     context.drawImage(bitmap, 0, 0, bitmap.width, bitmap.height)
     context.filter = "none"
 
-    if (enhance.thresholdEnabled) {
+    if (input.enhance.thresholdEnabled) {
         const imageData = context.getImageData(0, 0, canvas.width, canvas.height)
-        const thresholded = applyThresholdToRgba(imageData.data, enhance.threshold)
+        const thresholded = applyThresholdToRgba(imageData.data, input.enhance.threshold)
         imageData.data.set(thresholded)
         context.putImageData(imageData, 0, 0)
     }

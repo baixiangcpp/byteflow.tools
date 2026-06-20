@@ -21,7 +21,7 @@ import {
     type StandardHashAlgorithm,
 } from "@/core/utils/hash-utils"
 import { downloadTextFile } from "./browser-actions"
-import { BATCH_ALGORITHMS } from "./constants"
+import { BATCH_ALGORITHMS, MAX_HASH_FILE_SIZE } from "./constants"
 import type { HashTaskInput } from "./hash-task-logic"
 import type { HashMode } from "./types"
 import { useHashTask } from "./use-hash-task"
@@ -79,6 +79,13 @@ export function HashGeneratorPage() {
 
     const handleFileSelect = async (file: File | null) => {
         if (!file) return
+        if (file.size > MAX_HASH_FILE_SIZE) {
+            setFileBytes(null)
+            setFileName("")
+            setFileSize(0)
+            setFileError(toolT.file_error)
+            return
+        }
         try {
             const buffer = await file.arrayBuffer()
             setFileBytes(new Uint8Array(buffer))

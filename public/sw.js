@@ -33,17 +33,37 @@ const STATIC_ASSETS = [
 ];
 
 const SENSITIVE_QUERY_PARAMS = [
+    'access_token',
+    'apikey',
+    'api_key',
+    'auth',
+    'auth_token',
+    'credential',
     'handoff',
     'handoff_ref',
-    'token',
-    'secret',
-    'payload',
+    'id_token',
+    'jwt',
     'key',
     'authorization',
+    'password',
+    'passwd',
+    'payload',
+    'pwd',
+    'refresh_token',
+    'secret',
+    'session',
+    'session_id',
+    'sessionid',
+    'signature',
+    'token',
 ];
 
 function hasSensitiveQuery(url) {
-    return SENSITIVE_QUERY_PARAMS.some((param) => url.searchParams.has(param));
+    const sensitiveParams = new Set(SENSITIVE_QUERY_PARAMS);
+    for (const param of url.searchParams.keys()) {
+        if (sensitiveParams.has(param.toLowerCase())) return true;
+    }
+    return false;
 }
 
 function matchOfflineFallback() {
@@ -162,7 +182,7 @@ self.addEventListener('fetch', (event) => {
             fetch(event.request)
                 .then((response) => {
                     if (response.ok) {
-                        putRuntimeCache(event.request, response);
+                        event.waitUntil(putRuntimeCache(event.request, response).catch(() => undefined));
                     }
                     return response;
                 })
@@ -180,7 +200,7 @@ self.addEventListener('fetch', (event) => {
                 if (cached) return cached;
                 return fetch(event.request).then((response) => {
                     if (response.ok) {
-                        putRuntimeCache(event.request, response);
+                        event.waitUntil(putRuntimeCache(event.request, response).catch(() => undefined));
                     }
                     return response;
                 });
@@ -194,7 +214,7 @@ self.addEventListener('fetch', (event) => {
         fetch(event.request)
             .then((response) => {
                 if (response.ok) {
-                    putRuntimeCache(event.request, response);
+                    event.waitUntil(putRuntimeCache(event.request, response).catch(() => undefined));
                 }
                 return response;
             })

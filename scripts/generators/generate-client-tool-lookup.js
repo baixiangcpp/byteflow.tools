@@ -9,6 +9,9 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const ROOT = path.resolve(__dirname, "../..")
 const TAXONOMY_CONFIG_PATH = path.join(ROOT, "src/core/registry/tool-taxonomy-config.json")
 const OUTPUT_PATH = path.join(ROOT, "src/generated/client-tool-lookup.ts")
+const ROUTE_OUTPUT_PATH = path.join(ROOT, "src/generated/route-tool-lookup.ts")
+const COMMAND_SEARCH_OUTPUT_PATH = path.join(ROOT, "src/generated/command-search-index.ts")
+const DISCOVERY_OUTPUT_PATH = path.join(ROOT, "src/generated/discovery-tool-index.ts")
 const TOOL_INDEX_PATH = path.join(ROOT, "src/generated/tool-index.json")
 
 const taxonomyConfig = JSON.parse(fs.readFileSync(TAXONOMY_CONFIG_PATH, "utf8"))
@@ -152,43 +155,41 @@ function loadAliases() {
     return new Map(index.canonicalTools.map((t) => [t.key, t.aliases || []]))
 }
 
-function buildClientLookupSource() {
+function buildGeneratedLookupData() {
     const orderedTools = loadOrderedToolManifests()
     assertTaxonomyConfig(orderedTools)
     const aliasesByKey = loadAliases()
 
-    const byKey = Object.fromEntries(
-        orderedTools.map((tool) => {
-            const taxonomy = getToolTaxonomy(tool)
-            const entry = {
-                key: tool.key,
-                slug: tool.slug,
-                keywords: tool.keywords,
-                aliases: aliasesByKey.get(tool.key) || [],
-                relatedToolKeys: tool.relatedTools,
-                relatedWorkflows: tool.relatedWorkflows || [],
-                sampleInput: tool.sampleInput || null,
-                sampleMode: tool.sampleMode || null,
-                inputSizePolicy: tool.inputSizePolicy || null,
-                networkAccess: tool.networkAccess || "none",
-                networkHosts: tool.networkHosts || [],
-                networkPurposeKey: tool.networkPurposeKey || null,
-                allowUserProvidedUrl: tool.allowUserProvidedUrl ?? null,
-                requiresExplicitUserAction: tool.requiresExplicitUserAction ?? null,
-                externalDataSent: tool.externalDataSent || null,
-                persistInput: tool.persistInput ?? null,
-                family: taxonomy.family,
-                tags: taxonomy.tags,
-                capabilities: taxonomy.capabilities,
-            }
-            if (tool.searchKeywords) {
-                entry.searchKeywords = tool.searchKeywords
-            }
-            return [tool.key, entry]
-        }),
-    )
-
-    const bySlug = Object.fromEntries(orderedTools.map((tool) => [tool.slug, tool.key]))
+    const entries = orderedTools.map((tool) => {
+        const taxonomy = getToolTaxonomy(tool)
+        const entry = {
+            key: tool.key,
+            slug: tool.slug,
+            keywords: tool.keywords,
+            aliases: aliasesByKey.get(tool.key) || [],
+            relatedToolKeys: tool.relatedTools,
+            relatedWorkflows: tool.relatedWorkflows || [],
+            sampleInput: tool.sampleInput || null,
+            sampleMode: tool.sampleMode || null,
+            inputSizePolicy: tool.inputSizePolicy || null,
+            networkAccess: tool.networkAccess || "none",
+            networkHosts: tool.networkHosts || [],
+            networkPurposeKey: tool.networkPurposeKey || null,
+            allowUserProvidedUrl: tool.allowUserProvidedUrl ?? null,
+            requiresExplicitUserAction: tool.requiresExplicitUserAction ?? null,
+            externalDataSent: tool.externalDataSent || null,
+            persistInput: tool.persistInput ?? null,
+            family: taxonomy.family,
+            tags: taxonomy.tags,
+            capabilities: taxonomy.capabilities,
+        }
+        if (tool.searchKeywords) {
+            entry.searchKeywords = tool.searchKeywords
+        }
+        return entry
+    })
+    const byKey = Object.fromEntries(entries.map((entry) => [entry.key, entry]))
+    const bySlug = Object.fromEntries(entries.map((entry) => [entry.slug, entry.key]))
     const { defs, primaryGroupByFamily } = parseMenuGroups()
     const menuGroups = defs.map((group) => ({
         key: group.key,
@@ -198,6 +199,163 @@ function buildClientLookupSource() {
             .filter((tool) => classifyToolToMenuGroup(tool, primaryGroupByFamily) === group.key)
             .map((tool) => ({ key: tool.key, slug: tool.slug })),
     }))
+
+    return {
+        byKey,
+        bySlug,
+        entries,
+        menuGroups,
+    }
+}
+
+function buildRouteLookupSource(data = buildGeneratedLookupData()) {
+    const routeEntries = Object.fromEntries(
+        data.entries.map((tool) => [tool.key, {
+            key: tool.key,
+            slug: tool.slug,
+            networkAccess: tool.networkAccess,
+            networkHosts: tool.networkHosts,
+            networkPurposeKey: tool.networkPurposeKey,
+            requiresExplicitUserAction: tool.requiresExplicitUserAction,
+            externalDataSent: tool.externalDataSent,
+        }]),
+    )
+    const hubSlugs = data.menuGroups.map((group) => group.hubSlug)
+
+    return `/**
+ * Generated by scripts/generators/generate-client-tool-lookup.js
+ * Do not edit manually.
+ */
+
+export type RouteToolLookupEntry = {
+    key: string
+    slug: string
+    networkAccess: "none" | "user_requested" | "third_party_api"
+    networkHosts: readonly string[]
+    networkPurposeKey: string | null
+    requiresExplicitUserAction: boolean | null
+    externalDataSent: "none" | "user_provided_url" | "derived_url" | null
+}
+
+const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = ${JSON.stringify(routeEntries, null, 4)}
+
+const ROUTE_TOOL_KEY_BY_SLUG: Record<string, string> = ${JSON.stringify(data.bySlug, null, 4)}
+
+export const ROUTE_MENU_GROUP_HUB_SLUGS: readonly string[] = ${JSON.stringify(hubSlugs, null, 4)}
+
+export function getRouteToolByKey(key: string): RouteToolLookupEntry | undefined {
+    return ROUTE_TOOL_LOOKUP[key]
+}
+
+export function getRouteToolBySlug(slug: string): RouteToolLookupEntry | undefined {
+    const key = ROUTE_TOOL_KEY_BY_SLUG[slug]
+    return key ? ROUTE_TOOL_LOOKUP[key] : undefined
+}
+`
+}
+
+function buildCommandSearchIndexSource(data = buildGeneratedLookupData()) {
+    const entries = Object.fromEntries(
+        data.entries.map((tool) => [tool.key, {
+            key: tool.key,
+            slug: tool.slug,
+            keywords: tool.keywords,
+            aliases: tool.aliases,
+            searchKeywords: tool.searchKeywords || [],
+            family: tool.family,
+            tags: tool.tags,
+            capabilities: tool.capabilities,
+        }]),
+    )
+
+    return `/**
+ * Generated by scripts/generators/generate-client-tool-lookup.js
+ * Do not edit manually.
+ */
+
+export type CommandSearchIndexEntry = {
+    key: string
+    slug: string
+    keywords: readonly string[]
+    aliases: readonly string[]
+    searchKeywords: readonly string[]
+    family: string
+    tags: readonly string[]
+    capabilities: readonly string[]
+}
+
+const COMMAND_SEARCH_INDEX: Record<string, CommandSearchIndexEntry> = ${JSON.stringify(entries, null, 4)}
+
+export function getCommandSearchToolByKey(key: string): CommandSearchIndexEntry | undefined {
+    return COMMAND_SEARCH_INDEX[key]
+}
+`
+}
+
+function buildDiscoveryToolIndexSource(data = buildGeneratedLookupData()) {
+    const entries = Object.fromEntries(
+        data.entries.map((tool) => [tool.key, {
+            key: tool.key,
+            slug: tool.slug,
+            relatedToolKeys: tool.relatedToolKeys,
+            relatedWorkflows: tool.relatedWorkflows,
+            sampleInput: tool.sampleInput,
+            sampleMode: tool.sampleMode,
+            inputSizePolicy: tool.inputSizePolicy,
+            family: tool.family,
+            tags: tool.tags,
+            capabilities: tool.capabilities,
+        }]),
+    )
+
+    return `/**
+ * Generated by scripts/generators/generate-client-tool-lookup.js
+ * Do not edit manually.
+ */
+
+export type DiscoveryToolIndexEntry = {
+    key: string
+    slug: string
+    relatedToolKeys: readonly string[]
+    relatedWorkflows: ReadonlyArray<{ toolKey: string; reasonKey: string; handoffSupported?: boolean }>
+    sampleInput: string | null
+    sampleMode: string | null
+    inputSizePolicy: Readonly<{ warnAtBytes?: number; workerAtBytes?: number; hardLimitBytes?: number; streamingSupported?: boolean }> | null
+    family: string
+    tags: readonly string[]
+    capabilities: readonly string[]
+}
+
+export type DiscoveryMenuGroup = {
+    key: string
+    navKey: string
+    hubSlug: string
+    items: ReadonlyArray<{ key: string; slug: string }>
+}
+
+const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = ${JSON.stringify(entries, null, 4)}
+
+export const DISCOVERY_MENU_GROUPS: ReadonlyArray<DiscoveryMenuGroup> = ${JSON.stringify(data.menuGroups, null, 4)}
+
+export function getDiscoveryToolByKey(key: string): DiscoveryToolIndexEntry | undefined {
+    return DISCOVERY_TOOL_INDEX[key]
+}
+
+export function getDiscoveryRelatedTools(toolKey: string): DiscoveryToolIndexEntry[] {
+    const tool = DISCOVERY_TOOL_INDEX[toolKey]
+    if (!tool) return []
+
+    return tool.relatedToolKeys
+        .map((key) => DISCOVERY_TOOL_INDEX[key])
+        .filter((entry): entry is DiscoveryToolIndexEntry => Boolean(entry))
+}
+`
+}
+
+function buildClientLookupSource(data = buildGeneratedLookupData()) {
+    const byKey = Object.fromEntries(
+        data.entries.map((tool) => [tool.key, tool]),
+    )
 
     return `/**
  * Generated by scripts/generators/generate-client-tool-lookup.js
@@ -236,9 +394,9 @@ export type ClientMenuGroup = {
 
 const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = ${JSON.stringify(byKey, null, 4)}
 
-const CLIENT_TOOL_KEY_BY_SLUG: Record<string, string> = ${JSON.stringify(bySlug, null, 4)}
+const CLIENT_TOOL_KEY_BY_SLUG: Record<string, string> = ${JSON.stringify(data.bySlug, null, 4)}
 
-export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = ${JSON.stringify(menuGroups, null, 4)}
+export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = ${JSON.stringify(data.menuGroups, null, 4)}
 
 export function getClientToolByKey(key: string): ClientToolLookupEntry | undefined {
     return CLIENT_TOOL_LOOKUP[key]
@@ -260,18 +418,47 @@ export function getClientRelatedTools(toolKey: string): ClientToolLookupEntry[] 
 `
 }
 
-const nextOutput = `${buildClientLookupSource().trim()}\n`
+function buildGeneratedOutputs() {
+    const data = buildGeneratedLookupData()
+    return [
+        {
+            path: OUTPUT_PATH,
+            source: `${buildClientLookupSource(data).trim()}\n`,
+        },
+        {
+            path: ROUTE_OUTPUT_PATH,
+            source: `${buildRouteLookupSource(data).trim()}\n`,
+        },
+        {
+            path: COMMAND_SEARCH_OUTPUT_PATH,
+            source: `${buildCommandSearchIndexSource(data).trim()}\n`,
+        },
+        {
+            path: DISCOVERY_OUTPUT_PATH,
+            source: `${buildDiscoveryToolIndexSource(data).trim()}\n`,
+        },
+    ]
+}
+
+const nextOutputs = buildGeneratedOutputs()
 
 if (process.argv.includes("--check")) {
-    const currentOutput = fs.existsSync(OUTPUT_PATH) ? fs.readFileSync(OUTPUT_PATH, "utf8") : ""
-    if (currentOutput !== nextOutput) {
-        console.error("[check:client-tool-lookup] Found stale src/generated/client-tool-lookup.ts. Run `npm run generate:client-tool-lookup`.")
+    const staleOutputs = nextOutputs
+        .filter((output) => !fs.existsSync(output.path) || fs.readFileSync(output.path, "utf8") !== output.source)
+        .map((output) => path.relative(ROOT, output.path).replace(/\\/g, "/"))
+    if (staleOutputs.length > 0) {
+        console.error("[check:client-tool-lookup] Found stale generated tool lookup files. Run `npm run generate:client-tool-lookup`.")
+        for (const staleOutput of staleOutputs) {
+            console.error(`- ${staleOutput}`)
+        }
         process.exit(1)
     }
 
-    console.log("[check:client-tool-lookup] OK: lightweight client tool lookup is up to date.")
+    console.log("[check:client-tool-lookup] OK: generated tool lookup files are up to date.")
     process.exit(0)
 }
 
-fs.writeFileSync(OUTPUT_PATH, nextOutput)
-console.log("[generate:client-tool-lookup] OK: refreshed src/generated/client-tool-lookup.ts")
+for (const output of nextOutputs) {
+    fs.writeFileSync(output.path, output.source)
+}
+console.log("[generate:client-tool-lookup] OK: refreshed generated tool lookup files")

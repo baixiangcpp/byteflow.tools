@@ -1,6 +1,6 @@
 (function () {
   try {
-    var locales = ["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr"];
+    var locales = ["en","zh-CN","zh-TW","ja","ko","de","fr"];
     var p = window.location.pathname || "/";
     var seg = p.split("/").filter(Boolean)[0];
     var activeLang = locales.indexOf(seg) >= 0 ? seg : "en";

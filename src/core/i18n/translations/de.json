@@ -349,7 +349,9 @@
     "suggested_alternatives": "Vorgeschlagene Alternativen",
     "local_input_too_large": "Die Eingabe ist fuer lokale Verarbeitung zu gross. Bitte unter {size} halten.",
     "local_row_limit_exceeded": "Zu viele Zeilen fuer lokale Verarbeitung. Bitte unter {count} Zeilen halten.",
-    "local_results_truncated": "Ergebnisse wurden aus Performancegruenden gekuerzt. Es werden die ersten {count} Eintraege angezeigt."
+    "local_results_truncated": "Ergebnisse wurden aus Performancegruenden gekuerzt. Es werden die ersten {count} Eintraege angezeigt.",
+    "command_actions": "Aktionen",
+    "command_action_badge": "[AKTION]"
   },
   "tools": {
     "json_formatter": {

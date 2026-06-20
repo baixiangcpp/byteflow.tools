@@ -4,7 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { ChevronDown, Share2, type LucideIcon } from "lucide-react"
-import { getClientToolBySlug } from "@/generated/client-tool-lookup"
+import { getRouteToolBySlug } from "@/generated/route-tool-lookup"
 import { getRouteContext } from "@/core/routing/route-context"
 import { useLang } from "@/core/i18n/lang-provider"
 import {
@@ -81,7 +81,7 @@ export function ToolActionBar({
     const toolKey = React.useMemo(() => {
         const context = getRouteContext(pathname)
         if (!context.slug) return null
-        return getClientToolBySlug(context.slug)?.key || null
+        return getRouteToolBySlug(context.slug)?.key || null
     }, [pathname])
 
     const { handoffActions, primaryActions } = React.useMemo(() => {

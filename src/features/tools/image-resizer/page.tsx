@@ -9,9 +9,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
-import { createDemoImageDataUrl, fileToDataUrl, loadImageElement } from "@/core/utils/image-canvas-utils"
+import { createDemoImageDataUrl, loadImageElement } from "@/core/utils/image-canvas-utils"
 import { runImageResizeTask } from "@/features/tools/image-resizer/image-resize-task"
+import { loadResizeImageFile, replaceObjectUrl } from "@/features/tools/image-resizer/browser-actions"
 import {
+    buildResizeOutputSummary,
     normalizeResizeDimension,
     type ResizeFitMode,
     type ResizeFormat,
@@ -37,23 +39,15 @@ const EXT_BY_FORMAT: Record<ResizeFormat, string> = {
 export function ImageResizerPage() {
     const { t } = useLang()
     const toolT = t.tools["image_resizer"] as Record<string, string>
-    const outputSourceLabel = toolT.output_source_label
-    const outputTargetLabel = toolT.output_target_label
-    const outputFitModeLabel = toolT.output_fit_mode_label
-    const outputFormatLabel = toolT.output_format_label
-    const outputQualityLabel = toolT.output_quality_label
-    const outputAspectLockLabel = toolT.output_aspect_lock_label
-    const outputOn = toolT.output_on
-    const outputOff = toolT.output_off
-    const outputLossless = toolT.output_lossless
-    const outputFitModeContain = toolT.output_fit_mode_contain
-    const outputFitModeCover = toolT.output_fit_mode_cover
-    const outputFitModeStretch = toolT.output_fit_mode_stretch
     const fileInputRef = React.useRef<HTMLInputElement>(null)
     const renderRequestIdRef = React.useRef(0)
+    const renderAbortControllerRef = React.useRef<AbortController | null>(null)
+    const imageObjectUrlRef = React.useRef<string | null>(null)
     const [demoSrc, setDemoSrc] = React.useState("")
 
     const [imageSrc, setImageSrc] = React.useState("")
+    const [imageBytes, setImageBytes] = React.useState<ArrayBuffer | null>(null)
+    const [imageMime, setImageMime] = React.useState("")
     const [fileName, setFileName] = React.useState("")
     const [sourceWidth, setSourceWidth] = React.useState(0)
     const [sourceHeight, setSourceHeight] = React.useState(0)
@@ -65,9 +59,9 @@ export function ImageResizerPage() {
     const [lockAspect, setLockAspect] = React.useState(DEFAULT_STATE.lockAspect)
     const [outputDataUrl, setOutputDataUrl] = React.useState("")
     const fitModeLabels: Record<ResizeFitMode, string> = {
-        contain: outputFitModeContain,
-        cover: outputFitModeCover,
-        stretch: outputFitModeStretch,
+        contain: toolT.output_fit_mode_contain,
+        cover: toolT.output_fit_mode_cover,
+        stretch: toolT.output_fit_mode_stretch,
     }
     const activeFileLabel = fileName || (imageSrc ? t.common.sample_image : t.common.drop_image_or_click_upload)
 
@@ -81,8 +75,15 @@ export function ImageResizerPage() {
     }, [])
 
     React.useEffect(() => {
+        return () => replaceObjectUrl(imageObjectUrlRef, null)
+    }, [])
+
+    React.useEffect(() => {
         const requestId = renderRequestIdRef.current + 1
         renderRequestIdRef.current = requestId
+        renderAbortControllerRef.current?.abort()
+        const controller = new AbortController()
+        renderAbortControllerRef.current = controller
 
         const render = async () => {
             const source = imageSrc || demoSrc
@@ -92,7 +93,16 @@ export function ImageResizerPage() {
             }
 
             try {
-                const result = await runImageResizeTask({ source, targetWidth, targetHeight, fitMode, format, quality })
+                const result = await runImageResizeTask({
+                    source,
+                    sourceBytes: imageBytes?.slice(0),
+                    sourceMime: imageMime || undefined,
+                    targetWidth,
+                    targetHeight,
+                    fitMode,
+                    format,
+                    quality,
+                }, { signal: controller.signal })
                 if (renderRequestIdRef.current !== requestId) return
                 setSourceWidth((current) => current === result.sourceWidth ? current : result.sourceWidth)
                 setSourceHeight((current) => current === result.sourceHeight ? current : result.sourceHeight)
@@ -105,47 +115,33 @@ export function ImageResizerPage() {
         }
 
         void render()
-    }, [demoSrc, fitMode, format, imageSrc, quality, targetHeight, targetWidth])
 
-    const output = React.useMemo(
-        () =>
-            [
-                `${outputSourceLabel}: ${sourceWidth || "-"} x ${sourceHeight || "-"}`,
-                `${outputTargetLabel}: ${targetWidth} x ${targetHeight}`,
-                `${outputFitModeLabel}: ${fitMode === "contain" ? outputFitModeContain : fitMode === "cover" ? outputFitModeCover : outputFitModeStretch}`,
-                `${outputFormatLabel}: ${format.toUpperCase()}`,
-                `${outputQualityLabel}: ${format === "png" ? outputLossless : quality.toFixed(2)}`,
-                `${outputAspectLockLabel}: ${lockAspect ? outputOn : outputOff}`,
-                "",
-                `.resized-image {`,
-                `  width: ${targetWidth}px;`,
-                `  height: ${targetHeight}px;`,
-                `  object-fit: ${fitMode === "stretch" ? "fill" : fitMode};`,
-                "}",
-            ].join("\n"),
-        [
-            fitMode,
-            format,
-            lockAspect,
-            outputAspectLockLabel,
-            outputFitModeContain,
-            outputFitModeCover,
-            outputFitModeLabel,
-            outputFitModeStretch,
-            outputFormatLabel,
-            outputLossless,
-            outputOff,
-            outputOn,
-            outputQualityLabel,
-            outputSourceLabel,
-            outputTargetLabel,
-            quality,
-            sourceHeight,
-            sourceWidth,
-            targetHeight,
-            targetWidth,
-        ],
-    )
+        return () => {
+            controller.abort()
+        }
+    }, [demoSrc, fitMode, format, imageBytes, imageMime, imageSrc, quality, targetHeight, targetWidth])
+
+    const output = React.useMemo(() => buildResizeOutputSummary({
+        fitMode,
+        format,
+        labels: {
+            aspectLock: toolT.output_aspect_lock_label,
+            fitMode: toolT.output_fit_mode_label,
+            format: toolT.output_format_label,
+            lossless: toolT.output_lossless,
+            off: toolT.output_off,
+            on: toolT.output_on,
+            quality: toolT.output_quality_label,
+            source: toolT.output_source_label,
+            target: toolT.output_target_label,
+        },
+        lockAspect,
+        quality,
+        sourceHeight,
+        sourceWidth,
+        targetHeight,
+        targetWidth,
+    }), [fitMode, format, lockAspect, quality, sourceHeight, sourceWidth, targetHeight, targetWidth, toolT])
 
     const setWidthAndKeepRatio = (nextWidth: number) => {
         const safeWidth = normalizeResizeDimension(nextWidth, 1)
@@ -173,14 +169,16 @@ export function ImageResizerPage() {
             return
         }
         try {
-            const src = await fileToDataUrl(file)
-            const image = await loadImageElement(src)
-            setImageSrc(src)
-            setFileName(file.name)
-            setSourceWidth(image.width)
-            setSourceHeight(image.height)
-            setTargetWidth(image.width)
-            setTargetHeight(image.height)
+            const loaded = await loadResizeImageFile(file)
+            replaceObjectUrl(imageObjectUrlRef, loaded.objectUrl)
+            setImageSrc(loaded.objectUrl)
+            setImageBytes(loaded.bytes)
+            setImageMime(loaded.mime)
+            setFileName(loaded.name)
+            setSourceWidth(loaded.width)
+            setSourceHeight(loaded.height)
+            setTargetWidth(loaded.width)
+            setTargetHeight(loaded.height)
         } catch {
             toast.error(t.common.image_file_read_failed)
         }
@@ -189,7 +187,10 @@ export function ImageResizerPage() {
     const handleSample = async () => {
         const sample = demoSrc || createDemoImageDataUrl(1280, 720)
         const image = await loadImageElement(sample)
+        replaceObjectUrl(imageObjectUrlRef, null)
         setImageSrc(sample)
+        setImageBytes(null)
+        setImageMime("")
         setFileName("")
         setSourceWidth(image.width)
         setSourceHeight(image.height)
@@ -202,7 +203,10 @@ export function ImageResizerPage() {
     }
 
     const handleReset = () => {
+        replaceObjectUrl(imageObjectUrlRef, null)
         setImageSrc("")
+        setImageBytes(null)
+        setImageMime("")
         setFileName("")
         setSourceWidth(0)
         setSourceHeight(0)
@@ -311,7 +315,7 @@ export function ImageResizerPage() {
 
                     <div className="grid gap-3 sm:grid-cols-2">
                         <div className="space-y-1.5 rounded-lg border bg-background/60 p-3">
-                            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{outputAspectLockLabel}</div>
+                            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{toolT.output_aspect_lock_label}</div>
                             <button
                                 type="button"
                                 onClick={() => setLockAspect((prev) => !prev)}
@@ -327,7 +331,7 @@ export function ImageResizerPage() {
                         </div>
 
                         <div className="space-y-1.5 rounded-lg border bg-background/60 p-3">
-                            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{outputFitModeLabel}</div>
+                            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{toolT.output_fit_mode_label}</div>
                             <div className="grid grid-cols-3 gap-1">
                                 {(["contain", "cover", "stretch"] as ResizeFitMode[]).map((mode) => (
                                     <button
@@ -349,7 +353,7 @@ export function ImageResizerPage() {
 
                     <div className="grid gap-3 sm:grid-cols-2">
                         <div className="space-y-1.5 rounded-lg border bg-background/60 p-3">
-                            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{outputFormatLabel}</div>
+                            <div className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">{toolT.output_format_label}</div>
                             <div className="grid grid-cols-3 gap-1">
                                 {(["png", "jpeg", "webp"] as ResizeFormat[]).map((item) => (
                                     <button
@@ -370,8 +374,8 @@ export function ImageResizerPage() {
 
                         <div className="space-y-1.5 rounded-lg border bg-background/60 p-3">
                             <div className="flex items-center justify-between text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                                <span>{outputQualityLabel}</span>
-                                <span>{format === "png" ? outputLossless : quality.toFixed(2)}</span>
+                                <span>{toolT.output_quality_label}</span>
+                                <span>{format === "png" ? toolT.output_lossless : quality.toFixed(2)}</span>
                             </div>
                             <Input
                                 type="range"

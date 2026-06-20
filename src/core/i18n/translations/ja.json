@@ -349,7 +349,9 @@
     "suggested_alternatives": "推奨される代替案",
     "local_input_too_large": "入力が大きすぎるためローカルで安全に処理できません。{size} 以下にしてください。",
     "local_row_limit_exceeded": "行数が多すぎるためローカルで安全に処理できません。{count} 行以下にしてください。",
-    "local_results_truncated": "パフォーマンス保護のため結果を切り詰めました。最初の {count} 件を表示しています。"
+    "local_results_truncated": "パフォーマンス保護のため結果を切り詰めました。最初の {count} 件を表示しています。",
+    "command_actions": "アクション",
+    "command_action_badge": "[操作]"
   },
   "tools": {
     "json_formatter": {

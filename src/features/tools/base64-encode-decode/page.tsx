@@ -8,7 +8,6 @@ import { ModeSelector } from "@/features/tool-shell/mode-selector"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { useLang } from "@/core/i18n/lang-provider"
 import { Textarea } from "@/components/ui/textarea"
-import { decodeBase64ToBytes, encodeBytesToBase64 } from "@/core/utils/base64-utils"
 import { readStorageString, writeStorageString } from "@/core/storage/tool-persistence"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildToolHandoffLink } from "@/core/routing/tool-handoff"
@@ -16,6 +15,7 @@ import { downloadBlob, downloadTextFile } from "./browser-actions"
 import { MAX_FILE_SIZE, MODE_STORAGE_KEY, OPERATION_STORAGE_KEY, OUTPUT_PREVIEW_LIMIT } from "./constants"
 import { BINARY_SAMPLE_BASE64, TEXT_SAMPLE_BASE64, TEXT_SAMPLE_INPUT, URL_SAFE_SAMPLE_BASE64, URL_SAFE_SAMPLE_INPUT } from "./samples"
 import type { Mode, Operation } from "./types"
+import { runBase64FileTask } from "./base64-task"
 import { useBase64TextTask } from "./use-base64-text-task"
 
 export function Base64Page() {
@@ -187,11 +187,22 @@ export function Base64Page() {
                 setOutput("")
                 return
             }
-            const buffer = await sourceFile.arrayBuffer()
-            const encoded = encodeBytesToBase64(new Uint8Array(buffer))
-            setOutput(encoded)
-            setError(null)
-            setDecodedBlob(null)
+            try {
+                const buffer = await sourceFile.arrayBuffer()
+                const result = await runBase64FileTask({
+                    task: "file",
+                    operation: "encode",
+                    bytes: buffer,
+                    urlSafe: false,
+                })
+                setOutput(result.operation === "encode" ? result.output : "")
+                setError(null)
+                setDecodedBlob(null)
+            } catch {
+                setOutput("")
+                setError(text("error_encode_failed"))
+                setDecodedBlob(null)
+            }
             return
         }
 
@@ -223,14 +234,19 @@ export function Base64Page() {
 
         if (mode === "file") {
             try {
-                const bytes = decodeBase64ToBytes(input.trim())
-                const safeBuffer = Uint8Array.from(bytes).buffer as ArrayBuffer
-                const blob = new Blob([safeBuffer], { type: sourceFile?.type || "application/octet-stream" })
+                const result = await runBase64FileTask({
+                    task: "file",
+                    operation: "decode",
+                    input,
+                    urlSafe: false,
+                })
+                const bytes = result.operation === "decode" ? result.bytes : new ArrayBuffer(0)
+                const blob = new Blob([bytes], { type: sourceFile?.type || "application/octet-stream" })
                 setDecodedFileName(`${sourceFile?.name ? sourceFile.name.replace(/\.[^.]+$/, "") : "decoded"}.bin`)
                 setDecodedBlob(blob)
                 setOutput(
                     text("decode_binary_success")
-                        .replace("{bytes}", String(bytes.length)),
+                        .replace("{bytes}", String(bytes.byteLength)),
                 )
                 setError(null)
             } catch {

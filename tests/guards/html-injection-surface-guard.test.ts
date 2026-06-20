@@ -78,10 +78,20 @@ describe("HTML injection surface guard", () => {
     })
 
     it("embeds dynamic redirect and runtime script data with JSON serialization only", () => {
+        const packageJson = JSON.parse(readSource("package.json")) as { scripts?: Record<string, string> }
         const rootPageSource = readSource("src/app/page.tsx")
         const layoutSource = readSource("src/app/layout.tsx")
+        const generatorSource = readSource("scripts/generators/generate-runtime-scripts.js")
         const rootScript = readSource("public/runtime/root-locale-redirect.js")
         const themeScript = readSource("public/runtime/theme-manifest-bootstrap.js")
+
+        expect(packageJson.scripts?.["generate:runtime-scripts"]).toBe("node scripts/generators/generate-runtime-scripts.js")
+        expect(packageJson.scripts?.["check:runtime-scripts"]).toBe("node scripts/generators/generate-runtime-scripts.js --check")
+        expect(packageJson.scripts?.validate).toContain("npm run check:runtime-scripts")
+        expect(generatorSource).toContain("src/core/i18n/i18n.ts")
+        expect(generatorSource).toContain("src/core/pwa/constants.ts")
+        expect(generatorSource).toContain("public/runtime/root-locale-redirect.js")
+        expect(generatorSource).toContain("public/runtime/theme-manifest-bootstrap.js")
 
         expect(rootPageSource).toContain("import Script from \"next/script\"")
         expect(rootPageSource).toContain("<Script src=\"/runtime/root-locale-redirect.js\" strategy=\"beforeInteractive\" />")
@@ -97,6 +107,10 @@ describe("HTML injection surface guard", () => {
 
     it("documents each remaining inline runtime script with a CSP migration path", () => {
         expect(INLINE_SCRIPT_POLICY).toHaveLength(3)
+        const unsafeInlineEntries = INLINE_SCRIPT_POLICY.filter((entry) => entry.requiresUnsafeInline)
+
+        expect(unsafeInlineEntries.map((entry) => entry.id)).toEqual(["json-ld-structured-data"])
+        expect(unsafeInlineEntries[0].migrationPath).toMatch(/hash|page-specific|external JSON/i)
 
         for (const entry of INLINE_SCRIPT_POLICY) {
             expect(fs.existsSync(path.join(process.cwd(), entry.file)), entry.file).toBe(true)

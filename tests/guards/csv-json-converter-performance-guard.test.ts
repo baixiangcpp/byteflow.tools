@@ -36,9 +36,12 @@ describe("csv json converter performance guard", () => {
 
         expect(pageSource).toContain("runCsvJsonTask({")
         expect(pageSource).toContain("convertRequestIdRef")
+        expect(pageSource).toContain("convertAbortControllerRef")
+        expect(pageSource).toContain("convertAbortControllerRef.current?.abort()")
         expect(pageSource).not.toContain("csvToJson(")
         expect(pageSource).not.toContain("jsonToCsv(")
         expect(taskSource).toContain("new Worker(new URL(\"./csv-json-worker.ts\", import.meta.url)")
+        expect(taskSource).toContain("signal: options.signal")
         expect(taskSource).toContain("runCsvJsonTaskSync(input)")
         expect(workerSource).toContain("runCsvJsonTaskSync(event.data)")
     })

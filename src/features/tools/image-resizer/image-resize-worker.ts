@@ -1,13 +1,17 @@
 import { calculateResizeDrawBox, getOutputMimeType, normalizeResizeDimension } from "./utils"
 import type { ImageResizeTaskInput, ImageResizeTaskResult } from "./image-resize-task-types"
 
+type WorkerPostMessage = (message: unknown, transfer?: Transferable[]) => void
+
+const postWorkerMessage = self.postMessage.bind(self) as WorkerPostMessage
+
 self.onmessage = (event: MessageEvent<ImageResizeTaskInput>) => {
     void renderImage(event.data)
         .then((result) => {
-            self.postMessage({ ok: true, value: result })
+            postWorkerMessage({ ok: true, value: result }, [result.bytes])
         })
         .catch((error) => {
-            self.postMessage({
+            postWorkerMessage({
                 ok: false,
                 error: error instanceof Error ? error.message : "IMAGE_RESIZE_TASK_FAILED",
             })
@@ -28,12 +32,19 @@ function dataUrlToBlob(dataUrl: string): Blob {
     return new Blob([bytes], { type: match[1] })
 }
 
+function inputToBlob(input: ImageResizeTaskInput): Blob {
+    if (input.sourceBytes) {
+        return new Blob([input.sourceBytes], { type: input.sourceMime || "application/octet-stream" })
+    }
+    return dataUrlToBlob(input.source)
+}
+
 async function renderImage(input: ImageResizeTaskInput): Promise<ImageResizeTaskResult> {
     if (typeof createImageBitmap !== "function" || typeof OffscreenCanvas === "undefined") {
         throw new Error("IMAGE_RESIZE_WORKER_UNSUPPORTED")
     }
 
-    const bitmap = await createImageBitmap(dataUrlToBlob(input.source))
+    const bitmap = await createImageBitmap(inputToBlob(input))
     const safeWidth = normalizeResizeDimension(input.targetWidth, bitmap.width)
     const safeHeight = normalizeResizeDimension(input.targetHeight, bitmap.height)
     const drawBox = calculateResizeDrawBox(bitmap.width, bitmap.height, safeWidth, safeHeight, input.fitMode)

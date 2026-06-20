@@ -10,6 +10,18 @@ export type ResizeDrawBox = {
     offsetY: number
 }
 
+export type ResizeOutputSummaryLabels = {
+    aspectLock: string
+    fitMode: string
+    format: string
+    lossless: string
+    off: string
+    on: string
+    quality: string
+    source: string
+    target: string
+}
+
 function clamp(value: number, min: number, max: number): number {
     if (!Number.isFinite(value)) return min
     return Math.max(min, Math.min(max, value))
@@ -64,4 +76,41 @@ export function calculateResizeDrawBox(
         offsetX,
         offsetY,
     }
+}
+
+export function buildResizeOutputSummary({
+    fitMode,
+    format,
+    labels,
+    lockAspect,
+    quality,
+    sourceHeight,
+    sourceWidth,
+    targetHeight,
+    targetWidth,
+}: {
+    fitMode: ResizeFitMode
+    format: ResizeFormat
+    labels: ResizeOutputSummaryLabels
+    lockAspect: boolean
+    quality: number
+    sourceHeight: number
+    sourceWidth: number
+    targetHeight: number
+    targetWidth: number
+}): string {
+    return [
+        `${labels.source}: ${sourceWidth || "-"} x ${sourceHeight || "-"}`,
+        `${labels.target}: ${targetWidth} x ${targetHeight}`,
+        `${labels.fitMode}: ${fitMode}`,
+        `${labels.format}: ${format.toUpperCase()}`,
+        `${labels.quality}: ${format === "png" ? labels.lossless : quality.toFixed(2)}`,
+        `${labels.aspectLock}: ${lockAspect ? labels.on : labels.off}`,
+        "",
+        `.resized-image {`,
+        `  width: ${targetWidth}px;`,
+        `  height: ${targetHeight}px;`,
+        `  object-fit: ${fitMode === "stretch" ? "fill" : fitMode};`,
+        "}",
+    ].join("\n")
 }

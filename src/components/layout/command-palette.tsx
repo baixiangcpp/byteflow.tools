@@ -18,7 +18,7 @@ import {
 import { toolGroups } from "./tool-groups"
 import { DialogTitle } from "@/components/ui/dialog"
 import { useLang } from "@/core/i18n/lang-provider"
-import { getClientToolByKey } from "@/generated/client-tool-lookup"
+import { getCommandSearchToolByKey } from "@/generated/command-search-index"
 import { readFavoriteToolKeys, readRecentToolKeys, TOOL_DISCOVERY_UPDATED_EVENT } from "@/core/storage/tool-discovery-state"
 import { useSystemCommands } from "@/core/commands/registry"
 import { scoreCommandSearch } from "@/core/search/command-search"
@@ -59,7 +59,7 @@ function isEditableShortcutTarget(target: EventTarget | null): boolean {
 }
 
 function buildToolSearchKeywords(toolKey: string, title: string, searchValue: string): string[] {
-    const tool = getClientToolByKey(toolKey)
+    const tool = getCommandSearchToolByKey(toolKey)
     return [
         title,
         searchValue,
@@ -95,6 +95,8 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
     const noResultsLabel = requireTranslationValue(commonLabels.no_results, "common.no_results")
     const favoritesLabel = requireTranslationValue(commonLabels.favorites, "common.favorites")
     const recentToolsLabel = requireTranslationValue(commonLabels.recent_tools, "common.recent_tools")
+    const commandActionsLabel = requireTranslationValue(commonLabels.command_actions, "common.command_actions")
+    const commandActionBadgeLabel = requireTranslationValue(commonLabels.command_action_badge, "common.command_action_badge")
 
     const isControlled = typeof openProp === "boolean"
     const open = isControlled ? openProp : internalOpen
@@ -149,7 +151,7 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
         const values = new Map<string, string>()
         for (const group of toolGroups) {
             for (const item of group.items) {
-                const tool = getClientToolByKey(item.key)
+                const tool = getCommandSearchToolByKey(item.key)
                 const localizedTool = t.tools[item.key] as { title?: string; description?: string } | undefined
                 const englishTool = englishToolSearchAliases?.[item.key]
                 values.set(
@@ -177,7 +179,7 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
     const favoriteCommands = React.useMemo(() => {
         return favoriteToolKeys
             .map((toolKey) => {
-                const tool = getClientToolByKey(toolKey)
+                const tool = getCommandSearchToolByKey(toolKey)
                 if (!tool) return null
                 const title = requireTranslationValue(t.tools[tool.key]?.title, `tools.${tool.key}.title`)
                 const searchValue = toolSearchValues.get(tool.key) || title
@@ -197,7 +199,7 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
         return recentToolKeys
             .filter((toolKey) => !favoriteKeySet.has(toolKey))
             .map((toolKey) => {
-                const tool = getClientToolByKey(toolKey)
+                const tool = getCommandSearchToolByKey(toolKey)
                 if (!tool) return null
                 const title = requireTranslationValue(t.tools[tool.key]?.title, `tools.${tool.key}.title`)
                 const searchValue = toolSearchValues.get(tool.key) || title
@@ -234,7 +236,7 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
                 <CommandEmpty>{noResultsLabel}</CommandEmpty>
 
                 {isCommandMode ? (
-                    <CommandGroup heading="Actions">
+                    <CommandGroup heading={commandActionsLabel}>
                         {systemCommands.map((cmd) => {
                             const label = resolveSystemCommandLabel(cmd.labelKey, {
                                 common: commonLabels as unknown as Record<string, string>,
@@ -251,7 +253,7 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
                                 >
                                     <cmd.icon className="mr-2 h-4 w-4" />
                                     <span>{label}</span>
-                                    <span className="ml-auto text-xs text-muted-foreground font-mono tracking-tighter opacity-70">[ACTION]</span>
+                                    <span className="ml-auto text-xs text-muted-foreground font-mono tracking-tighter opacity-70">{commandActionBadgeLabel}</span>
                                 </CommandItem>
                             )
                         })}

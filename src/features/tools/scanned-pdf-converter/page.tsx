@@ -8,13 +8,12 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
-import { fileToDataUrl, loadImageElement } from "@/core/utils/image-canvas-utils"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import {
-    dataUrlToUint8Array,
     type ScanEnhanceConfig,
 } from "@/features/tools/scanned-pdf-converter/utils"
 import { runScanEnhanceTask } from "@/features/tools/scanned-pdf-converter/scan-enhance-task"
+import { downloadPdfBytes, loadScanImageFile } from "@/features/tools/scanned-pdf-converter/browser-actions"
 
 const MAX_FILE_SIZE = 12 * 1024 * 1024
 const MAX_FILES = 20
@@ -24,6 +23,8 @@ type ScanPage = {
     id: string
     name: string
     src: string
+    bytes?: ArrayBuffer
+    mime?: string
     width: number
     height: number
 }
@@ -79,6 +80,8 @@ export function ScannedPdfConverterPage() {
     const toolT = t.tools["scanned_pdf_converter"] as Record<string, string>
     const fileInputRef = React.useRef<HTMLInputElement>(null)
     const previewRequestIdRef = React.useRef(0)
+    const previewAbortControllerRef = React.useRef<AbortController | null>(null)
+    const objectUrlsRef = React.useRef<string[]>([])
 
     const [pages, setPages] = React.useState<ScanPage[]>([])
     const [selectedIndex, setSelectedIndex] = React.useState(0)
@@ -88,17 +91,35 @@ export function ScannedPdfConverterPage() {
 
     const selectedPage = pages[selectedIndex]
 
+    const revokeObjectUrls = React.useCallback(() => {
+        for (const url of objectUrlsRef.current) {
+            URL.revokeObjectURL(url)
+        }
+        objectUrlsRef.current = []
+    }, [])
+
+    React.useEffect(() => revokeObjectUrls, [revokeObjectUrls])
+
     React.useEffect(() => {
         const requestId = previewRequestIdRef.current + 1
         previewRequestIdRef.current = requestId
+        previewAbortControllerRef.current?.abort()
+        const controller = new AbortController()
+        previewAbortControllerRef.current = controller
 
         const renderPreview = async () => {
             if (!selectedPage) {
+                previewAbortControllerRef.current = null
                 setPreviewSrc("")
                 return
             }
             try {
-                const result = await runScanEnhanceTask({ source: selectedPage.src, enhance })
+                const result = await runScanEnhanceTask({
+                    source: selectedPage.src,
+                    sourceBytes: selectedPage.bytes?.slice(0),
+                    sourceMime: selectedPage.mime,
+                    enhance,
+                }, { signal: controller.signal })
                 if (previewRequestIdRef.current === requestId) {
                     setPreviewSrc(result.dataUrl)
                 }
@@ -110,6 +131,10 @@ export function ScannedPdfConverterPage() {
         }
 
         void renderPreview()
+
+        return () => {
+            controller.abort()
+        }
     }, [enhance, selectedPage])
 
     const output = React.useMemo(
@@ -131,19 +156,22 @@ export function ScannedPdfConverterPage() {
         if (!files || files.length === 0) return
         const accepted = Array.from(files).slice(0, MAX_FILES)
         const results: ScanPage[] = []
+        const nextObjectUrls: string[] = []
 
         for (const file of accepted) {
             if (!file.type.startsWith("image/")) continue
             if (file.size > MAX_FILE_SIZE) continue
 
-            const src = await fileToDataUrl(file)
-            const image = await loadImageElement(src)
+            const loaded = await loadScanImageFile(file)
+            nextObjectUrls.push(loaded.objectUrl)
             results.push({
                 id: crypto.randomUUID(),
-                name: file.name,
-                src,
-                width: image.width,
-                height: image.height,
+                name: loaded.name,
+                src: loaded.objectUrl,
+                bytes: loaded.bytes,
+                mime: loaded.mime,
+                width: loaded.width,
+                height: loaded.height,
             })
         }
 
@@ -152,6 +180,8 @@ export function ScannedPdfConverterPage() {
             return
         }
 
+        revokeObjectUrls()
+        objectUrlsRef.current = nextObjectUrls
         setPages(results)
         setSelectedIndex(0)
     }
@@ -159,12 +189,14 @@ export function ScannedPdfConverterPage() {
     const handleSample = async () => {
         const first = await buildSampleScanPage("BF-001", "01 / 02")
         const second = await buildSampleScanPage("BF-002", "02 / 02")
+        revokeObjectUrls()
         setPages([first, second])
         setSelectedIndex(0)
         setEnhance(DEFAULT_ENHANCE)
     }
 
     const handleReset = () => {
+        revokeObjectUrls()
         setPages([])
         setSelectedIndex(0)
         setEnhance(DEFAULT_ENHANCE)
@@ -188,8 +220,13 @@ export function ScannedPdfConverterPage() {
             const pdf = await PDFDocument.create()
 
             for (const page of pages) {
-                const enhanced = await runScanEnhanceTask({ source: page.src, enhance })
-                const imageBytes = dataUrlToUint8Array(enhanced.dataUrl)
+                const enhanced = await runScanEnhanceTask({
+                    source: page.src,
+                    sourceBytes: page.bytes?.slice(0),
+                    sourceMime: page.mime,
+                    enhance,
+                })
+                const imageBytes = new Uint8Array(enhanced.bytes)
                 const jpg = await pdf.embedJpg(imageBytes)
                 const pdfPage = pdf.addPage([jpg.width, jpg.height])
                 pdfPage.drawImage(jpg, {
@@ -200,14 +237,7 @@ export function ScannedPdfConverterPage() {
                 })
             }
 
-            const pdfBytes = await pdf.save()
-            const blob = new Blob([new Uint8Array(pdfBytes)], { type: "application/pdf" })
-            const url = URL.createObjectURL(blob)
-            const anchor = document.createElement("a")
-            anchor.href = url
-            anchor.download = "scanned-document.pdf"
-            anchor.click()
-            URL.revokeObjectURL(url)
+            downloadPdfBytes(new Uint8Array(await pdf.save()), "scanned-document.pdf")
         } catch {
             toast.error(t.common.export_pdf_failed)
         } finally {

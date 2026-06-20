@@ -88,6 +88,7 @@ export function JsonFormatterPage() {
     const outputPaneRef = React.useRef<HTMLDivElement | null>(null)
     const appliedHandoffRef = React.useRef<string | null>(null)
     const formatRequestIdRef = React.useRef(0)
+    const formatAbortControllerRef = React.useRef<AbortController | null>(null)
     React.useEffect(() => {
         const savedMode = readStorageString(VIEW_MODE_STORAGE_KEY)
         if (savedMode === "text" || savedMode === "tree") {
@@ -175,17 +176,21 @@ export function JsonFormatterPage() {
     const runJsonFormat = React.useCallback(async (source: string, mode: JsonFormatMode) => {
         const requestId = formatRequestIdRef.current + 1
         formatRequestIdRef.current = requestId
+        formatAbortControllerRef.current?.abort()
 
         if (!source.trim()) {
+            formatAbortControllerRef.current = null
             setOutput("")
             setTreeData(null)
             setError(null)
             return
         }
 
+        const controller = new AbortController()
+        formatAbortControllerRef.current = controller
         setIsFormatting(true)
         try {
-            const result = await runJsonFormatTask(source, mode)
+            const result = await runJsonFormatTask(source, mode, { signal: controller.signal })
             if (formatRequestIdRef.current !== requestId) return
             setOutput(result.output)
             setTreeData(result.parsed)
@@ -197,6 +202,7 @@ export function JsonFormatterPage() {
             setError(errorMessage)
         } finally {
             if (formatRequestIdRef.current === requestId) {
+                formatAbortControllerRef.current = null
                 setIsFormatting(false)
             }
         }

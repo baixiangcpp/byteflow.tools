@@ -50,6 +50,7 @@ export function CsvJsonConverterPage() {
     const [showSettings, setShowSettings] = React.useState(false)
     const [isConverting, setIsConverting] = React.useState(false)
     const convertRequestIdRef = React.useRef(0)
+    const convertAbortControllerRef = React.useRef<AbortController | null>(null)
     const { resolvedTheme } = useThemePreference()
     const monacoTheme = getByteflowMonacoThemeName(resolvedTheme)
     const notifyError = React.useCallback(async (message: string) => {
@@ -117,12 +118,15 @@ export function CsvJsonConverterPage() {
 
     const cancelPendingConversion = React.useCallback(() => {
         convertRequestIdRef.current += 1
+        convertAbortControllerRef.current?.abort()
+        convertAbortControllerRef.current = null
         setIsConverting(false)
     }, [])
 
     const convert = () => {
         const requestId = convertRequestIdRef.current + 1
         convertRequestIdRef.current = requestId
+        convertAbortControllerRef.current?.abort()
 
         if (!input.trim()) {
             setOutput("")
@@ -145,8 +149,10 @@ export function CsvJsonConverterPage() {
             return
         }
 
+        const controller = new AbortController()
+        convertAbortControllerRef.current = controller
         setIsConverting(true)
-        void runCsvJsonTask({ input, direction, delimiter, hasHeader, typeInference })
+        void runCsvJsonTask({ input, direction, delimiter, hasHeader, typeInference }, { signal: controller.signal })
             .then((result) => {
                 if (convertRequestIdRef.current !== requestId) return
                 setOutput(result.output)
@@ -159,6 +165,7 @@ export function CsvJsonConverterPage() {
             })
             .finally(() => {
                 if (convertRequestIdRef.current === requestId) {
+                    convertAbortControllerRef.current = null
                     setIsConverting(false)
                 }
             })

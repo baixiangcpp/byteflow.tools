@@ -13,6 +13,11 @@ type JsonFormatWorkerInput = {
     mode: JsonFormatMode
 }
 
+type JsonFormatTaskOptions = {
+    signal?: AbortSignal
+    timeoutMs?: number
+}
+
 function formatJsonSync(source: string, mode: JsonFormatMode): JsonFormatResult {
     const parsed = JSON.parse(source) as JsonValue
     return {
@@ -21,7 +26,7 @@ function formatJsonSync(source: string, mode: JsonFormatMode): JsonFormatResult 
     }
 }
 
-export async function runJsonFormatTask(source: string, mode: JsonFormatMode): Promise<JsonFormatResult> {
+export async function runJsonFormatTask(source: string, mode: JsonFormatMode, options: JsonFormatTaskOptions = {}): Promise<JsonFormatResult> {
     if (typeof Worker === "undefined") {
         return formatJsonSync(source, mode)
     }
@@ -30,10 +35,10 @@ export async function runJsonFormatTask(source: string, mode: JsonFormatMode): P
         return await runWorkerTask<JsonFormatWorkerInput, JsonFormatResult>(
             () => new Worker(new URL("./json-format-worker.ts", import.meta.url), { type: "module" }),
             { source, mode },
-            { timeoutMs: 20_000 },
+            { signal: options.signal, timeoutMs: options.timeoutMs ?? 20_000 },
         )
     } catch (error) {
-        if (error instanceof Error && error.message === "WORKER_TIMEOUT") {
+        if (error instanceof Error && (error.message === "WORKER_TIMEOUT" || error.message === "WORKER_ABORTED")) {
             throw error
         }
         return formatJsonSync(source, mode)

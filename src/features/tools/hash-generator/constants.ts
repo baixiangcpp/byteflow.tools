@@ -1,5 +1,7 @@
 import type { StandardHashAlgorithm } from "@/core/utils/hash-utils"
 
+export const MAX_HASH_FILE_SIZE = 50 * 1024 * 1024
+
 export const BATCH_ALGORITHMS: Array<{ key: StandardHashAlgorithm; label: string }> = [
     { key: "md5", label: "MD5" },
     { key: "sha1", label: "SHA-1" },

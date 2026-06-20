@@ -15,6 +15,11 @@ type RunTextTaskOptions = {
 export function useBase64TextTask() {
     const [isProcessing, setIsProcessing] = React.useState(false)
     const taskRequestIdRef = React.useRef(0)
+    const taskAbortControllerRef = React.useRef<AbortController | null>(null)
+
+    React.useEffect(() => () => {
+        taskAbortControllerRef.current?.abort()
+    }, [])
 
     const runTextTask = React.useCallback(async ({
         input,
@@ -25,10 +30,13 @@ export function useBase64TextTask() {
     }: RunTextTaskOptions) => {
         const requestId = taskRequestIdRef.current + 1
         taskRequestIdRef.current = requestId
+        taskAbortControllerRef.current?.abort()
+        const controller = new AbortController()
+        taskAbortControllerRef.current = controller
         setIsProcessing(true)
 
         try {
-            const result = await runBase64TextTask({ input, operation, urlSafe })
+            const result = await runBase64TextTask({ input, operation, urlSafe }, { signal: controller.signal })
             if (taskRequestIdRef.current !== requestId) return
             onSuccess(result.output)
         } catch {
@@ -37,6 +45,7 @@ export function useBase64TextTask() {
             }
         } finally {
             if (taskRequestIdRef.current === requestId) {
+                taskAbortControllerRef.current = null
                 setIsProcessing(false)
             }
         }

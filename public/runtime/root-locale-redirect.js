@@ -1,5 +1,5 @@
 (function () {
-  var supported = ["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr"];
+  var supported = ["en","zh-CN","zh-TW","ja","ko","de","fr"];
   var lang = "en";
 
   function detectBrowserLocale() {

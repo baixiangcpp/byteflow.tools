@@ -2,6 +2,8 @@ import type { ResizeFitMode, ResizeFormat } from "./utils"
 
 export type ImageResizeTaskInput = {
     source: string
+    sourceBytes?: ArrayBuffer
+    sourceMime?: string
     targetWidth: number
     targetHeight: number
     fitMode: ResizeFitMode
