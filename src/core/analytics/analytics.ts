@@ -11,7 +11,6 @@ type InteractionAnalyticsAction = "copy_output" | "download_output" | null
 type SeoLandingParams = {
     locale: string
     routeType: string
-    pagePath: string
 }
 type TrackPageView = (path: string) => void
 type TrackToolUsage = (toolKey: string, action: string, params?: EventParams) => void

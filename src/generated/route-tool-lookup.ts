@@ -702,7 +702,7 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
-            "sensitiveInput": false,
+            "sensitiveInput": true,
             "externalRequest": {
                 "required": false,
                 "endpointType": "none"
@@ -1909,7 +1909,7 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
-            "sensitiveInput": false,
+            "sensitiveInput": true,
             "externalRequest": {
                 "required": false,
                 "endpointType": "none"
@@ -2215,7 +2215,7 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
-            "sensitiveInput": false,
+            "sensitiveInput": true,
             "externalRequest": {
                 "required": false,
                 "endpointType": "none"

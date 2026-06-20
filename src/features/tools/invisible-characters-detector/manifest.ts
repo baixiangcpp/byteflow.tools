@@ -16,4 +16,5 @@ export const toolManifest = {
     },
     keywords: ["invisible characters detector", "zero width space", "control characters", "unicode detector", "hidden characters finder"],
     searchKeywords: ["invisible chars", "zero width", "zwsp", "hidden space", "control chars", "不可见字符", "零宽字符", "見えない文字", "보이지 않는 문자"],
+    persistInput: false,
 } satisfies ToolMeta

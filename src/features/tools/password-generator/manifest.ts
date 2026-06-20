@@ -8,11 +8,12 @@ export const toolManifest = {
     privacy: {
         executionMode: "browser-local",
         offlineCapable: true,
-        sensitiveInput: false,
+        sensitiveInput: true,
         externalRequest: {
             required: false,
             endpointType: "none",
         },
     },
     keywords: ["password generator", "random password", "strong password generator online"],
+    persistInput: false,
 } satisfies ToolMeta

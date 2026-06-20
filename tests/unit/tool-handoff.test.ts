@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import {
+    buildSensitiveToolHandoffLink,
     buildShareableToolHandoffHref,
     buildToolHandoffHref,
     buildToolHandoffLink,
@@ -51,6 +52,18 @@ describe("tool handoff", () => {
         const fragment = handoff.href.split("#")[1] || ""
         expect(getToolHandoffFromSearchParams(new URLSearchParams(), fragment)).toBe(payload)
         expect(getToolHandoffFromSearchParams(new URLSearchParams(), fragment)).toBeNull()
+    })
+
+    it("builds sensitive handoff links without storing or encoding payloads", () => {
+        const handoff = buildSensitiveToolHandoffLink("en", "pipeline-builder")
+
+        expect(handoff.href).toBe("/en/pipeline-builder")
+        expect(handoff.href).not.toContain("handoff")
+        expect(handoff.href).not.toContain("secret")
+
+        handoff.prime()
+        const storageKeys = Object.keys(window.sessionStorage)
+        expect(storageKeys.filter((key) => key.startsWith("byteflow:handoff:"))).toEqual([])
     })
 
     it("still reads old query-string handoff URLs for backward compatibility", () => {

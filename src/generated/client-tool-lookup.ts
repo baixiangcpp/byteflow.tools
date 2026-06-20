@@ -2026,7 +2026,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
-            "sensitiveInput": false,
+            "sensitiveInput": true,
             "externalRequest": {
                 "required": false,
                 "endpointType": "none"
@@ -2038,14 +2038,15 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "allowUserProvidedUrl": null,
         "requiresExplicitUserAction": null,
         "externalDataSent": null,
-        "persistInput": null,
+        "persistInput": false,
         "family": "generators",
         "tags": [
             "generators"
         ],
         "capabilities": [
             "browser-local",
-            "offline-capable"
+            "offline-capable",
+            "sensitive-input"
         ]
     },
     "color_converter": {
@@ -2945,7 +2946,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "allowUserProvidedUrl": true,
         "requiresExplicitUserAction": true,
         "externalDataSent": "user_provided_url",
-        "persistInput": null,
+        "persistInput": false,
         "family": "social-metadata",
         "tags": [
             "image",
@@ -5059,7 +5060,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "allowUserProvidedUrl": null,
         "requiresExplicitUserAction": null,
         "externalDataSent": null,
-        "persistInput": null,
+        "persistInput": false,
         "family": "text-strings",
         "tags": [
             "logs",
@@ -5151,7 +5152,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
-            "sensitiveInput": false,
+            "sensitiveInput": true,
             "externalRequest": {
                 "required": false,
                 "endpointType": "none"
@@ -5163,7 +5164,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "allowUserProvidedUrl": null,
         "requiresExplicitUserAction": null,
         "externalDataSent": null,
-        "persistInput": null,
+        "persistInput": false,
         "family": "security-tokens",
         "tags": [
             "security",
@@ -6006,7 +6007,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
-            "sensitiveInput": false,
+            "sensitiveInput": true,
             "externalRequest": {
                 "required": false,
                 "endpointType": "none"
@@ -6018,7 +6019,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "allowUserProvidedUrl": null,
         "requiresExplicitUserAction": null,
         "externalDataSent": null,
-        "persistInput": null,
+        "persistInput": false,
         "family": "security-tokens",
         "tags": [
             "security",

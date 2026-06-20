@@ -20,6 +20,7 @@ export const toolManifest = {
         },
     },
     keywords: ["instagram photo downloader", "download instagram image", "instagram media saver", "authorized ig image download"],
+    persistInput: false,
     deprecated: {
         reason: "strategic-refocus",
     },

@@ -23,7 +23,6 @@ export function WebVitalsAnalytics() {
             metric_id: metric.id,
             route_type: context.routeType,
             locale: context.locale || "global",
-            page_path: pathname || "/",
         })
     })
 

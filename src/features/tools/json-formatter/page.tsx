@@ -26,7 +26,7 @@ import { Input } from "@/components/ui/input"
 import { readStorageString, writeStorageString, removeStorageKey } from "@/core/storage/tool-persistence"
 import { enforceToolInputPersistencePolicy } from "@/core/storage/tool-persistence-policy"
 import { importTextFile } from "@/core/files/text-file-import"
-import { buildToolHandoffLink, getToolHandoffFromSearchParams } from "@/core/routing/tool-handoff"
+import { buildSensitiveToolHandoffLink, getToolHandoffFromSearchParams } from "@/core/routing/tool-handoff"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildJsonParseErrorMessage } from "@/features/tools/json-formatter/error-utils"
 import { runJsonFormatTask, type JsonFormatMode } from "@/features/tools/json-formatter/format-json-task"
@@ -286,12 +286,12 @@ export function JsonFormatterPage() {
     }, [input, output, treeData, viewMode])
 
     const jsonToTypescriptHandoff = React.useMemo(
-        () => buildToolHandoffLink(lang, "json-to-typescript", handoffPayload),
-        [handoffPayload, lang],
+        () => buildSensitiveToolHandoffLink(lang, "json-to-typescript"),
+        [lang],
     )
     const pipelineHandoff = React.useMemo(
-        () => buildToolHandoffLink(lang, "pipeline-builder", handoffPayload),
-        [handoffPayload, lang],
+        () => buildSensitiveToolHandoffLink(lang, "pipeline-builder"),
+        [lang],
     )
 
     const switchViewMode = (nextMode: ViewMode) => {

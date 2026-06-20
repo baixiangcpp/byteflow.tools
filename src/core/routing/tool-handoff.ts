@@ -128,6 +128,13 @@ export function buildToolHandoffLink(lang: string, slug: string, payload: string
     }
 }
 
+export function buildSensitiveToolHandoffLink(lang: string, slug: string): ToolHandoffLink {
+    return {
+        href: buildBasePath(lang, slug),
+        prime: () => undefined,
+    }
+}
+
 function normalizeFragmentParams(fragment?: string): URLSearchParams {
     if (!fragment) return new URLSearchParams()
     const normalized = fragment.startsWith("#") ? fragment.slice(1) : fragment
