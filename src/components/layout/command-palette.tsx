@@ -74,6 +74,15 @@ function buildToolSearchKeywords(toolKey: string, title: string, searchValue: st
     ].filter((value): value is string => typeof value === "string" && value.trim().length > 0)
 }
 
+function resolveSystemCommandLabel(
+    labelKey: string,
+    labels: { common: Record<string, string>; nav: Record<string, string> },
+): string {
+    const [namespace, key] = labelKey.split(".")
+    const source = namespace === "nav" ? labels.nav : labels.common
+    return requireTranslationValue(source?.[key], labelKey)
+}
+
 export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = true }: CommandPaletteProps = {}) {
     const [internalOpen, setInternalOpen] = React.useState(false)
     const [favoriteToolKeys, setFavoriteToolKeys] = React.useState<string[]>([])
@@ -227,8 +236,10 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
                 {isCommandMode ? (
                     <CommandGroup heading="Actions">
                         {systemCommands.map((cmd) => {
-                            const labelKey = cmd.labelKey.split(".")[1]
-                            const label = requireTranslationValue((commonLabels as unknown as Record<string, string>)[labelKey], cmd.labelKey)
+                            const label = resolveSystemCommandLabel(cmd.labelKey, {
+                                common: commonLabels as unknown as Record<string, string>,
+                                nav: t.nav as unknown as Record<string, string>,
+                            })
                             return (
                                 <CommandItem
                                     key={cmd.id}

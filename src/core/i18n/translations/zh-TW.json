@@ -213,6 +213,8 @@
     "recent_tools": "最近使用的工具",
     "no_favorites": "尚無收藏。可在最近使用清單中將工具加入收藏。",
     "no_recent_tools": "開啟任一工具後，這裡會顯示最近使用紀錄。",
+    "recent_tools_local_only": "僅儲存在目前瀏覽器中。",
+    "clear_recent_tools": "清除最近使用紀錄",
     "add_favorite": "加入收藏",
     "remove_favorite": "從收藏移除",
     "about": "關於",

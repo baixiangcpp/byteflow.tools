@@ -213,6 +213,8 @@
     "recent_tools": "Outils récents",
     "no_favorites": "Aucun favori pour le moment. Ajoutez-en depuis votre liste récente.",
     "no_recent_tools": "Ouvrez n'importe quel outil pour afficher ici votre liste récente.",
+    "recent_tools_local_only": "Stocké uniquement dans ce navigateur.",
+    "clear_recent_tools": "Effacer les outils récents",
     "add_favorite": "Ajouter aux favoris",
     "remove_favorite": "Retirer des favoris",
     "about": "À propos",

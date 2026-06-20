@@ -2,7 +2,7 @@
 
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { useRouter } from "next/navigation"
-import { clearHistory } from "@/core/storage/tool-discovery-state"
+import { clearRecentToolKeys } from "@/core/storage/tool-discovery-state"
 import {
     Palette,
     Trash2,
@@ -38,10 +38,10 @@ export function useSystemCommands() {
         },
         {
             id: "clear-history",
-            labelKey: "common.clear",
+            labelKey: "common.command_clear_history",
             icon: Trash2,
-            keywords: ["clear", "history", "recent", "favorites", "reset", "cache", "storage"],
-            execute: clearHistory,
+            keywords: ["clear", "history", "recent", "reset", "storage", "local"],
+            execute: clearRecentToolKeys,
         },
         {
             id: "copy-url",

@@ -213,6 +213,8 @@
     "recent_tools": "Recent tools",
     "no_favorites": "No favorites yet. Star tools from your recent list.",
     "no_recent_tools": "Open any tool to build your recent list.",
+    "recent_tools_local_only": "Stored only in this browser.",
+    "clear_recent_tools": "Clear recent tools",
     "add_favorite": "Add to favorites",
     "remove_favorite": "Remove from favorites",
     "about": "About",

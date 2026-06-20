@@ -56,8 +56,11 @@ function createMockLangValue(lang: string) {
         recent_tools: "Recent tools",
         no_favorites: "No favorites yet.",
         no_recent_tools: "No recent tools yet.",
+        command_clear_history: "Clear Tool History",
         add_favorite: "Add to favorites",
         remove_favorite: "Remove from favorites",
+        theme: "Theme",
+        copy: "Copy",
     }
 
     const tools: Record<string, { title: string; description: string }> = {}
@@ -161,7 +164,21 @@ vi.mock("@/components/ui/command", () => ({
             {children}
         </section>
     ),
-    CommandInput: ({ placeholder }: { placeholder: string }) => <input placeholder={placeholder} />,
+    CommandInput: ({
+        placeholder,
+        onValueChange,
+        value,
+    }: {
+        placeholder: string
+        onValueChange?: (value: string) => void
+        value?: string
+    }) => (
+        <input
+            placeholder={placeholder}
+            value={value ?? ""}
+            onChange={(event) => onValueChange?.(event.target.value)}
+        />
+    ),
     CommandItem: ({ children, onSelect, value }: { children: React.ReactNode; onSelect?: () => void; value?: string }) => (
         <button type="button" data-value={value ?? ""} onClick={() => onSelect?.()}>
             {children}
@@ -259,6 +276,16 @@ describe("layout components", () => {
 
         expect(searchValue).toContain("JSON Formatter")
         expect(screen.queryByRole("button", { name: "JSON Formatter" })).not.toBeInTheDocument()
+    })
+
+    it("uses command namespaces when rendering system action labels", () => {
+        render(<CommandPalette />)
+
+        fireEvent.keyDown(document, { key: "k", ctrlKey: true })
+        fireEvent.change(screen.getByPlaceholderText("Search"), { target: { value: ">" } })
+
+        expect(screen.getByRole("button", { name: /Clear Tool History/ })).toBeInTheDocument()
+        expect(screen.getByRole("button", { name: /Home/ })).toBeInTheDocument()
     })
 
     it("does not open command palette while typing in an input", () => {

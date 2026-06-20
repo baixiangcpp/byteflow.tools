@@ -209,6 +209,8 @@
     "recent_tools": "Zuletzt verwendete Tools",
     "no_favorites": "Noch keine Favoriten. Markieren Sie Tools aus Ihrer letzten Liste mit einem Stern.",
     "no_recent_tools": "Öffnen Sie ein beliebiges Tool, um hier Ihre zuletzt verwendeten Tools zu sehen.",
+    "recent_tools_local_only": "Nur in diesem Browser gespeichert.",
+    "clear_recent_tools": "Zuletzt verwendete Tools löschen",
     "add_favorite": "Zu Favoriten hinzufügen",
     "remove_favorite": "Aus Favoriten entfernen",
     "about": "Über",

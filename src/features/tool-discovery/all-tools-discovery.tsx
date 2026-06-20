@@ -2,10 +2,10 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { History, Network, Search, ShieldCheck, Tag, WifiOff, Workflow, X } from "lucide-react"
+import { History, Network, Search, ShieldCheck, Tag, Trash2, WifiOff, Workflow, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { readRecentToolKeys, TOOL_DISCOVERY_UPDATED_EVENT } from "@/core/storage/tool-discovery-state"
+import { clearRecentToolKeys, readRecentToolKeys, TOOL_DISCOVERY_UPDATED_EVENT } from "@/core/storage/tool-discovery-state"
 
 type DiscoveryTool = {
     key: string
@@ -47,7 +47,9 @@ type AllToolsDiscoveryLabels = {
     noResultsSuggestion: string
     open: string
     popularTags: string
+    clearRecentTools: string
     recentTools: string
+    recentToolsPrivacy: string
     searchPlaceholder: string
     toolsLabel: string
 }
@@ -148,6 +150,10 @@ export function AllToolsDiscovery({
         setSelectedTags([])
     }, [])
 
+    const handleClearRecentTools = React.useCallback(() => {
+        setRecentToolKeys(clearRecentToolKeys())
+    }, [])
+
     return (
         <div className="space-y-5">
             <section className="rounded-xl border border-border/70 bg-card/55 p-4 backdrop-blur-sm">
@@ -204,16 +210,23 @@ export function AllToolsDiscovery({
                 <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-border/70 pt-3 text-xs text-muted-foreground">
                     <span>{resultCount} {labels.toolsLabel}</span>
                     {recentTools.length > 0 ? (
-                        <div className="flex min-w-0 flex-wrap items-center gap-2">
+                        <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">
                             <span className="inline-flex items-center gap-1 font-medium">
                                 <History className="h-3.5 w-3.5" />
                                 {labels.recentTools}
                             </span>
-                            {recentTools.map((tool) => (
-                                <Link key={tool.key} href={`/${locale}/${tool.slug}`} className="rounded-md border border-border bg-background px-2 py-1 text-foreground hover:border-primary/40">
-                                    {tool.title}
-                                </Link>
-                            ))}
+                            <span className="text-[11px]">{labels.recentToolsPrivacy}</span>
+                            <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">
+                                {recentTools.map((tool) => (
+                                    <Link key={tool.key} href={`/${locale}/${tool.slug}`} className="rounded-md border border-border bg-background px-2 py-1 text-foreground hover:border-primary/40">
+                                        {tool.title}
+                                    </Link>
+                                ))}
+                                <Button type="button" variant="ghost" className="h-7 px-2 text-xs" onClick={handleClearRecentTools}>
+                                    <Trash2 className="h-3.5 w-3.5" />
+                                    {labels.clearRecentTools}
+                                </Button>
+                            </div>
                         </div>
                     ) : null}
                 </div>
@@ -307,4 +320,3 @@ export function AllToolsDiscovery({
         </div>
     )
 }
-

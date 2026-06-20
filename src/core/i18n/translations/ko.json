@@ -213,6 +213,8 @@
     "recent_tools": "최근 사용한 도구",
     "no_favorites": "아직 즐겨찾기가 없습니다. 최근 사용한 도구 목록에서 별표를 눌러 추가하세요.",
     "no_recent_tools": "아무 도구나 열면 최근 사용한 도구가 여기에 표시됩니다.",
+    "recent_tools_local_only": "이 브라우저에만 저장됩니다.",
+    "clear_recent_tools": "최근 사용 기록 지우기",
     "add_favorite": "즐겨찾기에 추가",
     "remove_favorite": "즐겨찾기에서 제거",
     "about": "소개",

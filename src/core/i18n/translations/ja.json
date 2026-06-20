@@ -213,6 +213,8 @@
     "recent_tools": "最近使ったツール",
     "no_favorites": "まだお気に入りはありません。最近使ったツールからスターを付けて追加できます。",
     "no_recent_tools": "いずれかのツールを開くと、最近使ったツールがここに表示されます。",
+    "recent_tools_local_only": "このブラウザ内にのみ保存されます。",
+    "clear_recent_tools": "最近使ったツールを消去",
     "add_favorite": "お気に入りに追加",
     "remove_favorite": "お気に入りから削除",
     "about": "について",
