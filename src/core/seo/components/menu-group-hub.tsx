@@ -5,6 +5,7 @@ import { getToolByKey } from "@/core/registry"
 import { getTextContentHubCopy } from "@/core/seo/text-content-hub-copy"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { ArrowRight } from "lucide-react"
+import { CollectionPageJsonLd } from "./page-json-ld"
 
 interface MenuGroupHubProps {
     lang: Locale
@@ -27,6 +28,12 @@ export function MenuGroupHub({ lang, groupKey }: MenuGroupHubProps) {
 
     return (
         <div className="flex max-h-full flex-col gap-7 overflow-y-auto pb-8">
+            <CollectionPageJsonLd
+                lang={lang}
+                slug={group.slug}
+                title={title}
+                description={description}
+            />
             <header className="rounded-2xl border border-border/70 bg-card/55 p-5 backdrop-blur-sm">
                 <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h1>
                 {description && (

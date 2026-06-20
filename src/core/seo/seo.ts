@@ -5,6 +5,7 @@ import { CATEGORIES, getToolBySlug, type ToolMeta } from "@/core/registry";
 import { getTranslation } from "@/core/i18n/translations/catalog";
 import { getLocalizedMetaCopy } from "@/core/seo/localized-meta-copy";
 import { SITE_URL, buildCanonicalUrl, buildLocalizedAlternates } from "@/core/seo/urls";
+import { buildToolBreadcrumbJsonLd, buildWebsiteJsonLd } from "@/core/seo/jsonld";
 import { getRouteIntentCopy as getLocalizedRouteIntentCopy, type RouteIntentType } from "./route-intent-copy";
 
 const SITE_NAME = "byteflow.tools";
@@ -528,64 +529,12 @@ export function buildBreadcrumbJsonLd({
     lang: Locale;
     tool: ToolMeta;
 }) {
-    const { title } = getToolTranslation(lang, tool.key);
-    const category = CATEGORIES[tool.category];
-    const categoryTitle = getNavTranslation(lang, category.labelKey);
-    const homeTitle = getNavTranslation(lang, "home");
-
-    return {
-        "@context": "https://schema.org",
-        "@type": "BreadcrumbList",
-        itemListElement: [
-            {
-                "@type": "ListItem",
-                position: 1,
-                name: homeTitle,
-                item: `${SITE_URL}/${lang}`,
-            },
-            {
-                "@type": "ListItem",
-                position: 2,
-                name: categoryTitle,
-                item: `${SITE_URL}/${lang}/${category.slug}`,
-            },
-            {
-                "@type": "ListItem",
-                position: 3,
-                name: title,
-                item: `${SITE_URL}/${lang}/${tool.slug}`,
-            },
-        ],
-    };
+    return buildToolBreadcrumbJsonLd({ lang, tool });
 }
 
 /**
  * Generate site-level JSON-LD (Organization + WebSite) for the homepage.
  */
 export function buildSiteJsonLd(lang: Locale) {
-    const t = getTranslation(lang);
-
-    return {
-        "@context": "https://schema.org",
-        "@graph": [
-            {
-                "@type": "Organization",
-                "@id": `${SITE_URL}/#organization`,
-                name: "byteflow.tools",
-                url: SITE_URL,
-                logo: `${SITE_URL}/icon.png`,
-            },
-            {
-                "@type": "WebSite",
-                "@id": `${SITE_URL}/#website`,
-                name: "byteflow.tools",
-                url: SITE_URL,
-                description: t.site.description,
-                inLanguage: lang,
-                publisher: {
-                    "@id": `${SITE_URL}/#organization`,
-                },
-            },
-        ],
-    };
+    return buildWebsiteJsonLd(lang);
 }

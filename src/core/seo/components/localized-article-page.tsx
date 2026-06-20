@@ -8,6 +8,7 @@ import {
 } from "@/core/seo/localized-articles"
 import { requireTranslationValue } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
+import { ArticleJsonLd } from "./page-json-ld"
 
 function renderSection(section: LocalizedArticleSection) {
     return (
@@ -51,6 +52,12 @@ export function LocalizedArticlePage({
 
     return (
         <article className="mx-auto w-full max-w-4xl space-y-8">
+            <ArticleJsonLd
+                lang={locale}
+                slug={slug}
+                title={article.copy.title}
+                description={article.copy.description}
+            />
             <header className="rounded-2xl border border-border/70 bg-card/55 p-6 backdrop-blur-sm sm:p-7">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">{article.clusterLabel}</p>
                 <h1 className="mt-3 text-3xl font-semibold tracking-tight">{article.copy.title}</h1>

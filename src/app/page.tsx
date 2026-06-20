@@ -18,6 +18,7 @@ import { MENU_GROUP_DEFS } from "@/core/registry/menu-groups"
 import { formatToolRegistryStatsTemplate, getToolRegistryStats } from "@/core/registry/stats"
 import { TOOL_REGISTRY } from "@/core/registry"
 import { SITE_URL, buildLocalizedAlternates } from "@/core/seo/urls"
+import { SiteJsonLd } from "@/core/seo/components/site-json-ld"
 
 const CATEGORY_ICONS = {
     data_code_formats: Braces,
@@ -67,7 +68,8 @@ export default function RootPage() {
 
     return (
         <main className="mx-auto flex w-full max-w-screen-2xl flex-col gap-10 px-4 pb-16 pt-10 sm:px-6 lg:px-8">
-                <section className="border-b border-border/70 py-10 sm:py-12">
+            <SiteJsonLd lang="en" />
+            <section className="border-b border-border/70 py-10 sm:py-12">
                     <div className="grid gap-8 lg:grid-cols-[1.18fr_0.82fr] lg:items-center">
                         <div className="max-w-3xl">
                             <div className="inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary">

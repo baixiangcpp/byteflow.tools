@@ -9,5 +9,5 @@ import { JsonLdScript } from "./json-ld-script";
 export function SiteJsonLd({ lang }: { lang: Locale }) {
     const schema = buildSiteJsonLd(lang);
 
-    return <JsonLdScript jsonLd={schema} />;
+    return <JsonLdScript data-jsonld="site" jsonLd={schema} />;
 }
