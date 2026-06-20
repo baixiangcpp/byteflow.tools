@@ -14,14 +14,26 @@ self.onmessage = (event: MessageEvent<ImageResizeTaskInput>) => {
         })
 }
 
-async function renderImage(input: ImageResizeTaskInput): Promise<ImageResizeTaskResult> {
-    if (typeof fetch !== "function" || typeof createImageBitmap !== "function" || typeof OffscreenCanvas === "undefined") {
+function dataUrlToBlob(dataUrl: string): Blob {
+    const match = dataUrl.match(/^data:([^;,]+);base64,([\s\S]+)$/i)
+    if (!match) {
         throw new Error("IMAGE_RESIZE_WORKER_UNSUPPORTED")
     }
 
-    const response = await fetch(input.source)
-    const blob = await response.blob()
-    const bitmap = await createImageBitmap(blob)
+    const binary = atob(match[2])
+    const bytes = new Uint8Array(binary.length)
+    for (let index = 0; index < binary.length; index += 1) {
+        bytes[index] = binary.charCodeAt(index)
+    }
+    return new Blob([bytes], { type: match[1] })
+}
+
+async function renderImage(input: ImageResizeTaskInput): Promise<ImageResizeTaskResult> {
+    if (typeof createImageBitmap !== "function" || typeof OffscreenCanvas === "undefined") {
+        throw new Error("IMAGE_RESIZE_WORKER_UNSUPPORTED")
+    }
+
+    const bitmap = await createImageBitmap(dataUrlToBlob(input.source))
     const safeWidth = normalizeResizeDimension(input.targetWidth, bitmap.width)
     const safeHeight = normalizeResizeDimension(input.targetHeight, bitmap.height)
     const drawBox = calculateResizeDrawBox(bitmap.width, bitmap.height, safeWidth, safeHeight, input.fitMode)

@@ -14,14 +14,26 @@ self.onmessage = (event: MessageEvent<ScanEnhanceTaskInput>) => {
         })
 }
 
-async function enhanceScan({ source, enhance }: ScanEnhanceTaskInput): Promise<ScanEnhanceTaskResult> {
-    if (typeof fetch !== "function" || typeof createImageBitmap !== "function" || typeof OffscreenCanvas === "undefined") {
+function dataUrlToBlob(dataUrl: string): Blob {
+    const match = dataUrl.match(/^data:([^;,]+);base64,([\s\S]+)$/i)
+    if (!match) {
         throw new Error("SCAN_ENHANCE_WORKER_UNSUPPORTED")
     }
 
-    const response = await fetch(source)
-    const blob = await response.blob()
-    const bitmap = await createImageBitmap(blob)
+    const binary = atob(match[2])
+    const bytes = new Uint8Array(binary.length)
+    for (let index = 0; index < binary.length; index += 1) {
+        bytes[index] = binary.charCodeAt(index)
+    }
+    return new Blob([bytes], { type: match[1] })
+}
+
+async function enhanceScan({ source, enhance }: ScanEnhanceTaskInput): Promise<ScanEnhanceTaskResult> {
+    if (typeof createImageBitmap !== "function" || typeof OffscreenCanvas === "undefined") {
+        throw new Error("SCAN_ENHANCE_WORKER_UNSUPPORTED")
+    }
+
+    const bitmap = await createImageBitmap(dataUrlToBlob(source))
     const canvas = new OffscreenCanvas(bitmap.width, bitmap.height)
     const context = canvas.getContext("2d")
     if (!context) {
