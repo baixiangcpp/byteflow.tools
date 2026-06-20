@@ -26,7 +26,7 @@ import {
     JSON_ARRAY_REQUIRED_ERROR,
     TYPE_INFERENCE_STORAGE_KEY,
 } from "./constants"
-import { csvToJson, jsonToCsv } from "./logic"
+import { runCsvJsonTask } from "./csv-json-task"
 import { InlineButton } from "./components"
 import type { Direction } from "./types"
 
@@ -48,6 +48,8 @@ export function CsvJsonConverterPage() {
     const [hasHeader, setHasHeader] = React.useState(true)
     const [typeInference, setTypeInference] = React.useState(true)
     const [showSettings, setShowSettings] = React.useState(false)
+    const [isConverting, setIsConverting] = React.useState(false)
+    const convertRequestIdRef = React.useRef(0)
     const { resolvedTheme } = useThemePreference()
     const monacoTheme = getByteflowMonacoThemeName(resolvedTheme)
     const notifyError = React.useCallback(async (message: string) => {
@@ -113,38 +115,53 @@ export function CsvJsonConverterPage() {
         writeStorageString(TYPE_INFERENCE_STORAGE_KEY, typeInference ? "1" : "0")
     }, [typeInference])
 
+    const cancelPendingConversion = React.useCallback(() => {
+        convertRequestIdRef.current += 1
+        setIsConverting(false)
+    }, [])
+
     const convert = () => {
+        const requestId = convertRequestIdRef.current + 1
+        convertRequestIdRef.current = requestId
+
         if (!input.trim()) {
             setOutput("")
             setError(null)
+            setIsConverting(false)
             return
         }
 
         if (isOverUtf8Budget(input, TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes)) {
             setOutput("")
             setError(buildInputTooLargeMessage(t.common.local_input_too_large, TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes))
+            setIsConverting(false)
             return
         }
 
         if (direction === "csv-to-json" && countNonEmptyLines(input, TOOL_RUNTIME_BUDGETS.maxCsvJsonRows).exceeded) {
             setOutput("")
             setError(t.common.local_row_limit_exceeded.replace("{count}", String(TOOL_RUNTIME_BUDGETS.maxCsvJsonRows)))
+            setIsConverting(false)
             return
         }
 
-        try {
-            if (direction === "csv-to-json") {
-                const result = csvToJson(input, delimiter, hasHeader, typeInference)
-                setOutput(result)
-            } else {
-                const result = jsonToCsv(input, delimiter, hasHeader)
-                setOutput(result)
-            }
-            setError(null)
-        } catch (e: unknown) {
-            const message = e instanceof Error ? e.message : String(e)
-            setError(message === JSON_ARRAY_REQUIRED_ERROR ? toolT.error_json_array_required : message)
-        }
+        setIsConverting(true)
+        void runCsvJsonTask({ input, direction, delimiter, hasHeader, typeInference })
+            .then((result) => {
+                if (convertRequestIdRef.current !== requestId) return
+                setOutput(result.output)
+                setError(null)
+            })
+            .catch((e: unknown) => {
+                if (convertRequestIdRef.current !== requestId) return
+                const message = e instanceof Error ? e.message : String(e)
+                setError(message === JSON_ARRAY_REQUIRED_ERROR ? toolT.error_json_array_required : message)
+            })
+            .finally(() => {
+                if (convertRequestIdRef.current === requestId) {
+                    setIsConverting(false)
+                }
+            })
     }
 
     const handleCopy = async () => {
@@ -158,6 +175,7 @@ export function CsvJsonConverterPage() {
     }
 
     const handleClear = () => {
+        cancelPendingConversion()
         setInput("")
         setOutput("")
         setError(null)
@@ -165,6 +183,7 @@ export function CsvJsonConverterPage() {
     }
 
     const toggleDirection = () => {
+        cancelPendingConversion()
         setDirection((d) => (d === "csv-to-json" ? "json-to-csv" : "csv-to-json"))
         // Swap input/output for convenience
         setInput(output)
@@ -197,6 +216,7 @@ export function CsvJsonConverterPage() {
         reader.onload = (ev) => {
             const text = ev.target?.result
             if (typeof text === "string") {
+                cancelPendingConversion()
                 setInput(text)
                 setError(null)
             }
@@ -266,7 +286,7 @@ export function CsvJsonConverterPage() {
                     >
                         {jsonToTypescriptLabel}
                     </InlineButton>
-                    <InlineButton variant="default" onClick={convert}>
+                    <InlineButton variant="default" onClick={convert} disabled={isConverting}>
                         <Play className="mr-2 h-4 w-4" />
                         {toolT.convert_action}
                     </InlineButton>
@@ -363,7 +383,10 @@ export function CsvJsonConverterPage() {
                             theme={monacoTheme}
                             beforeMount={(monaco) => ensureByteflowMonacoThemes(monaco)}
                             value={input}
-                            onChange={(val) => setInput(val || "")}
+                            onChange={(val) => {
+                                cancelPendingConversion()
+                                setInput(val || "")
+                            }}
                             options={{
                                 minimap: { enabled: false },
                                 fontSize: 14,

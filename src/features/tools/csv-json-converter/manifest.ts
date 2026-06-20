@@ -7,6 +7,7 @@ export const toolManifest = {
     relatedTools: ["json_formatter", "yaml_json_converter", "json_to_typescript", "text_diff_checker"],
     inputSizePolicy: {
         warnAtBytes: 524288,
+        workerAtBytes: 262144,
         hardLimitBytes: 1048576,
         streamingSupported: false,
     },

@@ -15,6 +15,7 @@ const WORKER_BACKED_TOOL_KEYS = [
     "json_formatter",
     "base64_encode_decode",
     "hash_generator",
+    "csv_json_converter",
 ] as const
 
 describe("tool input size policies", () => {
