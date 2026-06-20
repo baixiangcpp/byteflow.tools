@@ -2464,7 +2464,7 @@ export const TOP_TOOL_CONTENT_TEMPLATES: Record<string, ToolContentTemplateData>
             { error: "Unexpected whitespace changes in email HTML", fix: "Test rendering in target email clients before release." },
         ],
         privacyNotes: [
-            "Formatting happens entirely in your browser session.",
+            "Formatting runs in your browser session.",
             "Remove secrets, private URLs, and tokens from copied markup before sharing.",
             "Use sanitized snippets for external discussions and documentation.",
         ],

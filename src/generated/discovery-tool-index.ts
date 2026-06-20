@@ -1463,7 +1463,6 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "capabilities": [
             "browser-local",
             "external-request",
-            "offline-capable",
             "visual-output"
         ]
     },
@@ -1488,7 +1487,6 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "capabilities": [
             "browser-local",
             "external-request",
-            "offline-capable",
             "visual-output"
         ]
     },
@@ -1513,7 +1511,6 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "capabilities": [
             "browser-local",
             "external-request",
-            "offline-capable",
             "visual-output"
         ]
     },

@@ -54,7 +54,7 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
     en: {
         badge: "Installable PWA",
         title: "Install byteflow.tools as an app",
-        subtitle: "Use byteflow.tools offline with a native-like app shell. Tool payloads are processed locally, and core tools can keep working after the app shell is cached.",
+        subtitle: "Use byteflow.tools offline with a native-like app shell. Most browser-local tools process payloads locally, and core tools can keep working after the app shell is cached. External-request tools still need network for lookup actions.",
         installNow: "Install now",
         seeGuide: "See install guide",
         alreadyInstalled: "Already installed",
@@ -63,7 +63,7 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
         sectionGuide: "Install guide",
         sectionFaq: "FAQ",
         sectionBottom: "Take byteflow.tools offline",
-        bottomTrust: "Private by design. Fast by default. Works without network.",
+        bottomTrust: "Privacy-first by design. Fast by default. Browser-local tools work without network.",
         manualHint: "Install prompt is unavailable in this browser. Follow the platform steps below.",
         guidePreviewLabel: "Guide preview",
         benefits: [
@@ -79,8 +79,8 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
             },
             {
                 key: "local_first",
-                title: "100% local",
-                description: "Your content stays on device for local-first processing.",
+                title: "Browser-local first",
+                description: "Browser-local tools keep content on device for local processing; external-request tools are labeled before network use.",
             },
         ],
         guides: {
@@ -154,14 +154,14 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
             },
             {
                 question: "Will my data sync to a server?",
-                answer: "No for local tools. Most processing stays in your browser.",
+                answer: "Browser-local tools do not sync data to a server. External-request tools are labeled and only contact the network when you run their lookup actions.",
             },
         ],
     },
     "zh-CN": {
         badge: "可安装 PWA",
         title: "将 byteflow.tools 安装为应用",
-        subtitle: "像原生应用一样离线使用 byteflow.tools。工具内容在本地处理，应用外壳缓存后核心工具可继续离线使用。",
+        subtitle: "像原生应用一样离线使用 byteflow.tools。多数浏览器本地工具会在本地处理内容，应用外壳缓存后核心工具可继续离线使用。外部请求工具执行查询操作时仍需要网络。",
         installNow: "立即安装",
         seeGuide: "查看安装教程",
         alreadyInstalled: "已安装",
@@ -170,7 +170,7 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
         sectionGuide: "安装教程",
         sectionFaq: "常见问题",
         sectionBottom: "把 byteflow.tools 带到离线环境",
-        bottomTrust: "隐私优先，速度优先，无网可用。",
+        bottomTrust: "隐私优先，速度优先。浏览器本地工具无网可用。",
         manualHint: "当前浏览器不支持安装弹窗，请按下方步骤手动安装。",
         guidePreviewLabel: "教程预览",
         benefits: [
@@ -186,8 +186,8 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
             },
             {
                 key: "local_first",
-                title: "100% 本地处理",
-                description: "你的内容仅在设备内处理，不上传服务器。",
+                title: "浏览器本地优先",
+                description: "浏览器本地工具会在设备内处理内容；外部请求工具会在联网前标记。",
             },
         ],
         guides: {
@@ -261,14 +261,14 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
             },
             {
                 question: "我的数据会同步到服务器吗？",
-                answer: "本地工具不会，绝大多数处理都在你的浏览器本地完成。",
+                answer: "浏览器本地工具不会同步到服务器。外部请求工具会明确标记，并且只会在你运行查询操作时访问网络。",
             },
         ],
     },
     "zh-TW": {
         badge: "可安裝 PWA",
         title: "將 byteflow.tools 安裝為應用程式",
-        subtitle: "以原生 App 體驗離線使用 byteflow.tools。工具內容在本地處理，應用外殼快取後核心工具可繼續離線使用。",
+        subtitle: "以原生 App 體驗離線使用 byteflow.tools。多數瀏覽器本地工具會在本地處理內容，應用外殼快取後核心工具可繼續離線使用。外部請求工具執行查詢操作時仍需要網路。",
         installNow: "立即安裝",
         seeGuide: "查看安裝教學",
         alreadyInstalled: "已安裝",
@@ -277,7 +277,7 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
         sectionGuide: "安裝教學",
         sectionFaq: "常見問題",
         sectionBottom: "把 byteflow.tools 帶到離線場景",
-        bottomTrust: "隱私優先、速度優先、無網可用。",
+        bottomTrust: "隱私優先、速度優先。瀏覽器本地工具無網可用。",
         manualHint: "目前瀏覽器不支援安裝彈窗，請依下方步驟手動安裝。",
         guidePreviewLabel: "教學預覽",
         benefits: [
@@ -293,8 +293,8 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
             },
             {
                 key: "local_first",
-                title: "100% 本地處理",
-                description: "你的內容僅在裝置內處理，不會上傳到伺服器。",
+                title: "瀏覽器本地優先",
+                description: "瀏覽器本地工具會在裝置內處理內容；外部請求工具會在連網前標記。",
             },
         ],
         guides: {
@@ -368,14 +368,14 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
             },
             {
                 question: "我的資料會同步到伺服器嗎？",
-                answer: "本地工具不會，絕大多數處理都在你的瀏覽器本地完成。",
+                answer: "瀏覽器本地工具不會同步到伺服器。外部請求工具會明確標記，且只會在你執行查詢操作時使用網路。",
             },
         ],
     },
     ja: {
         badge: "インストール可能なPWA",
         title: "byteflow.tools をアプリとしてインストール",
-        subtitle: "ネイティブアプリのように、byteflow.tools をオフラインでも使えます。ツール処理はローカルで実行され、アプリキャッシュ後は主要機能がオフラインで継続できます。",
+        subtitle: "ネイティブアプリのように、byteflow.tools をオフラインでも使えます。多くのブラウザローカルツールはローカルで処理され、アプリシェルのキャッシュ後は主要機能をオフラインで継続できます。外部リクエストツールの検索操作にはネットワークが必要です。",
         installNow: "今すぐインストール",
         seeGuide: "インストール手順を見る",
         alreadyInstalled: "インストール済み",
@@ -384,7 +384,7 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
         sectionGuide: "インストール手順",
         sectionFaq: "FAQ",
         sectionBottom: "byteflow.tools をオフラインで使う",
-        bottomTrust: "プライバシー重視。高速。オフライン対応。",
+        bottomTrust: "プライバシー重視。高速。ブラウザローカルツールはオフライン対応。",
         manualHint: "このブラウザではインストールプロンプトが使えません。下の手順を確認してください。",
         guidePreviewLabel: "手順プレビュー",
         benefits: [
@@ -400,8 +400,8 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
             },
             {
                 key: "local_first",
-                title: "100% ローカル処理",
-                description: "入力データは端末内で処理され、サーバーに送信されません。",
+                title: "ブラウザローカル優先",
+                description: "ブラウザローカルツールは端末内で処理します。外部リクエストツールはネットワーク利用前に表示されます。",
             },
         ],
         guides: {
@@ -475,14 +475,14 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
             },
             {
                 question: "データはサーバーに同期されますか？",
-                answer: "ローカルツールでは同期されません。ほとんどの処理はブラウザ内で完結します。",
+                answer: "ブラウザローカルツールはサーバーへ同期しません。外部リクエストツールは表示され、検索操作を実行した場合のみネットワークを使います。",
             },
         ],
     },
     ko: {
         badge: "설치 가능한 PWA",
         title: "byteflow.tools를 앱으로 설치",
-        subtitle: "byteflow.tools를 네이티브 앱처럼 오프라인에서 사용하세요。도구 처리는 로컬에서 수행되며, 앱 캐시 후 핵심 기능을 오프라인으로 계속 사용할 수 있습니다.",
+        subtitle: "byteflow.tools를 네이티브 앱처럼 오프라인에서 사용하세요。대부분의 브라우저 로컬 도구는 로컬에서 처리되며, 앱 셸 캐시 후 핵심 기능을 오프라인으로 계속 사용할 수 있습니다. 외부 요청 도구의 조회 작업에는 네트워크가 필요합니다.",
         installNow: "지금 설치",
         seeGuide: "설치 가이드 보기",
         alreadyInstalled: "이미 설치됨",
@@ -491,7 +491,7 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
         sectionGuide: "설치 가이드",
         sectionFaq: "FAQ",
         sectionBottom: "byteflow.tools를 오프라인으로",
-        bottomTrust: "개인정보 보호 우선. 빠른 속도. 오프라인 지원.",
+        bottomTrust: "개인정보 보호 우선. 빠른 속도. 브라우저 로컬 도구는 오프라인 지원.",
         manualHint: "이 브라우저에서는 설치 프롬프트를 지원하지 않습니다. 아래 수동 가이드를 확인하세요.",
         guidePreviewLabel: "가이드 미리보기",
         benefits: [
@@ -507,8 +507,8 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
             },
             {
                 key: "local_first",
-                title: "100% 로컬 처리",
-                description: "입력 데이터는 기기 내부에서만 처리되며 서버로 전송되지 않습니다.",
+                title: "브라우저 로컬 우선",
+                description: "브라우저 로컬 도구는 기기에서 처리합니다. 외부 요청 도구는 네트워크 사용 전에 표시됩니다.",
             },
         ],
         guides: {
@@ -582,14 +582,14 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
             },
             {
                 question: "데이터가 서버로 동기화되나요?",
-                answer: "로컬 도구는 동기화되지 않으며 대부분의 처리는 브라우저에서 로컬로 수행됩니다.",
+                answer: "브라우저 로컬 도구는 서버로 동기화하지 않습니다. 외부 요청 도구는 표시되며 조회 작업을 실행할 때만 네트워크를 사용합니다.",
             },
         ],
     },
     de: {
         badge: "Installierbare PWA",
         title: "byteflow.tools als App installieren",
-        subtitle: "Nutzen Sie byteflow.tools offline mit App-ähnlicher Oberfläche. Tool-Verarbeitung erfolgt lokal, und Kernfunktionen bleiben nach App-Shell-Caching offline verfügbar.",
+        subtitle: "Nutzen Sie byteflow.tools offline mit App-ähnlicher Oberfläche. Die meisten browser-lokalen Tools verarbeiten lokal, und Kernfunktionen bleiben nach App-Shell-Caching offline verfügbar. Tools mit externer Anfrage benötigen für Lookup-Aktionen weiterhin Netzwerk.",
         installNow: "Jetzt installieren",
         seeGuide: "Installationsanleitung",
         alreadyInstalled: "Bereits installiert",
@@ -598,7 +598,7 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
         sectionGuide: "Installationsanleitung",
         sectionFaq: "FAQ",
         sectionBottom: "byteflow.tools offline nutzen",
-        bottomTrust: "Datenschutz zuerst. Schnell. Auch ohne Netzwerk.",
+        bottomTrust: "Datenschutz zuerst. Schnell. Browser-lokale Tools funktionieren ohne Netzwerk.",
         manualHint: "In diesem Browser ist kein Installationsprompt verfügbar. Folgen Sie der Anleitung unten.",
         guidePreviewLabel: "Vorschau",
         benefits: [
@@ -614,8 +614,8 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
             },
             {
                 key: "local_first",
-                title: "100% lokal",
-                description: "Ihre Inhalte bleiben auf dem Gerät und werden lokal verarbeitet.",
+                title: "Browser-lokal zuerst",
+                description: "Browser-lokale Tools verarbeiten Inhalte auf dem Gerät; externe Anfragen werden vor Netzwerkzugriff markiert.",
             },
         ],
         guides: {
@@ -689,14 +689,14 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
             },
             {
                 question: "Werden meine Daten mit einem Server synchronisiert?",
-                answer: "Bei lokalen Tools nein. Die meisten Verarbeitungen erfolgen direkt im Browser.",
+                answer: "Browser-lokale Tools synchronisieren keine Daten mit einem Server. Tools mit externer Anfrage sind markiert und kontaktieren das Netzwerk nur bei Lookup-Aktionen.",
             },
         ],
     },
     fr: {
         badge: "PWA installable",
         title: "Installer byteflow.tools comme application",
-        subtitle: "Utilisez byteflow.tools hors ligne avec une expérience type application. Les traitements d'outils s'exécutent localement, et les fonctionnalités principales restent disponibles hors ligne après mise en cache de l'app shell.",
+        subtitle: "Utilisez byteflow.tools hors ligne avec une expérience type application. La plupart des outils locaux au navigateur traitent localement, et les fonctionnalités principales restent disponibles hors ligne après mise en cache de l'app shell. Les outils à requête externe nécessitent toujours le réseau pour les actions de recherche.",
         installNow: "Installer maintenant",
         seeGuide: "Voir le guide d'installation",
         alreadyInstalled: "Déjà installé",
@@ -705,7 +705,7 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
         sectionGuide: "Guide d'installation",
         sectionFaq: "FAQ",
         sectionBottom: "Passez byteflow.tools en mode hors ligne",
-        bottomTrust: "Confidentialité d'abord. Rapide. Fonctionne hors ligne.",
+        bottomTrust: "Confidentialité d'abord. Rapide. Les outils locaux au navigateur fonctionnent hors ligne.",
         manualHint: "Le prompt d'installation n'est pas disponible dans ce navigateur. Suivez les étapes ci-dessous.",
         guidePreviewLabel: "Aperçu du guide",
         benefits: [
@@ -721,8 +721,8 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
             },
             {
                 key: "local_first",
-                title: "100% local",
-                description: "Vos contenus restent sur l'appareil pour un traitement local prioritaire.",
+                title: "Local au navigateur d’abord",
+                description: "Les outils locaux au navigateur traitent sur l’appareil ; les requêtes externes sont signalées avant usage réseau.",
             },
         ],
         guides: {
@@ -796,7 +796,7 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
             },
             {
                 question: "Mes données sont-elles synchronisées vers un serveur ?",
-                answer: "Non pour les outils locaux. La plupart des traitements restent dans votre navigateur.",
+                answer: "Les outils locaux au navigateur ne synchronisent pas de données vers un serveur. Les outils à requête externe sont signalés et ne contactent le réseau que lors des actions de recherche.",
             },
         ],
     },

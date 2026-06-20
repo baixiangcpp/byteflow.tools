@@ -1199,7 +1199,7 @@ const FILE_GUARDS: Array<{ file: string; forbidden: Array<string | RegExp> }> = 
         forbidden: [
             "San Francisco, CA",
             "Building local-first developer tools with sharp UX and instant feedback.",
-            "From idea to launch: polished utilities that run entirely in your browser.",
+            "From idea to launch: polished utilities built for browser-local workflows.",
             '"Location"',
             '" likes"',
             "byteflow.tools",

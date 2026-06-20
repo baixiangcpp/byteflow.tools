@@ -24,7 +24,7 @@ export function PrivacyFAQ() {
           <AccordionContent>
             <p className="text-muted-foreground leading-relaxed">
               {faqT?.a1 ||
-                "Yes. This tool runs entirely in your browser. Your input is processed locally and never sent to any server. You can verify this by opening your browser's Network panel (F12 → Network)."}
+                "For browser-local tools, input is processed in your browser and is not uploaded for processing. Tools marked External request disclose the network target and only contact it when you explicitly run that action."}
             </p>
           </AccordionContent>
         </AccordionItem>
@@ -38,7 +38,7 @@ export function PrivacyFAQ() {
               <li>{faqT?.a2_step1 || "Open DevTools (press F12)"}</li>
               <li>{faqT?.a2_step2 || "Switch to the Network tab"}</li>
               <li>{faqT?.a2_step3 || "Use the tool with your data"}</li>
-              <li>{faqT?.a2_step4 || "You may still see normal app assets or service worker update checks. Tool input is processed locally and is not uploaded for processing."}</li>
+              <li>{faqT?.a2_step4 || "You may still see normal app assets, analytics page views, or service worker update checks. Tool input is processed locally unless the tool is marked External request and you run that action."}</li>
             </ol>
           </AccordionContent>
         </AccordionItem>
@@ -50,7 +50,7 @@ export function PrivacyFAQ() {
           <AccordionContent>
             <p className="text-muted-foreground leading-relaxed">
               {faqT?.a3 ||
-                "Many online tools upload your data to servers for processing. Byteflow is different: all computation happens in your browser. This is why you can use our tools safely even with sensitive data like API keys and JWT tokens."}
+                "Many online tools upload data for processing. Byteflow keeps most workflows in the browser and labels tools that need an explicit external request, so you can decide before using sensitive data."}
             </p>
           </AccordionContent>
         </AccordionItem>

@@ -1,7 +1,7 @@
 {
     "name": "byteflow.tools",
     "short_name": "byteflow",
-    "description": "Zero-latency, completely local-first developer tools running directly in your browser.",
+    "description": "Privacy-first developer tools that run in your browser, with external-request tools clearly marked.",
     "id": "/en?source=pwa",
     "lang": "en",
     "start_url": "/en?utm_source=pwa",

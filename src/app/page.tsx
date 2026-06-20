@@ -80,7 +80,7 @@ export default function RootPage() {
                                 byteflow.tools
                             </h1>
                             <p className="mt-5 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
-                                Format, encode, decode, inspect, and generate developer data in your browser. Most tools run entirely locally, require no account, install as a PWA, and are open source for verification.
+                                Format, encode, decode, inspect, and generate developer data in your browser. Most browser-local tools process locally, require no account, install as a PWA, and are open source for verification.
                             </p>
                             <div className="mt-7 flex flex-wrap gap-3">
                                 <Link

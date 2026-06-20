@@ -128,8 +128,9 @@ function getToolTaxonomy(tool) {
     const networkAccess = tool.networkAccess || "none"
     const family = FAMILY_BY_TOOL_KEY[tool.key] || fallbackFamily(tool)
     const tags = uniqueSorted([family, ...inferKeywordTags(tool)])
-    const capabilities = ["browser-local", "offline-capable"]
+    const capabilities = ["browser-local"]
 
+    if (networkAccess === "none") capabilities.push("offline-capable")
     if (networkAccess !== "none") capabilities.push("external-request")
     if (tool.persistInput === false || family === "security-tokens" || family === "devops-logs") {
         capabilities.push("sensitive-input")
