@@ -54,11 +54,31 @@ describe("all-tools route guard", () => {
         expect(discoverySource).toContain("labels.recentToolsPrivacy")
         expect(discoverySource).toContain("labels.clearRecentTools")
         expect(discoverySource).toContain("selectedTags")
-        expect(discoverySource).toContain("selectedFamily")
+        expect(discoverySource).toContain("selectedCategories")
+        expect(discoverySource).toContain("selectedInputTypes")
+        expect(discoverySource).toContain("selectedExecutionModes")
+        expect(discoverySource).toContain("selectedUseCases")
+        expect(discoverySource).toContain("activeFilters")
+        expect(discoverySource).toContain("FILTER_QUERY_KEYS")
+        expect(discoverySource).toContain("window.history.replaceState")
         expect(discoverySource).toContain("capabilities")
         expect(discoverySource).toContain("scoreToolSearch")
         expect(discoverySource).toContain(".sort((left, right) => right.score - left.score")
         expect(discoverySource).not.toContain(".toLowerCase().includes(query)")
+    })
+
+    it("keeps all-tools query filters crawl-safe", () => {
+        const sitemapSource = readSource("src/app/sitemap.ts")
+        const discoverySource = readSource("src/features/tool-discovery/all-tools-discovery.tsx")
+
+        expect(sitemapSource).not.toContain("?category=")
+        expect(sitemapSource).not.toContain("?input=")
+        expect(sitemapSource).not.toContain("?execution=")
+        expect(sitemapSource).not.toContain("?use=")
+        expect(discoverySource).toContain("FILTER_QUERY_KEYS")
+        expect(discoverySource).not.toContain("query:")
+        expect(discoverySource).not.toContain("search:")
+        expect(discoverySource).not.toContain("searchParams.set(\"query\"")
     })
 
     it("keeps home all-tools section id aligned to shared constant", () => {
