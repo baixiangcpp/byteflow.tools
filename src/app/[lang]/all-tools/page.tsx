@@ -90,11 +90,6 @@ export default async function AllToolsPage({ params }: { params: Promise<{ lang:
             }
         }),
     }))
-    const families = (Object.keys(TOOL_FAMILY_LABELS) as ToolFamily[]).map((family) => ({
-        key: family,
-        label: familyLabels[family],
-    }))
-
     return (
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-7 pb-8">
             <header className="rounded-2xl border border-border/70 bg-card/55 p-5 backdrop-blur-sm sm:p-6">
@@ -111,22 +106,38 @@ export default async function AllToolsPage({ params }: { params: Promise<{ lang:
 
             <AllToolsDiscovery
                 capabilityLabels={capabilityLabels}
-                families={families}
                 groups={discoveryGroups}
                 labels={{
+                    activeFilters: requireTranslationValue(t.common.active_filters, "common.active_filters"),
                     allFamilies: requireTranslationValue(t.common.all_families, "common.all_families"),
                     clearFilters: requireTranslationValue(t.common.clear_filters, "common.clear_filters"),
                     commonWorkflows: requireTranslationValue(t.common.common_workflows, "common.common_workflows"),
-                    filterByFamily: requireTranslationValue(t.common.filter_by_family, "common.filter_by_family"),
+                    filterByCategory: requireTranslationValue(t.common.filter_by_category, "common.filter_by_category"),
+                    filterByExecution: requireTranslationValue(t.common.filter_by_execution, "common.filter_by_execution"),
+                    filterByInputType: requireTranslationValue(t.common.filter_by_input_type, "common.filter_by_input_type"),
+                    filterByUseCase: requireTranslationValue(t.common.filter_by_use_case, "common.filter_by_use_case"),
+                    filterSearch: requireTranslationValue(t.common.filter_search, "common.filter_search"),
+                    inputFile: requireTranslationValue(t.common.input_file, "common.input_file"),
+                    inputImage: requireTranslationValue(t.common.input_image, "common.input_image"),
+                    inputSvg: requireTranslationValue(t.common.input_svg, "common.input_svg"),
+                    inputText: requireTranslationValue(t.common.input_text, "common.input_text"),
+                    inputUrlDomain: requireTranslationValue(t.common.input_url_domain, "common.input_url_domain"),
                     noResults: requireTranslationValue(t.common.no_results, "common.no_results"),
                     noResultsSuggestion: requireTranslationValue(t.common.no_results_suggestion, "common.no_results_suggestion"),
                     open: requireTranslationValue(t.common.open, "common.open"),
                     popularTags: requireTranslationValue(t.common.popular_tags, "common.popular_tags"),
+                    removeFilter: requireTranslationValue(t.common.remove_filter, "common.remove_filter"),
+                    showFilters: requireTranslationValue(t.common.show_filters, "common.show_filters"),
                     clearRecentTools: requireTranslationValue(t.common.clear_recent_tools, "common.clear_recent_tools"),
                     recentTools: requireTranslationValue(t.common.recent_tools, "common.recent_tools"),
                     recentToolsPrivacy: requireTranslationValue(t.common.recent_tools_local_only, "common.recent_tools_local_only"),
                     searchPlaceholder: requireTranslationValue(t.nav.search, "nav.search"),
                     toolsLabel: requireTranslationValue(t.common.tools, "common.tools"),
+                    useCaseEncode: requireTranslationValue(t.common.use_case_encode, "common.use_case_encode"),
+                    useCaseFormat: requireTranslationValue(t.common.use_case_format, "common.use_case_format"),
+                    useCaseImage: requireTranslationValue(t.common.use_case_image, "common.use_case_image"),
+                    useCaseSecurity: requireTranslationValue(t.common.use_case_security, "common.use_case_security"),
+                    useCaseWorkflow: requireTranslationValue(t.common.use_case_workflow, "common.use_case_workflow"),
                 }}
                 locale={locale}
                 totalTools={registryStats.totalTools}
