@@ -2,10 +2,10 @@
 
 import * as React from "react"
 import dynamic from "next/dynamic"
-import { Copy, Eye, Code2, Download, Trash2 } from "lucide-react"
+import { Copy, Eye, Code2, Download, Trash2, ShieldCheck } from "lucide-react"
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
-import { sanitizeHtml } from "@/core/security/sanitize"
+import { buildMarkdownExportDocument, sanitizeMarkdownPreviewHtml } from "./export"
 
 const SAMPLE_MARKDOWN_BY_LANG = {
     en: `# Hello, Markdown! 👋
@@ -124,6 +124,11 @@ async function loadToast() {
     return toast
 }
 
+function getPreviewHtml(): string | null {
+    const previewEl = document.getElementById("markdown-preview")
+    return previewEl?.innerHTML ?? null
+}
+
 export function MarkdownPreviewPage() {
     const { t, lang } = useLang()
     const sampleMarkdown = SAMPLE_MARKDOWN_BY_LANG[lang as keyof typeof SAMPLE_MARKDOWN_BY_LANG] ?? SAMPLE_MARKDOWN_BY_LANG.en
@@ -132,7 +137,8 @@ export function MarkdownPreviewPage() {
     const deferredMarkdown = React.useDeferredValue(markdown)
     const [previewEnabled, setPreviewEnabled] = React.useState(false)
     const toolT = t.tools["markdown_preview"] as Record<string, string>
-    const previewVisible = view === "split" || view === "preview"
+    const editorVisible = view === "editor" || view === "split"
+    const previewVisible = view === "preview" || view === "split"
 
     const notifyError = React.useCallback(async (message: string) => {
         const toast = await loadToast()
@@ -189,42 +195,32 @@ export function MarkdownPreviewPage() {
     }
 
     const handleCopyHtml = async () => {
-        const previewEl = document.getElementById("markdown-preview")
-        if (previewEl) {
-            const result = await safeClipboardWrite(sanitizeHtml(previewEl.innerHTML))
-            if (!result.ok) {
-                await notifyError(t.common.copy_failed)
-                return
-            }
-            await notifySuccess(t.common.copied, toolT.copied_html)
+        const previewHtml = getPreviewHtml()
+        if (!previewHtml) {
+            await notifyError(toolT.preview_not_ready)
+            return
         }
+
+        const result = await safeClipboardWrite(sanitizeMarkdownPreviewHtml(previewHtml))
+        if (!result.ok) {
+            await notifyError(t.common.copy_failed)
+            return
+        }
+        await notifySuccess(t.common.copied, toolT.copied_html)
     }
 
     const handleDownloadHtml = () => {
-        const previewEl = document.getElementById("markdown-preview")
-        if (!previewEl) return
-        const safeHtml = sanitizeHtml(previewEl.innerHTML)
-        const html = `<!DOCTYPE html>
-<html lang="${lang}">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>${toolT.export_title}</title>
-<style>
-body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; max-width: 800px; margin: 2rem auto; padding: 0 1rem; line-height: 1.6; color: #1a1a1a; }
-pre { background: #f4f4f4; padding: 1rem; border-radius: 6px; overflow-x: auto; }
-code { font-family: 'JetBrains Mono', monospace; font-size: 0.9em; }
-table { border-collapse: collapse; width: 100%; }
-th, td { border: 1px solid #ddd; padding: 8px 12px; text-align: left; }
-th { background: #f0f0f0; }
-blockquote { border-left: 4px solid #3b82f6; margin: 1rem 0; padding: 0.5rem 1rem; background: #f8f9fa; }
-img { max-width: 100%; }
-</style>
-</head>
-<body>
-${safeHtml}
-</body>
-</html>`
+        const previewHtml = getPreviewHtml()
+        if (!previewHtml) {
+            void notifyError(toolT.preview_not_ready)
+            return
+        }
+
+        const html = buildMarkdownExportDocument({
+            lang,
+            title: toolT.export_title,
+            previewHtml,
+        })
         const blob = new Blob([html], { type: "text/html" })
         const url = URL.createObjectURL(blob)
         const a = document.createElement("a")
@@ -243,12 +239,16 @@ ${safeHtml}
     return (
         <div className="flex flex-col h-full">
             {/* Header */}
-            <div className="flex items-center justify-between border-b px-4 py-3 gap-2 flex-wrap">
-                <div className="flex items-center gap-2">
+            <div className="flex items-start justify-between border-b px-4 py-3 gap-3 flex-wrap">
+                <div className="flex min-w-0 items-start gap-2">
                     <Eye className="h-5 w-5 text-primary" />
-                    <div>
+                    <div className="min-w-0">
                         <h1 className="text-lg font-bold tracking-tight">{toolT.title}</h1>
                         <p className="text-xs text-muted-foreground">{toolT.description}</p>
+                        <p className="mt-1 inline-flex max-w-full items-start gap-1.5 rounded-md border border-border/70 bg-muted/35 px-2 py-1 text-[11px] leading-relaxed text-muted-foreground">
+                            <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-primary" aria-hidden="true" />
+                            <span>{toolT.export_notice}</span>
+                        </p>
                     </div>
                 </div>
 
@@ -267,6 +267,7 @@ ${safeHtml}
                             type="button"
                             onClick={() => setView("split")}
                             aria-pressed={view === "split"}
+                            aria-label={toolT.split_desktop_label}
                             className={`min-h-11 rounded px-2.5 py-1 text-xs font-medium transition-colors ${view === "split" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                         >
                             {toolT.split}
@@ -305,8 +306,10 @@ ${safeHtml}
             {/* Content */}
             <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
                 {/* Editor Pane */}
-                {(view === "split" || view === "editor") && (
-                    <div className={`flex min-h-[320px] flex-col border-b lg:border-r lg:border-b-0 ${view === "split" ? "w-full lg:w-1/2" : "w-full"}`}>
+                {editorVisible && (
+                    <div
+                        className={`flex min-h-[360px] flex-col border-b lg:border-r lg:border-b-0 ${view === "split" ? "w-full lg:w-1/2" : "w-full"}`}
+                    >
                         <div className="tool-pane-header-compact flex items-center justify-between">
                             <label htmlFor="markdown-source-editor">{toolT.md_source}</label>
                             <span className="text-[10px] tabular-nums">{markdown.length} {toolT.chars}</span>
@@ -323,8 +326,10 @@ ${safeHtml}
                 )}
 
                 {/* Preview Pane */}
-                {(view === "split" || view === "preview") && (
-                    <div className={`flex min-h-[320px] flex-col ${view === "split" ? "w-full lg:w-1/2" : "w-full"}`}>
+                {previewVisible && (
+                    <div
+                        className={`flex min-h-[360px] flex-col ${view === "split" ? "w-full lg:w-1/2" : "w-full"}`}
+                    >
                         <div className="tool-pane-header-compact">
                             <span id="markdown-preview-heading">{toolT.preview_tab}</span>
                         </div>

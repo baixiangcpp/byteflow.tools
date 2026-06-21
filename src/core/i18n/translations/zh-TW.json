@@ -499,8 +499,10 @@
     "markdown_preview": {
       "title": "Markdown 預覽",
       "description": "支援 GFM 的即時分欄 Markdown 編輯器。",
+      "export_notice": "複製或匯出 HTML 前會先清理內容。遠端與相對圖片會被阻擋，避免貼上的 Markdown 發出請求。",
       "editor": "編輯",
       "split": "分欄",
+      "split_desktop_label": "分欄視圖，桌面端左右並排",
       "preview": "預覽",
       "copy_md": "複製 MD",
       "copy_html": "複製 HTML",
@@ -512,6 +514,7 @@
       "copied_md": "Markdown 原始碼已複製到剪貼簿",
       "copied_html": "HTML 輸出已複製到剪貼簿",
       "downloaded": "HTML 檔案已儲存",
+      "preview_not_ready": "預覽尚未就緒。複製或匯出 HTML 前請切換到預覽或分欄模式。",
       "export_title": "Markdown 匯出",
       "cleared": "編輯器內容已清空"
     },

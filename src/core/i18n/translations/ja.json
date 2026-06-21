@@ -499,8 +499,10 @@
     "markdown_preview": {
       "title": "Markdown プレビュー",
       "description": "GFM サポートを備えたライブ分割ペイン Markdown エディター。",
+      "export_notice": "HTML はコピーまたはエクスポート前にサニタイズされます。貼り付けた Markdown からのリクエストを避けるため、リモート画像と相対画像はブロックされます。",
       "editor": "エディター",
       "split": "分割",
+      "split_desktop_label": "分割ビュー、デスクトップでは横並び",
       "preview": "プレビュー",
       "copy_md": "MD をコピー",
       "copy_html": "HTML をコピー",
@@ -512,6 +514,7 @@
       "copied_md": "Markdown ソースがクリップボードにコピーされました",
       "copied_html": "HTML 出力がクリップボードにコピーされました",
       "downloaded": "HTML ファイルが保存されました",
+      "preview_not_ready": "プレビューの準備ができていません。HTML をコピーまたはエクスポートする前にプレビューまたは分割へ切り替えてください。",
       "export_title": "Markdown 書き出し",
       "cleared": "エディターのコンテンツがクリアされました"
     },

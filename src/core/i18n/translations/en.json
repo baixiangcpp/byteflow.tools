@@ -527,8 +527,10 @@
     "markdown_preview": {
       "title": "Markdown Preview",
       "description": "Live split-pane Markdown editor with GFM support.",
+      "export_notice": "HTML is sanitized before copy or export. Remote and relative images are blocked to avoid requests from pasted Markdown.",
       "editor": "Editor",
       "split": "Split",
+      "split_desktop_label": "Split view, side by side on desktop",
       "preview": "Preview",
       "copy_md": "Copy MD",
       "copy_html": "Copy HTML",
@@ -540,6 +542,7 @@
       "copied_md": "Markdown source copied to clipboard",
       "copied_html": "HTML output copied to clipboard",
       "downloaded": "HTML file saved",
+      "preview_not_ready": "Preview is not ready. Switch to Preview or Split before copying or exporting HTML.",
       "export_title": "Markdown Export",
       "cleared": "Editor content cleared"
     },
