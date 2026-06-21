@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ShieldAlert, Eraser, TestTube2, Copy } from "lucide-react"
+import { ShieldAlert, Eraser, TestTube2, Copy, KeyRound, Clock3 } from "lucide-react"
 import Link from "next/link"
 import { toast } from "sonner"
 import { useLang } from "@/core/i18n/lang-provider"
@@ -12,7 +12,30 @@ import { Button } from "@/components/ui/button"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
-import { decodeJwtParts } from "./utils"
+import { decodeJwtParts, JwtDecodeError, type JwtClaimSemantic, type JwtDecodeErrorCode, type JwtSemanticSummary } from "./utils"
+
+function formatLocalTime(utc: string): string {
+    return new Date(utc).toLocaleString()
+}
+
+function getErrorKey(error: unknown): string {
+    if (!(error instanceof JwtDecodeError)) return "error_decode_failed"
+    const keys: Record<JwtDecodeErrorCode, string> = {
+        segment_count: "error_segment_count",
+        empty_segment: "error_empty_segment",
+        invalid_base64url: "error_invalid_base64url",
+        invalid_json: "error_invalid_json",
+        decode_failed: "error_decode_failed",
+    }
+    return keys[error.code]
+}
+
+function getClaimStatusClass(status: JwtClaimSemantic["status"]): string {
+    if (status === "valid") return "border-emerald-500/25 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300"
+    if (status === "warning") return "border-amber-500/30 bg-amber-500/10 text-amber-700 dark:text-amber-300"
+    if (status === "invalid") return "border-destructive/30 bg-destructive/10 text-destructive"
+    return "border-border/70 bg-muted/45 text-muted-foreground"
+}
 
 export function JwtDecoderPage() {
     const { t, lang } = useLang()
@@ -21,6 +44,7 @@ export function JwtDecoderPage() {
     const [header, setHeader] = React.useState("")
     const [payload, setPayload] = React.useState("")
     const [error, setError] = React.useState<string | null>(null)
+    const [semantics, setSemantics] = React.useState<JwtSemanticSummary | null>(null)
 
     const { resolvedTheme } = useThemePreference()
     const monacoTheme = getByteflowMonacoThemeName(resolvedTheme)
@@ -38,11 +62,13 @@ export function JwtDecoderPage() {
 
             setHeader(JSON.stringify(decoded.header, null, 2))
             setPayload(JSON.stringify(decoded.payload, null, 2))
+            setSemantics(decoded.semantics)
             setError(null)
-        } catch {
+        } catch (decodeError) {
             setHeader("")
             setPayload("")
-            setError(toolT.error_invalid_token)
+            setSemantics(null)
+            setError(toolT[getErrorKey(decodeError)] || toolT.error_invalid_token)
         }
     }, [input, toolT])
 
@@ -50,6 +76,7 @@ export function JwtDecoderPage() {
         setInput("")
         setHeader("")
         setPayload("")
+        setSemantics(null)
         setError(null)
     }
 
@@ -112,15 +139,35 @@ export function JwtDecoderPage() {
                 <ToolActionBar actions={actions} />
             </div>
 
-            <div className="rounded-md border border-primary/20 bg-primary/5 px-3 py-2 text-sm">
-                <Link href={`/${lang}/jwt-workbench`} className="font-medium text-primary underline-offset-4 hover:underline">
-                    {toolT.workbench_cta}
-                </Link>
+            <div className="grid gap-3 md:grid-cols-[1fr_auto]">
+                <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-900 dark:text-amber-100">
+                    <div className="flex items-start gap-3">
+                        <ShieldAlert className="mt-0.5 h-5 w-5 shrink-0" />
+                        <div className="space-y-1">
+                            <p className="font-semibold">{toolT.decode_only_title}</p>
+                            <p>{toolT.decode_only_desc}</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="flex flex-col gap-2 rounded-lg border bg-card p-3 text-sm md:min-w-64">
+                    <Link href={`/${lang}/jwt-verifier`} className="inline-flex items-center gap-2 font-medium text-primary underline-offset-4 hover:underline">
+                        <KeyRound className="h-4 w-4" />
+                        {toolT.verifier_cta}
+                    </Link>
+                    <Link href={`/${lang}/jwt-workbench`} className="inline-flex items-center gap-2 font-medium text-primary underline-offset-4 hover:underline">
+                        <ShieldAlert className="h-4 w-4" />
+                        {toolT.workbench_cta}
+                    </Link>
+                </div>
             </div>
 
             {error && (
-                <div role="alert" className="p-3 text-sm font-medium text-destructive-foreground bg-destructive/90 rounded-md">
-                    {error}
+                <div role="alert" className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+                    <p className="font-semibold">{toolT.error_title}</p>
+                    <p className="mt-1">{toolT.error_invalid_token}</p>
+                    {error !== toolT.error_invalid_token ? (
+                        <p className="mt-1 text-xs">{error}</p>
+                    ) : null}
                 </div>
             )}
 
@@ -213,6 +260,77 @@ export function JwtDecoderPage() {
                     </div>
                 </div>
             </div>
+
+            {semantics ? (
+                <div className="rounded-lg border bg-card p-4">
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+                        <div>
+                            <h2 className="flex items-center gap-2 text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+                                <Clock3 className="h-4 w-4" />
+                                {toolT.claims_summary_title}
+                            </h2>
+                            <p className="mt-1 text-sm text-muted-foreground">{toolT.claim_time_note}</p>
+                        </div>
+                        <div className="rounded-md border bg-muted/45 px-2.5 py-1 text-xs text-muted-foreground">
+                            {toolT.algorithm_label}: <span className="font-mono text-foreground">{semantics.algorithm}</span>
+                        </div>
+                    </div>
+
+                    {semantics.warnings.length > 0 ? (
+                        <div className="mt-3 space-y-2">
+                            {semantics.warnings.includes("alg_none") ? (
+                                <p className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                                    {toolT.alg_none_warning}
+                                </p>
+                            ) : null}
+                            {semantics.warnings.includes("expired") ? (
+                                <p className="rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-300">
+                                    {toolT.expired_warning}
+                                </p>
+                            ) : null}
+                            {semantics.warnings.includes("not_yet_valid") ? (
+                                <p className="rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-300">
+                                    {toolT.not_yet_valid_warning}
+                                </p>
+                            ) : null}
+                            {semantics.warnings.includes("issued_in_future") ? (
+                                <p className="rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-300">
+                                    {toolT.issued_future_warning}
+                                </p>
+                            ) : null}
+                        </div>
+                    ) : null}
+
+                    {semantics.claims.length > 0 ? (
+                        <div className="mt-4 grid gap-2 md:grid-cols-2">
+                            {semantics.claims.map((claim) => (
+                                <div key={claim.claim} className={`rounded-md border p-3 text-sm ${getClaimStatusClass(claim.status)}`}>
+                                    <div className="flex items-center justify-between gap-3">
+                                        <span className="font-mono font-semibold">{claim.claim}</span>
+                                        <span className="text-xs uppercase tracking-wide">{toolT[`claim_status_${claim.status}`]}</span>
+                                    </div>
+                                    <p className="mt-1">{toolT[`claim_detail_${claim.detail}`]}</p>
+                                    {claim.utc ? (
+                                        <div className="mt-2 space-y-1 font-mono text-xs">
+                                            <p>UTC: {claim.utc}</p>
+                                            <p>{toolT.local_time_label}: {formatLocalTime(claim.utc)}</p>
+                                        </div>
+                                    ) : null}
+                                    {claim.valueSummary ? (
+                                        <p className="mt-2 text-xs">
+                                            {toolT.claim_value_summary_label}: <span className="font-mono">{claim.valueSummary}</span>
+                                        </p>
+                                    ) : null}
+                                </div>
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="mt-4 rounded-md border bg-muted/45 px-3 py-2 text-sm text-muted-foreground">
+                            {toolT.no_registered_claims}
+                        </p>
+                    )}
+                </div>
+            ) : null}
         </div>
     )
 }

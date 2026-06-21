@@ -177,7 +177,14 @@ export function JwtVerifierPage() {
 
             <div className="space-y-2">
                 <label className="text-sm font-medium">{toolT.secret_label}</label>
-                <Input className="font-mono text-sm" placeholder={toolT.secret_placeholder} value={secret} onChange={(e) => setSecret(e.target.value)} />
+                <Input
+                    type="password"
+                    autoComplete="off"
+                    className="font-mono text-sm"
+                    placeholder={toolT.secret_placeholder}
+                    value={secret}
+                    onChange={(e) => setSecret(e.target.value)}
+                />
             </div>
 
             {/* Verification Result */}
