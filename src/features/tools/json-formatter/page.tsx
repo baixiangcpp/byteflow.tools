@@ -593,7 +593,7 @@ export function JsonFormatterPage() {
             />
 
             {error ? (
-                <div className="rounded-md bg-destructive/90 p-3 text-sm font-medium text-destructive-foreground">
+                <div role="alert" className="rounded-md bg-destructive/90 p-3 text-sm font-medium text-destructive-foreground">
                     {error}
                 </div>
             ) : null}

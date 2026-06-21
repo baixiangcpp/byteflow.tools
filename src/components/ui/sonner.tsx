@@ -14,6 +14,8 @@ const Toaster = ({ ...props }: ToasterProps) => {
   const { resolvedTheme } = useThemePreference()
 
   return (
+    <>
+    <div className="sr-only" role="status" aria-live="polite" aria-atomic="true" data-toast-live-region />
     <Sonner
       theme={resolvedTheme as ToasterProps["theme"]}
       className="toaster group"
@@ -34,6 +36,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
       }
       {...props}
     />
+    </>
   )
 }
 

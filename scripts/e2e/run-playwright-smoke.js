@@ -392,6 +392,35 @@ async function assertBasicAccessibility(page, routeLabel) {
     }
 }
 
+async function assertSkipLinkKeyboardPath(context, baseUrl) {
+    const page = await context.newPage();
+    const runtimeErrors = [];
+    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+
+    try {
+        await page.goto(`${baseUrl}/en/all-tools`, { waitUntil: "domcontentloaded" });
+        await page.waitForSelector("main", { timeout: 15_000 });
+
+        await page.keyboard.press("Tab");
+        const skipLink = page.locator('[data-skip-link="main-content"]');
+        await skipLink.waitFor({ state: "visible", timeout: 5_000 });
+
+        const skipBox = await skipLink.boundingBox();
+        if (!skipBox || skipBox.width < 40 || skipBox.height < 20) {
+            throw new Error("Skip link did not become visibly focusable.");
+        }
+
+        await page.keyboard.press("Enter");
+        await page.waitForFunction(() => document.activeElement?.id === "main-content", null, { timeout: 5_000 });
+
+        if (runtimeErrors.length > 0) {
+            throw new Error(`Skip link keyboard path triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
+        }
+    } finally {
+        await page.close();
+    }
+}
+
 async function assertNoHorizontalOverflow(page, routeLabel) {
     const overflow = await page.evaluate(() => {
         const documentElement = document.documentElement;
@@ -409,6 +438,42 @@ async function assertNoHorizontalOverflow(page, routeLabel) {
         throw new Error(
             `Mobile layout overflow for ${routeLabel}: scrollWidth ${overflow.scrollWidth}px exceeds viewport ${overflow.viewportWidth}px.`,
         );
+    }
+}
+
+async function assertMobileTouchTargets(page, routeLabel) {
+    const violations = await page.evaluate(() => {
+        const controls = Array.from(document.querySelectorAll("button, input, select, textarea, [role='button']"));
+
+        const isHiddenByStyle = (node) => {
+            const style = window.getComputedStyle(node);
+            const rect = node.getBoundingClientRect();
+            return (
+                style.display === "none" ||
+                style.visibility === "hidden" ||
+                Number(style.opacity) === 0 ||
+                (rect.width === 0 && rect.height === 0)
+            );
+        };
+
+        return controls.flatMap((element) => {
+            if (element.hasAttribute("disabled") || element.getAttribute("aria-disabled") === "true" || isHiddenByStyle(element)) {
+                return [];
+            }
+            const rect = element.getBoundingClientRect();
+            if (rect.width >= 44 && rect.height >= 44) return [];
+            const label =
+                element.getAttribute("aria-label") ||
+                element.getAttribute("title") ||
+                element.textContent?.trim() ||
+                element.getAttribute("placeholder") ||
+                element.tagName.toLowerCase();
+            return [`${label}: ${Math.round(rect.width)}x${Math.round(rect.height)}`];
+        });
+    });
+
+    if (violations.length > 0) {
+        throw new Error(`Mobile touch targets failed for ${routeLabel}:\n- ${violations.slice(0, 12).join("\n- ")}`);
     }
 }
 
@@ -439,6 +504,7 @@ async function assertMobileToolJourney(context, baseUrl, viewport, route, runJou
 
         await runJourney(page, routeLabel);
         await assertBasicAccessibility(page, routeLabel);
+        await assertMobileTouchTargets(page, routeLabel);
         await assertNoHorizontalOverflow(page, routeLabel);
 
         if (runtimeErrors.length > 0) {
@@ -491,13 +557,29 @@ async function assertMobileJwtDecoder(page) {
     await expectTextareaValue(page, /"name": "Alice Chen"/, "mobile jwt decoded payload");
     await clickCopyAndExpectToast(
         page,
-        page.getByRole("button", { name: /^Copy$/ }).first(),
+        page.getByRole("button", { name: /copy:\s*(header|payload)/i }).first(),
         "mobile JWT header copy",
     );
 
     await page.locator("textarea").first().fill("bad.token");
     await page.getByText(/Invalid JWT format/i).first()
         .waitFor({ state: "visible", timeout: 15_000 });
+}
+
+async function assertMobileMarkdownPreview(page) {
+    const editor = page.getByRole("textbox", { name: /Markdown Source|MD Source|Markdown/i }).first();
+    await editor.waitFor({ state: "visible", timeout: 15_000 });
+    await editor.fill("# Mobile preview\n\n**Works** locally.");
+
+    await page.getByRole("button", { name: /Preview/i }).first().click();
+    await page.getByRole("region", { name: /Preview/i }).first()
+        .waitFor({ state: "visible", timeout: 15_000 });
+
+    await clickCopyAndExpectToast(
+        page,
+        page.getByRole("button", { name: /Copy MD/i }).first(),
+        "mobile Markdown source copy",
+    );
 }
 
 async function assertMobileRegexTester(page) {
@@ -513,6 +595,16 @@ async function assertMobileRegexTester(page) {
 
     await pattern.fill("[");
     await page.getByText(/Fix syntax to view matches/i).first().waitFor({ state: "visible", timeout: 15_000 });
+}
+
+async function assertMobileAllTools(page) {
+    await page.getByRole("button", { name: /Show filters/i }).first().click();
+    await page.getByRole("group", { name: /Input type/i }).first().waitFor({ state: "visible", timeout: 15_000 });
+    await page.getByRole("button", { name: /^File$/ }).first().click();
+    await page.getByText(/Active filters/i).first().waitFor({ state: "visible", timeout: 15_000 });
+    await page.locator('a[href="/en/json-formatter"]').first().waitFor({ state: "visible", timeout: 15_000 });
+    await page.getByRole("button", { name: /Clear filters/i }).first().click();
+    await page.getByText(/123 tools/i).first().waitFor({ state: "visible", timeout: 15_000 });
 }
 
 async function assertMobileCrontabGenerator(page) {
@@ -533,9 +625,11 @@ async function assertMobileCrontabGenerator(page) {
 
 async function assertMobileToolPageJourneys(browser, baseUrl) {
     const journeys = [
+        { route: "/en/all-tools", run: assertMobileAllTools },
         { route: "/en/json-formatter", run: assertMobileJsonFormatter },
         { route: "/en/base64-encode-decode", run: assertMobileBase64 },
         { route: "/en/jwt-decoder", run: assertMobileJwtDecoder },
+        { route: "/en/markdown-preview", run: assertMobileMarkdownPreview },
         { route: "/en/regex-tester", run: assertMobileRegexTester },
         { route: "/en/crontab-generator", run: assertMobileCrontabGenerator },
     ];
@@ -853,6 +947,9 @@ async function runSmoke(baseUrl) {
 
         await assertCommandPaletteJourney(context, baseUrl, "en");
         console.log("[playwright-smoke] PASS journey: command palette search -> open /en/json-formatter");
+
+        await assertSkipLinkKeyboardPath(context, baseUrl);
+        console.log("[playwright-smoke] PASS accessibility: skip link keyboard path");
 
         await assertInputProcessCopyJourney(context, baseUrl, "en");
         console.log("[playwright-smoke] PASS journey: /en/list-randomizer input -> process -> copy");

@@ -119,7 +119,7 @@ export function JwtDecoderPage() {
             </div>
 
             {error && (
-                <div className="p-3 text-sm font-medium text-destructive-foreground bg-destructive/90 rounded-md">
+                <div role="alert" className="p-3 text-sm font-medium text-destructive-foreground bg-destructive/90 rounded-md">
                     {error}
                 </div>
             )}
@@ -150,7 +150,7 @@ export function JwtDecoderPage() {
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-7 w-7"
+                                aria-label={`${t.common.copy}: ${toolT.header_label}`}
                                 onClick={handleCopyHeader}
                                 disabled={!header}
                             >
@@ -184,7 +184,7 @@ export function JwtDecoderPage() {
                             <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-7 w-7"
+                                aria-label={`${t.common.copy}: ${toolT.payload_label}`}
                                 onClick={handleCopyPayload}
                                 disabled={!payload}
                             >

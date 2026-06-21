@@ -266,7 +266,7 @@ function FilterButton({
         <button
             type="button"
             className={cn(
-                "min-h-9 rounded-md border px-2.5 py-1 text-left text-xs font-medium transition-colors",
+                "min-h-11 min-w-11 rounded-md border px-2.5 py-1 text-left text-xs font-medium transition-colors",
                 active
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground",
@@ -585,7 +585,7 @@ export function AllToolsDiscovery({
                             value={query}
                             onChange={(event) => setQuery(event.target.value)}
                             placeholder={labels.searchPlaceholder}
-                            className="pl-9"
+                            className="min-h-11 pl-9"
                             aria-label={labels.filterSearch}
                         />
                     </div>
@@ -650,11 +650,15 @@ export function AllToolsDiscovery({
                                 <span className="text-[11px]">{labels.recentToolsPrivacy}</span>
                                 <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">
                                     {recentTools.map((tool) => (
-                                        <Link key={tool.key} href={`/${locale}/${tool.slug}`} className="rounded-md border border-border bg-background px-2 py-1 text-foreground hover:border-primary/40">
+                                        <Link
+                                            key={tool.key}
+                                            href={`/${locale}/${tool.slug}`}
+                                            className="inline-flex min-h-11 items-center rounded-md border border-border bg-background px-2 py-1 text-foreground hover:border-primary/40"
+                                        >
                                             {tool.title}
                                         </Link>
                                     ))}
-                                    <Button type="button" variant="ghost" className="h-7 px-2 text-xs" onClick={handleClearRecentTools}>
+                                    <Button type="button" variant="ghost" className="min-h-11 px-2 text-xs" onClick={handleClearRecentTools}>
                                         <Trash2 className="h-3.5 w-3.5" />
                                         {labels.clearRecentTools}
                                     </Button>
@@ -670,7 +674,7 @@ export function AllToolsDiscovery({
                                 <button
                                     key={filter.id}
                                     type="button"
-                                    className="inline-flex min-h-8 items-center gap-1 rounded-md border border-primary/30 bg-primary/10 px-2 text-xs font-medium text-primary transition-colors hover:border-primary/55"
+                                    className="inline-flex min-h-11 min-w-11 items-center gap-1 rounded-md border border-primary/30 bg-primary/10 px-2 text-xs font-medium text-primary transition-colors hover:border-primary/55"
                                     onClick={filter.onRemove}
                                     aria-label={`${labels.removeFilter}: ${filter.label}`}
                                 >
@@ -723,7 +727,7 @@ export function AllToolsDiscovery({
                                 </div>
                                 <Link
                                     href={`/${locale}${group.href}`}
-                                    className="inline-flex min-h-9 items-center gap-1 rounded-md border border-border/75 bg-background/55 px-3 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/35 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
+                                    className="inline-flex min-h-11 items-center gap-1 rounded-md border border-border/75 bg-background/55 px-3 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/35 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
                                 >
                                     <Link2 className="h-3.5 w-3.5" />
                                     {labels.open}
@@ -762,7 +766,7 @@ export function AllToolsDiscovery({
                             <Link
                                 key={workflow.id}
                                 href={workflow.href}
-                                className="inline-flex min-h-9 items-center rounded-md border border-border bg-background px-3 text-sm font-medium text-foreground transition-colors hover:border-primary/40"
+                                className="inline-flex min-h-11 items-center rounded-md border border-border bg-background px-3 text-sm font-medium text-foreground transition-colors hover:border-primary/40"
                             >
                                 {workflow.title}
                             </Link>
