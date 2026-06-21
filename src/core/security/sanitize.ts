@@ -1,6 +1,4 @@
-import DOMPurify from "isomorphic-dompurify"
-import { defaultSchema } from "rehype-sanitize"
-import type { Options as RehypeSanitizeOptions } from "rehype-sanitize"
+import DOMPurify from "dompurify"
 
 const ACTIVE_SVG_TAGS = [
     "animate",
@@ -41,35 +39,6 @@ const ACTIVE_EVENT_ATTRIBUTES = [
     "onscroll",
     "onunload",
 ] as const
-
-export const MARKDOWN_SANITIZE_SCHEMA: RehypeSanitizeOptions = {
-    ...defaultSchema,
-    clobberPrefix: "byteflow-md-",
-    attributes: {
-        ...defaultSchema.attributes,
-        input: [
-            ...((defaultSchema.attributes?.input ?? []) as NonNullable<RehypeSanitizeOptions["attributes"]>[string]),
-            ["checked", true],
-        ],
-    },
-    protocols: {
-        ...defaultSchema.protocols,
-        cite: ["http", "https"],
-        href: ["http", "https", "mailto"],
-        longDesc: ["http", "https"],
-        src: ["data", "blob"],
-    },
-    strip: [
-        ...new Set([
-            ...(defaultSchema.strip ?? []),
-            ...MARKDOWN_FORBIDDEN_HTML_TAGS,
-            ...ACTIVE_SVG_TAGS,
-        ]),
-    ],
-    tagNames: (defaultSchema.tagNames ?? []).filter(
-        (tagName) => ![...MARKDOWN_FORBIDDEN_HTML_TAGS, ...ACTIVE_SVG_TAGS].includes(tagName as (typeof MARKDOWN_FORBIDDEN_HTML_TAGS | typeof ACTIVE_SVG_TAGS)[number]),
-    ),
-}
 
 export function sanitizeHtml(html: string): string {
     return DOMPurify.sanitize(html, {

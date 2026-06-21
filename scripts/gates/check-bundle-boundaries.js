@@ -50,6 +50,21 @@ const HEAVY_DEPENDENCY_RULES = [
         allowedFiles: ["src/features/tool-templates/markdown-preview-renderer.tsx"],
     },
     {
+        packageName: "dompurify",
+        description: "DOMPurify must stay isolated to the shared sanitizer and must not pull jsdom into route prerender chunks.",
+        allowedFiles: ["src/core/security/sanitize.ts"],
+    },
+    {
+        packageName: "isomorphic-dompurify",
+        description: "isomorphic-dompurify brings jsdom/cssstyle into production analysis builds; use browser DOMPurify from the shared sanitizer instead.",
+        allowedFiles: [],
+    },
+    {
+        packageName: "jsdom",
+        description: "jsdom is test-only and must not be imported by application runtime bundles.",
+        allowedFiles: [],
+    },
+    {
         packageName: "pdf-lib",
         description: "pdf-lib must not be imported from shared shell/core code.",
         disallowedPathPrefixes: ["src/app/", "src/core/", "src/features/tool-shell/"],
@@ -73,6 +88,16 @@ const HEAVY_DEPENDENCY_RULES = [
         packageName: "remark-gfm",
         description: "markdown rendering must not be imported from shared shell/core code.",
         disallowedPathPrefixes: ["src/app/", "src/core/", "src/features/tool-shell/"],
+    },
+    {
+        packageName: "isomorphic-dompurify",
+        description: "isomorphic-dompurify must not be imported by app/runtime code.",
+        disallowedPathPrefixes: ["src/"],
+    },
+    {
+        packageName: "jsdom",
+        description: "jsdom must stay out of app/runtime code.",
+        disallowedPathPrefixes: ["src/"],
     },
 ];
 
