@@ -10,7 +10,7 @@ import { getRouteIntentCopy as getLocalizedRouteIntentCopy, type RouteIntentType
 
 const SITE_NAME = "byteflow.tools";
 const SITE_TITLE_SUFFIX = ` | ${SITE_NAME}`;
-const DEFAULT_OG_IMAGE = `${SITE_URL}/icon-512.png`;
+const DEFAULT_OG_IMAGE = `${SITE_URL}/og/default/en.jpg`;
 const CONTENT_INTRO_EXCLUDE_SLUGS = new Set(["about", "pricing", "contact", "privacy", "trust-center", "terms"]);
 const OPEN_GRAPH_LOCALES: Record<Locale, string> = {
     en: "en_US",
@@ -252,6 +252,10 @@ export function buildToolOgImageUrl(lang: Locale, slug: string) {
     return `${SITE_URL}/og/tools/${lang}/${slug}.jpg`;
 }
 
+export function buildDefaultOgImageUrl(lang: Locale) {
+    return `${SITE_URL}/og/default/${lang}.jpg`;
+}
+
 export function applySeoSnippetAngle({
     lang,
     routeType,
@@ -380,6 +384,7 @@ export function buildHubMetadata({
 }): Metadata {
     const boosted = applySeoSnippetAngle({ lang, routeType: "hub", title, description });
     const canonicalUrl = buildCanonicalUrl(lang, slug);
+    const ogImage = buildDefaultOgImageUrl(lang);
 
     return {
         title: buildPageTitle(boosted.title),
@@ -400,13 +405,13 @@ export function buildHubMetadata({
             siteName: SITE_NAME,
             locale: getOgLocale(lang),
             type: "website",
-            images: [DEFAULT_OG_IMAGE],
+            images: [ogImage],
         },
         twitter: {
             card: "summary_large_image",
             title: withSiteName(boosted.title),
             description: boosted.description,
-            images: [DEFAULT_OG_IMAGE],
+            images: [ogImage],
         },
     };
 }
@@ -435,6 +440,7 @@ export function buildContentMetadata({
         description: localized.description,
     });
     const canonicalUrl = buildCanonicalUrl(lang, slug);
+    const ogImage = buildDefaultOgImageUrl(lang);
 
     return {
         title: buildPageTitle(boosted.title),
@@ -455,13 +461,13 @@ export function buildContentMetadata({
             siteName: SITE_NAME,
             locale: getOgLocale(lang),
             type: "article",
-            images: [DEFAULT_OG_IMAGE],
+            images: [ogImage],
         },
         twitter: {
             card: "summary_large_image",
             title: withSiteName(boosted.title),
             description: boosted.description,
-            images: [DEFAULT_OG_IMAGE],
+            images: [ogImage],
         },
     };
 }
@@ -481,6 +487,7 @@ export function buildStaticPageMetadata({
 }): Metadata {
     const canonicalUrl = buildCanonicalUrl(lang, slug);
     const languages = buildLocalizedAlternates({ slug });
+    const ogImage = buildDefaultOgImageUrl(lang);
 
     return {
         title: buildPageTitle(title),
@@ -507,13 +514,13 @@ export function buildStaticPageMetadata({
             siteName: SITE_NAME,
             locale: getOgLocale(lang),
             type: "website",
-            images: [DEFAULT_OG_IMAGE],
+            images: [ogImage],
         },
         twitter: {
             card: "summary_large_image",
             title: withSiteName(title),
             description,
-            images: [DEFAULT_OG_IMAGE],
+            images: [ogImage],
         },
     };
 }

@@ -6,8 +6,8 @@ import { ServerFooter } from "@/components/layout/server-footer";
 import { ServerNavbar } from "@/components/layout/server-navbar";
 import { LangProvider } from "@/core/i18n/lang-provider";
 import { SiteJsonLd } from "@/core/seo/components/site-json-ld";
-import { buildSiteKeywords, getOgLocale } from "@/core/seo/seo";
-import { SITE_URL, buildCanonicalUrl, buildLocalizedAlternates } from "@/core/seo/urls";
+import { buildDefaultOgImageUrl, buildSiteKeywords, getOgLocale } from "@/core/seo/seo";
+import { buildCanonicalUrl, buildLocalizedAlternates } from "@/core/seo/urls";
 import { getEnglishToolSearchAliases, getTranslation } from "@/core/i18n/translations/catalog";
 import { ToolPrivacyFooterSlot } from "@/features/tool-shell/tool-privacy-footer-slot";
 
@@ -27,6 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     const t = getTranslation(locale);
 
     const canonicalUrl = buildCanonicalUrl(locale);
+    const ogImage = buildDefaultOgImageUrl(locale);
 
     return {
         title: { default: t.site.title, template: `%s | byteflow.tools` },
@@ -39,13 +40,13 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
             siteName: "byteflow.tools",
             locale: getOgLocale(locale),
             type: "website",
-            images: [`${SITE_URL}/icon-512.png`],
+            images: [ogImage],
         },
         twitter: {
             card: "summary_large_image",
             title: t.site.title,
             description: t.site.description,
-            images: [`${SITE_URL}/icon-512.png`],
+            images: [ogImage],
         },
         alternates: {
             canonical: canonicalUrl,
