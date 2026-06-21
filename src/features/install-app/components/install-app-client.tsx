@@ -4,7 +4,7 @@ import * as React from "react"
 import Link from "next/link"
 import Image from "next/image"
 import { CheckCircle2, Download, Globe, Shield, Smartphone, Trash2, WifiOff, Zap } from "lucide-react"
-import { trackEvent } from "@/core/analytics/analytics"
+import { trackPwaInstalled } from "@/core/analytics/analytics"
 import { Button } from "@/components/ui/button"
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
 import type { Locale } from "@/core/i18n/i18n"
@@ -85,18 +85,14 @@ export function InstallAppClient({ locale, copy, allToolsLabel, trustCenterLabel
     const guideRef = React.useRef<HTMLDivElement | null>(null)
     const installSuccessTrackedRef = React.useRef(false)
 
-    const trackInstallSuccess = React.useCallback((platformName?: string) => {
+    const recordInstallSuccess = React.useCallback((platformName?: string) => {
         if (installSuccessTrackedRef.current) return
         installSuccessTrackedRef.current = true
-        trackEvent("pwa", "pwa_install_success", "cta_page", {
-            locale,
-            ...(platformName ? { platform: platformName } : {}),
-        })
+        trackPwaInstalled(locale, platformName, "install_app")
     }, [locale])
 
     React.useEffect(() => {
         setInstalled(isStandaloneInstalled())
-        trackEvent("pwa", "pwa_cta_page_view", locale, { locale })
 
         const onBeforeInstallPrompt = (event: Event) => {
             event.preventDefault()
@@ -105,7 +101,7 @@ export function InstallAppClient({ locale, copy, allToolsLabel, trustCenterLabel
         const onInstalled = () => {
             setInstalled(true)
             setDeferredPrompt(null)
-            trackInstallSuccess()
+            recordInstallSuccess()
         }
 
         window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt as EventListener)
@@ -114,7 +110,7 @@ export function InstallAppClient({ locale, copy, allToolsLabel, trustCenterLabel
             window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt as EventListener)
             window.removeEventListener("appinstalled", onInstalled)
         }
-    }, [locale, trackInstallSuccess])
+    }, [locale, recordInstallSuccess])
 
     const activeGuide = copy.guides[platform]
     const faqJsonLd = React.useMemo(
@@ -130,21 +126,16 @@ export function InstallAppClient({ locale, copy, allToolsLabel, trustCenterLabel
         [copy.faq],
     )
 
-    const scrollToGuide = (source: "install_button" | "already_manual") => {
+    const scrollToGuide = () => {
         guideRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
         setManualHintVisible(true)
-        trackEvent("pwa", "pwa_manual_guide_view", source, { locale, platform })
     }
 
     const handleInstall = async () => {
         if (installed) return
-        trackEvent("pwa", "pwa_install_click", "cta_page", {
-            locale,
-            has_prompt: Boolean(deferredPrompt),
-        })
 
         if (!deferredPrompt) {
-            scrollToGuide("install_button")
+            scrollToGuide()
             return
         }
 
@@ -153,13 +144,12 @@ export function InstallAppClient({ locale, copy, allToolsLabel, trustCenterLabel
             const choice = await deferredPrompt.userChoice
             if (choice.outcome === "accepted") {
                 setInstalled(true)
-                trackInstallSuccess(choice.platform)
+                recordInstallSuccess(choice.platform)
             } else {
-                trackEvent("pwa", "pwa_install_dismissed", "cta_page", { locale, platform: choice.platform })
-                scrollToGuide("already_manual")
+                scrollToGuide()
             }
         } catch {
-            scrollToGuide("already_manual")
+            scrollToGuide()
         } finally {
             setDeferredPrompt(null)
         }
@@ -266,7 +256,6 @@ export function InstallAppClient({ locale, copy, allToolsLabel, trustCenterLabel
                             variant={platform === key ? "default" : "outline"}
                             onClick={() => {
                                 setPlatform(key)
-                                trackEvent("pwa", "pwa_manual_guide_view", "tab_switch", { locale, platform: key })
                             }}
                         >
                             {copy.guides[key].label}

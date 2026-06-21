@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { detectInteractionAnalyticsAction } from "@/core/analytics/analytics"
+import { buildAnalyticsPayload, detectInteractionAnalyticsAction } from "@/core/analytics/analytics"
 
 describe("analytics interaction detection", () => {
     it("detects copy interactions across localized labels", () => {
@@ -19,5 +19,18 @@ describe("analytics interaction detection", () => {
     it("ignores unrelated signals", () => {
         expect(detectInteractionAnalyticsAction("Run tool")).toBeNull()
         expect(detectInteractionAnalyticsAction("")).toBeNull()
+    })
+
+    it("drops parameters that are not allowed for an event", () => {
+        expect(buildAnalyticsPayload("search_performed", {
+            language: "en",
+            results_count: 4,
+            query_length_bucket: "medium",
+            tool_id: "json_formatter",
+        })).toEqual({
+            language: "en",
+            results_count: 4,
+            query_length_bucket: "medium",
+        })
     })
 })

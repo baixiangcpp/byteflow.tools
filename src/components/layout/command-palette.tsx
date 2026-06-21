@@ -22,6 +22,7 @@ import { getCommandSearchToolByKey } from "@/generated/command-search-index"
 import { readFavoriteToolKeys, readRecentToolKeys, TOOL_DISCOVERY_UPDATED_EVENT } from "@/core/storage/tool-discovery-state"
 import { useSystemCommands } from "@/core/commands/registry"
 import { scoreCommandSearch } from "@/core/search/command-search"
+import { trackSearchPerformed } from "@/core/analytics/analytics"
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
 import { cn } from "@/core/utils/utils"
 
@@ -325,6 +326,7 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
     }, [buildToolCommand])
 
     const [search, setSearch] = React.useState("")
+    const lastSearchTelemetry = React.useRef("")
     const systemCommands = useSystemCommands()
     const isCommandMode = search.startsWith(">")
     const labelSources = React.useMemo(() => ({
@@ -332,6 +334,33 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
         nav: t.nav as unknown as Record<string, string>,
         pages: t.pages as unknown as Record<string, string>,
     }), [commonLabels, t.nav, t.pages])
+
+    React.useEffect(() => {
+        const trimmed = search.trim()
+        if (trimmed.length === 0 || trimmed.startsWith(">")) return
+
+        const resultCount = [
+            ...recommendedCommands,
+            ...favoriteCommands,
+            ...recentCommands,
+            ...toolGroups.flatMap((group) =>
+                group.items.map((tool) => buildToolCommand(tool.key)).filter((item): item is ToolCommandItem => item !== null),
+            ),
+        ].filter((item, index, items) => {
+            if (items.findIndex((candidate) => candidate.toolKey === item.toolKey) !== index) return false
+            return scoreCommandSearch(item.searchValue, trimmed, item.searchKeywords) > 0
+        }).length
+        const telemetryKey = `${trimmed.length}:${resultCount}`
+        if (lastSearchTelemetry.current === telemetryKey) return
+        lastSearchTelemetry.current = telemetryKey
+
+        trackSearchPerformed({
+            language: lang,
+            queryLength: trimmed.length,
+            resultsCount: resultCount,
+            sourcePage: "command_palette",
+        })
+    }, [buildToolCommand, favoriteCommands, lang, recentCommands, recommendedCommands, search])
 
     return (
         <CommandDialog

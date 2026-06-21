@@ -77,7 +77,7 @@ export function ToolActionBar({
     handoffPayload?: string
 }) {
     const pathname = usePathname()
-    const { t } = useLang()
+    const { t, lang } = useLang()
     const toolKey = React.useMemo(() => {
         const context = getRouteContext(pathname)
         if (!context.slug) return null
@@ -108,16 +108,16 @@ export function ToolActionBar({
             const analyticsAction = classifyAnalyticsAction(action.id)
             if (toolKey && analyticsAction) {
                 if (analyticsAction === "tool_run") {
-                    trackToolRun(toolKey, action.id)
+                    trackToolRun(toolKey, action.id, { language: lang, sourcePage: "tool_action_bar" })
                 } else if (analyticsAction === "copy_output") {
-                    trackCopyOutput(toolKey, action.id)
+                    trackCopyOutput(toolKey, action.id, lang)
                 } else if (analyticsAction === "download_output") {
-                    trackDownloadOutput(toolKey, action.id)
+                    trackDownloadOutput(toolKey, action.id, { language: lang, sourcePage: "tool_action_bar" })
                 }
             }
             action.onClick?.()
         },
-        [toolKey],
+        [lang, toolKey],
     )
 
     return (

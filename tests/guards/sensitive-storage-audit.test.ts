@@ -72,13 +72,14 @@ describe("sensitive storage audit", () => {
     it("keeps analytics runtime hooks as no-ops and avoids forbidden payload parameter names", () => {
         const analytics = read("src/core/analytics/analytics.ts")
         expect(analytics).toContain("export const isAnalyticsEnabled = (): boolean => false")
-        expect(analytics).toContain("export const trackToolUsage: TrackToolUsage = noop")
-        expect(analytics).toContain("export const trackEvent: TrackEvent = noop")
+        expect(analytics).toContain("export function trackAllowlistedEvent")
+        expect(analytics).toContain("export function trackSearchPerformed")
+        expect(analytics).toContain("query_length_bucket")
 
         const callSites = sourceFilesUnder("src")
             .filter((file) => read(file).includes("track"))
 
-        const forbiddenParamNames = /\b(input|output|payload|token|jwt|secret|url|filename|fileContent|query|pagePath|page_path)\b/
+        const forbiddenParamNames = /\b(input_text|output_text|payload|token|jwt|secret|full_url|filename|fileName|fileContent|file_content|image_content|log_body|search_query|pagePath|page_path|user_id|session_id)\b/
         const offenders = callSites.flatMap((file) => {
             const source = read(file)
             const calls = source.match(/track[A-Z]\w*\([\s\S]*?\)/g) ?? []

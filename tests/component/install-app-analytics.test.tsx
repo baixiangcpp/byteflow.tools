@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { InstallAppClient } from "@/features/install-app/components/install-app-client"
 import { getInstallPageCopy } from "@/core/utils/install-app-copy"
 
-const trackEventMock = vi.hoisted(() => vi.fn())
+const trackPwaInstalledMock = vi.hoisted(() => vi.fn())
 
 vi.mock("next/link", () => ({
     default: ({ href, children, ...props }: { href: string; children: React.ReactNode }) => (
@@ -20,7 +20,7 @@ vi.mock("next/image", () => ({
 }))
 
 vi.mock("@/core/analytics/analytics", () => ({
-    trackEvent: trackEventMock,
+    trackPwaInstalled: trackPwaInstalledMock,
 }))
 
 function installMatchMedia() {
@@ -41,7 +41,7 @@ function installMatchMedia() {
 
 describe("install app analytics", () => {
     beforeEach(() => {
-        trackEventMock.mockReset()
+        trackPwaInstalledMock.mockReset()
         installMatchMedia()
     })
 
@@ -75,7 +75,7 @@ describe("install app analytics", () => {
         })
 
         await waitFor(() => {
-            const successCalls = trackEventMock.mock.calls.filter(([, action]) => action === "pwa_install_success")
+            const successCalls = trackPwaInstalledMock.mock.calls.filter(([language]) => language === "en")
             expect(successCalls).toHaveLength(1)
         })
     })

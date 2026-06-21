@@ -1,18 +1,12 @@
 "use client"
 
 import Link from "next/link"
-import { useEffect } from "react"
 import { Check, Sparkles, ShieldCheck, LockKeyhole, ArrowUpRight } from "lucide-react"
 import { useLang } from "@/core/i18n/lang-provider"
-import { trackCTA } from "@/core/analytics/analytics"
 
 export default function PricingPage() {
     const { t, lang } = useLang()
     const p = t.pages
-
-    useEffect(() => {
-        trackCTA("pricing_page", "view")
-    }, [])
 
     const principles = [
         {
@@ -88,7 +82,6 @@ export default function PricingPage() {
             <section className="flex flex-wrap items-center gap-3 pt-1">
                 <Link
                     href={`/${lang}/all-tools`}
-                    onClick={() => trackCTA("pricing_primary", "click")}
                     className="inline-flex items-center gap-2 rounded-xl border border-primary/35 bg-primary/12 px-4 py-2.5 text-sm text-primary transition-colors hover:bg-primary/20"
                 >
                     {p.pricing_cta_primary}
@@ -97,7 +90,6 @@ export default function PricingPage() {
                     href="https://github.com/baixiangcpp/byteflow.tools"
                     target="_blank"
                     rel="noopener noreferrer"
-                    onClick={() => trackCTA("pricing_secondary", "click")}
                     className="inline-flex items-center gap-2 rounded-xl border border-border/75 bg-background/55 px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
                     {p.pricing_cta_secondary}
