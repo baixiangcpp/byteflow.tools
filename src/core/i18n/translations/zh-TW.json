@@ -410,6 +410,11 @@
       "json_error_unexpected_end": "JSON 意外結束。輸入似乎不完整。",
       "json_error_expected_token": "缺少預期的標記。請驗證 JSON 結構是否正確。",
       "json_error_at_position": "行:列",
+      "json_error_location": "位置",
+      "large_input_hint": "{size}；已啟用 worker 格式化",
+      "output_empty": "輸出為空",
+      "output_empty_description": "貼上 JSON、匯入檔案或嘗試範例來格式化或壓縮。",
+      "output_empty_ready": "點擊格式化或壓縮以產生輸出。",
       "invalid_json_literal": "JSON 字面值無效，請輸入合法的 JSON 值。",
       "key_exists": "鍵已存在，請使用唯一鍵名。",
       "rename_key_failed": "重新命名鍵失敗，請選擇其他鍵名。",
@@ -432,7 +437,8 @@
       "delete_node_action": "刪除節點",
       "tree_search_placeholder": "搜尋鍵或值...",
       "tree_expand_all": "全部展開",
-      "tree_collapse_all": "全部折疊"
+      "tree_collapse_all": "全部折疊",
+      "tree_lazy_limit": "還有 {count} 項隱藏，可展開或搜尋更深層級。"
     },
     "xml_formatter": {
       "title": "XML 格式化工具",

@@ -26,7 +26,10 @@ self.onmessage = (event: MessageEvent<JsonFormatWorkerInput>) => {
     } catch (error) {
         self.postMessage({
             ok: false,
-            error: error instanceof Error ? error.message : "JSON_PARSE_FAILED",
+            error: {
+                code: "JSON_PARSE_FAILED",
+                message: error instanceof Error ? error.message : "JSON_PARSE_FAILED",
+            },
         })
     }
 }

@@ -410,6 +410,11 @@
       "json_error_unexpected_end": "JSON 意外结束。输入似乎不完整。",
       "json_error_expected_token": "缺少预期的标记。请验证 JSON 结构是否正确。",
       "json_error_at_position": "行:列",
+      "json_error_location": "位置",
+      "large_input_hint": "{size}；已启用 worker 格式化",
+      "output_empty": "输出为空",
+      "output_empty_description": "粘贴 JSON、导入文件或尝试示例来格式化或压缩。",
+      "output_empty_ready": "点击格式化或压缩生成输出。",
       "invalid_json_literal": "JSON 字面量无效，请输入合法的 JSON 值。",
       "key_exists": "键已存在，请使用唯一键名。",
       "rename_key_failed": "重命名键失败，请选择其他键名。",
@@ -432,7 +437,8 @@
       "delete_node_action": "删除节点",
       "tree_search_placeholder": "搜索键或值...",
       "tree_expand_all": "全部展开",
-      "tree_collapse_all": "全部折叠"
+      "tree_collapse_all": "全部折叠",
+      "tree_lazy_limit": "还有 {count} 项隐藏，可展开或搜索更深层级。"
     },
     "xml_formatter": {
       "title": "XML 格式化工具",

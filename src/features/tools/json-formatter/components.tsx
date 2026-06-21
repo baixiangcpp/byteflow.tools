@@ -19,6 +19,7 @@ interface JsonTreeNodeProps {
     handleAddChild: (path: JsonPath) => void
     handleEditNode: (path: JsonPath, currentValue: JsonValue) => void
     handleDeleteNode: (path: JsonPath) => void
+    maxVisibleChildren?: number
 }
 
 export function JsonTreeNode({
@@ -35,11 +36,22 @@ export function JsonTreeNode({
     handleAddChild,
     handleEditNode,
     handleDeleteNode,
+    maxVisibleChildren = 200,
 }: JsonTreeNodeProps): React.ReactNode {
     const key = pathKey(path)
     const isExpandable = Array.isArray(value) || isJsonObject(value)
     const isOpen = expanded.has(key)
     const isMatched = matched.has(key)
+
+    const arrayChildren = Array.isArray(value) && isOpen ? value.slice(0, maxVisibleChildren) : []
+    const objectChildren = isJsonObject(value) && isOpen ? Object.entries(value).slice(0, maxVisibleChildren) : []
+    const totalChildren = Array.isArray(value)
+        ? value.length
+        : isJsonObject(value)
+            ? Object.keys(value).length
+            : 0
+    const visibleChildren = Array.isArray(value) ? arrayChildren.length : objectChildren.length
+    const hiddenChildren = Math.max(0, totalChildren - visibleChildren)
 
     return (
         <div key={key}>
@@ -114,7 +126,7 @@ export function JsonTreeNode({
             {isExpandable && isOpen ? (
                 <div>
                     {Array.isArray(value)
-                        ? value.map((item, index) => (
+                        ? arrayChildren.map((item, index) => (
                             <JsonTreeNode
                                 key={pathKey([...path, index])}
                                 value={item}
@@ -130,9 +142,10 @@ export function JsonTreeNode({
                                 handleAddChild={handleAddChild}
                                 handleEditNode={handleEditNode}
                                 handleDeleteNode={handleDeleteNode}
+                                maxVisibleChildren={maxVisibleChildren}
                             />
                         ))
-                        : Object.entries(value).map(([childKey, childValue]) => (
+                        : objectChildren.map(([childKey, childValue]) => (
                             <JsonTreeNode
                                 key={pathKey([...path, childKey])}
                                 value={childValue}
@@ -148,8 +161,17 @@ export function JsonTreeNode({
                                 handleAddChild={handleAddChild}
                                 handleEditNode={handleEditNode}
                                 handleDeleteNode={handleDeleteNode}
+                                maxVisibleChildren={maxVisibleChildren}
                             />
                         ))}
+                    {hiddenChildren > 0 ? (
+                        <div
+                            className="px-2 py-1 text-xs text-muted-foreground"
+                            style={{ paddingLeft: (depth + 1) * 14 }}
+                        >
+                            {text("tree_lazy_limit").replace("{count}", String(hiddenChildren))}
+                        </div>
+                    ) : null}
                 </div>
             ) : null}
         </div>

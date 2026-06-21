@@ -13,28 +13,25 @@ import {
     Workflow,
 } from "lucide-react"
 import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { ToolEmptyState } from "@/features/tool-shell/tool-empty-state"
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
 import { readStorageString, writeStorageString, removeStorageKey } from "@/core/storage/tool-persistence"
 import { enforceToolInputPersistencePolicy } from "@/core/storage/tool-persistence-policy"
 import { importTextFile } from "@/core/files/text-file-import"
 import { buildSensitiveToolHandoffLink, getToolHandoffFromSearchParams } from "@/core/routing/tool-handoff"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
-import { buildJsonParseErrorMessage } from "@/features/tools/json-formatter/error-utils"
+import { buildJsonParseErrorDetails, type JsonParseErrorDetails } from "@/features/tools/json-formatter/error-utils"
 import { runJsonFormatTask, type JsonFormatMode } from "@/features/tools/json-formatter/format-json-task"
 import { PrivacyBadge } from "@/features/tool-shell/privacy-badge"
 import { PrivacyFAQ } from "@/features/tool-shell/privacy-faq"
 import { JsonImportDropzone } from "./json-import-dropzone"
 import { JsonOutputToolbar } from "./json-output-toolbar"
 import { JsonTreeSearch } from "./json-tree-search"
+import { JsonErrorAlert, JsonInputHeader, JsonTextOutputEmptyState, JsonTreeEditDialog } from "./panels"
 import { INPUT_STORAGE_DEBOUNCE_MS, INPUT_STORAGE_KEY, JSON_FORMATTER_PERSISTENCE_POLICY, VIEW_MODE_STORAGE_KEY } from "./constants"
 import {
     findMatchingPaths,
@@ -57,6 +54,7 @@ export function JsonFormatterPage() {
     const [input, setInput] = React.useState("")
     const [output, setOutput] = React.useState("")
     const [error, setError] = React.useState<string | null>(null)
+    const [errorDetails, setErrorDetails] = React.useState<JsonParseErrorDetails | null>(null)
     const [isImportDragActive, setIsImportDragActive] = React.useState(false)
     const [viewMode, setViewMode] = React.useState<ViewMode>("text")
     const [treeData, setTreeData] = React.useState<JsonValue | null>(null)
@@ -126,15 +124,18 @@ export function JsonFormatterPage() {
     const parseSource = React.useCallback((source: string): JsonValue | null => {
         if (!source.trim()) {
             setError(null)
+            setErrorDetails(null)
             return null
         }
         try {
             const parsed = JSON.parse(source) as JsonValue
             setError(null)
+            setErrorDetails(null)
             return parsed
         } catch (err) {
-            const errorMessage = buildJsonParseErrorMessage(source, err, text)
-            setError(errorMessage)
+            const details = buildJsonParseErrorDetails(source, err, text)
+            setError(details.message)
+            setErrorDetails(details)
             return null
         }
     }, [text])
@@ -145,6 +146,7 @@ export function JsonFormatterPage() {
         setInput(pretty)
         setOutput(pretty)
         setError(null)
+        setErrorDetails(null)
     }, [])
 
     const buildTreeFromCurrentText = React.useCallback(() => {
@@ -183,6 +185,7 @@ export function JsonFormatterPage() {
             setOutput("")
             setTreeData(null)
             setError(null)
+            setErrorDetails(null)
             return
         }
 
@@ -195,11 +198,13 @@ export function JsonFormatterPage() {
             setOutput(result.output)
             setTreeData(result.parsed)
             setError(null)
+            setErrorDetails(null)
             scrollOutputIntoViewOnMobile()
         } catch (err) {
             if (formatRequestIdRef.current !== requestId) return
-            const errorMessage = buildJsonParseErrorMessage(source, err, text)
-            setError(errorMessage)
+            const details = buildJsonParseErrorDetails(source, err, text)
+            setError(details.message)
+            setErrorDetails(details)
         } finally {
             if (formatRequestIdRef.current === requestId) {
                 formatAbortControllerRef.current = null
@@ -244,6 +249,7 @@ export function JsonFormatterPage() {
         setTreeData(null)
         setExpanded(new Set(["$"]))
         setError(null)
+        setErrorDetails(null)
         removeStorageKey(INPUT_STORAGE_KEY)
     }
 
@@ -265,12 +271,14 @@ export function JsonFormatterPage() {
             setTreeData(null)
             setExpanded(new Set(["$"]))
             setError(null)
+            setErrorDetails(null)
             toast.success(text("file_imported"), {
                 description: file.name,
             })
         } catch (importError) {
             const message = importError instanceof Error ? importError.message : text("file_import_failed")
             setError(message)
+            setErrorDetails(null)
         }
     }
 
@@ -338,6 +346,7 @@ export function JsonFormatterPage() {
         setInput(SAMPLE_JSON_SOURCE)
         setExpanded(new Set(["$"]))
         setError(null)
+        setErrorDetails(null)
         formatJsonSource(SAMPLE_JSON_SOURCE)
     }
 
@@ -515,59 +524,17 @@ export function JsonFormatterPage() {
         closeTreeDialog()
     }
 
-    const treeDialogTitle = (() => {
-        if (!treeDialog) return ""
-        if (treeDialog.type === "edit_value") return text("tree_edit_value_title")
-        if (treeDialog.type === "add_key") return text("tree_add_key_title")
-        return text("tree_rename_key_title")
-    })()
-
-    const treeDialogDescription = (() => {
-        if (!treeDialog) return ""
-        if (treeDialog.type === "edit_value") return text("tree_edit_value_description")
-        if (treeDialog.type === "add_key") return text("tree_add_key_description")
-        return text("tree_rename_key_description")
-    })()
-
-    const handleTreeDialogSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault()
-        confirmTreeDialog()
-    }
-
     return (
         <div className="mx-auto flex h-full w-full max-w-[1400px] flex-col space-y-6">
-            <Dialog open={treeDialog !== null} onOpenChange={(open) => { if (!open) closeTreeDialog() }}>
-                <DialogContent closeLabel={t.common.close}>
-                    <DialogHeader>
-                        <DialogTitle>{treeDialogTitle}</DialogTitle>
-                        <DialogDescription>{treeDialogDescription}</DialogDescription>
-                    </DialogHeader>
-                    <form className="space-y-3" onSubmit={handleTreeDialogSubmit}>
-                        {treeDialog?.type === "edit_value" ? (
-                            <Textarea
-                                autoFocus
-                                className="min-h-[140px] w-full font-mono text-sm"
-                                value={treeDialog.draft}
-                                onChange={(event) => updateTreeDialogDraft(event.target.value)}
-                                spellCheck={false}
-                            />
-                        ) : (
-                            <Input
-                                autoFocus
-                                value={treeDialog?.draft || ""}
-                                onChange={(event) => updateTreeDialogDraft(event.target.value)}
-                                placeholder={treeDialog?.type === "add_key" ? text("tree_new_key_placeholder") : undefined}
-                            />
-                        )}
-                        <DialogFooter>
-                            <Button type="button" variant="outline" onClick={closeTreeDialog}>
-                                {t.common.close}
-                            </Button>
-                            <Button type="submit">{t.common.apply}</Button>
-                        </DialogFooter>
-                    </form>
-                </DialogContent>
-            </Dialog>
+            <JsonTreeEditDialog
+                applyLabel={t.common.apply}
+                closeLabel={t.common.close}
+                dialog={treeDialog}
+                onClose={closeTreeDialog}
+                onDraftChange={updateTreeDialogDraft}
+                onSubmit={confirmTreeDialog}
+                text={text}
+            />
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -592,16 +559,13 @@ export function JsonFormatterPage() {
                 text={text}
             />
 
-            {error ? (
-                <div role="alert" className="rounded-md bg-destructive/90 p-3 text-sm font-medium text-destructive-foreground">
-                    {error}
-                </div>
-            ) : null}
+            <JsonErrorAlert details={errorDetails} error={error} text={text} />
 
             <div className="grid min-h-[600px] flex-1 grid-cols-1 gap-4 overflow-hidden rounded-lg border bg-card lg:grid-cols-2">
                 <div className="flex h-full flex-col border-b lg:border-r lg:border-b-0">
                     <div className="tool-pane-header tool-pane-header-between">
                         <span>{t.common.input}</span>
+                        <JsonInputHeader input={input} text={text} />
                     </div>
                     <div className="min-h-[300px] flex-1">
                         <MonacoEditor
@@ -648,23 +612,27 @@ export function JsonFormatterPage() {
 
                     {viewMode === "text" ? (
                         <div className="min-h-[300px] flex-1">
-                            <MonacoEditor
-                                height="100%"
-                                defaultLanguage="json"
-                                theme={monacoTheme}
-                                beforeMount={(monaco) => ensureByteflowMonacoThemes(monaco)}
-                                value={output}
-                                options={{
-                                    readOnly: true,
-                                    minimap: { enabled: false },
-                                    fontSize: 14,
-                                    fontFamily: "var(--font-mono)",
-                                    lineHeight: 24,
-                                    padding: { top: 16 },
-                                    scrollBeyondLastLine: false,
-                                    wordWrap: "on",
-                                }}
-                            />
+                            {output ? (
+                                <MonacoEditor
+                                    height="100%"
+                                    defaultLanguage="json"
+                                    theme={monacoTheme}
+                                    beforeMount={(monaco) => ensureByteflowMonacoThemes(monaco)}
+                                    value={output}
+                                    options={{
+                                        readOnly: true,
+                                        minimap: { enabled: false },
+                                        fontSize: 14,
+                                        fontFamily: "var(--font-mono)",
+                                        lineHeight: 24,
+                                        padding: { top: 16 },
+                                        scrollBeyondLastLine: false,
+                                        wordWrap: "on",
+                                    }}
+                                />
+                            ) : (
+                                <JsonTextOutputEmptyState hasInput={Boolean(input.trim())} text={text} />
+                            )}
                         </div>
                     ) : (
                         <div className="flex flex-1 flex-col overflow-hidden relative">
@@ -704,6 +672,7 @@ export function JsonFormatterPage() {
                                         handleAddChild={handleAddChild}
                                         handleEditNode={handleEditNode}
                                         handleDeleteNode={handleDeleteNode}
+                                        maxVisibleChildren={200}
                                     />
                                 )}
                             </div>

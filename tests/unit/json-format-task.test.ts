@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 import { runJsonFormatTask } from "@/features/tools/json-formatter/format-json-task"
 
 class MockJsonWorker {
-    static mode: "success" | "error" | "idle" = "success"
+    static mode: "success" | "error" | "parse-error" | "idle" = "success"
     onmessage: ((event: MessageEvent<unknown>) => void) | null = null
     onerror: ((event: ErrorEvent) => void) | null = null
     onmessageerror: ((event: MessageEvent<unknown>) => void) | null = null
@@ -14,6 +14,10 @@ class MockJsonWorker {
             if (this.terminated) return
             if (MockJsonWorker.mode === "error") {
                 this.onmessage?.({ data: { ok: false, error: "JSON_WORKER_FAILED" } } as MessageEvent)
+                return
+            }
+            if (MockJsonWorker.mode === "parse-error") {
+                this.onmessage?.({ data: { ok: false, error: { code: "JSON_PARSE_FAILED", message: "Unexpected token '}' in JSON at position 5" } } } as MessageEvent)
                 return
             }
             this.onmessage?.({ data: { ok: true, value: { output: "from-worker", parsed: { worker: true } } } } as MessageEvent)
@@ -48,6 +52,13 @@ describe("runJsonFormatTask", () => {
             output: '{\n  "a": 1\n}',
             parsed: { a: 1 },
         })
+    })
+
+    it("does not fall back to sync formatting for worker parse failures", async () => {
+        MockJsonWorker.mode = "parse-error"
+        vi.stubGlobal("Worker", MockJsonWorker)
+
+        await expect(runJsonFormatTask('{"a":}', "format")).rejects.toThrow(SyntaxError)
     })
 
     it("does not fall back when aborted", async () => {
