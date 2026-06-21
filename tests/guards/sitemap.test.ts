@@ -96,4 +96,26 @@ describe("sitemap lastmod", () => {
         expect(urls.some((url) => url.endsWith("/en/privacy"))).toBe(true)
         expect(urls.some((url) => url.endsWith("/en/trust-center"))).toBe(true)
     })
+
+    it("contains BF-028 comparison, alternative, how-to, and fix content pages", () => {
+        const urls = new Set(sitemap().map((entry) => entry.url))
+        const slugs = [
+            "compare",
+            "compare/byteflow-vs-cyberchef",
+            "compare/byteflow-vs-jwt-io",
+            "compare/md5-vs-sha256",
+            "alternatives",
+            "alternatives/json-formatter-privacy-first",
+            "how-to",
+            "how-to/decode-jwt-locally",
+            "fix",
+            "fix/base64-invalid-length",
+        ]
+
+        for (const locale of LOCALES) {
+            for (const slug of slugs) {
+                expect(urls.has(buildCanonicalUrl(locale, slug))).toBe(true)
+            }
+        }
+    })
 })
