@@ -650,7 +650,14 @@
       "example_reserved": "保留分隔符",
       "input_placeholder": "在此粘贴文本或 URL 编码字符串...",
       "encode_error": "当前模式下 URL 编码失败，请检查输入后重试。",
-      "decode_error": "当前模式下 URL 编码字符串无效。"
+      "decode_error": "当前模式下 URL 编码字符串无效。",
+      "decode_error_position_label": "位置",
+      "decode_error_sequence_label": "片段",
+      "decode_error_reason_label": "原因",
+      "decode_error_non_hex": "百分号转义必须使用两个十六进制字符。",
+      "decode_error_truncated": "该百分号转义缺少一个或两个十六进制字符。",
+      "decode_error_invalid_encoding": "这些百分号字节不是当前解码器可识别的有效文本。",
+      "decode_error_fix": "请把损坏片段改为 %HH 字节，删除多余的百分号，或切换到与来源字符串匹配的模式。"
     },
     "jwt_decoder": {
       "title": "JWT 解码器",

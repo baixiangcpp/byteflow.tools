@@ -6,17 +6,21 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { useLang } from "@/core/i18n/lang-provider"
 import { Textarea } from "@/components/ui/textarea"
-import { encodeUrlByMode, decodeUrlByMode, type UrlEncodingMode } from "@/core/utils/url-codec-utils"
+import { encodeUrlByMode, decodeUrlByModeSafe, type MalformedPercentSequence, type UrlEncodingMode } from "@/core/utils/url-codec-utils"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { readStorageString, writeStorageString } from "@/core/storage/tool-persistence"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
-import { buildToolHandoffLink } from "@/core/routing/tool-handoff"
+import { buildSensitiveToolHandoffLink } from "@/core/routing/tool-handoff"
 
 type UrlExample = {
     id: string
     labelKey: string
     value: string
 }
+
+type UrlToolError =
+    | { kind: "encode" }
+    | { kind: "decode"; details: MalformedPercentSequence }
 
 const EXAMPLES: UrlExample[] = [
     {
@@ -47,7 +51,7 @@ export function UrlEncodeDecodePage() {
     const [strategy, setStrategy] = React.useState<UrlEncodingMode>("component")
     const [operation, setOperation] = React.useState<"encode" | "decode">("encode")
     const [input, setInput] = React.useState("")
-    const [error, setError] = React.useState<string | null>(null)
+    const [errorState, setErrorState] = React.useState<UrlToolError | null>(null)
 
     React.useEffect(() => {
         const savedStrategy = readStorageString(STRATEGY_STORAGE_KEY)
@@ -73,20 +77,32 @@ export function UrlEncodeDecodePage() {
             return { output: "", error: null }
         }
         try {
-            const result = operation === "encode"
-                ? encodeUrlByMode(input, strategy)
-                : decodeUrlByMode(input, strategy)
-            return { output: result, error: null }
+            if (operation === "encode") {
+                return { output: encodeUrlByMode(input, strategy), error: null }
+            }
+            const result = decodeUrlByModeSafe(input, strategy)
+            if (result.ok) return { output: result.output, error: null }
+            return { output: "", error: { kind: "decode" as const, details: result.error } }
         } catch {
+            if (operation === "encode") {
+                return { output: "", error: { kind: "encode" as const } }
+            }
             return {
                 output: "",
-                error: operation === "encode" ? text("encode_error") : text("decode_error")
+                error: {
+                    kind: "decode" as const,
+                    details: {
+                        index: Math.max(input.indexOf("%"), 0),
+                        sequence: input.includes("%") ? input.slice(input.indexOf("%"), input.indexOf("%") + 3) : "",
+                        reason: "invalid_encoding" as const,
+                    },
+                },
             }
         }
-    }, [input, operation, strategy, text])
+    }, [input, operation, strategy])
 
     React.useEffect(() => {
-        setError(computed.error)
+        setErrorState(computed.error)
     }, [computed.error])
 
     const output = computed.output
@@ -105,12 +121,12 @@ export function UrlEncodeDecodePage() {
 
     const handleClear = () => {
         setInput("")
-        setError(null)
+        setErrorState(null)
     }
 
     const applyExample = (value: string) => {
         setInput(value)
-        setError(null)
+        setErrorState(null)
     }
 
     const strategyDescription = (() => {
@@ -119,11 +135,18 @@ export function UrlEncodeDecodePage() {
         return text("mode_reserved_desc")
     })()
 
-    const handoffPayload = input
+    const handoffPayload = input.trim() ? "url-encode-decode" : ""
     const pipelineHandoff = React.useMemo(
-        () => buildToolHandoffLink(lang, "pipeline-builder", handoffPayload),
-        [handoffPayload, lang],
+        () => buildSensitiveToolHandoffLink(lang, "pipeline-builder"),
+        [lang],
     )
+    const decodeErrorDetails = errorState?.kind === "decode" ? errorState.details : null
+    const errorTitle = errorState?.kind === "encode" ? text("encode_error") : text("decode_error")
+    const decodeErrorReason = decodeErrorDetails?.reason === "truncated"
+        ? text("decode_error_truncated")
+        : decodeErrorDetails?.reason === "invalid_encoding"
+            ? text("decode_error_invalid_encoding")
+            : text("decode_error_non_hex")
 
     const actions: ToolAction[] = [
         {
@@ -215,9 +238,28 @@ export function UrlEncodeDecodePage() {
                 </div>
             </div>
 
-            {error ? (
-                <div className="rounded-md bg-destructive/90 p-3 text-sm font-medium text-destructive-foreground">
-                    {error}
+            {errorState ? (
+                <div role="alert" className="rounded-md border border-destructive/35 bg-destructive/10 p-3 text-sm text-destructive">
+                    <p className="font-semibold">{errorTitle}</p>
+                    {decodeErrorDetails ? (
+                        <>
+                            <dl className="mt-2 grid gap-1 text-xs sm:grid-cols-3">
+                                <div>
+                                    <dt className="font-medium">{text("decode_error_position_label")}</dt>
+                                    <dd className="font-mono">{decodeErrorDetails.index + 1}</dd>
+                                </div>
+                                <div>
+                                    <dt className="font-medium">{text("decode_error_sequence_label")}</dt>
+                                    <dd className="font-mono">{decodeErrorDetails.sequence || "%"}</dd>
+                                </div>
+                                <div>
+                                    <dt className="font-medium">{text("decode_error_reason_label")}</dt>
+                                    <dd>{decodeErrorReason}</dd>
+                                </div>
+                            </dl>
+                            <p className="mt-2 text-xs">{text("decode_error_fix")}</p>
+                        </>
+                    ) : null}
                 </div>
             ) : null}
 

@@ -678,7 +678,14 @@
       "example_reserved": "Reserved Delimiters",
       "input_placeholder": "Paste your text or URL-encoded string here...",
       "encode_error": "Unable to encode URL for this mode. Check the input and try again.",
-      "decode_error": "Invalid URL-encoded string for current mode."
+      "decode_error": "Invalid URL-encoded string for current mode.",
+      "decode_error_position_label": "Position",
+      "decode_error_sequence_label": "Sequence",
+      "decode_error_reason_label": "Reason",
+      "decode_error_non_hex": "Percent escapes must use two hex digits.",
+      "decode_error_truncated": "The percent escape is missing one or two hex digits.",
+      "decode_error_invalid_encoding": "The percent bytes are not valid text for this decoder.",
+      "decode_error_fix": "Replace the broken escape with %HH bytes, remove the stray percent sign, or switch to the mode that matches the source string."
     },
     "jwt_decoder": {
       "title": "JWT Decoder",

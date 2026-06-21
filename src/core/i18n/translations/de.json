@@ -650,7 +650,14 @@
       "example_reserved": "Reservierte Trennzeichen",
       "input_placeholder": "Fügen Sie hier Ihren Text oder URL-kodierten String ein...",
       "encode_error": "URL konnte in diesem Modus nicht kodiert werden. Eingabe prüfen und erneut versuchen.",
-      "decode_error": "Ungültiger URL-kodierter String für den aktuellen Modus."
+      "decode_error": "Ungültiger URL-kodierter String für den aktuellen Modus.",
+      "decode_error_position_label": "Stelle",
+      "decode_error_sequence_label": "Sequenz",
+      "decode_error_reason_label": "Grund",
+      "decode_error_non_hex": "Percent-Escapes muessen zwei Hex-Zeichen verwenden.",
+      "decode_error_truncated": "Diesem Percent-Escape fehlen ein oder zwei Hex-Zeichen.",
+      "decode_error_invalid_encoding": "Diese Percent-Bytes sind fuer diesen Decoder kein gueltiger Text.",
+      "decode_error_fix": "Ersetzen Sie die defekte Sequenz durch %HH-Bytes, entfernen Sie das einzelne Prozentzeichen oder waehlen Sie den Modus, der zur Quelle passt."
     },
     "jwt_decoder": {
       "title": "JWT-Dekoder",

@@ -650,7 +650,14 @@
       "example_reserved": "Délimiteurs réservés",
       "input_placeholder": "Collez ici votre texte ou votre chaîne URL encodée...",
       "encode_error": "Impossible d’encoder l’URL avec ce mode. Vérifiez la saisie puis réessayez.",
-      "decode_error": "Chaîne URL encodée invalide pour le mode actuel."
+      "decode_error": "Chaîne URL encodée invalide pour le mode actuel.",
+      "decode_error_position_label": "Emplacement",
+      "decode_error_sequence_label": "Suite",
+      "decode_error_reason_label": "Raison",
+      "decode_error_non_hex": "Les echappements percent doivent utiliser deux chiffres hexadecimaux.",
+      "decode_error_truncated": "Cet echappement percent manque un ou deux chiffres hexadecimaux.",
+      "decode_error_invalid_encoding": "Ces octets percent ne forment pas un texte valide pour ce decodeur.",
+      "decode_error_fix": "Remplacez la sequence par des octets %HH, supprimez le signe percent isole ou choisissez le mode adapte a la chaine source."
     },
     "jwt_decoder": {
       "title": "Décodeur JWT",
