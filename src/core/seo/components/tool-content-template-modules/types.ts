@@ -76,6 +76,7 @@ export type TemplateCopy = {
     qualityChecklistBeforeSharingOutput: string
     operationalNotes: string
     relatedTools: string
+    relatedWorkflows: string
     frequentlyAskedQuestions: string
     trustCenterPrivacyNote: {
         beforeLink: string
@@ -90,6 +91,11 @@ export type ToolTemplateRenderModel = {
     title: string
     content: ToolContentTemplateData
     copy: TemplateCopy
+    relatedWorkflows: Array<{
+        slug: string
+        title: string
+        description: string
+    }>
     workflowSteps: string[]
     qualityChecklist: string[]
     operationalNote: string

@@ -28,7 +28,7 @@ const EXTRA_TOOL_ROUTE_TARGETS: Record<string, string> = {
     ...TOOL_ALIAS_TO_CANONICAL_SLUG,
 }
 
-const SPECIAL_PAGE_SLUGS = new Set(["install-app"])
+const SPECIAL_PAGE_SLUGS = new Set(["install-app", "workflows"])
 const REMOVED_DUPLICATE_ENTRY_SLUGS = [
     "hex-to-rgba-converter",
     "image-to-base64-converter",

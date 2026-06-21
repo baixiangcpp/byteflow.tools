@@ -2,7 +2,7 @@
   "counts": {
     "canonicalTools": 123,
     "aliasRoutes": 2,
-    "routeDirs": 182,
+    "routeDirs": 183,
     "unknownRouteDirs": 0
   },
   "canonicalTools": [
@@ -6497,6 +6497,14 @@
       "targetSlug": null,
       "inHubGroup": true,
       "inStaticGroup": false
+    },
+    {
+      "slug": "workflows",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
     },
     {
       "slug": "xml-formatter",

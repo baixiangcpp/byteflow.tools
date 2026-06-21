@@ -50,6 +50,18 @@ describe("route context", () => {
             routeType: "hub",
             slug: "formatters",
         })
+
+        expect(getRouteContext("/en/workflows")).toEqual({
+            locale: "en",
+            routeType: "hub",
+            slug: "workflows",
+        })
+
+        expect(getRouteContext("/en/workflows/api-payload-cleanup")).toEqual({
+            locale: "en",
+            routeType: "hub",
+            slug: "workflows/api-payload-cleanup",
+        })
     })
 
     it("classifies localized content routes", () => {

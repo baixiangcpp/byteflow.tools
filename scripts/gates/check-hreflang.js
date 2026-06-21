@@ -67,7 +67,7 @@ function parseRoute(relativePath) {
         return null
     }
 
-    const localizedPage = relativePath.match(/^([^/]+)\/([^/]+)\.html$/)
+    const localizedPage = relativePath.match(/^([^/]+)\/(.+)\.html$/)
     if (!localizedPage) return null
     const locale = localizedPage[1]
     const slug = localizedPage[2]
