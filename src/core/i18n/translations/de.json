@@ -410,6 +410,11 @@
       "json_error_unexpected_end": "Unerwartetes Ende des JSON. Die Eingabe scheint unvollständig.",
       "json_error_expected_token": "Erwartetes Token fehlt. Überprüfen Sie die JSON-Struktur.",
       "json_error_at_position": "Zeile:Spalte",
+      "json_error_location": "Position",
+      "large_input_hint": "{size}; Worker-Formatierung aktiv",
+      "output_empty": "Ausgabe ist leer",
+      "output_empty_description": "JSON einfügen, Datei importieren oder Beispiel verwenden, um zu formatieren oder zu minimieren.",
+      "output_empty_ready": "Klicken Sie auf Formatieren oder Minimieren, um Ausgabe zu erzeugen.",
       "invalid_json_literal": "Ungültiges JSON-Literal. Bitte einen gültigen JSON-Wert eingeben.",
       "key_exists": "Der Schlüssel existiert bereits. Bitte einen eindeutigen Namen wählen.",
       "rename_key_failed": "Schlüssel konnte nicht umbenannt werden. Bitte anderen Namen wählen.",
@@ -432,7 +437,8 @@
       "delete_node_action": "Knoten löschen",
       "tree_search_placeholder": "Schlüssel oder Wert suchen...",
       "tree_expand_all": "Alle ausklappen",
-      "tree_collapse_all": "Alle einklappen"
+      "tree_collapse_all": "Alle einklappen",
+      "tree_lazy_limit": "{count} weitere ausgeblendet, bis Sie tiefer ausklappen oder suchen."
     },
     "xml_formatter": {
       "title": "XML-Formatter",

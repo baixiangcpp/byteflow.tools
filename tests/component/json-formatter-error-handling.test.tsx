@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest"
-import { buildJsonParseErrorMessage } from "@/features/tools/json-formatter/error-utils"
+import { buildJsonParseErrorDetails, buildJsonParseErrorMessage } from "@/features/tools/json-formatter/error-utils"
 
 /**
  * JSON Formatter Error Handling Tests
@@ -152,6 +152,24 @@ describe("buildJsonParseErrorMessage", () => {
 
         // Should include position info (line:column)
         expect(errorMessage).toMatch(/at.*\d+:\d+/)
+    })
+
+    it("returns structured line, column, and nearby snippet details", () => {
+        const input = '{\n  "foo": 123,\n}'
+        let error: unknown
+        try {
+            JSON.parse(input)
+        } catch (e) {
+            error = e
+        }
+
+        const details = buildJsonParseErrorDetails(input, error!, mockText)
+
+        expect(details.message).toContain("Trailing comma")
+        expect(details.line).toBeGreaterThan(0)
+        expect(details.column).toBeGreaterThan(0)
+        expect(details.snippet).toContain('"foo": 123,')
+        expect(details.snippet).toContain("^")
     })
 
     it("returns helpful message for non-SyntaxError", () => {

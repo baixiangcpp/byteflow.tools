@@ -410,6 +410,11 @@
       "json_error_unexpected_end": "JSON が予期せず終了しました。入力が不完全です。",
       "json_error_expected_token": "予期されたトークンがありません。JSON 構造を確認してください。",
       "json_error_at_position": "行:列",
+      "json_error_location": "位置",
+      "large_input_hint": "{size}。worker による整形が有効です",
+      "output_empty": "出力は空です",
+      "output_empty_description": "JSON を貼り付けるか、ファイルをインポートするか、サンプルを試して整形または圧縮してください。",
+      "output_empty_ready": "整形または圧縮をクリックして出力を生成してください。",
       "invalid_json_literal": "JSON リテラルが無効です。有効な JSON 値を入力してください。",
       "key_exists": "キーは既に存在します。別のキー名を使用してください。",
       "rename_key_failed": "キー名の変更に失敗しました。別のキー名を試してください。",
@@ -432,7 +437,8 @@
       "delete_node_action": "ノードを削除",
       "tree_search_placeholder": "キーまたは値を検索...",
       "tree_expand_all": "すべて展開",
-      "tree_collapse_all": "すべて折りたたむ"
+      "tree_collapse_all": "すべて折りたたむ",
+      "tree_lazy_limit": "さらに {count} 件が非表示です。展開するか検索して深い階層を表示してください。"
     },
     "xml_formatter": {
       "title": "XML フォーマッター",

@@ -410,6 +410,11 @@
       "json_error_unexpected_end": "JSON이 예기치 않게 종료되었습니다. 입력이 불완전합니다.",
       "json_error_expected_token": "예상된 토큰이 없습니다. JSON 구조를 확인하세요.",
       "json_error_at_position": "행:열",
+      "json_error_location": "위치",
+      "large_input_hint": "{size}; worker 포맷이 활성화됨",
+      "output_empty": "출력이 비어 있습니다",
+      "output_empty_description": "JSON을 붙여 넣거나 파일을 가져오거나 예제를 사용해 포맷 또는 최소화하세요.",
+      "output_empty_ready": "포맷 또는 최소화를 클릭해 출력을 생성하세요.",
       "invalid_json_literal": "JSON 리터럴이 올바르지 않습니다. 유효한 JSON 값을 입력하세요.",
       "key_exists": "키가 이미 존재합니다. 다른 키 이름을 사용하세요.",
       "rename_key_failed": "키 이름 변경에 실패했습니다. 다른 이름으로 시도하세요.",
@@ -432,7 +437,8 @@
       "delete_node_action": "노드 삭제",
       "tree_search_placeholder": "키 또는 값 검색...",
       "tree_expand_all": "모두 펼치기",
-      "tree_collapse_all": "모두 접기"
+      "tree_collapse_all": "모두 접기",
+      "tree_lazy_limit": "{count}개 항목이 더 숨겨져 있습니다. 더 깊게 펼치거나 검색하세요."
     },
     "xml_formatter": {
       "title": "XML 포매터",

@@ -38,9 +38,19 @@ export async function runJsonFormatTask(source: string, mode: JsonFormatMode, op
             { signal: options.signal, timeoutMs: options.timeoutMs ?? 20_000 },
         )
     } catch (error) {
-        if (error instanceof Error && (error.message === "WORKER_TIMEOUT" || error.message === "WORKER_ABORTED")) {
+        if (isJsonParseWorkerError(error)) {
+            throw new SyntaxError(error.message)
+        }
+        if (error instanceof Error && (
+            error.message === "WORKER_TIMEOUT" ||
+            error.message === "WORKER_ABORTED"
+        )) {
             throw error
         }
         return formatJsonSync(source, mode)
     }
+}
+
+function isJsonParseWorkerError(error: unknown): error is Error & { code: "JSON_PARSE_FAILED" } {
+    return error instanceof Error && "code" in error && error.code === "JSON_PARSE_FAILED"
 }

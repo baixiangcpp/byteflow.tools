@@ -430,6 +430,11 @@
       "json_error_unexpected_end": "Unexpected end of JSON. The input appears incomplete.",
       "json_error_expected_token": "Expected token missing. Verify proper JSON structure.",
       "json_error_at_position": "Line:Column",
+      "json_error_location": "Location",
+      "large_input_hint": "{size}; worker formatting enabled",
+      "output_empty": "Output is empty",
+      "output_empty_description": "Paste JSON, import a file, or try the sample to format or minify.",
+      "output_empty_ready": "Click Format or Minify to generate output.",
       "invalid_json_literal": "Invalid JSON literal. Enter a valid JSON value.",
       "key_exists": "Key already exists. Use a unique key name.",
       "rename_key_failed": "Unable to rename key. Choose a different key name.",
@@ -452,7 +457,8 @@
       "delete_node_action": "Delete node",
       "tree_search_placeholder": "Search key or value...",
       "tree_expand_all": "Expand All",
-      "tree_collapse_all": "Collapse All"
+      "tree_collapse_all": "Collapse All",
+      "tree_lazy_limit": "{count} more hidden until you expand or search deeper."
     },
     "xml_formatter": {
       "title": "XML Formatter",
