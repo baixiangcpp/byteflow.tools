@@ -187,7 +187,9 @@ Supported locales:
 Guidelines:
 
 - Add English keys first, then update every locale file in `src/core/i18n/translations/`.
-- User-facing copy is not complete until every supported locale has complete, accurate localized text in the same PR. Do not ship English-only page body, FAQ, table, example, schema, or SEO copy with only localized metadata, and do not make only part of a page original while leaving the rest as English fallback copy.
+- User-facing copy is not complete until every supported locale has complete, accurate localized text in the same PR. This includes headings, body copy, CTAs, FAQ, table text, examples, schema-visible text, and SEO metadata.
+- No English-only originality: new or rewritten content cannot be authored only for `en` while other locales receive fallback, literal filler, or metadata-only localization.
+- No partial originality: do not make only one locale, one section, or only above-the-fold copy original while leaving the rest as generic fallback copy.
 - Preserve technical terms such as `JSON`, `JWT`, `API`, `Base64`, and `UUID` when that is the natural localized form.
 - For Chinese copy, use spaces between Chinese text and English terms or numbers where readability requires it.
 - Keep labels short enough for compact tool controls.

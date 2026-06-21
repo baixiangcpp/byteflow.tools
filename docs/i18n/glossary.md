@@ -4,10 +4,10 @@ This glossary is the source of truth for user-facing localization of privacy, ru
 
 ## Rules
 
-- Localize complete page copy in the same PR: title, description, body, FAQ, table text, examples, schema-visible text, and SEO metadata.
+- Localize complete page copy in the same PR: title, description, headings, body copy, CTAs, FAQ, table text, examples, schema-visible text, and SEO metadata.
 - User-facing copy must ship as complete, accurate localized text across every supported locale.
-- Do not ship English-only body copy with only localized metadata.
-- partial originality is not acceptable: do not make only one locale or one section original while leaving the rest as fallback copy.
+- No English-only originality: do not author original content only for `en` while other locales receive fallback, literal filler, or metadata-only localization.
+- No partial originality: do not make only one locale, one section, or only above-the-fold copy original while leaving the rest as generic fallback copy.
 - Keep technical tokens such as `JSON`, `JWT`, `API`, `Base64`, `UUID`, `SHA-256`, and `HMAC` unchanged when that is the natural local form.
 - Prefer clear product language over literal translation when a locale has a more natural technical term.
 

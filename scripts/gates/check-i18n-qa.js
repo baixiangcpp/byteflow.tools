@@ -32,7 +32,9 @@ const GLOSSARY_TERMS = [
 
 const REQUIRED_POLICY_PHRASES = [
     "complete, accurate localized text",
-    "partial originality",
+    "No English-only originality",
+    "No partial originality",
+    "metadata-only localization",
 ]
 
 const REQUIRED_META_SLUGS = [
