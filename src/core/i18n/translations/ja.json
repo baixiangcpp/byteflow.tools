@@ -650,7 +650,14 @@
       "example_reserved": "予約区切り文字",
       "input_placeholder": "テキストまたはURLエンコード文字列をここに貼り付けてください...",
       "encode_error": "このモードでは URL をエンコードできませんでした。入力を確認して再試行してください。",
-      "decode_error": "現在のモードではURLエンコード文字列が無効です。"
+      "decode_error": "現在のモードではURLエンコード文字列が無効です。",
+      "decode_error_position_label": "位置",
+      "decode_error_sequence_label": "シーケンス",
+      "decode_error_reason_label": "理由",
+      "decode_error_non_hex": "パーセントエスケープには 2 桁の 16 進数が必要です。",
+      "decode_error_truncated": "このパーセントエスケープは 16 進数が不足しています。",
+      "decode_error_invalid_encoding": "このパーセントバイト列は現在のデコーダーで有効なテキストではありません。",
+      "decode_error_fix": "壊れた部分を %HH バイトに直すか、余分な % を削除するか、元の文字列に合うモードへ切り替えてください。"
     },
     "jwt_decoder": {
       "title": "JWT デコーダー",

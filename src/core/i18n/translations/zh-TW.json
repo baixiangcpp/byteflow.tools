@@ -650,7 +650,14 @@
       "example_reserved": "保留分隔符",
       "input_placeholder": "在此貼上文字或 URL 編碼字串...",
       "encode_error": "目前模式下 URL 編碼失敗，請檢查輸入後重試。",
-      "decode_error": "目前模式下 URL 編碼字串無效。"
+      "decode_error": "目前模式下 URL 編碼字串無效。",
+      "decode_error_position_label": "位置",
+      "decode_error_sequence_label": "片段",
+      "decode_error_reason_label": "原因",
+      "decode_error_non_hex": "百分號跳脫必須使用兩個十六進位字元。",
+      "decode_error_truncated": "此百分號跳脫缺少一個或兩個十六進位字元。",
+      "decode_error_invalid_encoding": "這些百分號位元組不是目前解碼器可識別的有效文字。",
+      "decode_error_fix": "請將損壞片段改為 %HH 位元組、刪除多餘百分號，或切換到符合來源字串的模式。"
     },
     "jwt_decoder": {
       "title": "JWT 解碼器",

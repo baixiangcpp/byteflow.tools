@@ -650,7 +650,14 @@
       "example_reserved": "예약 구분자",
       "input_placeholder": "텍스트 또는 URL 인코딩 문자열을 여기에 붙여 넣으세요...",
       "encode_error": "현재 모드에서 URL 인코딩에 실패했습니다. 입력을 확인하고 다시 시도하세요.",
-      "decode_error": "현재 모드에서 유효하지 않은 URL 인코딩 문자열입니다."
+      "decode_error": "현재 모드에서 유효하지 않은 URL 인코딩 문자열입니다.",
+      "decode_error_position_label": "위치",
+      "decode_error_sequence_label": "시퀀스",
+      "decode_error_reason_label": "이유",
+      "decode_error_non_hex": "퍼센트 이스케이프는 두 자리 16진수를 사용해야 합니다.",
+      "decode_error_truncated": "이 퍼센트 이스케이프에는 16진수 한두 자리가 부족합니다.",
+      "decode_error_invalid_encoding": "이 퍼센트 바이트는 현재 디코더에서 유효한 텍스트가 아닙니다.",
+      "decode_error_fix": "손상된 부분을 %HH 바이트로 바꾸거나, 남는 퍼센트 기호를 제거하거나, 원본 문자열에 맞는 모드로 전환하세요."
     },
     "jwt_decoder": {
       "title": "JWT 디코더",
