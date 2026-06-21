@@ -77,10 +77,16 @@ export type TemplateCopy = {
     operationalNotes: string
     relatedTools: string
     frequentlyAskedQuestions: string
+    trustCenterPrivacyNote: {
+        beforeLink: string
+        linkLabel: string
+        afterLink: string
+    }
 }
 
 export type ToolTemplateRenderModel = {
     toolSlug: string
+    locale: Locale
     title: string
     content: ToolContentTemplateData
     copy: TemplateCopy

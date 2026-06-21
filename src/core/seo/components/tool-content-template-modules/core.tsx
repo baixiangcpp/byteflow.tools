@@ -1,5 +1,6 @@
 import type { Locale } from "@/core/i18n/i18n"
 import { requireTranslationValue } from "@/core/i18n/i18n"
+import Link from "next/link"
 import { getToolBySlug } from "@/core/registry"
 import { JsonLdScript } from "@/core/seo/components/json-ld-script"
 import { ToolContentTemplateSurface } from "@/core/seo/components/tool-content-template-surface"
@@ -14,7 +15,14 @@ import type {
 } from "./types"
 
 export const SEO_CONTENT_TEMPLATE_LOCALES = new Set<Locale>(["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr"])
-export const FAQ_SCHEMA_TOOL_SLUGS = new Set(["json-formatter", "base64-encode-decode", "jwt-decoder"])
+export const FAQ_SCHEMA_TOOL_SLUGS = new Set([
+    "json-formatter",
+    "jwt-decoder",
+    "base64-encode-decode",
+    "hash-generator",
+    "markdown-preview",
+    "image-resizer",
+])
 
 export function shouldEmitFaqSchema(toolSlug: string) {
     return FAQ_SCHEMA_TOOL_SLUGS.has(toolSlug)
@@ -75,6 +83,7 @@ export function buildToolTemplateModel({
 
     return {
         toolSlug,
+        locale: lang,
         title,
         content,
         copy: getTemplateCopy(lang),
@@ -170,6 +179,13 @@ export function ToolContentTemplateSection({
 
                     <section className="space-y-3">
                         <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">{model.copy.securityAndPrivacyNotes}</h3>
+                        <p className="text-sm leading-relaxed text-foreground/90">
+                            {model.copy.trustCenterPrivacyNote.beforeLink}
+                            <Link className="font-medium text-primary underline-offset-4 hover:underline" href={`/${model.locale}/trust-center`}>
+                                {model.copy.trustCenterPrivacyNote.linkLabel}
+                            </Link>
+                            {model.copy.trustCenterPrivacyNote.afterLink}
+                        </p>
                         <ul className="space-y-2 text-sm leading-relaxed text-foreground/90">
                             {model.content.privacyNotes.map((item) => (
                                 <li key={item} className="list-disc pl-1 ml-5">{item}</li>

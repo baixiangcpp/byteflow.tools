@@ -14,6 +14,11 @@ const EN_TEMPLATE_COPY: TemplateCopy = {
     operationalNotes: "Operational notes",
     relatedTools: "Related tools",
     frequentlyAskedQuestions: "Frequently asked questions",
+    trustCenterPrivacyNote: {
+        beforeLink: "For the shared privacy terminology, local processing model, external-request labels, and DevTools verification workflow, see the ",
+        linkLabel: "Trust Center",
+        afterLink: ".",
+    },
 }
 
 const TEMPLATE_COPY_BY_LOCALE: Partial<Record<Locale, TemplateCopy>> = {
@@ -30,6 +35,11 @@ const TEMPLATE_COPY_BY_LOCALE: Partial<Record<Locale, TemplateCopy>> = {
         operationalNotes: "\u4F7F\u7528\u5EFA\u8BAE",
         relatedTools: "\u76F8\u5173\u5DE5\u5177",
         frequentlyAskedQuestions: "\u5E38\u89C1\u95EE\u9898",
+        trustCenterPrivacyNote: {
+            beforeLink: "\u5982\u9700\u4E86\u89E3\u7EDF\u4E00\u7684\u9690\u79C1\u672F\u8BED\u3001\u672C\u5730\u5904\u7406\u6A21\u5F0F\u3001\u5916\u90E8\u8BF7\u6C42\u6807\u8BB0\u548C DevTools \u9A8C\u8BC1\u6D41\u7A0B\uFF0C\u8BF7\u67E5\u770B",
+            linkLabel: "\u4FE1\u4EFB\u4E2D\u5FC3",
+            afterLink: "\u3002",
+        },
     },
     "zh-TW": {
         guideTitle: (title) => `${title}\uFF1A\u5B8C\u6574\u4F7F\u7528\u6307\u5357`,
@@ -44,6 +54,11 @@ const TEMPLATE_COPY_BY_LOCALE: Partial<Record<Locale, TemplateCopy>> = {
         operationalNotes: "\u4F7F\u7528\u5EFA\u8B70",
         relatedTools: "\u76F8\u95DC\u5DE5\u5177",
         frequentlyAskedQuestions: "\u5E38\u898B\u554F\u984C",
+        trustCenterPrivacyNote: {
+            beforeLink: "\u5982\u9700\u4E86\u89E3\u7D71\u4E00\u7684\u96B1\u79C1\u8853\u8A9E\u3001\u672C\u5730\u8655\u7406\u6A21\u5F0F\u3001\u5916\u90E8\u8ACB\u6C42\u6A19\u8A18\u548C DevTools \u9A57\u8B49\u6D41\u7A0B\uFF0C\u8ACB\u67E5\u770B",
+            linkLabel: "\u4FE1\u4EFB\u4E2D\u5FC3",
+            afterLink: "\u3002",
+        },
     },
     ja: {
         guideTitle: (title) => `${title}\uFF1A\u5B8C\u5168\u30AC\u30A4\u30C9`,
@@ -58,6 +73,11 @@ const TEMPLATE_COPY_BY_LOCALE: Partial<Record<Locale, TemplateCopy>> = {
         operationalNotes: "\u904B\u7528\u306E\u30D2\u30F3\u30C8",
         relatedTools: "\u95A2\u9023\u30C4\u30FC\u30EB",
         frequentlyAskedQuestions: "\u3088\u304F\u3042\u308B\u8CEA\u554F",
+        trustCenterPrivacyNote: {
+            beforeLink: "\u5171\u901A\u306E\u30D7\u30E9\u30A4\u30D0\u30B7\u30FC\u7528\u8A9E\u3001\u30ED\u30FC\u30AB\u30EB\u51E6\u7406\u30E2\u30C7\u30EB\u3001\u5916\u90E8\u30EA\u30AF\u30A8\u30B9\u30C8\u30E9\u30D9\u30EB\u3001DevTools \u3067\u306E\u691C\u8A3C\u624B\u9806\u306F",
+            linkLabel: "\u30C8\u30E9\u30B9\u30C8\u30BB\u30F3\u30BF\u30FC",
+            afterLink: "\u3092\u78BA\u8A8D\u3057\u3066\u304F\u3060\u3055\u3044\u3002",
+        },
     },
     ko: {
         guideTitle: (title) => `${title}: \uC644\uC804 \uAC00\uC774\uB4DC`,
@@ -72,6 +92,11 @@ const TEMPLATE_COPY_BY_LOCALE: Partial<Record<Locale, TemplateCopy>> = {
         operationalNotes: "\uD65C\uC6A9 \uD301",
         relatedTools: "\uAD00\uB828 \uB3C4\uAD6C",
         frequentlyAskedQuestions: "\uC790\uC8FC \uBB3B\uB294 \uC9C8\uBB38",
+        trustCenterPrivacyNote: {
+            beforeLink: "\uACF5\uD1B5 \uAC1C\uC778\uC815\uBCF4 \uC6A9\uC5B4, \uB85C\uCEEC \uCC98\uB9AC \uBAA8\uB378, \uC678\uBD80 \uC694\uCCAD \uB77C\uBCA8, DevTools \uAC80\uC99D \uD750\uB984\uC740 ",
+            linkLabel: "\uC2E0\uB8B0 \uC13C\uD130",
+            afterLink: "\uC5D0\uC11C \uD655\uC778\uD558\uC138\uC694.",
+        },
     },
     de: {
         guideTitle: (title) => `${title}: Vollständiger Leitfaden`,
@@ -86,6 +111,11 @@ const TEMPLATE_COPY_BY_LOCALE: Partial<Record<Locale, TemplateCopy>> = {
         operationalNotes: "Praxishinweise",
         relatedTools: "Verwandte Tools",
         frequentlyAskedQuestions: "Häufig gestellte Fragen",
+        trustCenterPrivacyNote: {
+            beforeLink: "Gemeinsame Datenschutzbegriffe, das lokale Verarbeitungsmodell, External-Request-Kennzeichnungen und die DevTools-Prüfung stehen im ",
+            linkLabel: "Vertrauenszentrum",
+            afterLink: ".",
+        },
     },
     fr: {
         guideTitle: (title) => `${title}: guide complet`,
@@ -100,6 +130,11 @@ const TEMPLATE_COPY_BY_LOCALE: Partial<Record<Locale, TemplateCopy>> = {
         operationalNotes: "Conseils d'utilisation",
         relatedTools: "Outils associés",
         frequentlyAskedQuestions: "Questions fréquentes",
+        trustCenterPrivacyNote: {
+            beforeLink: "Pour les termes de confidentialité, le modèle de traitement local, les libellés de requête externe et la vérification DevTools, consultez le ",
+            linkLabel: "Centre de confiance",
+            afterLink: ".",
+        },
     },
 }
 

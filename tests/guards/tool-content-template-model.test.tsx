@@ -2,7 +2,7 @@ import * as React from "react"
 import { render } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import { getTranslation } from "@/core/i18n/translations/catalog"
-import { buildToolTemplateModel, ToolContentTemplateSection } from "@/core/seo/components/tool-content-template-modules/core"
+import { buildToolTemplateModel, FAQ_SCHEMA_TOOL_SLUGS, ToolContentTemplateSection } from "@/core/seo/components/tool-content-template-modules/core"
 import { EN_FALLBACK_PACK } from "@/core/seo/components/tool-content-template-modules/packs/en"
 import { ZH_CN_FALLBACK_PACK } from "@/core/seo/components/tool-content-template-modules/packs/zh-cn"
 import { TOP_TOOL_CONTENT_TEMPLATES } from "@/core/seo/components/tool-content-template-modules/top-templates"
@@ -76,54 +76,59 @@ describe("tool content template model selection", () => {
 })
 
 describe("tool content FAQ JSON-LD shape", () => {
-    it("renders FAQPage schema with valid question/answer entities", () => {
-        const model = buildModelForEn("json-formatter")
-        expect(model).not.toBeNull()
-        if (!model) throw new Error("expected model to be available")
+    it("renders FAQPage schema for the sampled core tool templates", () => {
+        expect(Array.from(FAQ_SCHEMA_TOOL_SLUGS)).toEqual([
+            "json-formatter",
+            "jwt-decoder",
+            "base64-encode-decode",
+            "hash-generator",
+            "markdown-preview",
+            "image-resizer",
+        ])
 
-        const { container } = render(
-            <ToolContentTemplateSection
-                model={model}
-                source="server"
-            />,
-        )
+        for (const toolSlug of FAQ_SCHEMA_TOOL_SLUGS) {
+            const model = buildModelForEn(toolSlug)
+            expect(model).not.toBeNull()
+            if (!model) throw new Error(`expected model for ${toolSlug}`)
 
-        const faqScript = container.querySelector("script[data-faq-schema=\"tool\"]")
-        expect(faqScript).not.toBeNull()
-        if (!faqScript?.textContent) throw new Error("expected faq schema script content")
+            const { container } = render(
+                <ToolContentTemplateSection
+                    model={model}
+                    source="server"
+                />,
+            )
 
-        const schema = JSON.parse(faqScript.textContent) as {
-            "@context": string
-            "@type": string
-            mainEntity: Array<{
+            const faqScript = container.querySelector("script[data-faq-schema=\"tool\"]")
+            expect(faqScript).not.toBeNull()
+            if (!faqScript?.textContent) throw new Error("expected faq schema script content")
+
+            const schema = JSON.parse(faqScript.textContent) as {
+                "@context": string
                 "@type": string
-                name: string
-                acceptedAnswer: {
+                mainEntity: Array<{
                     "@type": string
-                    text: string
-                }
-            }>
-        }
+                    name: string
+                    acceptedAnswer: {
+                        "@type": string
+                        text: string
+                    }
+                }>
+            }
 
-        expect({
-            context: schema["@context"],
-            type: schema["@type"],
-            entityCount: schema.mainEntity.length,
-        }).toMatchInlineSnapshot(`
-          {
-            "context": "https://schema.org",
-            "entityCount": 3,
-            "type": "FAQPage",
-          }
-        `)
+            expect(schema["@context"]).toBe("https://schema.org")
+            expect(schema["@type"]).toBe("FAQPage")
+            expect(schema.mainEntity.length).toBe(model.content.faqs.length)
+            expect(schema.mainEntity.length).toBeGreaterThanOrEqual(3)
 
-        for (const entry of schema.mainEntity) {
-            expect(entry["@type"]).toBe("Question")
-            expect(typeof entry.name).toBe("string")
-            expect(entry.acceptedAnswer?.["@type"]).toBe("Answer")
-            expect(typeof entry.acceptedAnswer?.text).toBe("string")
+            for (const entry of schema.mainEntity) {
+                expect(entry["@type"]).toBe("Question")
+                expect(typeof entry.name).toBe("string")
+                expect(entry.acceptedAnswer?.["@type"]).toBe("Answer")
+                expect(typeof entry.acceptedAnswer?.text).toBe("string")
+                expect(container.textContent).toContain(entry.name)
+                expect(container.textContent).toContain(entry.acceptedAnswer.text)
+            }
         }
-        expect(schema.mainEntity.length).toBe(model.content.faqs.length)
     })
 
     it("renders from the prebuilt model without re-reading unrelated translations", () => {
@@ -156,5 +161,21 @@ describe("tool content FAQ JSON-LD shape", () => {
 
         expect(container.querySelector("script[data-faq-schema=\"tool\"]")).toBeNull()
         expect(container.textContent).toContain(model.copy.frequentlyAskedQuestions)
+    })
+
+    it("links template privacy notes to the Trust Center", () => {
+        const model = buildModelForEn("json-formatter")
+        expect(model).not.toBeNull()
+        if (!model) throw new Error("expected model to be available")
+
+        const { container } = render(
+            <ToolContentTemplateSection
+                model={model}
+                source="server"
+            />,
+        )
+
+        const trustCenterLink = container.querySelector('a[href="/en/trust-center"]')
+        expect(trustCenterLink?.textContent).toBe("Trust Center")
     })
 })
