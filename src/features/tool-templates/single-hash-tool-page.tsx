@@ -107,7 +107,7 @@ export function SingleHashToolPage({
                                 </span>
                             </div>
                         </div>
-                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => void copyOutput()} disabled={!digest}>
+                        <Button variant="ghost" size="icon" onClick={() => void copyOutput()} disabled={!digest}>
                             <Copy className="h-4 w-4" />
                             <span className="sr-only">{t.common.copy}</span>
                         </Button>

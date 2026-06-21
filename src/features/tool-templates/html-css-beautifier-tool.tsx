@@ -456,7 +456,7 @@ export function HtmlCssBeautifierTool({
                 <div className="flex h-full flex-col overflow-hidden rounded-lg border bg-card">
                     <div className="tool-pane-header tool-pane-header-between">
                         <span>{t.common.output}</span>
-                        <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => void handleCopy()} disabled={!output}>
+                        <Button variant="ghost" size="icon" onClick={() => void handleCopy()} disabled={!output}>
                             <Copy className="h-4 w-4" />
                             <span className="sr-only">{t.common.copy_output}</span>
                         </Button>

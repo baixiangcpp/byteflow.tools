@@ -114,10 +114,10 @@ const DynamicMarkdownPreviewRenderer = dynamic(
 )
 
 const ACTION_BUTTON_CLASS =
-    "inline-flex h-8 items-center justify-center gap-1.5 rounded-md border border-border bg-background px-3 text-sm font-medium shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 dark:bg-input/30 dark:border-input dark:hover:bg-input/50"
+    "inline-flex min-h-11 items-center justify-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-sm font-medium shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 dark:bg-input/30 dark:border-input dark:hover:bg-input/50"
 
 const ICON_ACTION_BUTTON_CLASS =
-    "inline-flex h-8 w-8 items-center justify-center rounded-md border border-border bg-background shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 dark:bg-input/30 dark:border-input dark:hover:bg-input/50"
+    "inline-flex min-h-11 min-w-11 items-center justify-center rounded-md border border-border bg-background shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 dark:bg-input/30 dark:border-input dark:hover:bg-input/50"
 
 async function loadToast() {
     const { toast } = await import("sonner")
@@ -252,24 +252,30 @@ ${safeHtml}
                     </div>
                 </div>
 
-                <div className="flex items-center gap-1.5">
+                    <div className="flex flex-wrap items-center gap-1.5">
                     {/* View toggles */}
                     <div className="flex items-center rounded-md border bg-muted p-0.5 gap-0.5">
                         <button
+                            type="button"
                             onClick={() => setView("editor")}
-                            className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${view === "editor" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                            aria-pressed={view === "editor"}
+                            className={`min-h-11 rounded px-2.5 py-1 text-xs font-medium transition-colors ${view === "editor" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                         >
                             <Code2 className="h-3.5 w-3.5 inline mr-1" />{toolT.editor}
                         </button>
                         <button
+                            type="button"
                             onClick={() => setView("split")}
-                            className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${view === "split" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                            aria-pressed={view === "split"}
+                            className={`min-h-11 rounded px-2.5 py-1 text-xs font-medium transition-colors ${view === "split" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                         >
                             {toolT.split}
                         </button>
                         <button
+                            type="button"
                             onClick={() => setView("preview")}
-                            className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${view === "preview" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
+                            aria-pressed={view === "preview"}
+                            className={`min-h-11 rounded px-2.5 py-1 text-xs font-medium transition-colors ${view === "preview" ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"}`}
                         >
                             <Eye className="h-3.5 w-3.5 inline mr-1" />{toolT.preview}
                         </button>
@@ -297,15 +303,16 @@ ${safeHtml}
             </div>
 
             {/* Content */}
-            <div className="flex-1 flex min-h-0">
+            <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
                 {/* Editor Pane */}
                 {(view === "split" || view === "editor") && (
-                    <div className={`flex flex-col border-r ${view === "split" ? "w-1/2" : "w-full"}`}>
+                    <div className={`flex min-h-[320px] flex-col border-b lg:border-r lg:border-b-0 ${view === "split" ? "w-full lg:w-1/2" : "w-full"}`}>
                         <div className="tool-pane-header-compact flex items-center justify-between">
-                            <span>{toolT.md_source}</span>
+                            <label htmlFor="markdown-source-editor">{toolT.md_source}</label>
                             <span className="text-[10px] tabular-nums">{markdown.length} {toolT.chars}</span>
                         </div>
                         <textarea
+                            id="markdown-source-editor"
                             value={markdown}
                             onChange={(e) => setMarkdown(e.target.value)}
                             className="flex-1 resize-none bg-background p-4 font-mono text-sm leading-relaxed placeholder:text-muted-foreground/50 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring/50"
@@ -317,13 +324,14 @@ ${safeHtml}
 
                 {/* Preview Pane */}
                 {(view === "split" || view === "preview") && (
-                    <div className={`flex flex-col ${view === "split" ? "w-1/2" : "w-full"}`}>
+                    <div className={`flex min-h-[320px] flex-col ${view === "split" ? "w-full lg:w-1/2" : "w-full"}`}>
                         <div className="tool-pane-header-compact">
-                            {toolT.preview_tab}
+                            <span id="markdown-preview-heading">{toolT.preview_tab}</span>
                         </div>
                         {previewEnabled ? (
                             <DynamicMarkdownPreviewRenderer
                                 markdown={deferredMarkdown}
+                                ariaLabelledby="markdown-preview-heading"
                                 className="flex-1 overflow-auto p-6 prose prose-invert prose-sm max-w-none
                                            prose-headings:text-foreground prose-headings:font-bold
                                            prose-h1:text-2xl prose-h1:border-b prose-h1:border-border prose-h1:pb-2
@@ -340,7 +348,7 @@ ${safeHtml}
                                            prose-li:text-foreground/90 prose-li:marker:text-primary"
                             />
                         ) : (
-                            <div className="flex flex-1 items-center justify-center p-6 text-sm text-muted-foreground">
+                            <div role="status" className="flex flex-1 items-center justify-center p-6 text-sm text-muted-foreground">
                                                         {t.common.preview_will_appear_here}
                             </div>
                         )}

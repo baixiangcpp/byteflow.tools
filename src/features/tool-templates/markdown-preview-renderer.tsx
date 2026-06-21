@@ -16,11 +16,12 @@ const MARKDOWN_RENDER_COMPONENTS = {
 type MarkdownPreviewRendererProps = {
     markdown: string
     className?: string
+    ariaLabelledby?: string
 }
 
-export function MarkdownPreviewRenderer({ markdown, className }: MarkdownPreviewRendererProps) {
+export function MarkdownPreviewRenderer({ markdown, className, ariaLabelledby }: MarkdownPreviewRendererProps) {
     return (
-        <div id="markdown-preview" className={className}>
+        <div id="markdown-preview" role="region" aria-labelledby={ariaLabelledby} className={className}>
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
                 rehypePlugins={[rehypeRaw, [rehypeSanitize, MARKDOWN_SANITIZE_SCHEMA]]}

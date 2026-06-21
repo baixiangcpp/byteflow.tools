@@ -39,6 +39,15 @@ export function AppLayout({
             <a
                 href="#main-content"
                 className="sr-only z-[60] mx-auto mt-2 w-fit rounded-md bg-background px-3 py-2 text-sm text-foreground shadow-sm ring-1 ring-border focus:not-sr-only focus:fixed focus:left-4 focus:top-3"
+                data-skip-link="main-content"
+                onClick={(event) => {
+                    const main = document.getElementById("main-content")
+                    if (!main) return
+                    event.preventDefault()
+                    main.focus({ preventScroll: true })
+                    main.scrollIntoView({ block: "start" })
+                    window.history.pushState(null, "", "#main-content")
+                }}
             >
                 {skipToContentLabel}
             </a>
@@ -46,7 +55,7 @@ export function AppLayout({
             <DeferredAppRuntime pathname={pathname} />
             {header}
             <DeferredCommandPalette />
-            <main id="main-content" className={mainClassName}>
+            <main id="main-content" tabIndex={-1} className={mainClassName}>
                 <div className={contentClassName}>
                     {isHomePage ? children : (
                         <RoutePageChrome pathname={pathname}>

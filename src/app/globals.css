@@ -146,6 +146,13 @@
     touch-action: manipulation;
     -webkit-tap-highlight-color: hsl(191 92% 42% / 0.2);
   }
+
+@media (max-width: 767px), (pointer: coarse) {
+  :where(a[href], button, [role="button"], input, select, textarea) {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+}
 }
 
 @layer components {

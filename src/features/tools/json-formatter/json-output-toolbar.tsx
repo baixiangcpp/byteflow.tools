@@ -66,8 +66,8 @@ export function JsonOutputToolbar({
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-7 w-7"
                             title={labels.expandAll}
+                            aria-label={labels.expandAll}
                             onClick={onExpandAll}
                             disabled={!hasTreeData}
                         >
@@ -76,8 +76,8 @@ export function JsonOutputToolbar({
                         <Button
                             variant="ghost"
                             size="icon"
-                            className="h-7 w-7"
                             title={labels.collapseAll}
+                            aria-label={labels.collapseAll}
                             onClick={onCollapseAll}
                             disabled={!hasTreeData}
                         >
@@ -86,8 +86,9 @@ export function JsonOutputToolbar({
                         <Button
                             variant="ghost"
                             size="icon"
-                            className={`h-7 w-7 ${isSearchOpen ? "bg-accent text-accent-foreground" : ""}`}
+                            className={isSearchOpen ? "bg-accent text-accent-foreground" : ""}
                             title={labels.search}
+                            aria-label={labels.search}
                             onClick={onToggleSearch}
                             disabled={!hasTreeData}
                         >
@@ -96,7 +97,7 @@ export function JsonOutputToolbar({
                     </div>
                 ) : null}
 
-                <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onCopy} disabled={!canCopy}>
+                <Button variant="ghost" size="icon" onClick={onCopy} disabled={!canCopy}>
                     <Copy className="h-4 w-4" />
                     <span className="sr-only">{labels.copyOutput}</span>
                 </Button>

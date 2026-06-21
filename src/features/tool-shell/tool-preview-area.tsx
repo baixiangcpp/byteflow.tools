@@ -60,9 +60,9 @@ export function ToolPreviewArea({
                 <Button
                     variant="ghost"
                     size="icon"
-                    className="h-7 w-7"
                     onClick={toggleBackground}
-                    title="Toggle background"
+                    aria-label="Toggle preview background"
+                    title="Toggle preview background"
                 >
                     <Grid3X3 className="h-3.5 w-3.5" />
                 </Button>
@@ -70,7 +70,7 @@ export function ToolPreviewArea({
             {allowFullscreen && (
                 <Dialog>
                     <DialogTrigger asChild>
-                        <Button variant="ghost" size="icon" className="h-7 w-7" title="Fullscreen">
+                        <Button variant="ghost" size="icon" aria-label="Open preview fullscreen" title="Open preview fullscreen">
                             <Maximize2 className="h-3.5 w-3.5" />
                         </Button>
                     </DialogTrigger>
