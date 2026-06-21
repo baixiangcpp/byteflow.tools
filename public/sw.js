@@ -139,13 +139,32 @@ function pruneRuntimeCache(cacheName) {
             }));
 }
 
+function isCacheWritePaused() {
+    return Date.now() < cacheWritesPausedUntil;
+}
+
+function discardRuntimeCacheWrite(cacheName) {
+    return Promise.all([
+        caches.delete(cacheName),
+        caches.delete(CACHE_META_NAME),
+    ]).then(() => undefined);
+}
+
 function putRuntimeCache(request, response, cacheName) {
-    if (Date.now() < cacheWritesPausedUntil) return Promise.resolve();
+    if (isCacheWritePaused()) return Promise.resolve();
     const clone = response.clone();
     return caches.open(cacheName)
-        .then((cache) => cache.put(request, clone))
-        .then(() => rememberCachedRequest(cacheName, request))
-        .then(() => pruneRuntimeCache(cacheName));
+        .then((cache) => {
+            if (isCacheWritePaused()) return discardRuntimeCacheWrite(cacheName);
+            return cache.put(request, clone).then(() => {
+                if (isCacheWritePaused()) return discardRuntimeCacheWrite(cacheName);
+                return rememberCachedRequest(cacheName, request);
+            });
+        })
+        .then(() => {
+            if (isCacheWritePaused()) return discardRuntimeCacheWrite(cacheName);
+            return pruneRuntimeCache(cacheName);
+        });
 }
 
 function isNetworkOnlyRequest(request, url) {
