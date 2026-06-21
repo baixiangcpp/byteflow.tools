@@ -196,6 +196,13 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
               <SearchButton label={heroSearchLabel} />
               <Link
+                href={`/${locale}/pipeline-builder`}
+                prefetch={false}
+                className="inline-flex min-h-11 items-center rounded-lg border border-primary/35 bg-primary/12 px-5 text-sm font-medium text-primary backdrop-blur-sm transition-all hover:border-primary/50 hover:bg-primary/16 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+              >
+                {getLocalizedToolTitle("pipeline_builder")}
+              </Link>
+              <Link
                 href={`/${locale}/install-app`}
                 prefetch={false}
                 className="inline-flex min-h-11 items-center rounded-lg border border-border/60 bg-background/80 px-5 text-sm font-medium text-foreground backdrop-blur-sm transition-all hover:border-primary/30 hover:bg-background hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"

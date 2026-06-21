@@ -52,7 +52,7 @@ export function recipeContainsRuntimeInput(recipe: RecipeDocument): boolean {
     return recipe.steps.some((step) => step.inputMode === "constant" && typeof step.constantInput === "string" && step.constantInput.length > 0)
 }
 
-function sanitizeShareOptions(toolKey: string, options: Record<string, unknown>): Record<string, unknown> {
+function sanitizePortableOptions(toolKey: string, options: Record<string, unknown>): Record<string, unknown> {
     const adapter = getPipelineAdapter(toolKey)
     if (!adapter) return {}
 
@@ -63,16 +63,16 @@ function sanitizeShareOptions(toolKey: string, options: Record<string, unknown>)
     )
 }
 
-export function encodeRecipeForShareUrl(recipe: RecipeDocument, options: { includeRuntimeInput?: boolean } = {}): string {
-    const clone: RecipeDocument = {
+export function createPortableRecipe(recipe: RecipeDocument): RecipeDocument {
+    return {
         ...recipe,
         steps: recipe.steps.map((step) => {
             const base = {
                 ...step,
-                options: sanitizeShareOptions(step.toolKey, step.options || {}),
+                options: sanitizePortableOptions(step.toolKey, step.options || {}),
             }
 
-            if (!options.includeRuntimeInput && step.inputMode === "constant") {
+            if (step.inputMode === "constant") {
                 const withoutInput = { ...base }
                 delete withoutInput.constantInput
                 return {
@@ -84,5 +84,8 @@ export function encodeRecipeForShareUrl(recipe: RecipeDocument, options: { inclu
             return base
         }),
     }
-    return encodeRecipeForUrl(clone)
+}
+
+export function encodeRecipeForShareUrl(recipe: RecipeDocument): string {
+    return encodeRecipeForUrl(createPortableRecipe(recipe))
 }

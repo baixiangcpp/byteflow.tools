@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { ArrowUpRight, Search } from "lucide-react"
+import { ArrowUpRight, Search, Workflow } from "lucide-react"
 import { DeferredMobileNavMenu } from "./deferred-mobile-nav-menu"
 import { DeferredNavbarControls } from "./deferred-navbar-controls"
 import { Button } from "@/components/ui/button"
@@ -10,6 +10,7 @@ import { cn } from "@/core/utils/utils"
 export type NavbarLabels = {
     allTools: string
     openNavigation: string
+    pipelineBuilder: string
     search: string
 }
 
@@ -64,6 +65,17 @@ export function Navbar({
                 </Button>
 
                 <div className="ml-auto flex shrink-0 items-center gap-1.5 max-[420px]:gap-0.5">
+                    <Link
+                        href={`/${lang}/pipeline-builder`}
+                        className={cn(
+                            "hidden min-h-10 items-center gap-1.5 rounded-lg border border-primary/30 bg-primary/10 px-3 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45 lg:inline-flex",
+                            "text-primary hover:border-primary/50 hover:bg-primary/15"
+                        )}
+                    >
+                        <Workflow className="h-3.5 w-3.5" />
+                        {labels.pipelineBuilder}
+                    </Link>
+
                     <Link
                         href={allToolsHref}
                         className={cn(

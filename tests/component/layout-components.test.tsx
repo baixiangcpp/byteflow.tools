@@ -227,12 +227,14 @@ describe("layout components", () => {
                 labels={{
                     allTools: "All tools",
                     openNavigation: "Open Navigation",
+                    pipelineBuilder: "Pipeline Builder",
                     search: "Search",
                 }}
             />,
         )
 
         expect(screen.getByRole("link", { name: "byteflow.tools" })).toHaveAttribute("href", "/en")
+        expect(screen.getByRole("link", { name: "Pipeline Builder" })).toHaveAttribute("href", "/en/pipeline-builder")
         expect(screen.getByRole("link", { name: "All tools" })).toHaveAttribute("href", getAllToolsHref("en"))
         expect(screen.getByLabelText("Search")).toHaveAttribute("data-command-palette-trigger")
     })

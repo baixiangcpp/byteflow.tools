@@ -18,9 +18,10 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { FILE_INPUT_POLICIES, readTextFileWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
+import { getToolByKey } from "@/core/registry"
 import { getToolHandoffFromSearchParams } from "@/core/routing/tool-handoff"
 import { PIPELINE_TOOL_ADAPTERS } from "@/features/pipeline/adapter-registry"
-import { decodeRecipeFromUrlParam, encodeRecipeForShareUrl, recipeContainsRuntimeInput } from "@/features/pipeline/recipe-codec"
+import { createPortableRecipe, decodeRecipeFromUrlParam, encodeRecipeForShareUrl, recipeContainsRuntimeInput } from "@/features/pipeline/recipe-codec"
 import { runRecipe, validateRecipe } from "@/features/pipeline/executor"
 import { exportRecipeToJson, importRecipeFromJson } from "@/features/pipeline/recipe-import-export"
 import { createRecipeFromTemplate, PIPELINE_RECIPE_TEMPLATES, type PipelineRecipeTemplate } from "@/features/pipeline/recipe-templates"
@@ -203,6 +204,8 @@ export function PipelineBuilderPage() {
             toast.error(saveResult.error)
             return
         }
+        setRecipe(saveResult.value.recipe)
+        setSelectedStepId(saveResult.value.recipe.steps[0]?.id ?? null)
         toast.success(text("recipe_saved"))
         await refreshSavedRecipes()
     }, [recipe, refreshSavedRecipes, storageAvailable, text])
@@ -237,7 +240,8 @@ export function PipelineBuilderPage() {
     }, [refreshSavedRecipes, selectedSavedId, storageAvailable, text])
 
     const exportRecipe = React.useCallback(() => {
-        downloadText(`${recipe.name.trim().replace(/[^\w.-]+/g, "-") || "byteflow-recipe"}.json`, exportRecipeToJson(recipe))
+        const portableRecipe = createPortableRecipe(recipe)
+        downloadText(`${portableRecipe.name.trim().replace(/[^\w.-]+/g, "-") || "byteflow-recipe"}.json`, exportRecipeToJson(portableRecipe))
         toast.success(text("recipe_exported"))
     }, [recipe, text])
 
@@ -359,6 +363,9 @@ export function PipelineBuilderPage() {
 
                     <PipelineStepList
                         adapterOptions={PIPELINE_TOOL_ADAPTERS.map((adapter) => ({
+                            externalRequestRequired: getToolByKey(adapter.toolKey)?.privacy.externalRequest.required === true,
+                            inputKind: adapter.inputKind,
+                            outputKind: adapter.outputKind,
                             title: (t.tools[adapter.toolKey] as Record<string, string> | undefined)?.title ?? adapter.toolKey,
                             toolKey: adapter.toolKey,
                         }))}

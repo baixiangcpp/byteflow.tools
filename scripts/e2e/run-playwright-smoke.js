@@ -1,5 +1,6 @@
 import { createServer } from "node:http";
 import { existsSync } from "node:fs";
+import { readFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { chromium } from "playwright";
@@ -712,11 +713,85 @@ async function assertPipelineRecipeJourney(context, baseUrl) {
     await page.waitForSelector("main", { timeout: 15_000 });
 
     await page.getByRole("button", { name: /Try Example/i }).first().click();
+    await page.getByLabel("Recipe name").fill("Smoke saved recipe");
+    await page.getByLabel("Initial input").fill('{ "apiKey": "runtime-secret-value-987", "ok": true }');
     await page.getByRole("button", { name: /Run Recipe/i }).first().click();
     await page.waitForFunction(() => {
         const readonlyOutput = Array.from(document.querySelectorAll("textarea")).find((node) => node.readOnly);
         return Boolean(readonlyOutput?.value.trim()) && document.body.innerText.includes("OK");
     }, null, { timeout: 15_000 });
+
+    const saveButton = page.getByRole("button", { name: /^Save$/ }).first();
+    await page.waitForFunction(() => {
+        const buttons = Array.from(document.querySelectorAll("button"));
+        return buttons.some((button) => button.textContent?.trim() === "Save" && !button.disabled);
+    }, null, { timeout: 15_000 });
+    await saveButton.click();
+    await page.waitForFunction(() => {
+        const select = document.querySelector("[aria-label='Select saved recipe']");
+        if (!(select instanceof HTMLSelectElement)) return false;
+        return Array.from(select.options).some((option) => option.textContent?.trim() === "Smoke saved recipe");
+    }, null, { timeout: 15_000 });
+
+    const storedRecipes = await page.evaluate(async () => {
+        return await new Promise((resolve, reject) => {
+            const request = indexedDB.open("byteflow-pipeline-recipes");
+            request.onerror = () => reject(request.error ?? new Error("Unable to open recipe store."));
+            request.onsuccess = () => {
+                const db = request.result;
+                const tx = db.transaction("recipes", "readonly");
+                const getAll = tx.objectStore("recipes").getAll();
+                getAll.onerror = () => reject(getAll.error ?? new Error("Unable to read saved recipes."));
+                getAll.onsuccess = () => {
+                    db.close();
+                    resolve(getAll.result);
+                };
+            };
+        });
+    });
+    const serializedSavedRecipes = JSON.stringify(storedRecipes);
+    if (!serializedSavedRecipes.includes("Smoke saved recipe")) {
+        throw new Error("Pipeline Builder did not save the smoke recipe locally.");
+    }
+    if (serializedSavedRecipes.includes("runtime-secret-value-987")) {
+        throw new Error("Pipeline Builder saved runtime input in IndexedDB.");
+    }
+
+    await page.getByLabel("Recipe name").fill("Unsaved scratch recipe");
+    await page.getByLabel("Select saved recipe").selectOption({ label: "Smoke saved recipe" });
+    await page.getByRole("button", { name: /^Load$/ }).click();
+    await page.waitForFunction(() => {
+        const input = document.querySelector("#recipe-name");
+        return input instanceof HTMLInputElement && input.value === "Smoke saved recipe";
+    }, null, { timeout: 15_000 });
+
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: /^Export JSON$/ }).first().click();
+    const download = await downloadPromise;
+    const downloadPath = await download.path();
+    if (!downloadPath) {
+        throw new Error("Pipeline Builder export did not produce a downloadable file.");
+    }
+    const exportedRecipeJson = await readFile(downloadPath, "utf8");
+    const exportedRecipe = JSON.parse(exportedRecipeJson);
+    if (exportedRecipeJson.includes("runtime-secret-value-987")) {
+        throw new Error("Pipeline Builder exported runtime input in recipe JSON.");
+    }
+    if (!Array.isArray(exportedRecipe.steps) || exportedRecipe.steps.length < 2) {
+        throw new Error("Pipeline Builder export did not include recipe steps.");
+    }
+
+    await page.locator('input[type="file"]').setInputFiles({
+        name: "smoke-recipe.json",
+        mimeType: "application/json",
+        buffer: Buffer.from(exportedRecipeJson),
+    });
+    await page.waitForFunction(() => {
+        const input = document.querySelector("#recipe-name");
+        return input instanceof HTMLInputElement && input.value === "Smoke saved recipe";
+    }, null, { timeout: 15_000 });
+    await page.getByRole("button", { name: /Run Recipe/i }).first().click();
+    await page.waitForFunction(() => document.body.innerText.includes("OK"), null, { timeout: 15_000 });
     await assertBasicAccessibility(page, "/en/pipeline-builder recipe");
 
     if (runtimeErrors.length > 0) {

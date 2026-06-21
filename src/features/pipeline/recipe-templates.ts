@@ -22,9 +22,9 @@ export interface RecipeFromTemplateResult {
 
 export const PIPELINE_RECIPE_TEMPLATES = [
     {
-        id: "json_minify_base64url",
-        titleKey: "template_json_minify_base64url_title",
-        descriptionKey: "template_json_minify_base64url_description",
+        id: "api_payload_cleanup",
+        titleKey: "template_api_payload_cleanup_title",
+        descriptionKey: "template_api_payload_cleanup_description",
         sampleInput: '{ "user": "alice@example.com", "role": "admin", "active": true }',
         steps: [
             {
@@ -40,9 +40,9 @@ export const PIPELINE_RECIPE_TEMPLATES = [
         ],
     },
     {
-        id: "url_decode_json_pretty",
-        titleKey: "template_url_decode_json_title",
-        descriptionKey: "template_url_decode_json_description",
+        id: "url_json_cleanup",
+        titleKey: "template_url_json_cleanup_title",
+        descriptionKey: "template_url_json_cleanup_description",
         sampleInput: "%7B%22user%22%3A%22alice%40example.com%22%2C%22active%22%3Atrue%7D",
         steps: [
             {
@@ -58,32 +58,28 @@ export const PIPELINE_RECIPE_TEMPLATES = [
         ],
     },
     {
-        id: "clean_copied_config",
-        titleKey: "template_clean_copied_config_title",
-        descriptionKey: "template_clean_copied_config_description",
-        sampleInput: "API_KEY\u200b=\u00a0abc123\nNAME\u3000=\tByteflow",
+        id: "security_token_review",
+        titleKey: "template_security_token_review_title",
+        descriptionKey: "template_security_token_review_description",
+        sampleInput: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1c2VyXzEyMyIsImVtYWlsIjoiYWxpY2VAZXhhbXBsZS5jb20iLCJleHAiOjE4OTM0NTYwMDAsInNjb3BlIjoicmVhZDpsb2dzIn0.signature-placeholder",
         steps: [
             {
-                toolKey: "invisible_chars_detector",
-                labelKey: "template_step_clean_invisible_chars",
-                options: {
-                    removeZeroWidth: true,
-                    normalizeSpaces: true,
-                    removeControlExceptNewlineTab: true,
-                },
+                toolKey: "jwt_decoder",
+                labelKey: "template_step_decode_jwt_payload",
+                options: { part: "payload" },
             },
             {
-                toolKey: "multiple_whitespace_remover",
-                labelKey: "template_step_normalize_whitespace",
-                options: {},
+                toolKey: "json_formatter",
+                labelKey: "template_step_pretty_json",
+                options: { mode: "pretty", indent: 2 },
             },
         ],
     },
     {
-        id: "scrub_log_secrets",
-        titleKey: "template_scrub_log_secrets_title",
-        descriptionKey: "template_scrub_log_secrets_description",
-        sampleInput: "2026-06-10T12:00:00Z WARN user=alice@example.com ip=203.0.113.10 Authorization: Bearer secret-token-value-12345",
+        id: "log_scrub_before_sharing",
+        titleKey: "template_log_scrub_before_sharing_title",
+        descriptionKey: "template_log_scrub_before_sharing_description",
+        sampleInput: "2026-06-10T12:00:00Z WARN user=alice@example.com ip=203.0.113.10 Authorization: Bearer sample-token-value-12345",
         steps: [
             {
                 toolKey: "invisible_chars_detector",
@@ -97,6 +93,28 @@ export const PIPELINE_RECIPE_TEMPLATES = [
             {
                 toolKey: "log_scrubber",
                 labelKey: "template_step_scrub_log_secrets",
+                options: {},
+            },
+        ],
+    },
+    {
+        id: "clean_copied_config",
+        titleKey: "template_clean_copied_config_title",
+        descriptionKey: "template_clean_copied_config_description",
+        sampleInput: "API_KEY\u200b=\u00a0sample_value\nNAME\u3000=\tByteflow",
+        steps: [
+            {
+                toolKey: "invisible_chars_detector",
+                labelKey: "template_step_clean_invisible_chars",
+                options: {
+                    removeZeroWidth: true,
+                    normalizeSpaces: true,
+                    removeControlExceptNewlineTab: true,
+                },
+            },
+            {
+                toolKey: "multiple_whitespace_remover",
+                labelKey: "template_step_normalize_whitespace",
                 options: {},
             },
         ],

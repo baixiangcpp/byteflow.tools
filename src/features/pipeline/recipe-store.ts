@@ -1,4 +1,5 @@
 import type { RecipeDocument } from "./recipe-types"
+import { createPortableRecipe } from "./recipe-codec"
 
 const DB_NAME = "byteflow-pipeline-recipes"
 const DB_VERSION = 1
@@ -20,6 +21,23 @@ export type RecipeStoreResult<T> =
 
 export function isRecipeStoreAvailable(): boolean {
     return typeof window !== "undefined" && typeof window.indexedDB !== "undefined"
+}
+
+export function createSavedRecipeRecord(
+    recipe: RecipeDocument,
+    metadata: Partial<SavedRecipeRecord> = {},
+    now = new Date().toISOString(),
+): SavedRecipeRecord {
+    const portableRecipe = createPortableRecipe(recipe)
+    return {
+        id: portableRecipe.id,
+        name: portableRecipe.name,
+        recipe: portableRecipe,
+        createdAt: metadata.createdAt ?? portableRecipe.createdAt ?? now,
+        updatedAt: now,
+        lastRunAt: metadata.lastRunAt,
+        pinned: metadata.pinned,
+    }
 }
 
 function requestToPromise<T>(request: IDBRequest<T>): Promise<T> {
@@ -69,16 +87,7 @@ async function withStore<T>(
 }
 
 export async function saveRecipeRecord(recipe: RecipeDocument, metadata: Partial<SavedRecipeRecord> = {}): Promise<RecipeStoreResult<SavedRecipeRecord>> {
-    const now = new Date().toISOString()
-    const record: SavedRecipeRecord = {
-        id: recipe.id,
-        name: recipe.name,
-        recipe,
-        createdAt: metadata.createdAt ?? recipe.createdAt ?? now,
-        updatedAt: now,
-        lastRunAt: metadata.lastRunAt,
-        pinned: metadata.pinned,
-    }
+    const record = createSavedRecipeRecord(recipe, metadata)
 
     const result = await withStore<IDBValidKey>("readwrite", (store) => store.put(record))
     if (!result.ok) return result

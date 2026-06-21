@@ -1,9 +1,12 @@
-import { ArrowDown, ArrowUp, Plus, Trash2 } from "lucide-react"
+import { ArrowDown, ArrowUp, Network, Plus, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { RecipeStep } from "@/features/pipeline/recipe-types"
 import type { StepCompatibilityHint } from "./logic"
 
 type AdapterOption = {
+    externalRequestRequired: boolean
+    inputKind: string
+    outputKind: string
     title: string
     toolKey: string
 }
@@ -69,6 +72,7 @@ export function PipelineStepList({
                     <div className="rounded-md border border-dashed p-4 text-sm text-muted-foreground">{text("no_steps")}</div>
                 ) : steps.map((step, index) => {
                     const adapterTitle = adapterTitleByKey.get(step.toolKey) ?? step.toolKey
+                    const adapterOption = adapterOptions.find((adapter) => adapter.toolKey === step.toolKey)
                     const active = step.id === selectedStepId
                     const hint = hintByStepId.get(step.id)
                     return (
@@ -85,9 +89,20 @@ export function PipelineStepList({
                                 <span className="block min-w-0">
                                     <span className="block font-medium">{index + 1}. {step.label || adapterTitle}</span>
                                     <span className="block truncate text-xs text-muted-foreground">{adapterTitle}</span>
+                                    {adapterOption ? (
+                                        <span className="mt-1 block text-xs text-muted-foreground">
+                                            {text("step_io_hint").replace("{input}", adapterOption.inputKind).replace("{output}", adapterOption.outputKind)}
+                                        </span>
+                                    ) : null}
                                     {hint ? (
                                         <span className="mt-1 block text-xs text-amber-700 dark:text-amber-300">
                                             {text("compatibility_hint").replace("{from}", hint.fromKind).replace("{to}", hint.toKind)}
+                                        </span>
+                                    ) : null}
+                                    {adapterOption?.externalRequestRequired ? (
+                                        <span className="mt-1 flex items-center gap-1 text-xs text-amber-700 dark:text-amber-300">
+                                            <Network className="h-3 w-3" />
+                                            {text("external_request_step_notice")}
                                         </span>
                                     ) : null}
                                 </span>
