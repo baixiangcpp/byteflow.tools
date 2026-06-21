@@ -2815,7 +2815,7 @@
     "trust_center_analytics_title": "Analytics strategy",
     "trust_center_analytics_desc": "Analytics are limited to aggregate product signals such as page views and safe event names. Tool input, output, JWTs, secrets, log bodies, file contents, image contents, search query text, and full URLs are not analytics fields.",
     "trust_center_pwa_title": "PWA cache strategy",
-    "trust_center_pwa_desc": "The PWA may cache the app shell, static assets, icons, and tool chunks for offline use. It must not cache tool input, tool output, uploaded file content, or external-request responses.",
+    "trust_center_pwa_desc": "The PWA may cache versioned app shell files, static assets, icons, and tool chunks for offline use. External-request responses are network-only, and you can clear cached app files from the install page. Tool input, output, uploaded file content, and external-request responses must not be cached.",
     "trust_center_security_headers_title": "Security headers and CSP",
     "trust_center_security_headers_desc": "Security header checks guard transport security, referrer policy, content type sniffing, permissions policy, frame ancestors, object sources, and a CSP that avoids arbitrary script sources.",
     "trust_center_xss_title": "User content rendering",

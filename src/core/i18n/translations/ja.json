@@ -2815,7 +2815,7 @@
     "trust_center_analytics_title": "分析方針",
     "trust_center_analytics_desc": "分析はページビューや安全なイベント名など集計された製品シグナルに限定します。ツール入力、出力、JWT、秘密情報、ログ本文、ファイル内容、画像内容、検索語、完全な URL は分析項目にしません。",
     "trust_center_pwa_title": "PWA キャッシュ方針",
-    "trust_center_pwa_desc": "PWA はオフライン利用のためにアプリシェル、静的アセット、アイコン、ツールチャンクをキャッシュできます。ツール入力、出力、アップロードファイル内容、外部リクエスト応答はキャッシュしてはいけません。",
+    "trust_center_pwa_desc": "PWA はオフライン利用のために、バージョン付きのアプリシェル、静的アセット、アイコン、ツールチャンクをキャッシュできます。外部リクエスト応答は network-only で、インストールページからキャッシュ済みアプリファイルを消去できます。ツール入力、出力、アップロードファイル内容、外部リクエスト応答はキャッシュしてはいけません。",
     "trust_center_security_headers_title": "セキュリティヘッダーと CSP",
     "trust_center_security_headers_desc": "セキュリティヘッダー検査は通信保護、リファラー方針、コンテンツ種別スニッフィング、権限方針、frame 制限、object 送信元、任意 script 送信元を避ける CSP を確認します。",
     "trust_center_xss_title": "ユーザー内容のレンダリング",

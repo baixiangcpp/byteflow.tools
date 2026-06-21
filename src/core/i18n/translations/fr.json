@@ -2815,7 +2815,7 @@
     "trust_center_analytics_title": "Stratégie analytics",
     "trust_center_analytics_desc": "L’analytics est limitée aux signaux produit agrégés comme les vues de page et des noms d’événements sûrs. Entrées, sorties, JWT, secrets, corps de journaux, contenus de fichiers, contenus d’images, texte de recherche et URL complètes ne sont pas des champs analytics.",
     "trust_center_pwa_title": "Stratégie de cache PWA",
-    "trust_center_pwa_desc": "La PWA peut mettre en cache le shell applicatif, les assets statiques, les icônes et les modules d’outils pour l’usage hors ligne. Elle ne doit pas cacher les entrées, sorties, contenus de fichiers téléversés ni réponses de requêtes externes.",
+    "trust_center_pwa_desc": "La PWA peut mettre en cache des fichiers de shell versionnés, des assets statiques, des icônes et des modules d’outils pour l’usage hors ligne. Les réponses de requêtes externes restent network-only, et les fichiers d’app en cache peuvent être effacés depuis la page d’installation. Elle ne doit pas cacher les entrées, sorties, contenus de fichiers téléversés ni réponses de requêtes externes.",
     "trust_center_security_headers_title": "En-têtes de sécurité et CSP",
     "trust_center_security_headers_desc": "Les contrôles d’en-têtes couvrent la sécurité du transport, la referrer policy, le sniffing de type de contenu, la permissions policy, les frame ancestors, les sources object et une CSP sans source de script arbitraire.",
     "trust_center_xss_title": "Rendu du contenu utilisateur",

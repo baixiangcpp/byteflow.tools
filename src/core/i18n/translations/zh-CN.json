@@ -2815,7 +2815,7 @@
     "trust_center_analytics_title": "分析策略",
     "trust_center_analytics_desc": "分析仅限页面访问量和安全事件名等聚合产品信号。工具输入、输出、JWT、密钥、日志正文、文件内容、图片内容、搜索原文和完整 URL 都不是分析字段。",
     "trust_center_pwa_title": "PWA 缓存策略",
-    "trust_center_pwa_desc": "PWA 可缓存应用外壳、静态资源、图标和工具代码块以支持离线使用。它不得缓存工具输入、工具输出、上传文件内容或外部请求响应。",
+    "trust_center_pwa_desc": "PWA 可缓存带版本的应用外壳、静态资源、图标和工具代码块以支持离线使用。外部请求响应始终走 network-only，你也可以在安装页清除已缓存应用文件。工具输入、工具输出、上传文件内容和外部请求响应不得被缓存。",
     "trust_center_security_headers_title": "安全响应头与 CSP",
     "trust_center_security_headers_desc": "安全头检查覆盖传输安全、引用来源策略、内容类型嗅探、权限策略、frame 限制、object 来源，以及避免任意脚本来源的 CSP。",
     "trust_center_xss_title": "用户内容渲染",

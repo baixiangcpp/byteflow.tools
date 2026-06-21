@@ -20,6 +20,8 @@ describe("TrustCenterPage", () => {
         expect(screen.getByRole("heading", { name: "Privacy and Trust Center", level: 1 })).toBeInTheDocument()
         expect(screen.getByRole("heading", { name: "Verify local processing in DevTools" })).toBeInTheDocument()
         expect(screen.getByText("Open the tool page, then open DevTools and select the Network panel.")).toBeInTheDocument()
+        expect(screen.getByText(/External-request responses are network-only/i)).toBeInTheDocument()
+        expect(screen.getByText(/clear cached app files from the install page/i)).toBeInTheDocument()
 
         const externalTools = TOOL_REGISTRY.filter((tool) => tool.privacy.externalRequest.required)
         const toolCopy = getTranslation("en").tools as Record<string, { title?: string }>

@@ -2815,7 +2815,7 @@
     "trust_center_analytics_title": "分析策略",
     "trust_center_analytics_desc": "分析僅限頁面瀏覽量和安全事件名稱等彙總產品訊號。工具輸入、輸出、JWT、金鑰、日誌本文、檔案內容、圖片內容、搜尋原文和完整 URL 都不是分析欄位。",
     "trust_center_pwa_title": "PWA 快取策略",
-    "trust_center_pwa_desc": "PWA 可快取應用外殼、靜態資源、圖示和工具程式碼區塊以支援離線使用。它不得快取工具輸入、工具輸出、上傳檔案內容或外部請求回應。",
+    "trust_center_pwa_desc": "PWA 可快取帶版本的應用外殼、靜態資源、圖示和工具程式碼區塊以支援離線使用。外部請求回應一律採 network-only，你也可以在安裝頁清除已快取應用檔案。工具輸入、工具輸出、上傳檔案內容和外部請求回應不得被快取。",
     "trust_center_security_headers_title": "安全回應標頭與 CSP",
     "trust_center_security_headers_desc": "安全標頭檢查涵蓋傳輸安全、來源參照策略、內容類型嗅探、權限策略、frame 限制、object 來源，以及避免任意腳本來源的 CSP。",
     "trust_center_xss_title": "使用者內容渲染",
