@@ -71,6 +71,22 @@ function run() {
             const localized = extractMetadata(fs.readFileSync(htmlFile, "utf8"))
             const english = extractMetadata(fs.readFileSync(enFile, "utf8"))
 
+            if (!localized.title) {
+                issues.push({
+                    locale,
+                    rel,
+                    field: "title",
+                    value: "(empty)",
+                })
+            }
+            if (!localized.description) {
+                issues.push({
+                    locale,
+                    rel,
+                    field: "description",
+                    value: "(empty)",
+                })
+            }
             if (localized.title && localized.title === english.title) {
                 issues.push({
                     locale,
