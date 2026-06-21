@@ -5,7 +5,7 @@ import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 import rehypeRaw from "rehype-raw"
 import rehypeSanitize from "rehype-sanitize"
-import { MARKDOWN_SANITIZE_SCHEMA } from "@/core/security/sanitize"
+import { MARKDOWN_SANITIZE_SCHEMA } from "@/core/security/markdown-sanitize-schema"
 
 const MARKDOWN_RENDER_COMPONENTS = {
     h1: (props: React.HTMLAttributes<HTMLHeadingElement> & { node?: unknown }) => {
