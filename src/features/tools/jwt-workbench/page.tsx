@@ -329,6 +329,8 @@ export function JwtWorkbenchPage() {
                         <div className="space-y-2">
                             <label className="text-sm font-medium">{toolT.secret_input}</label>
                             <Input
+                                type="password"
+                                autoComplete="off"
                                 value={secret}
                                 onChange={(event) => setSecret(event.target.value)}
                                 placeholder={toolT.secret_placeholder}
