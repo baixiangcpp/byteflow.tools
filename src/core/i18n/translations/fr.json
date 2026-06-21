@@ -630,7 +630,9 @@
       "operation_label": "Opération",
       "input_type_label": "Type d'entrée",
       "operation_encode": "Encoder",
-      "operation_decode": "Décoder"
+      "operation_decode": "Décoder",
+      "file_processing": "Traitement local du fichier...",
+      "file_mode_hint": "Le mode fichier utilise le worker et ne stocke pas le contenu du fichier."
     },
     "url_encode_decode": {
       "title": "Encodage/Décodage URL",
@@ -694,7 +696,13 @@
       "batch_empty": "Saisissez un élément par ligne pour générer des hachages en lot.",
       "md5_quick_link": "Page rapide MD5",
       "sha224_quick_link": "Page rapide SHA-224",
-      "sha384_quick_link": "Page rapide SHA-384"
+      "sha384_quick_link": "Page rapide SHA-384",
+      "hmac_secret_hint": "Les secrets HMAC restent uniquement en memoire et ne sont pas enregistres.",
+      "show_secret": "Afficher le secret HMAC",
+      "hide_secret": "Masquer le secret HMAC",
+      "file_processing": "Calcul local du hash du fichier...",
+      "file_privacy_hint": "Les octets du fichier restent en memoire et sont effaces a la reinitialisation ou en quittant le mode fichier.",
+      "weak_hash_badge": "Faible"
     },
     "text_diff_checker": {
       "title": "Comparateur de texte",

@@ -11,12 +11,12 @@ import { Textarea } from "@/components/ui/textarea"
 import { readStorageString, writeStorageString } from "@/core/storage/tool-persistence"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildToolHandoffLink } from "@/core/routing/tool-handoff"
-import { FILE_INPUT_POLICIES, describeFilePolicy, readArrayBufferWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
+import { FILE_INPUT_POLICIES, describeFilePolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { downloadBlob, downloadTextFile } from "./browser-actions"
 import { MODE_STORAGE_KEY, OPERATION_STORAGE_KEY, OUTPUT_PREVIEW_LIMIT } from "./constants"
 import { BINARY_SAMPLE_BASE64, TEXT_SAMPLE_BASE64, TEXT_SAMPLE_INPUT, URL_SAFE_SAMPLE_BASE64, URL_SAFE_SAMPLE_INPUT } from "./samples"
 import type { Mode, Operation } from "./types"
-import { runBase64FileTask } from "./base64-task"
+import { useBase64FileTask } from "./use-base64-file-task"
 import { useBase64TextTask } from "./use-base64-text-task"
 
 export function Base64Page() {
@@ -33,9 +33,11 @@ export function Base64Page() {
     const [decodedFileName, setDecodedFileName] = React.useState("decoded.bin")
     const fileInputRef = React.useRef<HTMLInputElement>(null)
     const { isProcessing, runTextTask } = useBase64TextTask()
+    const { abortFileTask, isFileProcessing, runDecodeFileTask, runEncodeFileTask } = useBase64FileTask()
 
     const outputBytes = React.useMemo(() => new Blob([output]).size, [output])
     const filePolicy = FILE_INPUT_POLICIES["base64-file"]
+    const isBusy = isProcessing || isFileProcessing
     const canDownload = output.length > 0 || decodedBlob !== null
     const outputPreviewTruncatedLabel = toolT.output_preview_truncated
     const isOutputPreviewTruncated = output.length > OUTPUT_PREVIEW_LIMIT
@@ -74,10 +76,11 @@ export function Base64Page() {
     }, [operation])
 
     const resetTransientState = React.useCallback(() => {
+        abortFileTask()
         setError(null)
         setDecodedBlob(null)
         setDecodedFileName("decoded.bin")
-    }, [])
+    }, [abortFileTask])
 
     const handleModeChange = (nextMode: Mode) => {
         setMode(nextMode)
@@ -127,12 +130,18 @@ export function Base64Page() {
     }
 
     const handleFilePick = async (file: File) => {
+        abortFileTask()
         const validation = validateFileAgainstPolicy(file, filePolicy)
         if (!validation.ok) {
             setError(validation.reason === "too_large" ? text("error_file_too_large") : validation.message)
+            setSourceFile(null)
+            setOutput("")
+            setDecodedBlob(null)
             return
         }
         setError(null)
+        setOutput("")
+        setDecodedBlob(null)
         setSourceFile(file)
     }
 
@@ -190,22 +199,20 @@ export function Base64Page() {
                 setOutput("")
                 return
             }
-            try {
-                const buffer = await readArrayBufferWithPolicy(sourceFile, filePolicy)
-                const result = await runBase64FileTask({
-                    task: "file",
-                    operation: "encode",
-                    bytes: buffer,
-                    urlSafe: false,
-                })
-                setOutput(result.operation === "encode" ? result.output : "")
-                setError(null)
-                setDecodedBlob(null)
-            } catch {
-                setOutput("")
-                setError(text("error_encode_failed"))
-                setDecodedBlob(null)
-            }
+            await runEncodeFileTask({
+                file: sourceFile,
+                filePolicy,
+                onSuccess: (encoded) => {
+                    setOutput(encoded)
+                    setError(null)
+                    setDecodedBlob(null)
+                },
+                onError: () => {
+                    setOutput("")
+                    setError(text("error_encode_failed"))
+                    setDecodedBlob(null)
+                },
+            })
             return
         }
 
@@ -236,26 +243,23 @@ export function Base64Page() {
         }
 
         if (mode === "file") {
-            try {
-                const result = await runBase64FileTask({
-                    task: "file",
-                    operation: "decode",
-                    input,
-                    urlSafe: false,
-                })
-                const bytes = result.operation === "decode" ? result.bytes : new ArrayBuffer(0)
-                const blob = new Blob([bytes], { type: sourceFile?.type || "application/octet-stream" })
-                setDecodedFileName(`${sourceFile?.name ? sourceFile.name.replace(/\.[^.]+$/, "") : "decoded"}.bin`)
-                setDecodedBlob(blob)
-                setOutput(
-                    text("decode_binary_success")
-                        .replace("{bytes}", String(bytes.byteLength)),
-                )
-                setError(null)
-            } catch {
-                setError(text("error_invalid_base64"))
-                setDecodedBlob(null)
-            }
+            await runDecodeFileTask({
+                input,
+                onSuccess: (bytes) => {
+                    const blob = new Blob([bytes], { type: sourceFile?.type || "application/octet-stream" })
+                    setDecodedFileName(`${sourceFile?.name ? sourceFile.name.replace(/\.[^.]+$/, "") : "decoded"}.bin`)
+                    setDecodedBlob(blob)
+                    setOutput(
+                        text("decode_binary_success")
+                            .replace("{bytes}", String(bytes.byteLength)),
+                    )
+                    setError(null)
+                },
+                onError: () => {
+                    setError(text("error_invalid_base64"))
+                    setDecodedBlob(null)
+                },
+            })
             return
         }
 
@@ -283,7 +287,7 @@ export function Base64Page() {
         }
     }
 
-    const handoffPayload = output || input
+    const handoffPayload = mode === "file" ? "" : output || input
     const pipelineHandoff = React.useMemo(
         () => buildToolHandoffLink(lang, "pipeline-builder", handoffPayload),
         [handoffPayload, lang],
@@ -313,7 +317,7 @@ export function Base64Page() {
             label: t.common.download,
             icon: Download,
             onClick: handleDownload,
-            disabled: !canDownload,
+            disabled: !canDownload || isBusy,
         },
         {
             id: "share",
@@ -364,7 +368,7 @@ export function Base64Page() {
                 <ToolActionBar actions={standardActions} handoffPayload={handoffPayload} />
 
                 <div className="flex flex-wrap items-center gap-2">
-                    <Button size="sm" onClick={handleExecute} disabled={isProcessing}>
+                    <Button size="sm" onClick={handleExecute} disabled={isBusy}>
                         {operation === "encode" ? (
                             <>
                                 {text("encode_action")}
@@ -385,12 +389,13 @@ export function Base64Page() {
                             </Button>
                             {sourceFile ? (
                                 <span className="text-xs text-muted-foreground">
-                                    {sourceFile.name} ({(sourceFile.size / 1024).toFixed(1)} KB)
+                                    {sourceFile.name} ({(sourceFile.size / 1024 / 1024).toFixed(2)} MB)
                                 </span>
                             ) : null}
                             <span className="text-xs text-muted-foreground">
                                 {describeFilePolicy(filePolicy)}
                             </span>
+                            {isFileProcessing ? <span className="text-xs font-medium text-primary">{text("file_processing")}</span> : null}
                         </>
                     ) : null}
                 </div>
@@ -416,6 +421,11 @@ export function Base64Page() {
                 <div className="flex h-full flex-col overflow-hidden rounded-lg border bg-card">
                     <div className="tool-pane-header tool-pane-header-between">
                         <span>{t.common.input}</span>
+                        {mode === "file" ? (
+                            <span className="text-xs font-normal text-muted-foreground">
+                                {text("file_mode_hint")}
+                            </span>
+                        ) : null}
                     </div>
                     <div className="flex-1 p-0">
                         <Textarea

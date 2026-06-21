@@ -630,7 +630,9 @@
       "operation_label": "Vorgang",
       "input_type_label": "Eingabetyp",
       "operation_encode": "Kodieren",
-      "operation_decode": "Dekodieren"
+      "operation_decode": "Dekodieren",
+      "file_processing": "Datei wird lokal verarbeitet...",
+      "file_mode_hint": "Der Dateimodus nutzt den Worker und speichert keine Dateiinhalte."
     },
     "url_encode_decode": {
       "title": "URL kodieren/dekodieren",
@@ -694,7 +696,13 @@
       "batch_empty": "Geben Sie pro Zeile einen Eintrag ein, um Stapel-Hashes zu erzeugen.",
       "md5_quick_link": "MD5-Schnellseite",
       "sha224_quick_link": "SHA-224-Schnellseite",
-      "sha384_quick_link": "SHA-384-Schnellseite"
+      "sha384_quick_link": "SHA-384-Schnellseite",
+      "hmac_secret_hint": "HMAC-Geheimnisse bleiben nur im Arbeitsspeicher und werden nicht gespeichert.",
+      "show_secret": "HMAC-Geheimnis anzeigen",
+      "hide_secret": "HMAC-Geheimnis ausblenden",
+      "file_processing": "Datei-Hash wird lokal berechnet...",
+      "file_privacy_hint": "Dateibytes bleiben nur im Arbeitsspeicher und werden beim Zuruecksetzen oder Verlassen des Dateimodus geloescht.",
+      "weak_hash_badge": "Schwach"
     },
     "text_diff_checker": {
       "title": "Text-Diff-Checker",

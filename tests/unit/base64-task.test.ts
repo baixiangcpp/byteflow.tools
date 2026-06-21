@@ -153,6 +153,22 @@ describe("runBase64TextTask", () => {
         expect(result.operation === "decode" ? Array.from(new Uint8Array(result.bytes)) : []).toEqual([1, 2, 3])
     })
 
+    it("does not fall back to sync file work when aborted", async () => {
+        MockBase64Worker.mode = "idle"
+        vi.stubGlobal("Worker", MockBase64Worker)
+        const controller = new AbortController()
+        const task = runBase64FileTask({
+            task: "file",
+            operation: "decode",
+            input: "SGk=",
+            urlSafe: false,
+        }, { signal: controller.signal })
+
+        controller.abort()
+
+        await expect(task).rejects.toMatchObject({ code: "WORKER_ABORTED" })
+    })
+
     it("falls back to sync file decode when Worker is unavailable", async () => {
         vi.stubGlobal("Worker", undefined)
 

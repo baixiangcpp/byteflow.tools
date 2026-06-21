@@ -630,7 +630,9 @@
       "operation_label": "操作",
       "input_type_label": "入力タイプ",
       "operation_encode": "エンコード",
-      "operation_decode": "デコード"
+      "operation_decode": "デコード",
+      "file_processing": "ファイルをローカルで処理しています...",
+      "file_mode_hint": "ファイルモードは worker を使用し、ファイル内容を保存しません。"
     },
     "url_encode_decode": {
       "title": "URL エンコード/デコード",
@@ -694,7 +696,13 @@
       "batch_empty": "一括ハッシュを生成するには、1 行に 1 項目ずつ入力してください。",
       "md5_quick_link": "MD5 クイックページ",
       "sha224_quick_link": "SHA-224 クイックページ",
-      "sha384_quick_link": "SHA-384 クイックページ"
+      "sha384_quick_link": "SHA-384 クイックページ",
+      "hmac_secret_hint": "HMAC シークレットはメモリ内のみで扱い、保存しません。",
+      "show_secret": "HMAC シークレットを表示",
+      "hide_secret": "HMAC シークレットを非表示",
+      "file_processing": "ファイルのハッシュをローカルで計算しています...",
+      "file_privacy_hint": "ファイルのバイト列はメモリ内だけに保持され、リセットまたはファイルモード終了時に消去されます。",
+      "weak_hash_badge": "弱い"
     },
     "text_diff_checker": {
       "title": "テキスト差分チェッカー",

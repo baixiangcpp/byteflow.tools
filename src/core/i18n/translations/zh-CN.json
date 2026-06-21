@@ -630,7 +630,9 @@
       "operation_label": "操作",
       "input_type_label": "输入类型",
       "operation_encode": "编码",
-      "operation_decode": "解码"
+      "operation_decode": "解码",
+      "file_processing": "正在本地处理文件...",
+      "file_mode_hint": "文件模式使用 worker，且不会保存文件内容。"
     },
     "url_encode_decode": {
       "title": "URL 编码/解码",
@@ -694,7 +696,13 @@
       "batch_empty": "每行输入一个条目以生成批量哈希。",
       "md5_quick_link": "MD5 快速页面",
       "sha224_quick_link": "SHA-224 快速页面",
-      "sha384_quick_link": "SHA-384 快速页面"
+      "sha384_quick_link": "SHA-384 快速页面",
+      "hmac_secret_hint": "HMAC 密钥只保存在内存中，不会被保存。",
+      "show_secret": "显示 HMAC 密钥",
+      "hide_secret": "隐藏 HMAC 密钥",
+      "file_processing": "正在本地计算文件哈希...",
+      "file_privacy_hint": "文件字节只保留在内存中，重置或离开文件模式时会清除。",
+      "weak_hash_badge": "弱"
     },
     "text_diff_checker": {
       "title": "文本差异对比",

@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Copy, Download, Eraser, Fingerprint, Hash, Upload } from "lucide-react"
+import { Copy, Download, Eraser, Eye, EyeOff, Fingerprint, Hash, Upload } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { useLang } from "@/core/i18n/lang-provider"
@@ -17,7 +17,7 @@ import {
 import { ModeSelector } from "@/features/tool-shell/mode-selector"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
-import { FILE_INPUT_POLICIES, describeFilePolicy, readArrayBufferWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
+import { FILE_INPUT_POLICIES, describeFilePolicy } from "@/core/files/file-input-policy"
 import {
     type StandardHashAlgorithm,
 } from "@/core/utils/hash-utils"
@@ -25,6 +25,7 @@ import { downloadTextFile } from "./browser-actions"
 import { BATCH_ALGORITHMS } from "./constants"
 import type { HashTaskInput } from "./hash-task-logic"
 import type { HashMode } from "./types"
+import { useHashFileInput } from "./use-hash-file-input"
 import { useHashTask } from "./use-hash-task"
 
 export function HashGeneratorPage() {
@@ -34,12 +35,19 @@ export function HashGeneratorPage() {
     const [mode, setMode] = React.useState<HashMode>("text")
     const [input, setInput] = React.useState("")
     const [secret, setSecret] = React.useState("")
-    const [fileName, setFileName] = React.useState("")
-    const [fileSize, setFileSize] = React.useState(0)
-    const [fileError, setFileError] = React.useState<string | null>(null)
-    const [fileBytes, setFileBytes] = React.useState<Uint8Array | null>(null)
     const [batchAlgorithm, setBatchAlgorithm] = React.useState<StandardHashAlgorithm>("sha256")
+    const [showSecret, setShowSecret] = React.useState(false)
     const filePolicy = FILE_INPUT_POLICIES["hash-file"]
+    const {
+        clearFileState,
+        fileBytes,
+        fileError,
+        fileInputRef,
+        fileName,
+        fileSize,
+        handleFileSelect,
+        isReadingFile,
+    } = useHashFileInput({ filePolicy, tooLargeMessage: toolT.file_error })
     const sha1Warning = toolT.sha1_warning
     const buildCopyActionLabel = React.useCallback((label: string) => `${t.common.copy} ${label}`, [t.common.copy])
     const modeOptions = React.useMemo(() => [
@@ -73,33 +81,14 @@ export function HashGeneratorPage() {
     const handleClear = () => {
         setInput("")
         setSecret("")
-        setFileName("")
-        setFileSize(0)
-        setFileBytes(null)
-        setFileError(null)
+        setShowSecret(false)
+        clearFileState()
     }
 
-    const handleFileSelect = async (file: File | null) => {
-        if (!file) return
-        const validation = validateFileAgainstPolicy(file, filePolicy)
-        if (!validation.ok) {
-            setFileBytes(null)
-            setFileName("")
-            setFileSize(0)
-            setFileError(validation.reason === "too_large" ? toolT.file_error : validation.message)
-            return
-        }
-        try {
-            const buffer = await readArrayBufferWithPolicy(file, filePolicy)
-            setFileBytes(new Uint8Array(buffer))
-            setFileName(file.name)
-            setFileSize(file.size)
-            setFileError(null)
-        } catch {
-            setFileBytes(null)
-            setFileName("")
-            setFileSize(0)
-            setFileError(toolT.file_error)
+    const handleModeChange = (nextMode: HashMode) => {
+        setMode(nextMode)
+        if (nextMode !== "file") {
+            clearFileState()
         }
     }
 
@@ -160,7 +149,7 @@ export function HashGeneratorPage() {
             </div>
 
             <div className="rounded-lg border bg-card p-3">
-                <ModeSelector label={toolT.mode_label} value={mode} options={modeOptions} onChange={setMode} size="sm" />
+                <ModeSelector label={toolT.mode_label} value={mode} options={modeOptions} onChange={handleModeChange} size="sm" />
             </div>
 
             <div className="rounded-md border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-xs text-amber-700 dark:text-amber-300">
@@ -198,12 +187,27 @@ export function HashGeneratorPage() {
                     {mode === "hmac" ? (
                         <>
                             <label className="text-sm font-medium">{toolT.secret_key}</label>
-                            <Input
-                                className="font-mono text-sm"
-                                value={secret}
-                                onChange={(event) => setSecret(event.target.value)}
-                                placeholder={toolT.secret_placeholder}
-                            />
+                            <div className="flex gap-2">
+                                <Input
+                                    className="font-mono text-sm"
+                                    type={showSecret ? "text" : "password"}
+                                    value={secret}
+                                    onChange={(event) => setSecret(event.target.value)}
+                                    placeholder={toolT.secret_placeholder}
+                                    autoComplete="off"
+                                />
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    aria-label={showSecret ? toolT.hide_secret : toolT.show_secret}
+                                    aria-pressed={showSecret}
+                                    onClick={() => setShowSecret((current) => !current)}
+                                >
+                                    {showSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                </Button>
+                            </div>
+                            <p className="text-xs text-muted-foreground">{toolT.hmac_secret_hint}</p>
                         </>
                     ) : null}
 
@@ -214,6 +218,7 @@ export function HashGeneratorPage() {
                                 <Upload className="h-4 w-4" />
                                 <span>{toolT.select_file}</span>
                                 <input
+                                    ref={fileInputRef}
                                     type="file"
                                     accept={filePolicy.accept}
                                     className="hidden"
@@ -224,7 +229,9 @@ export function HashGeneratorPage() {
                                 />
                             </label>
                             <p className="text-xs text-muted-foreground">{toolT.file_hint} {describeFilePolicy(filePolicy)}</p>
-                            {fileName ? <p className="text-xs font-medium text-foreground">{fileName} ({(fileSize / 1024).toFixed(1)} KB)</p> : null}
+                            {fileName ? <p className="text-xs font-medium text-foreground">{fileName} ({(fileSize / 1024 / 1024).toFixed(2)} MB)</p> : null}
+                            {isReadingFile || isHashing ? <p className="text-xs font-medium text-primary">{toolT.file_processing}</p> : null}
+                            <p className="text-xs text-muted-foreground">{toolT.file_privacy_hint}</p>
                             {fileError ? <p className="text-xs text-destructive">{fileError}</p> : null}
                         </div>
                     ) : null}
@@ -238,6 +245,8 @@ export function HashGeneratorPage() {
                                 value={standardHashes.md5}
                                 onCopy={() => void handleCopy(standardHashes.md5, "MD5")}
                                 copyActionLabel={buildCopyActionLabel("MD5")}
+                                hint={toolT.weak_hash_badge}
+                                hintClassName="text-amber-700 dark:text-amber-300"
                             />
                             <HashOutputBox
                                 label="SHA-1"

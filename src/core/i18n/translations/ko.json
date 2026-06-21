@@ -630,7 +630,9 @@
       "operation_label": "作업",
       "input_type_label": "입력 유형",
       "operation_encode": "인코딩",
-      "operation_decode": "디코딩"
+      "operation_decode": "디코딩",
+      "file_processing": "파일을 로컬에서 처리 중...",
+      "file_mode_hint": "파일 모드는 worker를 사용하며 파일 내용을 저장하지 않습니다."
     },
     "url_encode_decode": {
       "title": "URL 인코딩/디코딩",
@@ -694,7 +696,13 @@
       "batch_empty": "일괄 해시를 생성하려면 항목을 한 줄에 하나씩 입력하세요.",
       "md5_quick_link": "MD5 빠른 페이지",
       "sha224_quick_link": "SHA-224 빠른 페이지",
-      "sha384_quick_link": "SHA-384 빠른 페이지"
+      "sha384_quick_link": "SHA-384 빠른 페이지",
+      "hmac_secret_hint": "HMAC 비밀값은 메모리에만 머물며 저장되지 않습니다.",
+      "show_secret": "HMAC 비밀값 표시",
+      "hide_secret": "HMAC 비밀값 숨기기",
+      "file_processing": "파일 해시를 로컬에서 계산 중...",
+      "file_privacy_hint": "파일 바이트는 메모리에만 유지되며 재설정하거나 파일 모드를 떠나면 지워집니다.",
+      "weak_hash_badge": "약함"
     },
     "text_diff_checker": {
       "title": "텍스트 비교 도구",
