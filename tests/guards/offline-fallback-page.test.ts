@@ -84,10 +84,13 @@ describe("offline fallback page", () => {
         expect(source).toContain("const CACHE_META_NAME")
         expect(source).toContain("const MAX_RUNTIME_CACHE_ENTRIES")
         expect(source).toContain("const MAX_RUNTIME_CACHE_AGE_MS")
+        expect(source).toContain("const CACHE_WRITE_PAUSE_AFTER_CLEAR_MS")
+        expect(source).toContain("let cacheWritesPausedUntil = 0;")
         expect(source).toContain("function pruneRuntimeCache(cacheName)")
         expect(source).toContain("retained.slice(MAX_RUNTIME_CACHE_ENTRIES)")
         expect(source).toContain("now - entry.cachedAt > MAX_RUNTIME_CACHE_AGE_MS")
         expect(source).toContain("function putRuntimeCache(request, response, cacheName)")
+        expect(source).toContain("if (Date.now() < cacheWritesPausedUntil) return Promise.resolve();")
         const cacheWrites = source.match(/putRuntimeCache\(event\.request, response, cacheName\)/g) ?? []
         const guardedCacheWrites = source.match(/event\.waitUntil\(putRuntimeCache\(event\.request, response, cacheName\)\.catch\(\(\) => undefined\)\)/g) ?? []
         expect(guardedCacheWrites).toHaveLength(cacheWrites.length)

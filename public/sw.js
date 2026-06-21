@@ -25,7 +25,9 @@ const OFFLINE_FALLBACK_URL = '/offline.html';
 const OFFLINE_FALLBACK_CANDIDATES = [OFFLINE_FALLBACK_URL, '/offline'];
 const MAX_RUNTIME_CACHE_ENTRIES = 120;
 const MAX_RUNTIME_CACHE_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+const CACHE_WRITE_PAUSE_AFTER_CLEAR_MS = 5000;
 const CACHE_META_URL_PREFIX = '/__byteflow-cache-meta__?url=';
+let cacheWritesPausedUntil = 0;
 
 const APP_SHELL_ASSETS = [
     ...OFFLINE_FALLBACK_CANDIDATES,
@@ -138,6 +140,7 @@ function pruneRuntimeCache(cacheName) {
 }
 
 function putRuntimeCache(request, response, cacheName) {
+    if (Date.now() < cacheWritesPausedUntil) return Promise.resolve();
     const clone = response.clone();
     return caches.open(cacheName)
         .then((cache) => cache.put(request, clone))
@@ -180,6 +183,7 @@ function selectCacheName(request, url) {
 }
 
 function deleteByteflowCaches() {
+    cacheWritesPausedUntil = Date.now() + CACHE_WRITE_PAUSE_AFTER_CLEAR_MS;
     return caches.keys().then((names) =>
         Promise.all(names.filter((name) => name.startsWith(CACHE_PREFIX)).map((name) => caches.delete(name)))
     );
