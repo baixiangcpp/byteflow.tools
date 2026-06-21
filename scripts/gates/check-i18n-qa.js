@@ -32,9 +32,12 @@ const GLOSSARY_TERMS = [
 
 const REQUIRED_POLICY_PHRASES = [
     "complete, accurate localized text",
+    "every supported locale in the same PR",
     "No English-only originality",
     "No partial originality",
+    "complete affected user-facing surface",
     "metadata-only localization",
+    "Partial localization is a merge blocker",
 ]
 
 const REQUIRED_META_SLUGS = [

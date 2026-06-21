@@ -5,9 +5,11 @@ This glossary is the source of truth for user-facing localization of privacy, ru
 ## Rules
 
 - Localize complete page copy in the same PR: title, description, headings, body copy, CTAs, FAQ, table text, examples, schema-visible text, and SEO metadata.
+- Hard merge rule: user-facing copy is not complete until every supported locale in the same PR has complete, accurate localized text.
 - User-facing copy must ship as complete, accurate localized text across every supported locale.
 - No English-only originality: do not author original content only for `en` while other locales receive fallback, literal filler, or metadata-only localization.
-- No partial originality: do not make only one locale, one section, or only above-the-fold copy original while leaving the rest as generic fallback copy.
+- No partial originality: the complete affected user-facing surface must be localized. Do not make only one locale, one section, or only above-the-fold copy original while leaving the rest as generic fallback copy.
+- Partial localization is a merge blocker. Split scope before opening the PR if accurate localization for all supported locales is not ready.
 - Keep technical tokens such as `JSON`, `JWT`, `API`, `Base64`, `UUID`, `SHA-256`, and `HMAC` unchanged when that is the natural local form.
 - Prefer clear product language over literal translation when a locale has a more natural technical term.
 
