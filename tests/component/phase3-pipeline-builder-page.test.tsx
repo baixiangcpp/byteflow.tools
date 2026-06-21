@@ -4,6 +4,7 @@ import { LangProvider } from "@/core/i18n/lang-provider"
 import PipelineBuilderPage from "@/app/[lang]/pipeline-builder/page"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import type { Locale } from "@/core/i18n/i18n"
+import { PipelineStepList } from "@/features/tools/pipeline-builder/pipeline-step-list"
 
 vi.mock("next/navigation", () => ({
     usePathname: () => "/en/pipeline-builder",
@@ -47,7 +48,9 @@ describe("phase 3 pipeline builder page", () => {
         expect(screen.getByLabelText("Initial input")).toBeInTheDocument()
         expect(screen.getByText("Steps")).toBeInTheDocument()
         expect(screen.getByText("Built-in recipes")).toBeInTheDocument()
-        expect(screen.getByText("URL decode and pretty-print JSON")).toBeInTheDocument()
+        expect(screen.getByText("API payload cleanup")).toBeInTheDocument()
+        expect(screen.getByText("Security token review")).toBeInTheDocument()
+        expect(screen.getByText("Log scrub before sharing")).toBeInTheDocument()
         expect(screen.getByRole("button", { name: /Run Recipe/i })).toBeInTheDocument()
         expect(screen.getAllByRole("button", { name: /Export JSON/i }).length).toBeGreaterThan(0)
         expect(screen.getByRole("button", { name: /Share URL/i })).toBeInTheDocument()
@@ -75,7 +78,8 @@ describe("phase 3 pipeline builder page", () => {
         expect(screen.getByRole("heading", { name: "Recipe settings" })).toBeInTheDocument()
         expect(screen.getByRole("switch", { name: "Stop on error" })).toBeChecked()
         expect(screen.getByText("Check handoff: text output into json input.")).toBeInTheDocument()
-        expect(screen.getByText(/Constant step inputs stay local unless exported as JSON/i)).toBeInTheDocument()
+        expect(screen.getByText(/Constant step input is used only for the current run/i)).toBeInTheDocument()
+        expect(screen.getByText("text input -> text output")).toBeInTheDocument()
     })
 
     it("renders without IndexedDB and keeps non-storage actions available", async () => {
@@ -136,7 +140,7 @@ describe("phase 3 pipeline builder page", () => {
         const useTemplateButtons = screen.getAllByRole("button", { name: "Use" })
         fireEvent.click(useTemplateButtons[1])
 
-        expect(screen.getByLabelText("Recipe name")).toHaveValue("URL decode and pretty-print JSON")
+        expect(screen.getByLabelText("Recipe name")).toHaveValue("URL JSON cleanup")
         expect(screen.getByLabelText("Initial input")).toHaveValue("%7B%22user%22%3A%22alice%40example.com%22%2C%22active%22%3Atrue%7D")
         expect(screen.getByLabelText("Step label")).toHaveValue("URL component decode")
 
@@ -149,6 +153,63 @@ describe("phase 3 pipeline builder page", () => {
 }`)
         })
         expect(screen.getByText("Recipe is valid for the linear MVP executor.")).toBeInTheDocument()
+    })
+
+    it("loads the security token review template without putting the sample JWT into recipe JSON", () => {
+        renderWithEnglish(<PipelineBuilderPage />)
+
+        const useTemplateButtons = screen.getAllByRole("button", { name: "Use" })
+        fireEvent.click(useTemplateButtons[2])
+
+        expect(screen.getByLabelText("Recipe name")).toHaveValue("Security token review")
+        expect(screen.getByLabelText("Initial input")).toHaveValue()
+        expect((screen.getByLabelText("Initial input") as HTMLTextAreaElement).value).toContain("signature-placeholder")
+        expect(screen.getByLabelText("Step label")).toHaveValue("Decode JWT payload")
+        expect(screen.getByText("text input -> json output")).toBeInTheDocument()
+    })
+
+    it("shows a per-step warning for external-request pipeline adapters", () => {
+        render(
+            <PipelineStepList
+                adapterOptions={[{
+                    externalRequestRequired: true,
+                    inputKind: "url",
+                    outputKind: "json",
+                    title: "External Lookup",
+                    toolKey: "external_lookup",
+                }]}
+                compatibilityHints={[]}
+                maxSteps={12}
+                onAddStep={() => undefined}
+                onMoveStep={() => undefined}
+                onPendingToolKeyChange={() => undefined}
+                onRemoveStep={() => undefined}
+                onSelectStep={() => undefined}
+                pendingToolKey="external_lookup"
+                selectedStepId="lookup"
+                steps={[{
+                    adapterVersion: 1,
+                    id: "lookup",
+                    inputMode: "previous_output",
+                    options: {},
+                    toolKey: "external_lookup",
+                }]}
+                text={(key) => ({
+                    add_step: "Add",
+                    adapter_select: "Select tool adapter",
+                    external_request_step_notice: "External request step: confirm the network target before running.",
+                    move_down: "Move step down",
+                    move_up: "Move step up",
+                    no_steps: "No steps",
+                    remove_step: "Remove step",
+                    step_io_hint: "{input} input -> {output} output",
+                    steps_title: "Steps",
+                }[key] ?? key)}
+            />,
+        )
+
+        expect(screen.getByText("url input -> json output")).toBeInTheDocument()
+        expect(screen.getByText("External request step: confirm the network target before running.")).toBeInTheDocument()
     })
 
     it("imports a valid recipe JSON file", async () => {

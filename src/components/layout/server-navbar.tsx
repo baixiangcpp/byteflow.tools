@@ -16,6 +16,7 @@ export function ServerNavbar({
             labels={{
                 allTools: requireTranslationValue(translations.common.all_tools, "common.all_tools"),
                 openNavigation: `${requireTranslationValue(translations.common.open, "common.open")} ${requireTranslationValue(translations.nav.navigation, "nav.navigation")}`,
+                pipelineBuilder: requireTranslationValue(translations.tools.pipeline_builder.title, "tools.pipeline_builder.title"),
                 search: requireTranslationValue(translations.nav.search, "nav.search"),
             }}
         />

@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest"
 import { getPipelineAdapter, getPipelineAdapterKeys, PIPELINE_TOOL_ADAPTERS } from "@/features/pipeline/adapter-registry"
 import { TOOL_MANIFESTS } from "@/core/registry"
-import { decodeRecipeFromUrlParam, encodeRecipeForShareUrl, encodeRecipeForUrl, recipeContainsRuntimeInput } from "@/features/pipeline/recipe-codec"
+import { createPortableRecipe, decodeRecipeFromUrlParam, encodeRecipeForShareUrl, encodeRecipeForUrl, recipeContainsRuntimeInput } from "@/features/pipeline/recipe-codec"
 import { createEmptyRecipe, runRecipe, validateRecipe } from "@/features/pipeline/executor"
 import { exportRecipeToJson, importRecipeFromJson } from "@/features/pipeline/recipe-import-export"
 import { createRecipeFromTemplate, PIPELINE_RECIPE_TEMPLATES } from "@/features/pipeline/recipe-templates"
-import { isRecipeStoreAvailable } from "@/features/pipeline/recipe-store"
+import { createSavedRecipeRecord, isRecipeStoreAvailable } from "@/features/pipeline/recipe-store"
 import { DEFAULT_RECIPE_SETTINGS, type PipelineToolAdapter, type RecipeDocument } from "@/features/pipeline/recipe-types"
 import { getStepCompatibilityHints } from "@/features/tools/pipeline-builder/logic"
 
@@ -651,7 +651,7 @@ describe("pipeline foundation", () => {
         expect(result.steps.every((step) => !Object.prototype.hasOwnProperty.call(step, "output"))).toBe(true)
     })
 
-    it("uses constant input without leaking it into default share URLs", () => {
+    it("creates portable recipes without runtime payloads or private options", () => {
         const recipe = buildRecipe({
             steps: [
                 {
@@ -660,24 +660,26 @@ describe("pipeline foundation", () => {
                     adapterVersion: 1,
                     inputMode: "constant",
                     constantInput: "Authorization: Bearer secret-token-value",
-                    options: {},
+                    options: {
+                        bearerTokens: true,
+                        privatePayload: "secret-token-value",
+                    },
                 },
             ],
             edges: [],
         })
 
         expect(recipeContainsRuntimeInput(recipe)).toBe(true)
-        const shared = encodeRecipeForShareUrl(recipe)
-        const decoded = decodeRecipeFromUrlParam(shared)
+        const portable = createPortableRecipe(recipe)
 
-        expect(decoded.ok).toBe(true)
-        if (decoded.ok) {
-            expect(decoded.recipe.steps[0].inputMode).toBe("previous_output")
-            expect(decoded.recipe.steps[0].constantInput).toBeUndefined()
-        }
+        expect(portable.steps[0].inputMode).toBe("previous_output")
+        expect(portable.steps[0].constantInput).toBeUndefined()
+        expect(portable.steps[0].options).toHaveProperty("bearerTokens", true)
+        expect(portable.steps[0].options).not.toHaveProperty("privatePayload")
+        expect(JSON.stringify(portable)).not.toContain("secret-token-value")
     })
 
-    it("keeps constant input only when share URLs explicitly include runtime input", () => {
+    it("uses constant input without leaking it into share URLs", () => {
         const recipe = buildRecipe({
             steps: [
                 {
@@ -691,12 +693,13 @@ describe("pipeline foundation", () => {
             ],
             edges: [],
         })
-        const decoded = decodeRecipeFromUrlParam(encodeRecipeForShareUrl(recipe, { includeRuntimeInput: true }))
+        const decoded = decodeRecipeFromUrlParam(encodeRecipeForShareUrl(recipe))
 
         expect(decoded.ok).toBe(true)
         if (decoded.ok) {
-            expect(decoded.recipe.steps[0].inputMode).toBe("constant")
-            expect(decoded.recipe.steps[0].constantInput).toBe("Authorization: Bearer secret-token-value")
+            expect(decoded.recipe.steps[0].inputMode).toBe("previous_output")
+            expect(decoded.recipe.steps[0].constantInput).toBeUndefined()
+            expect(JSON.stringify(decoded.recipe)).not.toContain("secret-token-value")
         }
     })
 
@@ -789,15 +792,55 @@ describe("pipeline foundation", () => {
         })
     })
 
-    it("exports and imports recipe JSON without auto-running it", () => {
-        const recipe = buildRecipe()
+    it("exports and imports portable recipe JSON without auto-running it or including runtime payload", () => {
+        const recipe = buildRecipe({
+            steps: [
+                {
+                    id: "secret_sample",
+                    toolKey: "log_scrubber",
+                    adapterVersion: 1,
+                    inputMode: "constant",
+                    constantInput: "Authorization: Bearer secret-token-value",
+                    options: {},
+                },
+            ],
+            edges: [],
+        })
+        const exported = exportRecipeToJson(recipe)
         const imported = importRecipeFromJson(exportRecipeToJson(recipe))
 
+        expect(exported).not.toContain("secret-token-value")
         expect(imported.ok).toBe(true)
         if (imported.ok) {
             expect(imported.recipe.name).toBe("Test recipe")
-            expect(imported.recipe.steps.map((step) => step.toolKey)).toEqual(["json_formatter", "base64_encode_decode"])
+            expect(imported.recipe.steps[0].toolKey).toBe("log_scrubber")
+            expect(imported.recipe.steps[0].inputMode).toBe("previous_output")
+            expect(imported.recipe.steps[0].constantInput).toBeUndefined()
         }
+    })
+
+    it("builds saved recipe records without storing runtime payload", () => {
+        const recipe = buildRecipe({
+            steps: [
+                {
+                    id: "constant_secret",
+                    toolKey: "jwt_decoder",
+                    adapterVersion: 1,
+                    inputMode: "constant",
+                    constantInput: "eyJ.secret.payload",
+                    options: { part: "payload", rawToken: "eyJ.secret.payload" },
+                },
+            ],
+            edges: [],
+        })
+        const record = createSavedRecipeRecord(recipe, {}, "2026-06-10T01:00:00.000Z")
+        const serialized = JSON.stringify(record)
+
+        expect(record.recipe.steps[0].inputMode).toBe("previous_output")
+        expect(record.recipe.steps[0].constantInput).toBeUndefined()
+        expect(record.recipe.steps[0].options).toEqual({ part: "payload" })
+        expect(serialized).not.toContain("eyJ.secret.payload")
+        expect(serialized).not.toContain("rawToken")
     })
 
     it("returns structured import errors for invalid recipe JSON", () => {
@@ -822,6 +865,15 @@ describe("pipeline foundation", () => {
     })
 
     it("creates valid built-in recipe templates with deterministic linear edges", () => {
+        expect(PIPELINE_RECIPE_TEMPLATES.map((template) => template.id)).toEqual(
+            expect.arrayContaining([
+                "api_payload_cleanup",
+                "security_token_review",
+                "log_scrub_before_sharing",
+            ]),
+        )
+        expect(PIPELINE_RECIPE_TEMPLATES.length).toBeGreaterThanOrEqual(3)
+
         for (const template of PIPELINE_RECIPE_TEMPLATES) {
             const generated = createRecipeFromTemplate(template, {
                 recipeId: `recipe_${template.id}`,

@@ -51,6 +51,21 @@ export function NavbarMobileMenu({
             >
                 <SheetTitle className="sr-only">{t.nav.navigation}</SheetTitle>
                 <div className="grid grid-cols-2 gap-2 px-1">
+                    <SheetClose asChild>
+                        <Link
+                            href={`/${lang}/pipeline-builder`}
+                            prefetch={false}
+                            aria-current={pathname === `/${lang}/pipeline-builder` ? "page" : undefined}
+                            className={cn(
+                                "col-span-2 rounded-lg border px-3 py-2 text-sm font-medium",
+                                pathname === `/${lang}/pipeline-builder`
+                                    ? "border-primary/35 bg-primary/12 text-primary"
+                                    : "border-primary/30 bg-primary/10 text-primary hover:bg-primary/15"
+                            )}
+                        >
+                            {(t.tools["pipeline_builder"] as { title?: string } | undefined)?.title ?? "Pipeline Builder"}
+                        </Link>
+                    </SheetClose>
                     {CATEGORY_LINKS.map((cat) => {
                         const href = getCategoryHref(cat.slug)
                         return (
