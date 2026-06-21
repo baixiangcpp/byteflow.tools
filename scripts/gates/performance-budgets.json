@@ -1,0 +1,64 @@
+{
+  "routes": [
+    {
+      "route": "/",
+      "label": "Root x-default",
+      "maxInitialJsGzipBytes": 220000,
+      "maxInitialJsRawBytes": 720000,
+      "maxInitialScriptFiles": 12,
+      "maxCssGzipBytes": 35000,
+      "maxCssRawBytes": 220000,
+      "maxHtmlBytes": 90000
+    },
+    {
+      "route": "/en",
+      "label": "English home",
+      "maxInitialJsGzipBytes": 255000,
+      "maxInitialJsRawBytes": 900000,
+      "maxInitialScriptFiles": 17,
+      "maxCssGzipBytes": 35000,
+      "maxCssRawBytes": 220000,
+      "maxHtmlBytes": 360000
+    },
+    {
+      "route": "/en/all-tools",
+      "label": "All Tools",
+      "maxInitialJsGzipBytes": 285000,
+      "maxInitialJsRawBytes": 1025000,
+      "maxInitialScriptFiles": 20,
+      "maxCssGzipBytes": 35000,
+      "maxCssRawBytes": 220000,
+      "maxHtmlBytes": 620000
+    },
+    {
+      "route": "/en/json-formatter",
+      "label": "JSON Formatter",
+      "maxInitialJsGzipBytes": 350000,
+      "maxInitialJsRawBytes": 1220000,
+      "maxInitialScriptFiles": 27,
+      "maxCssGzipBytes": 35000,
+      "maxCssRawBytes": 220000,
+      "maxHtmlBytes": 320000
+    },
+    {
+      "route": "/en/markdown-preview",
+      "label": "Markdown Preview",
+      "maxInitialJsGzipBytes": 300000,
+      "maxInitialJsRawBytes": 1060000,
+      "maxInitialScriptFiles": 23,
+      "maxCssGzipBytes": 35000,
+      "maxCssRawBytes": 220000,
+      "maxHtmlBytes": 300000
+    },
+    {
+      "route": "/en/image-resizer",
+      "label": "Image Resizer",
+      "maxInitialJsGzipBytes": 340000,
+      "maxInitialJsRawBytes": 1180000,
+      "maxInitialScriptFiles": 27,
+      "maxCssGzipBytes": 35000,
+      "maxCssRawBytes": 220000,
+      "maxHtmlBytes": 310000
+    }
+  ]
+}
