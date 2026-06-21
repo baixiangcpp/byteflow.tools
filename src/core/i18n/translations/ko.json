@@ -499,8 +499,10 @@
     "markdown_preview": {
       "title": "Markdown 미리보기",
       "description": "GFM을 지원하는 실시간 분할 창 Markdown 편집기입니다.",
+      "export_notice": "HTML은 복사하거나 내보내기 전에 정리됩니다. 붙여넣은 Markdown에서 요청이 나가지 않도록 원격 및 상대 이미지가 차단됩니다.",
       "editor": "편집기",
       "split": "분할",
+      "split_desktop_label": "분할 보기, 데스크톱에서는 좌우 배치",
       "preview": "미리보기",
       "copy_md": "MD 복사",
       "copy_html": "HTML 복사",
@@ -512,6 +514,7 @@
       "copied_md": "Markdown 소스가 클립보드에 복사되었습니다.",
       "copied_html": "HTML 출력이 클립보드에 복사되었습니다.",
       "downloaded": "HTML 파일이 저장되었습니다.",
+      "preview_not_ready": "미리보기가 아직 준비되지 않았습니다. HTML을 복사하거나 내보내기 전에 미리보기 또는 분할 모드로 전환하세요.",
       "export_title": "Markdown 내보내기",
       "cleared": "편집기 내용이 지워졌습니다."
     },

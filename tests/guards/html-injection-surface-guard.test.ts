@@ -83,12 +83,15 @@ describe("HTML injection surface guard", () => {
     it("keeps Markdown export and SVG conversion tools on the shared sanitizer", () => {
         const markdownPageSource = readSource("src/features/tools/markdown-preview/page.tsx")
         const markdownRendererSource = readSource("src/features/tool-templates/markdown-preview-renderer.tsx")
+        const markdownExportSource = readSource("src/features/tools/markdown-preview/export.ts")
         const svgRasterSource = readSource("src/features/tools/svg-to-png-converter/utils.ts")
         const svgStrokeSource = readSource("src/features/tools/svg-stroke-to-fill-converter/utils.ts")
 
-        expect(markdownPageSource).toContain("import { sanitizeHtml } from \"@/core/security/sanitize\"")
-        expect(markdownPageSource).toContain("safeClipboardWrite(sanitizeHtml(previewEl.innerHTML))")
-        expect(markdownPageSource).toContain("const safeHtml = sanitizeHtml(previewEl.innerHTML)")
+        expect(markdownPageSource).toContain("sanitizeMarkdownPreviewHtml(previewHtml)")
+        expect(markdownPageSource).toContain("buildMarkdownExportDocument({")
+        expect(markdownExportSource).toContain("import { sanitizeMarkdownHtml } from \"@/core/security/sanitize\"")
+        expect(markdownExportSource).toContain("export function sanitizeMarkdownPreviewHtml")
+        expect(markdownExportSource).toContain("const safeHtml = sanitizeMarkdownPreviewHtml(previewHtml)")
         expect(markdownRendererSource).toContain("MARKDOWN_SANITIZE_SCHEMA")
         expect(markdownRendererSource).toContain("[rehypeSanitize, MARKDOWN_SANITIZE_SCHEMA]")
         expect(svgRasterSource).toContain("import { sanitizeSvgForPreview } from \"@/core/security/sanitize\"")

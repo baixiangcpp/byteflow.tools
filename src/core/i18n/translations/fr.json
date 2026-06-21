@@ -499,8 +499,10 @@
     "markdown_preview": {
       "title": "Aperçu Markdown",
       "description": "Éditeur Markdown à volet divisé en direct avec prise en charge GFM.",
+      "export_notice": "Le HTML est assaini avant la copie ou l'export. Les images distantes et relatives sont bloquées pour éviter les requêtes issues du Markdown collé.",
       "editor": "Éditeur",
       "split": "Divisé",
+      "split_desktop_label": "Vue divisée, côte à côte sur ordinateur",
       "preview": "Aperçu",
       "copy_md": "Copier MD",
       "copy_html": "Copier HTML",
@@ -512,6 +514,7 @@
       "copied_md": "Source Markdown copiée dans le presse-papiers",
       "copied_html": "Sortie HTML copiée dans le presse-papiers",
       "downloaded": "Fichier HTML enregistré",
+      "preview_not_ready": "L'aperçu n'est pas prêt. Passez en mode Aperçu ou Divisé avant de copier ou d'exporter le HTML.",
       "export_title": "Export Markdown",
       "cleared": "Contenu de l'éditeur effacé"
     },

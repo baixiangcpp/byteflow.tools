@@ -499,8 +499,10 @@
     "markdown_preview": {
       "title": "Markdown-Vorschau",
       "description": "Live-Split-Pane-Markdown-Editor mit GFM-Unterstützung.",
+      "export_notice": "HTML wird vor dem Kopieren oder Export bereinigt. Remote- und relative Bilder werden blockiert, damit eingefügtes Markdown keine Requests auslöst.",
       "editor": "Bearbeitungsbereich",
       "split": "Geteilt",
+      "split_desktop_label": "Geteilte Ansicht, nebeneinander auf dem Desktop",
       "preview": "Vorschau",
       "copy_md": "MD kopieren",
       "copy_html": "HTML kopieren",
@@ -512,6 +514,7 @@
       "copied_md": "Markdown-Quelle in die Zwischenablage kopiert",
       "copied_html": "HTML-Ausgabe in die Zwischenablage kopiert",
       "downloaded": "HTML-Datei gespeichert",
+      "preview_not_ready": "Die Vorschau ist noch nicht bereit. Wechseln Sie vor dem Kopieren oder Exportieren von HTML zu Vorschau oder Geteilt.",
       "export_title": "Markdown-Export",
       "cleared": "Editor-Inhalt gelöscht"
     },
