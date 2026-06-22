@@ -633,7 +633,9 @@
       "operation_label": "操作",
       "input_type_label": "輸入類型",
       "operation_encode": "編碼",
-      "operation_decode": "解碼"
+      "operation_decode": "解碼",
+      "file_processing": "正在本機處理檔案...",
+      "file_mode_hint": "檔案模式使用 worker，且不會儲存檔案內容。"
     },
     "url_encode_decode": {
       "title": "URL 編碼/解碼",
@@ -735,7 +737,13 @@
       "batch_empty": "每行輸入一個項目以產生批次雜湊。",
       "md5_quick_link": "MD5 快速頁面",
       "sha224_quick_link": "SHA-224 快速頁面",
-      "sha384_quick_link": "SHA-384 快速頁面"
+      "sha384_quick_link": "SHA-384 快速頁面",
+      "hmac_secret_hint": "HMAC 密鑰只保留在記憶體中，不會被儲存。",
+      "show_secret": "顯示 HMAC 密鑰",
+      "hide_secret": "隱藏 HMAC 密鑰",
+      "file_processing": "正在本機計算檔案雜湊...",
+      "file_privacy_hint": "檔案位元組只保留在記憶體中，重設或離開檔案模式時會清除。",
+      "weak_hash_badge": "弱"
     },
     "text_diff_checker": {
       "title": "文字差異比對",

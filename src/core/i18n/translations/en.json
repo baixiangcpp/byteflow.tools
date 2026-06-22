@@ -661,7 +661,9 @@
       "share_action": "Share",
       "output_preview_truncated": "Preview truncated. {hidden} more characters are hidden. Use Copy/Download for full output.",
       "input_placeholder_text": "Paste text/Base64 content here...",
-      "input_placeholder_file": "Paste Base64 content to decode binary..."
+      "input_placeholder_file": "Paste Base64 content to decode binary...",
+      "file_processing": "Processing file locally...",
+      "file_mode_hint": "File mode uses the worker and never stores file contents."
     },
     "url_encode_decode": {
       "title": "URL Encode/Decode",
@@ -763,7 +765,13 @@
       "batch_empty": "Enter one item per line to generate batch hashes.",
       "md5_quick_link": "MD5 Quick Page",
       "sha224_quick_link": "SHA-224 Quick Page",
-      "sha384_quick_link": "SHA-384 Quick Page"
+      "sha384_quick_link": "SHA-384 Quick Page",
+      "hmac_secret_hint": "HMAC secrets stay in memory only and are not saved.",
+      "show_secret": "Show HMAC secret",
+      "hide_secret": "Hide HMAC secret",
+      "file_processing": "Hashing file locally...",
+      "file_privacy_hint": "File bytes stay in memory and are cleared when you reset or leave file mode.",
+      "weak_hash_badge": "Weak"
     },
     "text_diff_checker": {
       "title": "Text Diff Checker",
