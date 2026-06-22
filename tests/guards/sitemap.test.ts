@@ -71,6 +71,19 @@ describe("sitemap lastmod", () => {
         }
     })
 
+    it("contains BF-027 workflow index and detail pages", () => {
+        const urls = new Set(sitemap().map((entry) => entry.url))
+
+        for (const locale of LOCALES) {
+            expect(urls.has(buildCanonicalUrl(locale, "workflows"))).toBe(true)
+            expect(urls.has(buildCanonicalUrl(locale, "workflows/api-payload-cleanup"))).toBe(true)
+            expect(urls.has(buildCanonicalUrl(locale, "workflows/security-token-review"))).toBe(true)
+            expect(urls.has(buildCanonicalUrl(locale, "workflows/log-scrub-before-sharing"))).toBe(true)
+            expect(urls.has(buildCanonicalUrl(locale, "workflows/image-resize-social-export"))).toBe(true)
+            expect(urls.has(buildCanonicalUrl(locale, "workflows/json-typescript-contract-review"))).toBe(true)
+        }
+    })
+
     it("excludes noindex static pages from sitemap output", () => {
         const urls = sitemap().map((entry) => entry.url)
 

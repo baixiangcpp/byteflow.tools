@@ -156,6 +156,22 @@ function main() {
     })
     assertTypes({
         scanDir,
+        locale: "en",
+        slug: "workflows",
+        requiredTypes: ["CollectionPage", "BreadcrumbList"],
+        label: "/en/workflows",
+        failures,
+    })
+    assertTypes({
+        scanDir,
+        locale: "en",
+        slug: "workflows/api-payload-cleanup",
+        requiredTypes: ["HowTo", "HowToStep", "BreadcrumbList"],
+        label: "/en/workflows/api-payload-cleanup",
+        failures,
+    })
+    assertTypes({
+        scanDir,
         locale: "zh-CN",
         slug: "json-formatting-errors",
         requiredTypes: ["Article"],

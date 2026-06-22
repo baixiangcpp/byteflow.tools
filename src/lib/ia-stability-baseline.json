@@ -79,6 +79,12 @@
     "terms",
     "trust-center",
     "url-encoding-explained-common-mistakes-and-solutions",
-    "validate-json-before-api-requests"
+    "validate-json-before-api-requests",
+    "workflows",
+    "workflows/api-payload-cleanup",
+    "workflows/image-resize-social-export",
+    "workflows/json-typescript-contract-review",
+    "workflows/log-scrub-before-sharing",
+    "workflows/security-token-review"
   ]
 }

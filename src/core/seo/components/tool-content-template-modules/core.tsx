@@ -1,9 +1,10 @@
+import Link from "next/link"
 import type { Locale } from "@/core/i18n/i18n"
 import { requireTranslationValue } from "@/core/i18n/i18n"
-import Link from "next/link"
 import { getToolBySlug } from "@/core/registry"
 import { JsonLdScript } from "@/core/seo/components/json-ld-script"
 import { ToolContentTemplateSurface } from "@/core/seo/components/tool-content-template-surface"
+import { getLocalizedWorkflowCopy, getWorkflowsForToolKey } from "@/core/workflows/workflow-hubs"
 import { getTemplateCopy } from "./template-copy"
 import { resolveFallbackIntentFamily } from "./intent-family"
 import type {
@@ -80,6 +81,14 @@ export function buildToolTemplateModel({
     const title = requireTranslationValue(toolTranslations[content.toolKey]?.title, `tools.${content.toolKey}.title`)
     const intent = resolveFallbackIntentFamily(content.toolKey, toolSlug, getToolBySlug(toolSlug)?.category || "text-content")
     const intentProfile = localizedEntry ? null : pack.intentContent?.[intent]
+    const relatedWorkflows = getWorkflowsForToolKey(content.toolKey).map((workflow) => {
+        const copy = getLocalizedWorkflowCopy(workflow, lang)
+        return {
+            slug: workflow.slug,
+            title: copy.title,
+            description: copy.description,
+        }
+    })
 
     return {
         toolSlug,
@@ -87,6 +96,7 @@ export function buildToolTemplateModel({
         title,
         content,
         copy: getTemplateCopy(lang),
+        relatedWorkflows,
         workflowSteps: localizedEntry?.workflowSteps ?? intentProfile?.workflow?.(title) ?? pack.workflow(title),
         qualityChecklist: localizedEntry?.qualityChecklist ?? intentProfile?.checklist?.(title) ?? pack.checklist(title),
         operationalNote: localizedEntry?.operationalNote ?? intentProfile?.operational?.(title) ?? pack.operational(title),
@@ -215,6 +225,24 @@ export function ToolContentTemplateSection({
                         <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">{model.copy.operationalNotes}</h3>
                         <p className="text-sm leading-relaxed text-foreground/90">{model.operationalNote}</p>
                     </section>
+
+                    {model.relatedWorkflows.length > 0 ? (
+                        <section className="space-y-3">
+                            <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">{model.copy.relatedWorkflows}</h3>
+                            <div className="grid gap-3 sm:grid-cols-2">
+                                {model.relatedWorkflows.map((workflow) => (
+                                    <Link
+                                        key={workflow.slug}
+                                        href={`/${model.locale}/workflows/${workflow.slug}`}
+                                        className="rounded-lg border border-border/60 bg-background/60 p-3 transition-colors hover:border-primary/35"
+                                    >
+                                        <p className="text-sm font-medium text-foreground">{workflow.title}</p>
+                                        <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-muted-foreground">{workflow.description}</p>
+                                    </Link>
+                                ))}
+                            </div>
+                        </section>
+                    ) : null}
 
                     <section className="space-y-3">
                         <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">{model.copy.frequentlyAskedQuestions}</h3>

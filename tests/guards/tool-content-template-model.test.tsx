@@ -40,6 +40,10 @@ describe("tool content template model selection", () => {
         expect(model).not.toBeNull()
         expect(model?.content.toolKey).toBe("json_formatter")
         expect(model?.content.intro).toContain(EN_FALLBACK_PACK.introSuffix)
+        expect(model?.relatedWorkflows.map((workflow) => workflow.slug)).toEqual([
+            "api-payload-cleanup",
+            "json-typescript-contract-review",
+        ])
     })
 
     it("does not apply en top templates for non-en locales", () => {
@@ -177,5 +181,22 @@ describe("tool content FAQ JSON-LD shape", () => {
 
         const trustCenterLink = container.querySelector('a[href="/en/trust-center"]')
         expect(trustCenterLink?.textContent).toBe("Trust Center")
+    })
+
+    it("renders related workflow links from the workflow registry", () => {
+        const model = buildModelForEn("json-formatter")
+        expect(model).not.toBeNull()
+        if (!model) throw new Error("expected model to be available")
+
+        const { container } = render(
+            <ToolContentTemplateSection
+                model={model}
+                source="server"
+            />,
+        )
+
+        expect(container.textContent).toContain(model.copy.relatedWorkflows)
+        expect(container.querySelector('a[href="/en/workflows/api-payload-cleanup"]')).not.toBeNull()
+        expect(container.querySelector('a[href="/en/workflows/json-typescript-contract-review"]')).not.toBeNull()
     })
 })

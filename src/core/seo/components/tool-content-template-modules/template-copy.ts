@@ -13,6 +13,7 @@ const EN_TEMPLATE_COPY: TemplateCopy = {
     qualityChecklistBeforeSharingOutput: "Quality checklist before sharing output",
     operationalNotes: "Operational notes",
     relatedTools: "Related tools",
+    relatedWorkflows: "Related workflows",
     frequentlyAskedQuestions: "Frequently asked questions",
     trustCenterPrivacyNote: {
         beforeLink: "For the shared privacy terminology, local processing model, external-request labels, and DevTools verification workflow, see the ",
@@ -34,6 +35,7 @@ const TEMPLATE_COPY_BY_LOCALE: Partial<Record<Locale, TemplateCopy>> = {
         qualityChecklistBeforeSharingOutput: "\u5206\u4EAB\u7ED3\u679C\u524D\u7684\u8D28\u91CF\u68C0\u67E5\u6E05\u5355",
         operationalNotes: "\u4F7F\u7528\u5EFA\u8BAE",
         relatedTools: "\u76F8\u5173\u5DE5\u5177",
+        relatedWorkflows: "\u76F8\u5173\u5DE5\u4F5C\u6D41",
         frequentlyAskedQuestions: "\u5E38\u89C1\u95EE\u9898",
         trustCenterPrivacyNote: {
             beforeLink: "\u5982\u9700\u4E86\u89E3\u7EDF\u4E00\u7684\u9690\u79C1\u672F\u8BED\u3001\u672C\u5730\u5904\u7406\u6A21\u5F0F\u3001\u5916\u90E8\u8BF7\u6C42\u6807\u8BB0\u548C DevTools \u9A8C\u8BC1\u6D41\u7A0B\uFF0C\u8BF7\u67E5\u770B",
@@ -53,6 +55,7 @@ const TEMPLATE_COPY_BY_LOCALE: Partial<Record<Locale, TemplateCopy>> = {
         qualityChecklistBeforeSharingOutput: "\u5206\u4EAB\u7D50\u679C\u524D\u7684\u54C1\u8CEA\u6AA2\u67E5\u6E05\u55AE",
         operationalNotes: "\u4F7F\u7528\u5EFA\u8B70",
         relatedTools: "\u76F8\u95DC\u5DE5\u5177",
+        relatedWorkflows: "\u76F8\u95DC\u5DE5\u4F5C\u6D41\u7A0B",
         frequentlyAskedQuestions: "\u5E38\u898B\u554F\u984C",
         trustCenterPrivacyNote: {
             beforeLink: "\u5982\u9700\u4E86\u89E3\u7D71\u4E00\u7684\u96B1\u79C1\u8853\u8A9E\u3001\u672C\u5730\u8655\u7406\u6A21\u5F0F\u3001\u5916\u90E8\u8ACB\u6C42\u6A19\u8A18\u548C DevTools \u9A57\u8B49\u6D41\u7A0B\uFF0C\u8ACB\u67E5\u770B",
@@ -72,6 +75,7 @@ const TEMPLATE_COPY_BY_LOCALE: Partial<Record<Locale, TemplateCopy>> = {
         qualityChecklistBeforeSharingOutput: "\u5171\u6709\u524D\u306E\u54C1\u8CEA\u30C1\u30A7\u30C3\u30AF\u30EA\u30B9\u30C8",
         operationalNotes: "\u904B\u7528\u306E\u30D2\u30F3\u30C8",
         relatedTools: "\u95A2\u9023\u30C4\u30FC\u30EB",
+        relatedWorkflows: "\u95A2\u9023\u30EF\u30FC\u30AF\u30D5\u30ED\u30FC",
         frequentlyAskedQuestions: "\u3088\u304F\u3042\u308B\u8CEA\u554F",
         trustCenterPrivacyNote: {
             beforeLink: "\u5171\u901A\u306E\u30D7\u30E9\u30A4\u30D0\u30B7\u30FC\u7528\u8A9E\u3001\u30ED\u30FC\u30AB\u30EB\u51E6\u7406\u30E2\u30C7\u30EB\u3001\u5916\u90E8\u30EA\u30AF\u30A8\u30B9\u30C8\u30E9\u30D9\u30EB\u3001DevTools \u3067\u306E\u691C\u8A3C\u624B\u9806\u306F",
@@ -91,6 +95,7 @@ const TEMPLATE_COPY_BY_LOCALE: Partial<Record<Locale, TemplateCopy>> = {
         qualityChecklistBeforeSharingOutput: "\uACB0\uACFC \uACF5\uC720 \uC804 \uD488\uC9C8 \uCCB4\uD06C\uB9AC\uC2A4\uD2B8",
         operationalNotes: "\uD65C\uC6A9 \uD301",
         relatedTools: "\uAD00\uB828 \uB3C4\uAD6C",
+        relatedWorkflows: "\uAD00\uB828 \uC6CC\uD06C\uD50C\uB85C",
         frequentlyAskedQuestions: "\uC790\uC8FC \uBB3B\uB294 \uC9C8\uBB38",
         trustCenterPrivacyNote: {
             beforeLink: "\uACF5\uD1B5 \uAC1C\uC778\uC815\uBCF4 \uC6A9\uC5B4, \uB85C\uCEEC \uCC98\uB9AC \uBAA8\uB378, \uC678\uBD80 \uC694\uCCAD \uB77C\uBCA8, DevTools \uAC80\uC99D \uD750\uB984\uC740 ",
@@ -110,6 +115,7 @@ const TEMPLATE_COPY_BY_LOCALE: Partial<Record<Locale, TemplateCopy>> = {
         qualityChecklistBeforeSharingOutput: "Qualitätscheck vor dem Teilen",
         operationalNotes: "Praxishinweise",
         relatedTools: "Verwandte Tools",
+        relatedWorkflows: "Verwandte Workflows",
         frequentlyAskedQuestions: "Häufig gestellte Fragen",
         trustCenterPrivacyNote: {
             beforeLink: "Gemeinsame Datenschutzbegriffe, das lokale Verarbeitungsmodell, External-Request-Kennzeichnungen und die DevTools-Prüfung stehen im ",
@@ -129,6 +135,7 @@ const TEMPLATE_COPY_BY_LOCALE: Partial<Record<Locale, TemplateCopy>> = {
         qualityChecklistBeforeSharingOutput: "Checklist qualité avant partage",
         operationalNotes: "Conseils d'utilisation",
         relatedTools: "Outils associés",
+        relatedWorkflows: "Workflows associés",
         frequentlyAskedQuestions: "Questions fréquentes",
         trustCenterPrivacyNote: {
             beforeLink: "Pour les termes de confidentialité, le modèle de traitement local, les libellés de requête externe et la vérification DevTools, consultez le ",

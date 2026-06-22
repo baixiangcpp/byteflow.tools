@@ -41,6 +41,10 @@ export function getRouteContext(pathname: string): {
     }
 
     const slug = segments[1]
+    if (slug === "workflows") {
+        return { locale: localeSegment, routeType: "hub", slug: segments.slice(1).join("/") }
+    }
+
     if (getRouteToolBySlug(slug) || isRouteSourceToolSlug(slug)) {
         return { locale: localeSegment, routeType: "tool", slug }
     }

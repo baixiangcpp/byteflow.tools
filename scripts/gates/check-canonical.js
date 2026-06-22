@@ -66,7 +66,7 @@ function expectedCanonicalFor(relativePath) {
         return null
     }
 
-    const localizedPage = relativePath.match(/^([^/]+)\/([^/]+)\.html$/)
+    const localizedPage = relativePath.match(/^([^/]+)\/(.+)\.html$/)
     if (localizedPage) {
         const locale = localizedPage[1]
         const slug = TOOL_ALIAS_TO_CANONICAL_SLUG[localizedPage[2]] || localizedPage[2]
