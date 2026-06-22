@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import { Sparkles, X } from "lucide-react"
-import { trackCTA } from "@/core/analytics/analytics"
 import { requireTranslationValue } from "@/core/i18n/i18n"
 import { useLang } from "@/core/i18n/lang-provider"
 import { openExternalUrl } from "@/core/security/external-url"
@@ -19,19 +18,16 @@ export function NewsletterCTA() {
         if (readStorageString(STORAGE_KEY)) return
         const timer = setTimeout(() => {
             setVisible(true)
-            trackCTA("newsletter", "view")
         }, 15000)
         return () => clearTimeout(timer)
     }, [])
 
     const handleDismiss = () => {
-        trackCTA("newsletter", "dismiss")
         setVisible(false)
         writeStorageString(STORAGE_KEY, "1")
     }
 
     const handleClick = () => {
-        trackCTA("newsletter", "click")
         openExternalUrl("https://github.com/baixiangcpp/byteflow.tools")
         setVisible(false)
         writeStorageString(STORAGE_KEY, "1")

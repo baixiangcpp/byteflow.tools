@@ -5,7 +5,6 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { Globe, ChevronDown } from "lucide-react"
 import { LOCALES, LOCALE_NAMES, type Locale } from "@/core/i18n/i18n"
 import { useLang } from "@/core/i18n/lang-provider"
-import { trackEvent } from "@/core/analytics/analytics"
 
 import {
     DropdownMenu,
@@ -36,7 +35,6 @@ export function LanguageSwitcher() {
         const queryString = searchParams.toString()
         const hash = typeof window !== "undefined" ? window.location.hash : ""
         const targetPath = `${segments.join("/")}${queryString ? `?${queryString}` : ""}${hash}`
-        trackEvent("navigation", "language_switch", `${lang}->${newLang}`)
         router.replace(targetPath)
     }
 

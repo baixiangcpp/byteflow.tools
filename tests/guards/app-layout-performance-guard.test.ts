@@ -65,7 +65,7 @@ describe("app layout performance guard", () => {
         const source = fs.readFileSync(path.join(process.cwd(), "src/core/analytics/components/deferred-analytics.tsx"), "utf8")
 
         expect(source).toContain('import("./route-analytics")')
-        expect(source).toContain('import("./web-vitals-analytics")')
+        expect(source).not.toContain('import("./web-vitals-analytics")')
         expect(source).toContain('useDeferredMount({ delayMs: 1500, activateOnInteraction: true })')
     })
 

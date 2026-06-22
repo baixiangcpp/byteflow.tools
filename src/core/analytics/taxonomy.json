@@ -1,0 +1,71 @@
+{
+  "events": {
+    "tool_loaded": {
+      "description": "A tool page became active in the browser.",
+      "allowedParams": ["tool_id", "language", "source_page"]
+    },
+    "tool_action": {
+      "description": "A user ran a non-copy, non-download tool action.",
+      "allowedParams": ["tool_id", "action_type", "language", "input_size_bucket", "source_page"]
+    },
+    "copy_output": {
+      "description": "A user copied a tool output through a UI control.",
+      "allowedParams": ["tool_id", "action_type", "language", "source_page"]
+    },
+    "download_output": {
+      "description": "A user downloaded generated output through a UI control.",
+      "allowedParams": ["tool_id", "action_type", "language", "size_bucket", "source_page"]
+    },
+    "search_performed": {
+      "description": "A search UI produced results without storing the query text.",
+      "allowedParams": ["language", "query_length_bucket", "results_count", "source_page"]
+    },
+    "related_tool_click": {
+      "description": "A user clicked a related tool recommendation.",
+      "allowedParams": ["tool_id", "related_tool_id", "language", "source_page"]
+    },
+    "pwa_installed": {
+      "description": "The browser reported successful PWA installation.",
+      "allowedParams": ["language", "platform", "source_page"]
+    }
+  },
+  "allowedParams": [
+    "tool_id",
+    "related_tool_id",
+    "action_type",
+    "language",
+    "input_size_bucket",
+    "query_length_bucket",
+    "results_count",
+    "size_bucket",
+    "source_page",
+    "platform"
+  ],
+  "forbiddenParams": [
+    "input",
+    "input_text",
+    "output",
+    "output_text",
+    "payload",
+    "token",
+    "jwt",
+    "secret",
+    "url",
+    "full_url",
+    "filename",
+    "file_name",
+    "file_content",
+    "image_content",
+    "log_body",
+    "hash",
+    "query",
+    "search_query",
+    "raw_url",
+    "page_path",
+    "metric_id",
+    "user_id",
+    "session_id"
+  ],
+  "sizeBuckets": ["empty", "tiny", "small", "medium", "large", "huge", "unknown"],
+  "queryLengthBuckets": ["empty", "short", "medium", "long", "very_long"]
+}

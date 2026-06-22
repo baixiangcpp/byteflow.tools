@@ -4,6 +4,7 @@ import Link from "next/link"
 import { useLang } from "@/core/i18n/lang-provider"
 import { getDiscoveryRelatedTools } from "@/generated/discovery-tool-index"
 import { requireTranslationValue } from "@/core/i18n/i18n"
+import { trackRelatedToolClick } from "@/core/analytics/analytics"
 import { ArrowRight } from "lucide-react"
 
 /**
@@ -37,6 +38,12 @@ export function RelatedTools({
                         <Link
                             key={tool.key}
                             href={`/${lang}/${tool.slug}`}
+                            onClick={() => trackRelatedToolClick({
+                                toolKey,
+                                relatedToolKey: tool.key,
+                                language: lang,
+                                sourcePage: source === "fallback" ? "related_tools_fallback" : "related_tools_inline",
+                            })}
                             className="group flex items-start gap-3 rounded-xl border border-border/70 bg-background/55 p-3 transition-[border-color,background-color,box-shadow] duration-200 hover:border-primary/30 hover:bg-accent/40"
                         >
                             <div className="min-w-0 flex-1">

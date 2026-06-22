@@ -19,7 +19,7 @@ vi.mock("next/image", () => ({
 }))
 
 vi.mock("@/core/analytics/analytics", () => ({
-    trackEvent: vi.fn(),
+    trackPwaInstalled: vi.fn(),
 }))
 
 describe("install app page", () => {
