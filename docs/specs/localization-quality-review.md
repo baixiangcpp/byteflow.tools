@@ -16,6 +16,7 @@ The previous localization pass allowed weak copy to land for four concrete reaso
 - Do not use synthetic translation generation for production localized copy.
 - Treat checked-in localized JSON as user-facing copy, even when the path contains `generated`.
 - For every localized copy change, review all supported locales: `zh-CN`, `zh-TW`, `ja`, `ko`, `de`, and `fr`.
+- New user-facing pages, guides, comparisons, alternatives, tutorials, FAQ, schema-visible text, examples, tables, and SEO copy must be fully localized for every supported locale in the same change. Localized titles or descriptions are not enough when the body remains English, and partial originality is not acceptable.
 - Preserve accepted technical terms such as `JSON`, `YAML`, `TOML`, `JWT`, `API`, `Base32`, `Base58`, `Base64`, and `UUID` when that is the natural localized form.
 - Translate workflow terms deliberately. Do not leave `fixture`, `payload`, or similar English terms in non-English copy unless the locale commonly uses that term in technical UI.
 - Check grammar and typography, not just key presence. Watch for Korean particles, Japanese spacing around particles, German compound terms, French agreement, and Chinese spacing around Latin technical terms.

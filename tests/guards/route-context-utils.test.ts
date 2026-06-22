@@ -76,6 +76,12 @@ describe("route context", () => {
             routeType: "content",
             slug: "trust-center",
         })
+
+        expect(getRouteContext("/en/compare/byteflow-vs-cyberchef")).toEqual({
+            locale: "en",
+            routeType: "content",
+            slug: "compare/byteflow-vs-cyberchef",
+        })
     })
 
     it("classifies non-locale routes as other", () => {

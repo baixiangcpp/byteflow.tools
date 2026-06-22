@@ -178,6 +178,22 @@ function main() {
         label: "/zh-CN/json-formatting-errors",
         failures,
     })
+    assertTypes({
+        scanDir,
+        locale: "en",
+        slug: "compare/byteflow-vs-cyberchef",
+        requiredTypes: ["Article", "BreadcrumbList", "FAQPage"],
+        label: "/en/compare/byteflow-vs-cyberchef",
+        failures,
+    })
+    assertTypes({
+        scanDir,
+        locale: "en",
+        slug: "how-to/decode-jwt-locally",
+        requiredTypes: ["HowTo", "HowToStep", "BreadcrumbList", "FAQPage"],
+        label: "/en/how-to/decode-jwt-locally",
+        failures,
+    })
 
     for (const slug of REQUIRED_TOOL_SLUGS) {
         assertTypes({

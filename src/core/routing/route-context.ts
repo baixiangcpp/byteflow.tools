@@ -41,8 +41,10 @@ export function getRouteContext(pathname: string): {
     }
 
     const slug = segments[1]
+    const routeSlug = segments.slice(1).join("/")
+
     if (slug === "workflows") {
-        return { locale: localeSegment, routeType: "hub", slug: segments.slice(1).join("/") }
+        return { locale: localeSegment, routeType: "hub", slug: routeSlug }
     }
 
     if (getRouteToolBySlug(slug) || isRouteSourceToolSlug(slug)) {
@@ -54,8 +56,8 @@ export function getRouteContext(pathname: string): {
     }
 
     if (CONTENT_ROUTE_SLUGS.has(slug)) {
-        return { locale: localeSegment, routeType: "content", slug }
+        return { locale: localeSegment, routeType: "content", slug: routeSlug }
     }
 
-    return { locale: localeSegment, routeType: "content", slug }
+    return { locale: localeSegment, routeType: "content", slug: routeSlug }
 }
