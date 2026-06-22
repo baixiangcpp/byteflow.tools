@@ -2823,7 +2823,7 @@
     "trust_center_analytics_title": "분석 전략",
     "trust_center_analytics_desc": "분석은 페이지 조회와 안전한 이벤트 이름 같은 집계 제품 신호로 제한됩니다. 도구 입력, 출력, JWT, 비밀값, 로그 본문, 파일 내용, 이미지 내용, 검색 원문, 전체 URL은 분석 필드가 아닙니다.",
     "trust_center_pwa_title": "PWA 캐시 전략",
-    "trust_center_pwa_desc": "PWA는 오프라인 사용을 위해 앱 셸, 정적 자산, 아이콘, 도구 청크를 캐시할 수 있습니다. 도구 입력, 도구 출력, 업로드 파일 내용, 외부 요청 응답은 캐시하면 안 됩니다.",
+    "trust_center_pwa_desc": "PWA는 오프라인 사용을 위해 버전이 지정된 앱 셸, 정적 자산, 아이콘, 도구 청크를 캐시할 수 있습니다. 외부 요청 응답은 network-only이며, 설치 페이지에서 캐시된 앱 파일을 지울 수 있습니다. 도구 입력, 도구 출력, 업로드 파일 내용, 외부 요청 응답은 캐시하면 안 됩니다.",
     "trust_center_security_headers_title": "보안 헤더와 CSP",
     "trust_center_security_headers_desc": "보안 헤더 검사는 전송 보안, 리퍼러 정책, 콘텐츠 유형 스니핑, 권한 정책, frame 제한, object 출처, 임의 script 출처를 피하는 CSP를 확인합니다.",
     "trust_center_xss_title": "사용자 콘텐츠 렌더링",

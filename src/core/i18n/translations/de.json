@@ -2823,7 +2823,7 @@
     "trust_center_analytics_title": "Analytics-Strategie",
     "trust_center_analytics_desc": "Analytics sind auf aggregierte Produktsignale wie Seitenaufrufe und sichere Ereignisnamen beschränkt. Tool-Eingaben, Ausgaben, JWTs, Geheimnisse, Logtexte, Dateiinhalte, Bildinhalte, Suchtexte und vollständige URLs sind keine Analytics-Felder.",
     "trust_center_pwa_title": "PWA-Cache-Strategie",
-    "trust_center_pwa_desc": "Die PWA kann App-Shell, statische Assets, Icons und Tool-Chunks für Offline-Nutzung zwischenspeichern. Tool-Eingaben, Ausgaben, hochgeladene Dateiinhalte und Antworten externer Anfragen dürfen nicht gecacht werden.",
+    "trust_center_pwa_desc": "Die PWA kann versionierte App-Shell-Dateien, statische Assets, Icons und Tool-Chunks für Offline-Nutzung zwischenspeichern. Antworten externer Anfragen bleiben network-only, und gecachte App-Dateien lassen sich auf der Installationsseite löschen. Tool-Eingaben, Ausgaben, hochgeladene Dateiinhalte und Antworten externer Anfragen dürfen nicht gecacht werden.",
     "trust_center_security_headers_title": "Sicherheitsheader und CSP",
     "trust_center_security_headers_desc": "Prüfungen für Sicherheitsheader decken Transport Security, Referrer Policy, Content-Type Sniffing, Permissions Policy, Frame-Ancestors, Object-Quellen und eine CSP ohne beliebige Script-Quellen ab.",
     "trust_center_xss_title": "Darstellung von Nutzerinhalten",

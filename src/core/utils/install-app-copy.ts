@@ -37,6 +37,11 @@ export type InstallPageCopy = {
     bottomTrust: string
     manualHint: string
     guidePreviewLabel: string
+    cacheControlsTitle: string
+    cacheControlsDescription: string
+    clearCachedAppButton: string
+    clearCachedAppSuccess: string
+    clearCachedAppUnavailable: string
     benefits: InstallBenefit[]
     guides: Record<GuidePlatform, InstallGuide>
     faq: InstallFaq[]
@@ -66,6 +71,11 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
         bottomTrust: "Privacy-first by design. Fast by default. Browser-local tools work without network.",
         manualHint: "Install prompt is unavailable in this browser. Follow the platform steps below.",
         guidePreviewLabel: "Guide preview",
+        cacheControlsTitle: "Cached app files",
+        cacheControlsDescription: "Clear the PWA app shell, static assets, icons, and tool chunks stored by your browser. This does not clear tool input or output.",
+        clearCachedAppButton: "Clear cached app files",
+        clearCachedAppSuccess: "Cached app files cleared.",
+        clearCachedAppUnavailable: "Cache clearing is not available in this browser.",
         benefits: [
             {
                 key: "instant_launch",
@@ -173,6 +183,11 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
         bottomTrust: "隐私优先，速度优先。浏览器本地工具无网可用。",
         manualHint: "当前浏览器不支持安装弹窗，请按下方步骤手动安装。",
         guidePreviewLabel: "教程预览",
+        cacheControlsTitle: "已缓存的应用文件",
+        cacheControlsDescription: "清除浏览器保存的 PWA 应用外壳、静态资源、图标和工具代码块。这不会清除工具输入或输出。",
+        clearCachedAppButton: "清除已缓存应用文件",
+        clearCachedAppSuccess: "已清除缓存的应用文件。",
+        clearCachedAppUnavailable: "当前浏览器不支持清除缓存。",
         benefits: [
             {
                 key: "instant_launch",
@@ -280,6 +295,11 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
         bottomTrust: "隱私優先、速度優先。瀏覽器本地工具無網可用。",
         manualHint: "目前瀏覽器不支援安裝彈窗，請依下方步驟手動安裝。",
         guidePreviewLabel: "教學預覽",
+        cacheControlsTitle: "已快取的應用檔案",
+        cacheControlsDescription: "清除瀏覽器保存的 PWA 應用外殼、靜態資源、圖示和工具程式碼區塊。這不會清除工具輸入或輸出。",
+        clearCachedAppButton: "清除已快取應用檔案",
+        clearCachedAppSuccess: "已清除快取的應用檔案。",
+        clearCachedAppUnavailable: "此瀏覽器不支援清除快取。",
         benefits: [
             {
                 key: "instant_launch",
@@ -387,6 +407,11 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
         bottomTrust: "プライバシー重視。高速。ブラウザローカルツールはオフライン対応。",
         manualHint: "このブラウザではインストールプロンプトが使えません。下の手順を確認してください。",
         guidePreviewLabel: "手順プレビュー",
+        cacheControlsTitle: "キャッシュ済みアプリファイル",
+        cacheControlsDescription: "ブラウザに保存された PWA のアプリシェル、静的アセット、アイコン、ツールチャンクを消去します。ツール入力や出力は消去しません。",
+        clearCachedAppButton: "キャッシュ済みアプリファイルを消去",
+        clearCachedAppSuccess: "キャッシュ済みアプリファイルを消去しました。",
+        clearCachedAppUnavailable: "このブラウザではキャッシュ消去を利用できません。",
         benefits: [
             {
                 key: "instant_launch",
@@ -494,6 +519,11 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
         bottomTrust: "개인정보 보호 우선. 빠른 속도. 브라우저 로컬 도구는 오프라인 지원.",
         manualHint: "이 브라우저에서는 설치 프롬프트를 지원하지 않습니다. 아래 수동 가이드를 확인하세요.",
         guidePreviewLabel: "가이드 미리보기",
+        cacheControlsTitle: "캐시된 앱 파일",
+        cacheControlsDescription: "브라우저에 저장된 PWA 앱 셸, 정적 자산, 아이콘, 도구 청크를 지웁니다. 도구 입력이나 출력은 지우지 않습니다.",
+        clearCachedAppButton: "캐시된 앱 파일 지우기",
+        clearCachedAppSuccess: "캐시된 앱 파일을 지웠습니다.",
+        clearCachedAppUnavailable: "이 브라우저에서는 캐시 지우기를 사용할 수 없습니다.",
         benefits: [
             {
                 key: "instant_launch",
@@ -601,6 +631,11 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
         bottomTrust: "Datenschutz zuerst. Schnell. Browser-lokale Tools funktionieren ohne Netzwerk.",
         manualHint: "In diesem Browser ist kein Installationsprompt verfügbar. Folgen Sie der Anleitung unten.",
         guidePreviewLabel: "Vorschau",
+        cacheControlsTitle: "Gecachte App-Dateien",
+        cacheControlsDescription: "Löscht App-Shell, statische Assets, Icons und Tool-Chunks, die der Browser für die PWA gespeichert hat. Tool-Eingaben oder Ausgaben werden nicht gelöscht.",
+        clearCachedAppButton: "Gecachte App-Dateien löschen",
+        clearCachedAppSuccess: "Gecachte App-Dateien wurden gelöscht.",
+        clearCachedAppUnavailable: "Cache-Löschen ist in diesem Browser nicht verfügbar.",
         benefits: [
             {
                 key: "instant_launch",
@@ -708,6 +743,11 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
         bottomTrust: "Confidentialité d'abord. Rapide. Les outils locaux au navigateur fonctionnent hors ligne.",
         manualHint: "Le prompt d'installation n'est pas disponible dans ce navigateur. Suivez les étapes ci-dessous.",
         guidePreviewLabel: "Aperçu du guide",
+        cacheControlsTitle: "Fichiers d'app en cache",
+        cacheControlsDescription: "Efface le shell PWA, les assets statiques, les icônes et les modules d'outils stockés par le navigateur. Cela n'efface pas les entrées ni les sorties des outils.",
+        clearCachedAppButton: "Effacer les fichiers d'app en cache",
+        clearCachedAppSuccess: "Fichiers d'app en cache effacés.",
+        clearCachedAppUnavailable: "L'effacement du cache n'est pas disponible dans ce navigateur.",
         benefits: [
             {
                 key: "instant_launch",

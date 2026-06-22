@@ -6,15 +6,34 @@
  * - During `npm run build`, `npm run build:sw` injects the commit build id into `out/sw.js`.
  */
 const APP_VERSION = '__BUILD_ID__';
-const CACHE_NAME = `byteflow-v${APP_VERSION}`;
+const CACHE_PREFIX = 'byteflow-';
+const APP_SHELL_CACHE_NAME = `byteflow-app-shell-v${APP_VERSION}`;
+const STATIC_ASSET_CACHE_NAME = `byteflow-static-assets-v${APP_VERSION}`;
+const TOOL_CHUNK_CACHE_NAME = `byteflow-tool-chunks-v${APP_VERSION}`;
+const MANIFEST_ICON_CACHE_NAME = `byteflow-manifest-icons-v${APP_VERSION}`;
+const RUNTIME_PAGE_CACHE_NAME = `byteflow-runtime-pages-v${APP_VERSION}`;
 const CACHE_META_NAME = `byteflow-meta-v${APP_VERSION}`;
+const ACTIVE_CACHE_NAMES = [
+    APP_SHELL_CACHE_NAME,
+    STATIC_ASSET_CACHE_NAME,
+    TOOL_CHUNK_CACHE_NAME,
+    MANIFEST_ICON_CACHE_NAME,
+    RUNTIME_PAGE_CACHE_NAME,
+    CACHE_META_NAME,
+];
 const OFFLINE_FALLBACK_URL = '/offline.html';
 const OFFLINE_FALLBACK_CANDIDATES = [OFFLINE_FALLBACK_URL, '/offline'];
 const MAX_RUNTIME_CACHE_ENTRIES = 120;
 const MAX_RUNTIME_CACHE_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+const CACHE_WRITE_PAUSE_AFTER_CLEAR_MS = 5000;
 const CACHE_META_URL_PREFIX = '/__byteflow-cache-meta__?url=';
+let cacheWritesPausedUntil = 0;
 
-const STATIC_ASSETS = [
+const APP_SHELL_ASSETS = [
+    ...OFFLINE_FALLBACK_CANDIDATES,
+];
+
+const MANIFEST_ICON_ASSETS = [
     '/manifest.json',
     '/manifest.zh-CN.json',
     '/manifest.zh-TW.json',
@@ -29,8 +48,9 @@ const STATIC_ASSETS = [
     '/icon-maskable-512.png',
     '/icon.png',
     '/apple-icon.png',
-    ...OFFLINE_FALLBACK_CANDIDATES,
 ];
+
+const CACHEABLE_STATIC_ASSET_PATTERN = /\.(?:css|js|woff2?|ttf|png|jpg|jpeg|svg|ico|webp)$/i;
 
 const SENSITIVE_QUERY_PARAMS = [
     'access_token',
@@ -75,17 +95,17 @@ function matchOfflineFallback() {
         ));
 }
 
-function cacheMetaRequest(request) {
-    return new Request(`${CACHE_META_URL_PREFIX}${encodeURIComponent(request.url)}`);
+function cacheMetaRequest(cacheName, request) {
+    return new Request(`${CACHE_META_URL_PREFIX}${encodeURIComponent(`${cacheName}:${request.url}`)}`);
 }
 
-function rememberCachedRequest(request) {
+function rememberCachedRequest(cacheName, request) {
     return caches.open(CACHE_META_NAME)
-        .then((metaCache) => metaCache.put(cacheMetaRequest(request), new Response(String(Date.now()))));
+        .then((metaCache) => metaCache.put(cacheMetaRequest(cacheName, request), new Response(String(Date.now()))));
 }
 
-function readCachedAt(metaCache, request) {
-    return metaCache.match(cacheMetaRequest(request))
+function readCachedAt(cacheName, metaCache, request) {
+    return metaCache.match(cacheMetaRequest(cacheName, request))
         .then((response) => response ? response.text() : '0')
         .then((value) => {
             const timestamp = Number(value);
@@ -93,12 +113,12 @@ function readCachedAt(metaCache, request) {
         });
 }
 
-function pruneRuntimeCache() {
+function pruneRuntimeCache(cacheName) {
     const now = Date.now();
-    return Promise.all([caches.open(CACHE_NAME), caches.open(CACHE_META_NAME)])
+    return Promise.all([caches.open(cacheName), caches.open(CACHE_META_NAME)])
         .then(([runtimeCache, metaCache]) => runtimeCache.keys()
             .then((requests) => Promise.all(requests.map((request) =>
-                readCachedAt(metaCache, request).then((cachedAt) => ({ request, cachedAt }))
+                readCachedAt(cacheName, metaCache, request).then((cachedAt) => ({ request, cachedAt }))
             )))
             .then((entries) => {
                 const entriesWithExpiry = entries.map((entry) => ({
@@ -113,24 +133,88 @@ function pruneRuntimeCache() {
                 return Promise.all([...expired, ...overflow].map((entry) =>
                     Promise.all([
                         runtimeCache.delete(entry.request),
-                        metaCache.delete(cacheMetaRequest(entry.request)),
+                        metaCache.delete(cacheMetaRequest(cacheName, entry.request)),
                     ])
                 ));
             }));
 }
 
-function putRuntimeCache(request, response) {
+function isCacheWritePaused() {
+    return Date.now() < cacheWritesPausedUntil;
+}
+
+function discardRuntimeCacheWrite(cacheName) {
+    return Promise.all([
+        caches.delete(cacheName),
+        caches.delete(CACHE_META_NAME),
+    ]).then(() => undefined);
+}
+
+function putRuntimeCache(request, response, cacheName) {
+    if (isCacheWritePaused()) return Promise.resolve();
     const clone = response.clone();
-    return caches.open(CACHE_NAME)
-        .then((cache) => cache.put(request, clone))
-        .then(() => rememberCachedRequest(request))
-        .then(() => pruneRuntimeCache());
+    return caches.open(cacheName)
+        .then((cache) => {
+            if (isCacheWritePaused()) return discardRuntimeCacheWrite(cacheName);
+            return cache.put(request, clone).then(() => {
+                if (isCacheWritePaused()) return discardRuntimeCacheWrite(cacheName);
+                return rememberCachedRequest(cacheName, request);
+            });
+        })
+        .then(() => {
+            if (isCacheWritePaused()) return discardRuntimeCacheWrite(cacheName);
+            return pruneRuntimeCache(cacheName);
+        });
+}
+
+function isNetworkOnlyRequest(request, url) {
+    return (
+        url.origin !== self.location.origin ||
+        hasSensitiveQuery(url) ||
+        request.headers.get('x-byteflow-cache-mode') === 'network-only' ||
+        request.headers.get('x-byteflow-external-request') === '1' ||
+        url.pathname.startsWith('/api/')
+    );
+}
+
+function isHtmlRequest(request, url) {
+    return url.pathname.endsWith('.html') || request.headers.get('accept')?.includes('text/html');
+}
+
+function isToolChunkRequest(url) {
+    return url.pathname.startsWith('/_next/static/chunks/');
+}
+
+function isNextStaticAssetRequest(url) {
+    return url.pathname.startsWith('/_next/static/');
+}
+
+function isManifestOrIconRequest(url) {
+    return MANIFEST_ICON_ASSETS.includes(url.pathname);
+}
+
+function selectCacheName(request, url) {
+    if (isHtmlRequest(request, url)) return RUNTIME_PAGE_CACHE_NAME;
+    if (isToolChunkRequest(url)) return TOOL_CHUNK_CACHE_NAME;
+    if (isManifestOrIconRequest(url)) return MANIFEST_ICON_CACHE_NAME;
+    if (isNextStaticAssetRequest(url) || CACHEABLE_STATIC_ASSET_PATTERN.test(url.pathname)) return STATIC_ASSET_CACHE_NAME;
+    return STATIC_ASSET_CACHE_NAME;
+}
+
+function deleteByteflowCaches() {
+    cacheWritesPausedUntil = Date.now() + CACHE_WRITE_PAUSE_AFTER_CLEAR_MS;
+    return caches.keys().then((names) =>
+        Promise.all(names.filter((name) => name.startsWith(CACHE_PREFIX)).map((name) => caches.delete(name)))
+    );
 }
 
 // Install: cache critical static assets; waiting/activation is user-triggered from the app shell.
 self.addEventListener('install', (event) => {
     event.waitUntil(
-        caches.open(CACHE_NAME).then((cache) => cache.addAll(STATIC_ASSETS))
+        Promise.all([
+            caches.open(APP_SHELL_CACHE_NAME).then((cache) => cache.addAll(APP_SHELL_ASSETS)),
+            caches.open(MANIFEST_ICON_CACHE_NAME).then((cache) => cache.addAll(MANIFEST_ICON_ASSETS)),
+        ])
     );
 });
 
@@ -139,17 +223,25 @@ self.addEventListener('message', (event) => {
     if (event.data?.type === 'SKIP_WAITING') {
         self.skipWaiting();
     }
+    if (event.data?.type === 'CLEAR_BYTEFLOW_CACHES') {
+        event.waitUntil(
+            deleteByteflowCaches().then(() => {
+                event.source?.postMessage({ type: 'BYTEFLOW_CACHES_CLEARED', version: APP_VERSION });
+            })
+        );
+    }
 });
 
-// Activate: purge old caches and notify clients that an update is ready
+// Activate: purge old Byteflow caches and notify clients that an update is ready.
 self.addEventListener('activate', (event) => {
     event.waitUntil(
         caches.keys().then((names) =>
             Promise.all(
-                names.filter((name) => ![CACHE_NAME, CACHE_META_NAME].includes(name)).map((name) => caches.delete(name))
+                names
+                    .filter((name) => name.startsWith(CACHE_PREFIX) && !ACTIVE_CACHE_NAMES.includes(name))
+                    .map((name) => caches.delete(name))
             )
         ).then(() => {
-            // Notify all open tabs that a new version is active
             self.clients.matchAll({ type: 'window' }).then((clients) => {
                 clients.forEach((client) => {
                     client.postMessage({ type: 'SW_UPDATED', version: APP_VERSION });
@@ -160,29 +252,27 @@ self.addEventListener('activate', (event) => {
     self.clients.claim();
 });
 
-// Fetch: network-first for _next chunks (always get latest code),
-//        cache-first for truly static assets (fonts, images)
+// Fetch: network-first for pages and Next.js chunks; cache-first for static assets.
 self.addEventListener('fetch', (event) => {
     const url = new URL(event.request.url);
 
     // Skip non-GET requests
     if (event.request.method !== 'GET') return;
-    // Do not cache or intercept third-party requests.
-    if (url.origin !== self.location.origin) return;
-    // Keep tool payloads and secret-like query strings out of CacheStorage.
-    if (hasSensitiveQuery(url)) return;
+    // Network-only for third-party requests, API/external probes, and secret-like query strings.
+    if (isNetworkOnlyRequest(event.request, url)) return;
+
+    const cacheName = selectCacheName(event.request, url);
 
     // Network-first for Next.js chunks and pages (ensures fresh code)
     if (
         url.pathname.startsWith('/_next/') ||
-        url.pathname.endsWith('.html') ||
-        event.request.headers.get('accept')?.includes('text/html')
+        isHtmlRequest(event.request, url)
     ) {
         event.respondWith(
             fetch(event.request)
                 .then((response) => {
                     if (response.ok) {
-                        event.waitUntil(putRuntimeCache(event.request, response).catch(() => undefined));
+                        event.waitUntil(putRuntimeCache(event.request, response, cacheName).catch(() => undefined));
                     }
                     return response;
                 })
@@ -193,14 +283,14 @@ self.addEventListener('fetch', (event) => {
         return;
     }
 
-    // Cache-first for truly static assets (fonts, images, icons)
-    if (url.pathname.match(/\.(woff2?|ttf|png|jpg|jpeg|svg|ico|webp)$/)) {
+    // Cache-first for manifest, icons, fonts, images, and other static assets.
+    if (isManifestOrIconRequest(url) || CACHEABLE_STATIC_ASSET_PATTERN.test(url.pathname)) {
         event.respondWith(
             caches.match(event.request).then((cached) => {
                 if (cached) return cached;
                 return fetch(event.request).then((response) => {
                     if (response.ok) {
-                        event.waitUntil(putRuntimeCache(event.request, response).catch(() => undefined));
+                        event.waitUntil(putRuntimeCache(event.request, response, cacheName).catch(() => undefined));
                     }
                     return response;
                 });
@@ -214,7 +304,7 @@ self.addEventListener('fetch', (event) => {
         fetch(event.request)
             .then((response) => {
                 if (response.ok) {
-                    event.waitUntil(putRuntimeCache(event.request, response).catch(() => undefined));
+                    event.waitUntil(putRuntimeCache(event.request, response, cacheName).catch(() => undefined));
                 }
                 return response;
             })

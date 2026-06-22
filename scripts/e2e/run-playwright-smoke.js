@@ -887,7 +887,7 @@ async function assertLocaleSwitchJourney(context, baseUrl) {
     await page.close();
 }
 
-async function assertPwaShellJourney(browser, baseUrl, goOffline) {
+async function assertPwaShellJourney(browser, baseUrl) {
     const context = await browser.newContext({ serviceWorkers: "allow" });
     const page = await context.newPage();
     const runtimeErrors = [];
@@ -951,12 +951,78 @@ async function assertPwaShellJourney(browser, baseUrl, goOffline) {
             throw new Error("Service worker stopped controlling the PWA smoke page before offline navigation.");
         }
 
-        if (goOffline) {
-            await goOffline();
-        } else {
-            await context.setOffline(true);
-            contextOffline = true;
+        const cacheBucketsBeforeOffline = await page.evaluate(async () =>
+            (await caches.keys()).filter((key) => key.startsWith("byteflow-")).sort(),
+        );
+        for (const requiredBucket of [
+            "byteflow-app-shell-v",
+            "byteflow-manifest-icons-v",
+            "byteflow-runtime-pages-v",
+            "byteflow-tool-chunks-v",
+        ]) {
+            if (!cacheBucketsBeforeOffline.some((key) => key.startsWith(requiredBucket))) {
+                throw new Error(`PWA smoke did not find cache bucket ${requiredBucket}. Found: ${cacheBucketsBeforeOffline.join(", ")}`);
+            }
         }
+
+        await context.setOffline(true);
+        contextOffline = true;
+
+        const offlineToolResult = await page.evaluate(async (targetUrl) => {
+            try {
+                const response = await fetch(targetUrl, {
+                    headers: { accept: "text/html" },
+                });
+                const bodyText = await response.text();
+                return {
+                    ok: response.ok,
+                    status: response.status,
+                    bodyText,
+                    error: "",
+                };
+            } catch (error) {
+                return {
+                    ok: false,
+                    status: 0,
+                    bodyText: "",
+                    error: error instanceof Error ? error.message : String(error),
+                };
+            }
+        }, `${baseUrl}/en/json-formatter`);
+        if (!offlineToolResult.ok || !/JSON Formatter/i.test(offlineToolResult.bodyText)) {
+            throw new Error(`Offline local tool shell did not render from cache. Status: ${offlineToolResult.status}; error: ${offlineToolResult.error || "none"}`);
+        }
+
+        const externalRequestProbe = await page.evaluate(async () => {
+            try {
+                await fetch("https://example.com/byteflow-pwa-external-probe", {
+                    cache: "no-store",
+                    mode: "no-cors",
+                });
+                return { reachedNetwork: true, error: "" };
+            } catch (error) {
+                return {
+                    reachedNetwork: false,
+                    error: error instanceof Error ? error.message : String(error),
+                };
+            }
+        });
+        if (externalRequestProbe.reachedNetwork) {
+            throw new Error("External request probe unexpectedly succeeded while the PWA smoke context was offline.");
+        }
+        const externalProbeCached = await page.evaluate(async () => {
+            const keys = await caches.keys();
+            for (const key of keys) {
+                const cache = await caches.open(key);
+                const match = await cache.match("https://example.com/byteflow-pwa-external-probe");
+                if (match) return key;
+            }
+            return "";
+        });
+        if (externalProbeCached) {
+            throw new Error(`External request probe was cached in ${externalProbeCached}.`);
+        }
+
         const offlineResult = await page.evaluate(async (targetUrl) => {
             try {
                 const response = await fetch(targetUrl, {
@@ -988,6 +1054,21 @@ async function assertPwaShellJourney(browser, baseUrl, goOffline) {
         const bodyText = await page.locator("body").innerText({ timeout: 15_000 });
         if (!/offline/i.test(bodyText)) {
             throw new Error("Offline navigation did not render the cached offline fallback.");
+        }
+
+        if (contextOffline) {
+            await context.setOffline(false);
+            contextOffline = false;
+        }
+
+        await page.goto(`${baseUrl}/en/install-app`, { waitUntil: "networkidle" });
+        await page.getByRole("button", { name: /Clear cached app files/i }).click();
+        await page.getByText("Cached app files cleared.").waitFor({ state: "visible", timeout: 15_000 });
+        const cacheBucketsAfterClear = await page.evaluate(async () =>
+            (await caches.keys()).filter((key) => key.startsWith("byteflow-")),
+        );
+        if (cacheBucketsAfterClear.length > 0) {
+            throw new Error(`Manual PWA cache clear left Byteflow caches behind: ${cacheBucketsAfterClear.join(", ")}`);
         }
 
         if (runtimeErrors.length > 0) {
@@ -1052,11 +1133,11 @@ async function runSmoke(baseUrl) {
     }
 }
 
-async function runPwaSmoke(baseUrl, goOffline) {
+async function runPwaSmoke(baseUrl) {
     const browser = await chromium.launch({ headless: true });
     try {
-        await assertPwaShellJourney(browser, baseUrl, goOffline);
-        console.log("[playwright-smoke] PASS pwa: service worker, manifest, and offline fallback");
+        await assertPwaShellJourney(browser, baseUrl);
+        console.log("[playwright-smoke] PASS pwa: service worker, cache buckets, offline fallback, and manual cache clear");
     } finally {
         await browser.close();
     }
@@ -1075,15 +1156,7 @@ async function main() {
 
         await runSmoke(baseUrl);
         if (includePwa) {
-            await runPwaSmoke(
-                baseUrl,
-                serverHandle
-                    ? async () => {
-                        await stopServer(serverHandle.server);
-                        serverHandle = null;
-                    }
-                    : null,
-            );
+            await runPwaSmoke(baseUrl);
         }
         console.log("[playwright-smoke] PASS: critical routes render and navigate correctly");
     } catch (error) {

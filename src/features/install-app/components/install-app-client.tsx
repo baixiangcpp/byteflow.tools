@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { CheckCircle2, Download, Globe, Shield, Smartphone, WifiOff, Zap } from "lucide-react"
+import { CheckCircle2, Download, Globe, Shield, Smartphone, Trash2, WifiOff, Zap } from "lucide-react"
 import { trackEvent } from "@/core/analytics/analytics"
 import { Button } from "@/components/ui/button"
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
@@ -28,6 +28,45 @@ const BENEFIT_ICON_BY_KEY = {
     works_offline: WifiOff,
     local_first: Shield,
 } as const
+const BYTEFLOW_CACHE_PREFIX = "byteflow-"
+const SERVICE_WORKER_CACHE_CLEAR_TIMEOUT_MS = 1500
+
+async function deleteByteflowCacheBuckets() {
+    if (typeof window === "undefined" || !("caches" in window)) {
+        throw new Error("CacheStorage unavailable")
+    }
+    const cacheKeys = await window.caches.keys()
+    await Promise.all(
+        cacheKeys
+            .filter((key) => key.startsWith(BYTEFLOW_CACHE_PREFIX))
+            .map((key) => window.caches.delete(key)),
+    )
+}
+
+async function requestServiceWorkerCacheClear() {
+    if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) return
+    const controller = navigator.serviceWorker.controller
+    if (!controller) return
+
+    await new Promise<void>((resolve) => {
+        const cleanup = () => {
+            window.clearTimeout(timeoutId)
+            navigator.serviceWorker.removeEventListener("message", handleMessage)
+        }
+        const handleMessage = (event: MessageEvent) => {
+            if (event.data?.type !== "BYTEFLOW_CACHES_CLEARED") return
+            cleanup()
+            resolve()
+        }
+        const timeoutId = window.setTimeout(() => {
+            cleanup()
+            resolve()
+        }, SERVICE_WORKER_CACHE_CLEAR_TIMEOUT_MS)
+
+        navigator.serviceWorker.addEventListener("message", handleMessage)
+        controller.postMessage({ type: "CLEAR_BYTEFLOW_CACHES" })
+    })
+}
 
 type InstallAppClientProps = {
     locale: Locale
@@ -41,6 +80,8 @@ export function InstallAppClient({ locale, copy, allToolsLabel, trustCenterLabel
     const [deferredPrompt, setDeferredPrompt] = React.useState<BeforeInstallPromptEvent | null>(null)
     const [installed, setInstalled] = React.useState(false)
     const [manualHintVisible, setManualHintVisible] = React.useState(false)
+    const [cacheClearStatus, setCacheClearStatus] = React.useState<"idle" | "success" | "unavailable">("idle")
+    const [cacheClearPending, setCacheClearPending] = React.useState(false)
     const guideRef = React.useRef<HTMLDivElement | null>(null)
     const installSuccessTrackedRef = React.useRef(false)
 
@@ -124,7 +165,26 @@ export function InstallAppClient({ locale, copy, allToolsLabel, trustCenterLabel
         }
     }
 
+    const handleClearCachedAppFiles = async () => {
+        setCacheClearPending(true)
+        try {
+            await deleteByteflowCacheBuckets()
+            await requestServiceWorkerCacheClear()
+            await deleteByteflowCacheBuckets()
+            setCacheClearStatus("success")
+        } catch {
+            setCacheClearStatus("unavailable")
+        } finally {
+            setCacheClearPending(false)
+        }
+    }
+
     const primaryLabel = installed ? copy.alreadyInstalled : deferredPrompt ? copy.installNow : copy.seeGuide
+    const cacheClearMessage = cacheClearStatus === "success"
+        ? copy.clearCachedAppSuccess
+        : cacheClearStatus === "unavailable"
+            ? copy.clearCachedAppUnavailable
+            : ""
 
     return (
         <div className="mx-auto w-full max-w-5xl space-y-8">
@@ -169,6 +229,30 @@ export function InstallAppClient({ locale, copy, allToolsLabel, trustCenterLabel
                         )
                     })}
                 </div>
+            </section>
+
+            <section className="rounded-2xl border border-border/70 bg-background/55 p-5 sm:p-6">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h2 className="text-xl font-semibold tracking-tight">{copy.cacheControlsTitle}</h2>
+                        <p className="mt-1.5 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+                            {copy.cacheControlsDescription}
+                        </p>
+                    </div>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="min-h-11 shrink-0"
+                        onClick={() => void handleClearCachedAppFiles()}
+                        disabled={cacheClearPending}
+                    >
+                        <Trash2 className="mr-2 h-4 w-4" />
+                        {copy.clearCachedAppButton}
+                    </Button>
+                </div>
+                <p className="mt-3 min-h-5 text-sm text-muted-foreground" role="status" aria-live="polite">
+                    {cacheClearMessage}
+                </p>
             </section>
 
             <section ref={guideRef} className="space-y-4 rounded-2xl border border-border/70 bg-card/55 p-5 sm:p-6">
