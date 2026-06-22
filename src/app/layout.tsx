@@ -3,7 +3,9 @@ import Script from "next/script";
 import "@/app/globals.css";
 import { DeferredToaster } from "@/components/ui/deferred-toaster";
 import { PWA_THEME_COLOR } from "@/core/pwa/constants";
-import { buildSiteKeywords } from "@/core/seo/seo";
+import { buildDefaultOgImageUrl, buildSiteKeywords } from "@/core/seo/seo";
+
+const ROOT_OG_IMAGE = buildDefaultOgImageUrl("en");
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://byteflow.tools"),
@@ -16,13 +18,13 @@ export const metadata: Metadata = {
     url: "https://byteflow.tools",
     siteName: "byteflow.tools",
     type: "website",
-    images: ["https://byteflow.tools/icon-512.png"],
+    images: [ROOT_OG_IMAGE],
   },
   twitter: {
     card: "summary_large_image",
     title: "byteflow.tools | Privacy-first Developer Tools",
     description: "A growing collection of privacy-first, client-side developer utilities.",
-    images: ["https://byteflow.tools/icon-512.png"],
+    images: [ROOT_OG_IMAGE],
   },
 };
 

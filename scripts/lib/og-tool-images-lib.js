@@ -6,9 +6,45 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT_DIR = path.join(__dirname, "../..");
 const TOOL_INDEX_PATH = path.join(ROOT_DIR, "src/generated/tool-index.json");
 const TRANSLATIONS_DIR = path.join(ROOT_DIR, "src/core/i18n/translations");
-const OUTPUT_ROOT = path.join(ROOT_DIR, "public/og/tools");
+const OUTPUT_ROOT = path.join(ROOT_DIR, "public/og");
+const TOOL_OUTPUT_ROOT = path.join(OUTPUT_ROOT, "tools");
+const DEFAULT_OUTPUT_ROOT = path.join(OUTPUT_ROOT, "default");
 
 export const OG_IMAGE_LOCALES = ["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr"];
+export const OG_IMAGE_WIDTH = 1200;
+export const OG_IMAGE_HEIGHT = 630;
+export const MAX_OG_IMAGE_BYTES = 250_000;
+
+const DEFAULT_CARD_COPY = {
+    en: {
+        badge: "Privacy-first",
+        tagline: "Local-first developer tools",
+    },
+    "zh-CN": {
+        badge: "隐私优先",
+        tagline: "本地优先开发者工具",
+    },
+    "zh-TW": {
+        badge: "隱私優先",
+        tagline: "本地優先開發者工具",
+    },
+    ja: {
+        badge: "プライバシー重視",
+        tagline: "ローカル優先の開発者ツール",
+    },
+    ko: {
+        badge: "개인정보 우선",
+        tagline: "로컬 우선 개발자 도구",
+    },
+    de: {
+        badge: "Datenschutzfreundlich",
+        tagline: "Lokale Entwickler-Tools",
+    },
+    fr: {
+        badge: "Respect de la vie privée",
+        tagline: "Outils développeur locaux",
+    },
+};
 
 const CATEGORY_LABEL_KEY = {
     formatters: "formatters",
@@ -47,6 +83,7 @@ function getToolCardData(locale, tool) {
     const translation = loadTranslations(locale);
     const toolTranslation = translation.tools?.[tool.key];
     const navTranslation = translation.nav ?? {};
+    const defaultCopy = DEFAULT_CARD_COPY[locale];
 
     if (!toolTranslation?.title || !toolTranslation?.description) {
         throw new Error(`[og-tool-images] Missing tools.${tool.key}.title/description for ${locale}`);
@@ -58,15 +95,51 @@ function getToolCardData(locale, tool) {
         title: clampText(toolTranslation.title, 72),
         description: clampText(toolTranslation.description, 180),
         category: navTranslation[CATEGORY_LABEL_KEY[tool.category]] ?? tool.category,
+        tagline: defaultCopy.tagline,
+    };
+}
+
+function getDefaultCardData(locale) {
+    const translation = loadTranslations(locale);
+    const defaultCopy = DEFAULT_CARD_COPY[locale];
+
+    if (!translation.site?.title || !translation.site?.description) {
+        throw new Error(`[og-tool-images] Missing site.title/site.description for ${locale}`);
+    }
+
+    return {
+        locale,
+        slug: "default",
+        title: clampText(translation.site.title, 72),
+        description: clampText(translation.site.description, 180),
+        category: defaultCopy.badge,
+        tagline: defaultCopy.tagline,
     };
 }
 
 export function getToolOgImagePath(locale, slug) {
-    return path.join(OUTPUT_ROOT, locale, `${slug}.jpg`);
+    return path.join(TOOL_OUTPUT_ROOT, locale, `${slug}.jpg`);
 }
 
 export function getToolOgImageUrl(locale, slug) {
     return `https://byteflow.tools/og/tools/${locale}/${slug}.jpg`;
+}
+
+export function getDefaultOgImagePath(locale) {
+    return path.join(DEFAULT_OUTPUT_ROOT, `${locale}.jpg`);
+}
+
+export function getDefaultOgImageUrl(locale) {
+    return `https://byteflow.tools/og/default/${locale}.jpg`;
+}
+
+export function getDefaultOgTargets() {
+    return OG_IMAGE_LOCALES.map((locale) => ({
+        locale,
+        slug: "default",
+        outputPath: getDefaultOgImagePath(locale),
+        card: getDefaultCardData(locale),
+    }));
 }
 
 export function getAllToolOgTargets() {
@@ -80,7 +153,69 @@ export function getAllToolOgTargets() {
     );
 }
 
-export function renderToolOgCardHtml({ locale, category, title, description }) {
+export function getAllOgTargets() {
+    return [
+        ...getDefaultOgTargets(),
+        ...getAllToolOgTargets(),
+    ];
+}
+
+function walkJpegFiles(dir) {
+    if (!fs.existsSync(dir)) return [];
+
+    const files = [];
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+        const entryPath = path.join(dir, entry.name);
+        if (entry.isDirectory()) {
+            files.push(...walkJpegFiles(entryPath));
+        } else if (entry.isFile() && entry.name.endsWith(".jpg")) {
+            files.push(entryPath);
+        }
+    }
+    return files;
+}
+
+export function findUnexpectedOgImages() {
+    const expectedPaths = new Set(getAllOgTargets().map((target) => path.resolve(target.outputPath)));
+    return walkJpegFiles(OUTPUT_ROOT)
+        .filter((filePath) => !expectedPaths.has(path.resolve(filePath)))
+        .sort((a, b) => a.localeCompare(b));
+}
+
+export function removeUnexpectedOgImages() {
+    const unexpectedImages = findUnexpectedOgImages();
+    for (const filePath of unexpectedImages) {
+        fs.unlinkSync(filePath);
+    }
+    return unexpectedImages;
+}
+
+export function getJpegDimensions(filePath) {
+    const buffer = fs.readFileSync(filePath);
+    if (buffer[0] !== 0xff || buffer[1] !== 0xd8) return null;
+
+    let offset = 2;
+    while (offset < buffer.length) {
+        if (buffer[offset] !== 0xff) {
+            offset += 1;
+            continue;
+        }
+
+        const marker = buffer[offset + 1];
+        const length = buffer.readUInt16BE(offset + 2);
+        if (marker >= 0xc0 && marker <= 0xc3) {
+            return {
+                width: buffer.readUInt16BE(offset + 7),
+                height: buffer.readUInt16BE(offset + 5),
+            };
+        }
+        offset += 2 + length;
+    }
+
+    return null;
+}
+
+export function renderOgCardHtml({ locale, category, title, description, tagline }) {
     return `<!doctype html>
 <html lang="${escapeHtml(locale)}">
   <head>
@@ -219,7 +354,7 @@ export function renderToolOgCardHtml({ locale, category, title, description }) {
         <h1>${escapeHtml(title)}</h1>
         <p>${escapeHtml(description)}</p>
         <div class="footer">
-          <div class="tagline">Privacy-first, local-first developer tools</div>
+          <div class="tagline">${escapeHtml(tagline)}</div>
           <div class="pill">${escapeHtml(locale)}</div>
         </div>
       </div>
@@ -228,8 +363,17 @@ export function renderToolOgCardHtml({ locale, category, title, description }) {
 </html>`;
 }
 
+export function renderToolOgCardHtml(card) {
+    return renderOgCardHtml(card);
+}
+
+export function renderDefaultOgCardHtml(card) {
+    return renderOgCardHtml(card);
+}
+
 export function ensureOgDirectories() {
+    fs.mkdirSync(DEFAULT_OUTPUT_ROOT, { recursive: true });
     for (const locale of OG_IMAGE_LOCALES) {
-        fs.mkdirSync(path.join(OUTPUT_ROOT, locale), { recursive: true });
+        fs.mkdirSync(path.join(TOOL_OUTPUT_ROOT, locale), { recursive: true });
     }
 }

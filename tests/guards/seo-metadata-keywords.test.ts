@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { getLocalizedMetaCopy } from "@/core/seo/localized-meta-copy"
-import { buildContentMetadata, buildSiteKeywords, buildToolMetadata, buildToolOgImageUrl } from "@/core/seo/seo"
+import { buildContentMetadata, buildDefaultOgImageUrl, buildSiteKeywords, buildToolMetadata, buildToolOgImageUrl } from "@/core/seo/seo"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 
 const ZH_FREE_ONLINE_TOOL = "\u514d\u8d39\u5728\u7ebf\u5de5\u5177"
@@ -54,5 +54,18 @@ describe("seo metadata keywords", () => {
         expect(buildToolOgImageUrl("zh-CN", "json-formatter")).toBe("https://byteflow.tools/og/tools/zh-CN/json-formatter.jpg")
         expect(ogImages).toEqual(["https://byteflow.tools/og/tools/zh-CN/json-formatter.jpg"])
         expect(twitterImages).toEqual(["https://byteflow.tools/og/tools/zh-CN/json-formatter.jpg"])
+    })
+
+    it("uses locale-aware default OG images for content pages", () => {
+        const metadata = buildContentMetadata({
+            lang: "fr",
+            slug: "json-vs-json5-differences",
+            title: "JSON vs JSON5: What Changes and When to Use Each",
+            description: "Compare JSON and JSON5 syntax, parser support, and migration gotchas.",
+        })
+
+        expect(buildDefaultOgImageUrl("fr")).toBe("https://byteflow.tools/og/default/fr.jpg")
+        expect(metadata.openGraph?.images).toEqual(["https://byteflow.tools/og/default/fr.jpg"])
+        expect(metadata.twitter?.images).toEqual(["https://byteflow.tools/og/default/fr.jpg"])
     })
 })

@@ -4,7 +4,7 @@ import { generateMetadata as generateAboutMetadata } from "@/app/[lang]/about/la
 import { generateMetadata as generateContactMetadata } from "@/app/[lang]/contact/layout"
 import { generateMetadata as generateInstallAppMetadata } from "@/app/[lang]/install-app/layout"
 import { generateMetadata as generateTrustCenterMetadata } from "@/app/[lang]/trust-center/layout"
-import { DEFAULT_OG_IMAGE } from "@/core/seo/seo"
+import { buildDefaultOgImageUrl } from "@/core/seo/seo"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 
 function getTitleText(title: Metadata["title"]) {
@@ -28,18 +28,19 @@ describe("static page social metadata", () => {
         const title = metadata.title
         const description = metadata.description as string
         const keywords = metadata.keywords as string[]
+        const ogImage = buildDefaultOgImageUrl("en")
 
         expect(metadata.openGraph).toMatchObject({
             title: getExpectedSocialTitle(title),
             description,
             url: "https://byteflow.tools/en/contact",
-            images: [DEFAULT_OG_IMAGE],
+            images: [ogImage],
         })
         expect(metadata.twitter).toMatchObject({
             card: "summary_large_image",
             title: getExpectedSocialTitle(title),
             description,
-            images: [DEFAULT_OG_IMAGE],
+            images: [ogImage],
         })
         expect(keywords).toContain("Contact")
         expect(keywords).not.toContain("byteflow.tools | Privacy-first Developer Tools")
@@ -48,6 +49,7 @@ describe("static page social metadata", () => {
     it("keeps noindex static pages on page-specific social metadata", async () => {
         const metadata = await generateAboutMetadata({ params: Promise.resolve({ lang: "de" }) })
         const description = metadata.description as string
+        const ogImage = buildDefaultOgImageUrl("de")
 
         expect(metadata.title).toEqual({
             absolute: getTranslation("de").pages.about_title,
@@ -56,13 +58,13 @@ describe("static page social metadata", () => {
             title: getExpectedSocialTitle(metadata.title),
             description,
             url: "https://byteflow.tools/de/about",
-            images: [DEFAULT_OG_IMAGE],
+            images: [ogImage],
         })
         expect(metadata.twitter).toMatchObject({
             card: "summary_large_image",
             title: getExpectedSocialTitle(metadata.title),
             description,
-            images: [DEFAULT_OG_IMAGE],
+            images: [ogImage],
         })
     })
 
@@ -70,18 +72,19 @@ describe("static page social metadata", () => {
         const metadata = await generateInstallAppMetadata({ params: Promise.resolve({ lang: "fr" }) })
         const title = metadata.title
         const description = metadata.description as string
+        const ogImage = buildDefaultOgImageUrl("fr")
 
         expect(metadata.openGraph).toMatchObject({
             title: getExpectedSocialTitle(title),
             description,
             url: "https://byteflow.tools/fr/install-app",
-            images: [DEFAULT_OG_IMAGE],
+            images: [ogImage],
         })
         expect(metadata.twitter).toMatchObject({
             card: "summary_large_image",
             title: getExpectedSocialTitle(title),
             description,
-            images: [DEFAULT_OG_IMAGE],
+            images: [ogImage],
         })
     })
 
@@ -89,19 +92,20 @@ describe("static page social metadata", () => {
         const metadata = await generateTrustCenterMetadata({ params: Promise.resolve({ lang: "zh-CN" }) })
         const title = metadata.title
         const description = metadata.description as string
+        const ogImage = buildDefaultOgImageUrl("zh-CN")
 
         expect(getTitleText(title)).toBe(getTranslation("zh-CN").pages.trust_center_title)
         expect(metadata.openGraph).toMatchObject({
             title: getExpectedSocialTitle(title),
             description,
             url: "https://byteflow.tools/zh-CN/trust-center",
-            images: [DEFAULT_OG_IMAGE],
+            images: [ogImage],
         })
         expect(metadata.twitter).toMatchObject({
             card: "summary_large_image",
             title: getExpectedSocialTitle(title),
             description,
-            images: [DEFAULT_OG_IMAGE],
+            images: [ogImage],
         })
     })
 })
