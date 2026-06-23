@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { decodeSaml, type SamlDecodeResult } from "@/features/tools/saml-decoder/utils"
 
@@ -86,6 +87,7 @@ export function SamlDecoderPage() {
             <Alert>
                 <AlertDescription>{text("verification_note")}</AlertDescription>
             </Alert>
+            <SensitiveInputWarning variant="token" />
             {result?.error ? <Alert variant="destructive"><AlertDescription>{result.error}</AlertDescription></Alert> : null}
             {result?.warnings.map((warning) => <Alert key={warning}><AlertDescription>{warning}</AlertDescription></Alert>)}
 

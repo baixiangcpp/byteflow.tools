@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildSensitiveToolHandoffLink } from "@/core/routing/tool-handoff"
 import {
@@ -128,6 +129,8 @@ password=hunter2`)
                     </Button>
                 </div>
             </div>
+
+            <SensitiveInputWarning variant="log" />
 
             <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
                 <div className="grid gap-4 lg:grid-cols-2">

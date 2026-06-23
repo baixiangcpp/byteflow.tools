@@ -1,5 +1,5 @@
 import type { RecipeDocument } from "./recipe-types"
-import { createPortableRecipe } from "./recipe-codec"
+import { sanitizeRecipeForPersistence } from "./recipe-sanitizer"
 
 const DB_NAME = "byteflow-pipeline-recipes"
 const DB_VERSION = 1
@@ -28,12 +28,12 @@ export function createSavedRecipeRecord(
     metadata: Partial<SavedRecipeRecord> = {},
     now = new Date().toISOString(),
 ): SavedRecipeRecord {
-    const portableRecipe = createPortableRecipe(recipe)
+    const safeRecipe = sanitizeRecipeForPersistence(recipe)
     return {
-        id: portableRecipe.id,
-        name: portableRecipe.name,
-        recipe: portableRecipe,
-        createdAt: metadata.createdAt ?? portableRecipe.createdAt ?? now,
+        id: safeRecipe.id,
+        name: safeRecipe.name,
+        recipe: safeRecipe,
+        createdAt: metadata.createdAt ?? safeRecipe.createdAt ?? now,
         updatedAt: now,
         lastRunAt: metadata.lastRunAt,
         pinned: metadata.pinned,

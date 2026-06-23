@@ -727,6 +727,7 @@ async function assertPipelineRecipeJourney(context, baseUrl) {
         return buttons.some((button) => button.textContent?.trim() === "Save" && !button.disabled);
     }, null, { timeout: 15_000 });
     await saveButton.click();
+    await page.getByRole("button", { name: /Save structure only/i }).click();
     await page.waitForFunction(() => {
         const select = document.querySelector("[aria-label='Select saved recipe']");
         if (!(select instanceof HTMLSelectElement)) return false;
@@ -767,6 +768,7 @@ async function assertPipelineRecipeJourney(context, baseUrl) {
 
     const downloadPromise = page.waitForEvent("download");
     await page.getByRole("button", { name: /^Export JSON$/ }).first().click();
+    await page.getByRole("button", { name: /Export structure only/i }).click();
     const download = await downloadPromise;
     const downloadPath = await download.path();
     if (!downloadPath) {

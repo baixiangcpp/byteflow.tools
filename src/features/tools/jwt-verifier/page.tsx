@@ -4,10 +4,11 @@ import * as React from "react"
 import { Copy, Eraser, ShieldCheck, ShieldAlert, CheckCircle, XCircle } from "lucide-react"
 import Link from "next/link"
 import { Textarea } from "@/components/ui/textarea"
-import { Input } from "@/components/ui/input"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
+import { JwtSecretField } from "@/features/tools/jwt-workbench/jwt-secret-field"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import {
     base64UrlEncode,
@@ -65,6 +66,8 @@ async function verifyHS512(token: string, secret: string): Promise<boolean> {
 export function JwtVerifierPage() {
     const { t, lang } = useLang()
     const toolT = t.tools["jwt_verifier"] as Record<string, string>
+    const revealSecretLabel = t.common.reveal_secret
+    const hideSecretLabel = t.common.hide_secret
     const claimLabels = React.useMemo(
         () => ({
             exp: toolT.claim_exp,
@@ -86,6 +89,7 @@ export function JwtVerifierPage() {
     }, [])
     const [token, setToken] = React.useState("")
     const [secret, setSecret] = React.useState("")
+    const [secretVisible, setSecretVisible] = React.useState(false)
     const [verifyResult, setVerifyResult] = React.useState<"valid" | "invalid" | null>(null)
     const [algorithm, setAlgorithm] = React.useState("")
     const [header, setHeader] = React.useState<Record<string, unknown> | null>(null)
@@ -170,6 +174,8 @@ export function JwtVerifierPage() {
                 </Link>
             </div>
 
+            <SensitiveInputWarning variant="token" />
+
             <div className="space-y-2">
                 <label className="text-sm font-medium">{toolT.token_label}</label>
                 <Textarea className="min-h-[120px] font-mono text-xs leading-5" placeholder={toolT.token_placeholder} value={token} onChange={(e) => setToken(e.target.value)} spellCheck={false} />
@@ -177,13 +183,15 @@ export function JwtVerifierPage() {
 
             <div className="space-y-2">
                 <label className="text-sm font-medium">{toolT.secret_label}</label>
-                <Input
-                    type="password"
-                    autoComplete="off"
-                    className="font-mono text-sm"
+                <JwtSecretField
+                    ariaLabel={toolT.secret_label}
+                    hideSecretLabel={hideSecretLabel}
+                    onChange={setSecret}
+                    onVisibilityChange={setSecretVisible}
                     placeholder={toolT.secret_placeholder}
+                    revealSecretLabel={revealSecretLabel}
+                    secretVisible={secretVisible}
                     value={secret}
-                    onChange={(e) => setSecret(e.target.value)}
                 />
             </div>
 

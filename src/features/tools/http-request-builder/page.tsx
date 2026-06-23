@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import {
     Select,
@@ -112,6 +113,8 @@ export function HttpRequestBuilderPage() {
                     </Button>
                 </div>
             </div>
+
+            <SensitiveInputWarning variant="request" />
 
             {/* Method + URL */}
             <div className="flex gap-2">

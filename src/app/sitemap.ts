@@ -1,13 +1,15 @@
 import type { MetadataRoute } from "next"
 import { LOCALES } from "@/core/i18n/i18n"
 import { TOOL_REGISTRY } from "@/core/registry"
+import { LEGACY_TAXONOMY_SLUGS } from "@/core/routing/seo-route-policy"
 import { SITE_URL, buildCanonicalUrl, buildLocalizedAlternates } from "@/core/seo/urls"
 import routeGroups from "@/lib/sitemap-route-groups.json"
 import sitemapLastmod from "@/lib/sitemap-lastmod.json"
 
 export const dynamic = "force-static"
 
-const HUB_SLUGS = Array.from(new Set(routeGroups.hubSlugs))
+const LEGACY_TAXONOMY_SLUG_SET = new Set<string>(LEGACY_TAXONOMY_SLUGS)
+const HUB_SLUGS = Array.from(new Set(routeGroups.hubSlugs)).filter((slug) => !LEGACY_TAXONOMY_SLUG_SET.has(slug))
 const STATIC_SLUGS = routeGroups.staticSlugs
 const NOINDEX_STATIC_SLUGS = new Set(["about", "pricing", "terms"])
 const SITEMAP_STATIC_SLUGS = STATIC_SLUGS.filter((slug) => !NOINDEX_STATIC_SLUGS.has(slug))

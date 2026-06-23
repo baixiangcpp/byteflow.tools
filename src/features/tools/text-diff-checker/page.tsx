@@ -62,7 +62,7 @@ export function TextDiffCheckerPage() {
             ) : null}
 
             {/* Workspace Grid using DiffEditor */}
-            <div className="flex-1 min-h-[600px] border rounded-lg overflow-hidden bg-card flex flex-col">
+            <div className="flex min-h-[600px] min-w-0 flex-1 flex-col overflow-hidden rounded-lg border bg-card">
                 {/* Editor Headers inside the card */}
                 <div className="grid grid-cols-2 border-b bg-muted/50">
                     <div className="px-4 py-2 text-sm font-medium text-muted-foreground border-r">

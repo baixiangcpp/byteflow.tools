@@ -561,7 +561,7 @@ export function JsonFormatterPage() {
 
             <JsonErrorAlert details={errorDetails} error={error} text={text} />
 
-            <div className="grid min-h-[600px] flex-1 grid-cols-1 gap-4 overflow-hidden rounded-lg border bg-card lg:grid-cols-2">
+            <div className="grid min-h-[600px] min-w-0 flex-1 grid-cols-1 gap-4 overflow-hidden rounded-lg border bg-card lg:grid-cols-2">
                 <div className="flex h-full flex-col border-b lg:border-r lg:border-b-0">
                     <div className="tool-pane-header tool-pane-header-between">
                         <span>{t.common.input}</span>

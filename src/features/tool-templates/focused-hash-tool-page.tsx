@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Copy, Download, Eraser, Fingerprint, TestTube2 } from "lucide-react"
+import { Copy, Download, Eraser, Eye, EyeOff, Fingerprint, TestTube2 } from "lucide-react"
 import { toast } from "sonner"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { ToolEmptyState } from "@/features/tool-shell/tool-empty-state"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import {
     hashBytes,
     hashHmac,
@@ -71,10 +72,13 @@ export function FocusedHashToolPage({
     relatedToolKey = "hash_generator",
 }: FocusedHashToolPageProps) {
     const { t, lang } = useLang()
+    const revealSecretLabel = t.common.reveal_secret
+    const hideSecretLabel = t.common.hide_secret
 
     const [mode, setMode] = React.useState<HashMode>("text")
     const [input, setInput] = React.useState("")
     const [secret, setSecret] = React.useState("")
+    const [secretVisible, setSecretVisible] = React.useState(false)
     const [fileName, setFileName] = React.useState("")
     const [fileSize, setFileSize] = React.useState(0)
     const [fileBytes, setFileBytes] = React.useState<Uint8Array | null>(null)
@@ -264,6 +268,8 @@ export function FocusedHashToolPage({
                 </div>
             ) : null}
 
+            {enableHmac ? <SensitiveInputWarning variant={mode === "hmac" ? "secret" : "default"} /> : null}
+
             <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1.05fr_0.95fr]">
                 <div className="space-y-4 rounded-xl border bg-card p-4">
                     <div className="rounded-lg border bg-background/60">
@@ -320,13 +326,26 @@ export function FocusedHashToolPage({
                             )}
 
                             {mode === "hmac" ? (
-                                <Input
-                                    value={secret}
-                                    onChange={(event) => setSecret(event.target.value)}
-                                    placeholder={t.common.hash_tool.secret_key}
-                                    spellCheck={false}
-                                    className="font-mono text-sm"
-                                />
+                                <div className="flex gap-2">
+                                    <Input
+                                        type={secretVisible ? "text" : "password"}
+                                        value={secret}
+                                        onChange={(event) => setSecret(event.target.value)}
+                                        placeholder={t.common.hash_tool.secret_key}
+                                        spellCheck={false}
+                                        className="font-mono text-sm"
+                                    />
+                                    <button
+                                        type="button"
+                                        className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md border bg-background text-sm font-medium text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                                        onClick={() => setSecretVisible((current) => !current)}
+                                        aria-pressed={secretVisible}
+                                        aria-label={secretVisible ? hideSecretLabel : revealSecretLabel}
+                                        title={secretVisible ? hideSecretLabel : revealSecretLabel}
+                                    >
+                                        {secretVisible ? <EyeOff className="h-4 w-4" aria-hidden="true" /> : <Eye className="h-4 w-4" aria-hidden="true" />}
+                                    </button>
+                                </div>
                             ) : null}
                         </div>
                     </div>

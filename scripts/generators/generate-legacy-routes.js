@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url"
 
 const ROOT = process.cwd()
 const LEGACY_ROUTES_PATH = path.join(ROOT, "src/core/routing/legacy-routes.json")
+const LEGACY_TAXONOMY_REDIRECTS_PATH = path.join(ROOT, "src/core/routing/legacy-taxonomy-redirects.json")
 const TOOL_ALIASES_PATH = path.join(ROOT, "src/core/registry/tool-aliases.json")
 const REDIRECTS_PATH = path.join(ROOT, "public/_redirects")
 const LOCALES = ["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr"]
@@ -63,19 +64,53 @@ export function buildToolAliasesSource(routes = loadLegacyRoutes()) {
     return stableStringify(aliases)
 }
 
-export function buildRedirectsSource(routes = loadLegacyRoutes()) {
-    const lines = routes.flatMap((route) => {
-        if (!REDIRECT_STATUSES.has(route.status)) return []
-        return LOCALES.map((locale) => `/${locale}/${route.sourceSlug} /${locale}/${route.targetSlug} ${route.status}`)
-    })
+export function loadLegacyTaxonomyRedirects() {
+    if (!fs.existsSync(LEGACY_TAXONOMY_REDIRECTS_PATH)) return {}
+    const redirects = JSON.parse(readText(LEGACY_TAXONOMY_REDIRECTS_PATH))
+    if (!redirects || typeof redirects !== "object" || Array.isArray(redirects)) {
+        throw new Error("[legacy-routes] legacy-taxonomy-redirects.json must be an object")
+    }
+
+    const validated = {}
+    for (const [sourceSlug, targetSlug] of Object.entries(redirects)) {
+        if (typeof sourceSlug !== "string" || !sourceSlug.trim()) {
+            throw new Error("[legacy-routes] taxonomy source slug is required")
+        }
+        if (typeof targetSlug !== "string" || !targetSlug.trim()) {
+            throw new Error(`[legacy-routes] ${sourceSlug}: taxonomy target slug is required`)
+        }
+        if (sourceSlug === targetSlug) {
+            throw new Error(`[legacy-routes] ${sourceSlug}: taxonomy targetSlug must differ from sourceSlug`)
+        }
+        validated[sourceSlug] = targetSlug
+    }
+
+    return validated
+}
+
+function buildRedirectLines(routes, taxonomyRedirects = loadLegacyTaxonomyRedirects()) {
+    return [
+        ...routes.flatMap((route) => {
+            if (!REDIRECT_STATUSES.has(route.status)) return []
+            return LOCALES.map((locale) => `/${locale}/${route.sourceSlug} /${locale}/${route.targetSlug} ${route.status}`)
+        }),
+        ...Object.entries(taxonomyRedirects).flatMap(([sourceSlug, targetSlug]) => (
+            LOCALES.map((locale) => `/${locale}/${sourceSlug} /${locale}/${targetSlug} 301`)
+        )),
+    ]
+}
+
+export function buildRedirectsSource(routes = loadLegacyRoutes(), taxonomyRedirects = loadLegacyTaxonomyRedirects()) {
+    const lines = buildRedirectLines(routes, taxonomyRedirects)
 
     return `${lines.join("\n")}\n`
 }
 
 export function checkGeneratedLegacyRoutes() {
     const routes = loadLegacyRoutes()
+    const taxonomyRedirects = loadLegacyTaxonomyRedirects()
     const expectedAliases = buildToolAliasesSource(routes)
-    const expectedRedirects = buildRedirectsSource(routes)
+    const expectedRedirects = buildRedirectsSource(routes, taxonomyRedirects)
     const problems = []
 
     if (!fs.existsSync(TOOL_ALIASES_PATH) || readText(TOOL_ALIASES_PATH) !== expectedAliases) {
@@ -91,13 +126,14 @@ export function checkGeneratedLegacyRoutes() {
         process.exit(1)
     }
 
-    return routes
+    return { routes, taxonomyRedirects }
 }
 
 function writeGeneratedFiles() {
     const routes = loadLegacyRoutes()
+    const taxonomyRedirects = loadLegacyTaxonomyRedirects()
     fs.writeFileSync(TOOL_ALIASES_PATH, buildToolAliasesSource(routes))
-    fs.writeFileSync(REDIRECTS_PATH, buildRedirectsSource(routes))
+    fs.writeFileSync(REDIRECTS_PATH, buildRedirectsSource(routes, taxonomyRedirects))
     console.log(`[generate:legacy-routes] wrote ${path.relative(ROOT, TOOL_ALIASES_PATH)}`)
     console.log(`[generate:legacy-routes] wrote ${path.relative(ROOT, REDIRECTS_PATH)}`)
 }

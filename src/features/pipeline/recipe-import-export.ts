@@ -1,5 +1,5 @@
 import { validateRecipe } from "./executor"
-import { createPortableRecipe } from "./recipe-codec"
+import { sanitizeRecipeForPersistence } from "./recipe-sanitizer"
 import type { RecipeDocument } from "./recipe-types"
 
 export type RecipeImportResult =
@@ -7,7 +7,7 @@ export type RecipeImportResult =
     | { ok: false; errors: string[] }
 
 export function exportRecipeToJson(recipe: RecipeDocument): string {
-    return `${JSON.stringify(createPortableRecipe(recipe), null, 2)}\n`
+    return `${JSON.stringify(sanitizeRecipeForPersistence(recipe), null, 2)}\n`
 }
 
 export function importRecipeFromJson(source: string): RecipeImportResult {

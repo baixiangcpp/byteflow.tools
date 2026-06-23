@@ -4,6 +4,7 @@ import routeGroups from "@/lib/sitemap-route-groups.json"
 import { LOCALES } from "@/core/i18n/i18n"
 import { TOOL_REGISTRY } from "@/core/registry"
 import { TOOL_ALIAS_TO_CANONICAL_SLUG } from "@/core/registry/tool-aliases"
+import { LEGACY_TAXONOMY_SLUGS } from "@/core/routing/seo-route-policy"
 import { SITE_URL, buildCanonicalUrl } from "@/core/seo/urls"
 import { describe, expect, it } from "vitest"
 
@@ -14,6 +15,8 @@ function normalizeLastModified(value: Date | string | undefined): string {
 }
 
 describe("sitemap lastmod", () => {
+    const legacyTaxonomySlugSet = new Set(LEGACY_TAXONOMY_SLUGS)
+
     it("is deterministic across invocations", () => {
         const first = sitemap().map((entry) => normalizeLastModified(entry.lastModified))
         const second = sitemap().map((entry) => normalizeLastModified(entry.lastModified))
@@ -62,6 +65,7 @@ describe("sitemap lastmod", () => {
 
         for (const locale of LOCALES) {
             for (const hub of routeGroups.hubSlugs) {
+                if (legacyTaxonomySlugSet.has(hub)) continue
                 expect(urls.has(buildCanonicalUrl(locale, hub))).toBe(true)
             }
 
@@ -116,6 +120,15 @@ describe("sitemap lastmod", () => {
             for (const slug of slugs) {
                 expect(urls.has(buildCanonicalUrl(locale, slug))).toBe(true)
             }
+        }
+    })
+
+    it("excludes noindex legacy taxonomy hubs from sitemap output", () => {
+        const urls = sitemap().map((entry) => entry.url)
+
+        for (const slug of LEGACY_TAXONOMY_SLUGS) {
+            expect(urls.some((url) => url.endsWith(`/en/${slug}`))).toBe(false)
+            expect(urls.some((url) => url.endsWith(`/fr/${slug}`))).toBe(false)
         }
     })
 })

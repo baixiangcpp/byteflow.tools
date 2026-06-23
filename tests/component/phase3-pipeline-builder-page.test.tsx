@@ -1,5 +1,5 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
-import { describe, expect, it, vi } from "vitest"
+import { beforeEach, describe, expect, it, vi } from "vitest"
 import { LangProvider } from "@/core/i18n/lang-provider"
 import PipelineBuilderPage from "@/app/[lang]/pipeline-builder/page"
 import { getTranslation } from "@/core/i18n/translations/catalog"
@@ -9,6 +9,22 @@ import { PipelineStepList } from "@/features/tools/pipeline-builder/pipeline-ste
 vi.mock("next/navigation", () => ({
     usePathname: () => "/en/pipeline-builder",
 }))
+
+function installMemoryStorage() {
+    const store = new Map<string, string>()
+    Object.defineProperty(window, "localStorage", {
+        configurable: true,
+        value: {
+            getItem: (key: string) => (store.has(key) ? store.get(key)! : null),
+            setItem: (key: string, value: string) => {
+                store.set(key, value)
+            },
+            removeItem: (key: string) => {
+                store.delete(key)
+            },
+        },
+    })
+}
 
 function renderWithEnglish(ui: React.ReactNode) {
     return render(
@@ -27,6 +43,10 @@ function renderWithLocale(locale: Locale, ui: React.ReactNode) {
 }
 
 describe("phase 3 pipeline builder page", () => {
+    beforeEach(() => {
+        installMemoryStorage()
+    })
+
     it.each([
         ["en", "Pipeline Builder"],
         ["zh-CN", "管道构建器"],
@@ -45,6 +65,7 @@ describe("phase 3 pipeline builder page", () => {
         renderWithEnglish(<PipelineBuilderPage />)
 
         expect(screen.getByRole("heading", { name: "Pipeline Builder" })).toBeInTheDocument()
+        expect(screen.getByRole("heading", { name: "Build a recipe in three moves" })).toBeInTheDocument()
         expect(screen.getByLabelText("Initial input")).toBeInTheDocument()
         expect(screen.getByText("Steps")).toBeInTheDocument()
         expect(screen.getByText("Built-in recipes")).toBeInTheDocument()
@@ -54,6 +75,16 @@ describe("phase 3 pipeline builder page", () => {
         expect(screen.getByRole("button", { name: /Run Recipe/i })).toBeInTheDocument()
         expect(screen.getAllByRole("button", { name: /Export JSON/i }).length).toBeGreaterThan(0)
         expect(screen.getByRole("button", { name: /Share URL/i })).toBeInTheDocument()
+    })
+
+    it("persists only onboarding dismissal preference data", () => {
+        renderWithEnglish(<PipelineBuilderPage />)
+
+        fireEvent.click(screen.getByRole("button", { name: "Dismiss onboarding" }))
+
+        expect(screen.queryByRole("heading", { name: "Build a recipe in three moves" })).not.toBeInTheDocument()
+        expect(window.localStorage.getItem("byteflow:pipeline-builder:onboarding-dismissed")).toBe("1")
+        expect(JSON.stringify(window.localStorage)).not.toContain("Initial input")
     })
 
     it("can add a pipeline step from the adapter list", () => {
@@ -126,12 +157,28 @@ describe("phase 3 pipeline builder page", () => {
         fireEvent.click(enabledMoveDown!)
 
         expect(screen.getByLabelText("Step label")).toHaveValue("Minify JSON")
+        expect(screen.getByText("Minify JSON moved to position 2 of 2.")).toBeInTheDocument()
+        expect(container.querySelectorAll("[draggable='true']").length).toBeGreaterThan(0)
+        expect(screen.getAllByLabelText("Drag to reorder step").length).toBeGreaterThan(0)
 
         const removeButtons = screen.getAllByRole("button", { name: "Remove step" })
         fireEvent.click(removeButtons[0])
 
         expect(screen.getByLabelText("Step label")).toHaveValue("Minify JSON")
         expect(screen.queryByText(/Base64 URL-safe encode/i)).not.toBeInTheDocument()
+    })
+
+    it("shows privacy preview before export and confirms structure-only scope", () => {
+        renderWithEnglish(<PipelineBuilderPage />)
+
+        fireEvent.click(screen.getByRole("button", { name: /Try Example/i }))
+        fireEvent.click(screen.getAllByRole("button", { name: /^Export JSON$/i })[0])
+
+        expect(screen.getByRole("heading", { name: "Privacy preview" })).toBeInTheDocument()
+        expect(screen.getByText("Export a structure-only JSON recipe file.")).toBeInTheDocument()
+        expect(screen.getByText("Initial runtime input")).toBeInTheDocument()
+        expect(screen.getByText("Final output and intermediate step outputs")).toBeInTheDocument()
+        expect(screen.getByRole("button", { name: "Export structure only" })).toBeInTheDocument()
     })
 
     it("loads and runs a built-in recipe template", async () => {
@@ -183,6 +230,7 @@ describe("phase 3 pipeline builder page", () => {
                 onAddStep={() => undefined}
                 onMoveStep={() => undefined}
                 onPendingToolKeyChange={() => undefined}
+                onReorderStep={() => undefined}
                 onRemoveStep={() => undefined}
                 onSelectStep={() => undefined}
                 pendingToolKey="external_lookup"

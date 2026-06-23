@@ -19,9 +19,9 @@ describe("hash worker guard", () => {
 
         expect(pageSource).toContain("useHashTask(hashTaskInput)")
         expect(pageSource).toContain("useHashFileInput({")
-        expect(pageSource).toContain("type={showSecret ? \"text\" : \"password\"}")
+        expect(pageSource).toContain("type={secretVisible ? \"text\" : \"password\"}")
         expect(pageSource).toContain("autoComplete=\"off\"")
-        expect(pageSource).toContain("aria-pressed={showSecret}")
+        expect(pageSource).toContain("aria-pressed={secretVisible}")
         expect(pageSource).toContain("clearFileState()")
         expect(pageSource).toContain("file_privacy_hint")
         expect(pageSource).toContain("weak_hash_badge")

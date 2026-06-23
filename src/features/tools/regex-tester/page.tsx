@@ -59,7 +59,7 @@ export function RegexTesterPage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 pt-2">
+            <div className="grid min-w-0 grid-cols-1 gap-6 pt-2 md:grid-cols-12">
 
                 {/* Input Controls */}
                 <div className="md:col-span-12 space-y-4 p-6 border rounded-xl bg-card shadow-sm">
@@ -100,7 +100,7 @@ export function RegexTesterPage() {
                 </div>
 
                 {/* Test String */}
-                <div className="md:col-span-8 flex flex-col border rounded-xl bg-card shadow-sm overflow-hidden">
+                <div className="flex min-w-0 flex-col overflow-hidden rounded-xl border bg-card shadow-sm md:col-span-8">
                     <div className="tool-pane-header tool-pane-header-between">
                         <span>{toolT.test_string_label}</span>
                     </div>
@@ -114,7 +114,7 @@ export function RegexTesterPage() {
                 </div>
 
                 {/* Results Pane */}
-                <div className="md:col-span-4 flex flex-col border rounded-xl bg-card shadow-sm overflow-hidden min-h-[350px]">
+                <div className="flex min-h-[350px] min-w-0 flex-col overflow-hidden rounded-xl border bg-card shadow-sm md:col-span-4">
                     <div className="tool-pane-header tool-pane-header-between">
                         <span>{toolT.match_results_label}</span>
                         <span className="bg-primary text-primary-foreground text-xs px-2 py-0.5 rounded-full">

@@ -5,6 +5,7 @@ import { Copy, FileText, Trash2, ArrowLeftRight } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { useLang } from "@/core/i18n/lang-provider"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { exportEnvVars, parseEnvFile, type EnvExportFormat } from "./utils"
 
@@ -91,6 +92,10 @@ export function EnvVariableParserPage() {
                         <Trash2 className="h-3.5 w-3.5" />
                     </Button>
                 </div>
+            </div>
+
+            <div className="border-b px-4 py-3">
+                <SensitiveInputWarning variant="secret" />
             </div>
 
             <div className="flex min-h-0 flex-1 flex-col md:flex-row">

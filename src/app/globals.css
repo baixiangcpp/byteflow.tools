@@ -104,6 +104,8 @@
   }
 
   body {
+    min-width: 0;
+    overflow-x: clip;
     font-family: var(--font-sans);
     background-color: var(--color-background);
     color: var(--color-foreground);

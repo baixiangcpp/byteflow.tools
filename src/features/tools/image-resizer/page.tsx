@@ -258,7 +258,7 @@ export function ImageResizerPage() {
                 <ToolActionBar actions={actions} />
             </div>
 
-            <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1.1fr_0.9fr]">
+            <div className="grid min-w-0 grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]">
                 <div className="space-y-4 rounded-xl border bg-card p-4">
                     <div
                         className="grid min-h-[300px] cursor-pointer place-items-center rounded-xl border border-dashed bg-muted/15 p-4"

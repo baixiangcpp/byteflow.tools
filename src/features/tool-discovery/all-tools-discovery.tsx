@@ -576,10 +576,10 @@ export function AllToolsDiscovery({
     )
 
     return (
-        <div id="tool-discovery" className="space-y-5">
-            <section className="rounded-xl border border-border/70 bg-card/55 p-4 backdrop-blur-sm">
-                <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto]">
-                    <div className="relative">
+        <div id="tool-discovery" className="min-w-0 space-y-5">
+            <section className="min-w-0 rounded-xl border border-border/70 bg-card/55 p-4 backdrop-blur-sm">
+                <div className="grid min-w-0 gap-3 lg:grid-cols-[minmax(0,1fr)_auto]">
+                    <div className="relative min-w-0">
                         <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                         <Input
                             value={query}
@@ -618,7 +618,7 @@ export function AllToolsDiscovery({
                     {filterPanel}
                 </div>
 
-                <div className="mt-4 flex flex-wrap items-center gap-2">
+                <div className="mt-4 flex min-w-0 flex-wrap items-center gap-2">
                     <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
                         <Tag className="h-3.5 w-3.5" />
                         {labels.popularTags}
@@ -688,14 +688,14 @@ export function AllToolsDiscovery({
             </section>
 
             {workflows.length > 0 ? (
-                <section className="rounded-xl border border-border/70 bg-card/55 p-4 backdrop-blur-sm">
+                <section className="min-w-0 rounded-xl border border-border/70 bg-card/55 p-4 backdrop-blur-sm">
                     <h2 className="text-sm font-semibold">{labels.commonWorkflows}</h2>
                     <div className="mt-3 grid gap-2 md:grid-cols-3">
                         {workflows.map((workflow) => (
                             <Link
                                 key={workflow.id}
                                 href={workflow.href}
-                                className="group rounded-lg border border-border/70 bg-background/55 p-3 text-sm transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
+                                className="group min-w-0 rounded-lg border border-border/70 bg-background/55 p-3 text-sm transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
                             >
                                 <span className="inline-flex items-center gap-2 font-medium text-foreground group-hover:text-primary">
                                     <Sparkles className="h-4 w-4" />
@@ -717,7 +717,7 @@ export function AllToolsDiscovery({
             {filteredGroups.length > 0 ? (
                 <div className="grid gap-5">
                     {filteredGroups.map((group) => (
-                        <section key={group.key} className="rounded-xl border border-border/70 bg-card/55 p-5 backdrop-blur-sm">
+                        <section key={group.key} className="min-w-0 rounded-xl border border-border/70 bg-card/55 p-4 backdrop-blur-sm sm:p-5">
                             <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
                                 <div>
                                     <h2 className="text-xl font-semibold tracking-tight">{group.title}</h2>
@@ -739,10 +739,10 @@ export function AllToolsDiscovery({
                                     <Link
                                         key={tool.key}
                                         href={`/${locale}/${tool.slug}`}
-                                        className="group flex min-h-36 flex-col rounded-lg border border-border/70 bg-background/45 p-4 transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-lg hover:shadow-black/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45 dark:hover:shadow-black/35"
+                                    className="group flex min-h-36 min-w-0 flex-col rounded-lg border border-border/70 bg-background/45 p-4 transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-lg hover:shadow-black/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45 dark:hover:shadow-black/35"
                                     >
                                         <ToolCardBadges capabilityLabels={capabilityLabels} tool={tool} />
-                                        <h3 className="text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
+                                        <h3 className="break-words text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
                                             {tool.title}
                                         </h3>
                                         <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
