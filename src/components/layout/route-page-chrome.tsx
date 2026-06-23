@@ -13,6 +13,7 @@ import { getRouteContext } from "@/core/routing/route-context"
 import { recordRecentToolKey } from "@/core/storage/tool-discovery-state"
 import { getRouteToolBySlug } from "@/generated/route-tool-lookup"
 import { ToolTrustHeader } from "@/features/tool-shell/tool-trust-header"
+import { ToolFavoriteControl } from "./tool-favorite-control"
 
 const EXCLUDED_CONTENT_INTRO_SLUGS = new Set(["about", "pricing", "contact", "privacy", "terms", "install-app"])
 
@@ -75,15 +76,18 @@ function RoutePageChromeContent({ children, pathname }: RoutePageChromeProps) {
                 </div>
             ) : null}
             {activeTool ? (
-                <ToolTrustHeader
-                    slug={activeTool.slug}
-                    sourceUrl={activeTool.sourceUrl}
-                    privacy={activeTool.privacy}
-                    networkAccess={activeTool.networkAccess}
-                    networkHosts={activeTool.networkHosts}
-                    networkPurposeKey={activeTool.networkPurposeKey}
-                    externalDataSent={activeTool.externalDataSent}
-                />
+                <>
+                    <ToolFavoriteControl toolKey={activeTool.key} />
+                    <ToolTrustHeader
+                        slug={activeTool.slug}
+                        sourceUrl={activeTool.sourceUrl}
+                        privacy={activeTool.privacy}
+                        networkAccess={activeTool.networkAccess}
+                        networkHosts={activeTool.networkHosts}
+                        networkPurposeKey={activeTool.networkPurposeKey}
+                        externalDataSent={activeTool.externalDataSent}
+                    />
+                </>
             ) : null}
             {children}
             {routeContext.routeType === "tool" ? (

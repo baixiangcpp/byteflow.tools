@@ -430,7 +430,10 @@
     "sensitive_warning_privacy_policy": "隐私政策",
     "sensitive_warning_verify_devtools": "在 DevTools 中验证",
     "reveal_secret": "显示密钥",
-    "hide_secret": "隐藏密钥"
+    "hide_secret": "隐藏密钥",
+    "close_filters": "完成",
+    "clear_favorites": "清除收藏",
+    "favorites_local_only": "收藏的工具 ID 仅保存在此浏览器中。"
   },
   "tools": {
     "json_formatter": {
@@ -2833,7 +2836,7 @@
     "privacy_no_collection_title": "工具输入处理",
     "privacy_no_collection_desc": "byteflow.tools 的多数工作流会在浏览器中处理输入和输出。我们不会收集、存储、分析或上传浏览器本地工具 payload。标记为“外部请求”的工具只会在你明确运行该操作时访问列出的网络目标。",
     "privacy_cookies_title": "Cookie 与本地存储",
-    "privacy_cookies_desc": "我们仅使用 localStorage 保存主题、语言、侧边栏状态和本地工具设置等安全界面偏好。敏感 payload、token、日志、文件内容和工具输出不应保存在这里。",
+    "privacy_cookies_desc": "我们仅使用 localStorage 保存主题、语言、侧边栏状态、收藏工具 ID、最近工具 ID、时间戳和本地工具设置等安全界面偏好。敏感 payload、token、日志、文件内容、完整 URL 和工具输出不应保存在这里。",
     "privacy_analytics_title": "分析",
     "privacy_analytics_desc": "分析仅限无 Cookie、白名单化事件分类中的聚合产品信号。允许事件包括工具加载、工具操作、复制、下载、执行搜索、相关工具点击和 PWA 安装。搜索事件只记录查询长度分桶和结果数量；工具输入、输出、JWT、密钥、日志、文件名、文件内容、图片内容、哈希值、完整 URL、用户 ID 和会话 ID 永远不是分析字段。",
     "privacy_third_party_title": "第三方服务",
@@ -2887,7 +2890,7 @@
     "trust_center_external_tool_col_purpose": "用途",
     "trust_center_external_tool_col_data": "发送的数据",
     "trust_center_storage_title": "本地存储策略",
-    "trust_center_storage_desc": "本地存储仅用于主题、语言、侧边栏状态、最近工具 ID 和本地预设等安全偏好。工具 payload、token、日志、文件内容和生成输出默认不得持久化。",
+    "trust_center_storage_desc": "本地存储仅用于主题、语言、侧边栏状态、收藏工具 ID、带时间戳的最近工具 ID 和本地预设等安全偏好。工具 payload、token、日志、文件内容、完整 URL 和生成输出默认不得持久化。",
     "trust_center_analytics_title": "分析策略",
     "trust_center_analytics_desc": "分析使用白名单事件分类，并且运行时代码默认禁用上报。若启用无 Cookie 的聚合提供方，也只能接收安全事件名和粗粒度参数，例如工具 ID、操作类型、语言、大小分桶、结果数量和来源页面。工具输入、输出、JWT、密钥、日志正文、文件名、文件内容、图片内容、哈希值、搜索原文、完整 URL、用户 ID 和会话 ID 均被禁止。",
     "trust_center_pwa_title": "PWA 缓存策略",

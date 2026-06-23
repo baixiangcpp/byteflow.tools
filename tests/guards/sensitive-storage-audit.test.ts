@@ -100,6 +100,21 @@ describe("sensitive storage audit", () => {
         expect(handleSavePreset).not.toContain("safeClipboardWrite")
     })
 
+    it("limits favorites and recents persistence to tool IDs and timestamps", () => {
+        const discoveryState = read("src/core/storage/tool-discovery-state.ts")
+
+        expect(discoveryState).toContain('toolKey: string')
+        expect(discoveryState).toContain('updatedAt: string')
+        expect(discoveryState).toContain('const FAVORITE_TOOL_KEYS_STORAGE_KEY = "byteflow:tools:favorites"')
+        expect(discoveryState).toContain('const RECENT_TOOL_KEYS_STORAGE_KEY = "byteflow:tools:recent"')
+        expect(discoveryState).not.toMatch(/\b(input|output|payload|token|secret|fileContent|logBody|fullUrl)\b/)
+
+        const commandPalette = read("src/components/layout/command-palette.tsx")
+        expect(commandPalette).toContain("queryLength: trimmed.length")
+        expect(commandPalette).not.toContain("search_query")
+        expect(commandPalette).not.toContain("query: trimmed")
+    })
+
     it("keeps CacheStorage away from non-GET, third-party, and sensitive query requests", () => {
         const serviceWorker = read("public/sw.js")
 

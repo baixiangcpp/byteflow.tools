@@ -430,7 +430,10 @@
     "sensitive_warning_privacy_policy": "Privacy policy",
     "sensitive_warning_verify_devtools": "Verify in DevTools",
     "reveal_secret": "Reveal secret",
-    "hide_secret": "Hide secret"
+    "hide_secret": "Hide secret",
+    "close_filters": "Done",
+    "clear_favorites": "Clear favorites",
+    "favorites_local_only": "Favorite tool IDs are stored only in this browser."
   },
   "categories": {
     "formatters_desc": "Format, beautify, and transform code and data files including JSON, XML, SQL, HTML, CSS, and YAML.",
@@ -2833,7 +2836,7 @@
     "privacy_no_collection_title": "Tool Input Handling",
     "privacy_no_collection_desc": "Most byteflow.tools workflows process input and output in your browser. We do not collect, store, analyze, or upload browser-local tool payloads. Tools marked External request may contact the listed network target only when you explicitly run that action.",
     "privacy_cookies_title": "Cookies & Storage",
-    "privacy_cookies_desc": "We use localStorage only for safe UI preferences such as theme, language, sidebar state, and local tool settings. Sensitive payloads, tokens, logs, file contents, and tool outputs are not meant to be stored there.",
+    "privacy_cookies_desc": "We use localStorage only for safe UI preferences such as theme, language, sidebar state, favorite tool IDs, recent tool IDs, timestamps, and local tool settings. Sensitive payloads, tokens, logs, file contents, full URLs, and tool outputs are not meant to be stored there.",
     "privacy_analytics_title": "Analytics",
     "privacy_analytics_desc": "Analytics are limited to an allowlisted, cookie-free taxonomy for aggregate product signals. Allowed events include tool loaded, tool action, copy, download, search performed, related-tool click, and PWA installed. Search events record only query-length buckets and result counts; tool inputs, outputs, JWTs, secrets, logs, file names, file contents, image contents, hash values, full URLs, user IDs, and session IDs are never analytics fields.",
     "privacy_third_party_title": "Third-Party Services",
@@ -2887,7 +2890,7 @@
     "trust_center_external_tool_col_purpose": "Purpose",
     "trust_center_external_tool_col_data": "Data sent",
     "trust_center_storage_title": "Local storage strategy",
-    "trust_center_storage_desc": "Local storage is reserved for safe preferences such as theme, language, sidebar state, recent tool IDs, and local presets. Tool payloads, tokens, logs, file contents, and generated outputs must not be persisted by default.",
+    "trust_center_storage_desc": "Local storage is reserved for safe preferences such as theme, language, sidebar state, favorite tool IDs, recent tool IDs with timestamps, and local presets. Tool payloads, tokens, logs, file contents, full URLs, and generated outputs must not be persisted by default.",
     "trust_center_analytics_title": "Analytics strategy",
     "trust_center_analytics_desc": "Analytics use an allowlisted event taxonomy and are disabled by default in runtime code. If a cookie-free aggregate provider is enabled, it may receive only safe event names and coarse parameters such as tool ID, action type, language, size bucket, result count, and source page. Tool input, output, JWTs, secrets, log bodies, file names, file contents, image contents, hash values, search query text, full URLs, user IDs, and session IDs are forbidden.",
     "trust_center_pwa_title": "PWA cache strategy",

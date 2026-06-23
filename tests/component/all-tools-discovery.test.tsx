@@ -14,7 +14,9 @@ const labels = {
     activeFilters: "Active filters",
     allFamilies: "All families",
     clearFilters: "Clear filters",
+    clearFavorites: "Clear favorites",
     commonWorkflows: "Common workflows",
+    favorites: "Favorites",
     filterByCategory: "Category",
     filterByExecution: "Execution",
     filterByInputType: "Input type",
@@ -27,13 +29,19 @@ const labels = {
     inputUrlDomain: "URL/domain",
     noResults: "No results",
     noResultsSuggestion: "Try another keyword.",
+    noFavorites: "No favorites yet.",
+    noRecentTools: "Open a tool to see recents.",
     open: "Open",
     popularTags: "Popular tags",
     removeFilter: "Remove filter",
     showFilters: "Show filters",
+    closeFilters: "Done",
     clearRecentTools: "Clear recent tools",
     recentTools: "Recent tools",
     recentToolsPrivacy: "Stored locally.",
+    addFavorite: "Add to favorites",
+    removeFavorite: "Remove from favorites",
+    favoritesPrivacy: "Stored locally.",
     searchPlaceholder: "Search tools...",
     toolsLabel: "tools",
     useCaseEncode: "Encode/decode",
@@ -67,6 +75,8 @@ const groups = [
                 description: "Format and validate JSON.",
                 family: "data-formats",
                 familyLabel: "Data formats",
+                searchKeywords: ["pretty json", "format payload"],
+                localizedAliases: ["JSON 格式化"],
                 tags: ["json", "data-formats"],
                 capabilities: ["browser-local", "file-input", "offline-capable", "pipeline-ready"],
             },
@@ -77,6 +87,7 @@ const groups = [
                 description: "Encode and decode Base64.",
                 family: "encoders-decoders",
                 familyLabel: "Encoders",
+                searchKeywords: ["base 64", "decode base64"],
                 tags: ["base64"],
                 capabilities: ["browser-local", "offline-capable", "pipeline-ready"],
             },
@@ -134,8 +145,29 @@ function renderDiscovery() {
     )
 }
 
+function installMemoryStorage() {
+    const store = new Map<string, string>()
+    Object.defineProperty(window, "localStorage", {
+        configurable: true,
+        value: {
+            getItem: (key: string) => (store.has(key) ? store.get(key)! : null),
+            setItem: (key: string, value: string) => {
+                store.set(key, value)
+            },
+            removeItem: (key: string) => {
+                store.delete(key)
+            },
+            key: (index: number) => [...store.keys()][index] ?? null,
+            get length() {
+                return store.size
+            },
+        },
+    })
+}
+
 describe("AllToolsDiscovery", () => {
     beforeEach(() => {
+        installMemoryStorage()
         window.history.replaceState(null, "", "/en/all-tools")
     })
 
@@ -185,5 +217,53 @@ describe("AllToolsDiscovery", () => {
         const card = screen.getByRole("link", { name: /JSON Formatter/ })
         const badges = within(card).getAllByText(/Data formats|Browser-local|File input|Offline capable|Pipeline ready/)
         expect(badges.length).toBeLessThanOrEqual(3)
+    })
+
+    it("uses a mobile filter drawer with counts, close, and clear controls", () => {
+        renderDiscovery()
+
+        fireEvent.click(screen.getByRole("button", { name: /Show filters/ }))
+
+        const drawer = screen.getByRole("dialog", { name: "Show filters" })
+        expect(within(drawer).getByText(/4 tools/)).toBeInTheDocument()
+        fireEvent.click(within(drawer).getAllByRole("button", { name: "File" })[0])
+        expect(within(drawer).getByText(/1 tools/)).toBeInTheDocument()
+
+        fireEvent.click(within(drawer).getByRole("button", { name: "Clear filters" }))
+        expect(within(drawer).getByText(/4 tools/)).toBeInTheDocument()
+
+        const doneButtons = within(drawer).getAllByRole("button", { name: "Done" })
+        fireEvent.click(doneButtons[doneButtons.length - 1])
+        expect(screen.queryByRole("dialog", { name: "Show filters" })).not.toBeInTheDocument()
+    })
+
+    it("favorites and clears tools using only local tool IDs", () => {
+        renderDiscovery()
+
+        fireEvent.click(screen.getByRole("button", { name: "Add to favorites: JSON Formatter" }))
+
+        expect(screen.getByRole("button", { name: "Remove from favorites: JSON Formatter" })).toBeInTheDocument()
+        expect(screen.getByRole("link", { name: "JSON Formatter" })).toHaveAttribute("href", "/en/json-formatter")
+
+        const raw = window.localStorage.getItem("byteflow:tools:favorites") ?? ""
+        expect(JSON.parse(raw)).toEqual([
+            expect.objectContaining({ toolKey: "json_formatter", updatedAt: expect.any(String) }),
+        ])
+        expect(raw).not.toMatch(/input|output|payload|secret|token|file|log|url/i)
+
+        fireEvent.click(screen.getByRole("button", { name: "Clear favorites" }))
+        expect(JSON.parse(window.localStorage.getItem("byteflow:tools:favorites") ?? "[]")).toEqual([])
+    })
+
+    it("matches localized and task search aliases without persisting search text", () => {
+        renderDiscovery()
+
+        fireEvent.change(screen.getByRole("textbox", { name: "Search tools" }), { target: { value: "JSON 格式化" } })
+        expect(screen.getByText("JSON Formatter")).toBeInTheDocument()
+        expect(screen.queryByText("Base64 Encode/Decode")).not.toBeInTheDocument()
+        expect(window.location.search).toBe("")
+
+        fireEvent.change(screen.getByRole("textbox", { name: "Search tools" }), { target: { value: "format payload" } })
+        expect(screen.getByText("JSON Formatter")).toBeInTheDocument()
     })
 })
