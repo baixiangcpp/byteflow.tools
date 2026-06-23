@@ -21,7 +21,7 @@ export default function AboutPage() {
                 <p className="mt-3 text-base leading-relaxed text-muted-foreground">{p.about_intro}</p>
             </section>
 
-            <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <section id="privacy" className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                 {highlights.map((item) => (
                     <article
                         key={item.title}

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { isValidLocale } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { buildStaticPageMetadata } from "@/core/seo/seo"
+import { buildCanonicalUrl, buildLocalizedAlternates } from "@/core/seo/urls"
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
     const { lang } = await params
@@ -13,12 +14,18 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     const locale = lang
     const t = getTranslation(locale)
 
-    return buildStaticPageMetadata({
+    return {
+        ...buildStaticPageMetadata({
         lang: locale,
         slug: "all-tools",
         title: t.common.all_tools,
         description: t.site.explore_by_category_subtitle,
-    })
+        }),
+        alternates: {
+            canonical: buildCanonicalUrl(locale, "all-tools"),
+            languages: buildLocalizedAlternates({ slug: "all-tools" }),
+        },
+    }
 }
 
 export default function Layout({ children }: { children: React.ReactNode }) {

@@ -55,10 +55,12 @@ describe("JWT security semantics guard", () => {
     it("keeps HMAC secrets masked in verifier and workbench inputs", () => {
         const verifier = read("src/features/tools/jwt-verifier/page.tsx")
         const workbench = read("src/features/tools/jwt-workbench/page.tsx")
+        const secretField = read("src/features/tools/jwt-workbench/jwt-secret-field.tsx")
 
-        expect(verifier).toContain('type="password"')
-        expect(verifier).toContain('autoComplete="off"')
-        expect(workbench).toContain('type="password"')
-        expect(workbench).toContain('autoComplete="off"')
+        expect(verifier).toContain("JwtSecretField")
+        expect(workbench).toContain("JwtSecretField")
+        expect(secretField).toContain('type={secretVisible ? "text" : "password"}')
+        expect(secretField).toContain('autoComplete="off"')
+        expect(secretField).toContain("aria-pressed={secretVisible}")
     })
 })

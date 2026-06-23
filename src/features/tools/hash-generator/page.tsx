@@ -15,6 +15,7 @@ import {
     SelectValue,
 } from "@/components/ui/select"
 import { ModeSelector } from "@/features/tool-shell/mode-selector"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { FILE_INPUT_POLICIES, describeFilePolicy } from "@/core/files/file-input-policy"
@@ -36,7 +37,7 @@ export function HashGeneratorPage() {
     const [input, setInput] = React.useState("")
     const [secret, setSecret] = React.useState("")
     const [batchAlgorithm, setBatchAlgorithm] = React.useState<StandardHashAlgorithm>("sha256")
-    const [showSecret, setShowSecret] = React.useState(false)
+    const [secretVisible, setSecretVisible] = React.useState(false)
     const filePolicy = FILE_INPUT_POLICIES["hash-file"]
     const {
         clearFileState,
@@ -49,6 +50,8 @@ export function HashGeneratorPage() {
         isReadingFile,
     } = useHashFileInput({ filePolicy, tooLargeMessage: toolT.file_error })
     const sha1Warning = toolT.sha1_warning
+    const revealSecretLabel = t.common.reveal_secret
+    const hideSecretLabel = t.common.hide_secret
     const buildCopyActionLabel = React.useCallback((label: string) => `${t.common.copy} ${label}`, [t.common.copy])
     const modeOptions = React.useMemo(() => [
         { value: "text" as const, label: toolT.mode_text },
@@ -81,7 +84,7 @@ export function HashGeneratorPage() {
     const handleClear = () => {
         setInput("")
         setSecret("")
-        setShowSecret(false)
+        setSecretVisible(false)
         clearFileState()
     }
 
@@ -186,11 +189,12 @@ export function HashGeneratorPage() {
 
                     {mode === "hmac" ? (
                         <>
+                            <SensitiveInputWarning variant="secret" />
                             <label className="text-sm font-medium">{toolT.secret_key}</label>
                             <div className="flex gap-2">
                                 <Input
                                     className="font-mono text-sm"
-                                    type={showSecret ? "text" : "password"}
+                                    type={secretVisible ? "text" : "password"}
                                     value={secret}
                                     onChange={(event) => setSecret(event.target.value)}
                                     placeholder={toolT.secret_placeholder}
@@ -200,11 +204,12 @@ export function HashGeneratorPage() {
                                     type="button"
                                     variant="outline"
                                     size="icon"
-                                    aria-label={showSecret ? toolT.hide_secret : toolT.show_secret}
-                                    aria-pressed={showSecret}
-                                    onClick={() => setShowSecret((current) => !current)}
+                                    aria-label={secretVisible ? hideSecretLabel : revealSecretLabel}
+                                    title={secretVisible ? hideSecretLabel : revealSecretLabel}
+                                    aria-pressed={secretVisible}
+                                    onClick={() => setSecretVisible((current) => !current)}
                                 >
-                                    {showSecret ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                    {secretVisible ? <EyeOff className="h-4 w-4" aria-hidden="true" /> : <Eye className="h-4 w-4" aria-hidden="true" />}
                                 </Button>
                             </div>
                             <p className="text-xs text-muted-foreground">{toolT.hmac_secret_hint}</p>

@@ -4,6 +4,7 @@ import { TOOL_MANIFESTS } from "@/core/registry"
 import { createPortableRecipe, decodeRecipeFromUrlParam, encodeRecipeForShareUrl, encodeRecipeForUrl, recipeContainsRuntimeInput } from "@/features/pipeline/recipe-codec"
 import { createEmptyRecipe, runRecipe, validateRecipe } from "@/features/pipeline/executor"
 import { exportRecipeToJson, importRecipeFromJson } from "@/features/pipeline/recipe-import-export"
+import { sanitizeRecipeForPersistence } from "@/features/pipeline/recipe-sanitizer"
 import { createRecipeFromTemplate, PIPELINE_RECIPE_TEMPLATES } from "@/features/pipeline/recipe-templates"
 import { createSavedRecipeRecord, isRecipeStoreAvailable } from "@/features/pipeline/recipe-store"
 import { DEFAULT_RECIPE_SETTINGS, type PipelineToolAdapter, type RecipeDocument } from "@/features/pipeline/recipe-types"
@@ -731,6 +732,63 @@ describe("pipeline foundation", () => {
             })
             expect(decoded.recipe.steps[0].options).not.toHaveProperty("apiKey")
             expect(decoded.recipe.steps[0].options).not.toHaveProperty("token")
+        }
+    })
+
+    it("sanitizes saved and exported recipes to workflow structure only", () => {
+        const recipe = buildRecipe({
+            steps: [
+                {
+                    id: "secret_sample",
+                    toolKey: "log_scrubber",
+                    adapterVersion: 1,
+                    inputMode: "constant",
+                    constantInput: "Authorization: Bearer secret-token-value",
+                    options: {
+                        emails: true,
+                        apiKey: "secret",
+                    },
+                },
+            ],
+            edges: [],
+        })
+
+        const sanitized = sanitizeRecipeForPersistence(recipe)
+        const exported = exportRecipeToJson(recipe)
+
+        expect(sanitized.steps[0].inputMode).toBe("previous_output")
+        expect(sanitized.steps[0].constantInput).toBeUndefined()
+        expect(sanitized.steps[0].options).toEqual({ emails: true })
+        expect(exported).not.toContain("secret-token-value")
+        expect(exported).not.toContain('"apiKey"')
+    })
+
+    it("preserves visible step order through structure-only export and import", () => {
+        const recipe = buildRecipe({
+            steps: [
+                {
+                    id: "encode",
+                    toolKey: "base64_encode_decode",
+                    adapterVersion: 1,
+                    inputMode: "previous_output",
+                    options: { operation: "encode", urlSafe: true },
+                },
+                {
+                    id: "format",
+                    toolKey: "json_formatter",
+                    adapterVersion: 1,
+                    inputMode: "previous_output",
+                    options: { mode: "pretty", indent: 2 },
+                },
+            ],
+            edges: [],
+        })
+
+        const imported = importRecipeFromJson(exportRecipeToJson(recipe))
+
+        expect(imported.ok).toBe(true)
+        if (imported.ok) {
+            expect(imported.recipe.steps.map((step) => step.id)).toEqual(["encode", "format"])
         }
     })
 

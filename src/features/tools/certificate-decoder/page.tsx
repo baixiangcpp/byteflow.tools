@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 
 // ─── ASN.1 / PEM Parser (Pure JS, no dependencies) ──────────────────────────
 
@@ -332,6 +333,8 @@ export function CertificateDecoderPage() {
             </div>
 
             {/* Input */}
+            <SensitiveInputWarning variant="certificate" />
+
             <div className="space-y-2">
                 <label className="text-sm font-medium">{text("pem_certificate_label")}</label>
                 <Textarea

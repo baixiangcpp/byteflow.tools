@@ -9,6 +9,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { DEFAULT_HAR_SANITIZE_OPTIONS, parseHarSummary, sanitizeHar, type HarParseResult, type HarSanitizeOptions, type HarSanitizeResult } from "@/features/tools/har-viewer-sanitizer/utils"
 
@@ -108,6 +109,8 @@ export function HarViewerSanitizerPage() {
             {(summary?.error || sanitized?.error) && (
                 <Alert variant="destructive"><AlertDescription>{summary?.error || sanitized?.error}</AlertDescription></Alert>
             )}
+
+            <SensitiveInputWarning variant="log" />
 
             <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_320px]">
                 <div className="grid gap-4 lg:grid-cols-2">

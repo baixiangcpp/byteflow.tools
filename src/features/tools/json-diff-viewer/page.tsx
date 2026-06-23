@@ -186,7 +186,7 @@ export function JsonDiffViewerPage() {
                 </div>
             ) : null}
 
-            <div className="grid grid-cols-1 gap-6">
+            <div className="grid min-w-0 grid-cols-1 gap-6">
                 <div className="rounded-xl border bg-card shadow-sm overflow-hidden">
                     <div className="flex items-center justify-between border-b bg-muted/50 px-4 py-2">
                         <div className="flex items-center gap-4 text-sm font-medium">
@@ -252,7 +252,7 @@ export function JsonDiffViewerPage() {
                                             </button>
                                         </div>
                                         
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-1">
+                                        <div className="mt-1 grid min-w-0 grid-cols-1 gap-4 md:grid-cols-2">
                                             {(k.status === "removed" || k.status === "changed") && (
                                                 <div className="space-y-1">
                                                     <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold">

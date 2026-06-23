@@ -10,6 +10,7 @@ import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/u
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { decodeJwtParts, JwtDecodeError, type JwtClaimSemantic, type JwtDecodeErrorCode, type JwtSemanticSummary } from "./utils"
@@ -160,6 +161,8 @@ export function JwtDecoderPage() {
                     </Link>
                 </div>
             </div>
+
+            <SensitiveInputWarning variant="token" />
 
             {error && (
                 <div role="alert" className="rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">

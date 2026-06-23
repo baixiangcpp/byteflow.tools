@@ -6,9 +6,17 @@ const LOCALES = ["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr"]
 const LOCALE_SET = new Set(LOCALES)
 const DEFAULT_SCAN_DIRS = [".next/server/app", "out"]
 const TOOL_ALIAS_PATH = path.join(process.cwd(), "src", "core", "registry", "tool-aliases.json")
+const LEGACY_TAXONOMY_REDIRECT_PATH = path.join(process.cwd(), "src", "core", "routing", "legacy-taxonomy-redirects.json")
 const TOOL_ALIAS_TO_CANONICAL_SLUG = fs.existsSync(TOOL_ALIAS_PATH)
     ? JSON.parse(fs.readFileSync(TOOL_ALIAS_PATH, "utf8"))
     : {}
+const LEGACY_TAXONOMY_REDIRECTS = fs.existsSync(LEGACY_TAXONOMY_REDIRECT_PATH)
+    ? JSON.parse(fs.readFileSync(LEGACY_TAXONOMY_REDIRECT_PATH, "utf8"))
+    : {}
+
+function canonicalSlugFor(slug) {
+    return LEGACY_TAXONOMY_REDIRECTS[slug] || TOOL_ALIAS_TO_CANONICAL_SLUG[slug] || slug
+}
 
 function resolveScanDir() {
     if (process.env.HREFLANG_SCAN_DIR) {
@@ -76,7 +84,7 @@ function parseRoute(relativePath) {
 }
 
 function expectedHreflangs(slug) {
-    const canonicalSlug = slug ? (TOOL_ALIAS_TO_CANONICAL_SLUG[slug] || slug) : null
+    const canonicalSlug = slug ? canonicalSlugFor(slug) : null
     const expected = new Map()
     for (const locale of LOCALES) {
         expected.set(

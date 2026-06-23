@@ -5,6 +5,7 @@ import { getMenuGroups } from "@/core/registry/menu-groups"
 import { getToolRegistryStats } from "@/core/registry/stats"
 import { TOOL_CAPABILITY_LABELS, TOOL_FAMILY_LABELS, type ToolCapability, type ToolFamily } from "@/core/registry"
 import { AllToolsDiscovery } from "@/features/tool-discovery/all-tools-discovery"
+import { AllToolsQueryRobots } from "@/features/tool-discovery/all-tools-query-robots"
 
 const POPULAR_DISCOVERY_TAGS = [
     "json",
@@ -92,6 +93,7 @@ export default async function AllToolsPage({ params }: { params: Promise<{ lang:
     }))
     return (
         <div className="mx-auto flex w-full max-w-6xl flex-col gap-7 pb-8">
+            <AllToolsQueryRobots />
             <header className="rounded-2xl border border-border/70 bg-card/55 p-5 backdrop-blur-sm sm:p-6">
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">
                     {t.common.all_tools}

@@ -19,11 +19,13 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { FILE_INPUT_POLICIES, readTextFileWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { getToolByKey } from "@/core/registry"
+import { readStorageString, writeStorageString } from "@/core/storage/tool-persistence"
 import { getToolHandoffFromSearchParams } from "@/core/routing/tool-handoff"
 import { PIPELINE_TOOL_ADAPTERS } from "@/features/pipeline/adapter-registry"
-import { createPortableRecipe, decodeRecipeFromUrlParam, encodeRecipeForShareUrl, recipeContainsRuntimeInput } from "@/features/pipeline/recipe-codec"
+import { decodeRecipeFromUrlParam, encodeRecipeForShareUrl, recipeContainsRuntimeInput } from "@/features/pipeline/recipe-codec"
 import { runRecipe, validateRecipe } from "@/features/pipeline/executor"
 import { exportRecipeToJson, importRecipeFromJson } from "@/features/pipeline/recipe-import-export"
+import { RECIPE_STRUCTURE_PRIVACY_SCOPE } from "@/features/pipeline/recipe-sanitizer"
 import { createRecipeFromTemplate, PIPELINE_RECIPE_TEMPLATES, type PipelineRecipeTemplate } from "@/features/pipeline/recipe-templates"
 import {
     deleteSavedRecipe,
@@ -38,11 +40,16 @@ import { downloadText } from "./browser-actions"
 import { FIRST_ADAPTER, SHARE_PARAM } from "./constants"
 import { createId, createRecipe, createStep, getStepCompatibilityHints, updateRecipeTimestamp } from "./logic"
 import { PipelineRunLog } from "./pipeline-run-log"
+import { PipelineOnboarding } from "./pipeline-onboarding"
+import { PipelinePrivacyPreview } from "./pipeline-privacy-preview"
 import { PipelineSavedRecipes } from "./pipeline-saved-recipes"
 import { PipelineStepInspector } from "./pipeline-step-inspector"
 import { PipelineStepList } from "./pipeline-step-list"
 import { PipelineTemplateList } from "./pipeline-template-list"
 import type { OptionValue } from "./types"
+
+const ONBOARDING_DISMISSED_KEY = "byteflow:pipeline-builder:onboarding-dismissed"
+type PendingPrivacyAction = "save" | "export" | "share"
 
 export function PipelineBuilderPage() {
     const { t, lang } = useLang()
@@ -61,6 +68,8 @@ export function PipelineBuilderPage() {
     const [storageAvailable, setStorageAvailable] = React.useState(false)
     const [storageMessage, setStorageMessage] = React.useState<string | null>(null)
     const [importError, setImportError] = React.useState<string | null>(null)
+    const [onboardingDismissed, setOnboardingDismissed] = React.useState(false)
+    const [pendingPrivacyAction, setPendingPrivacyAction] = React.useState<PendingPrivacyAction | null>(null)
 
     const selectedStep = recipe.steps.find((step) => step.id === selectedStepId) ?? recipe.steps[0] ?? null
     const validation = React.useMemo(() => validateRecipe(recipe), [recipe])
@@ -88,6 +97,10 @@ export function PipelineBuilderPage() {
         setStorageAvailable(available)
         setStorageMessage(available ? null : text("storage_unavailable"))
     }, [text])
+
+    React.useEffect(() => {
+        setOnboardingDismissed(readStorageString(ONBOARDING_DISMISSED_KEY) === "1")
+    }, [])
 
     React.useEffect(() => {
         if (!storageAvailable) return
@@ -161,6 +174,19 @@ export function PipelineBuilderPage() {
         })
     }, [updateRecipe])
 
+    const reorderStep = React.useCallback((stepId: string, targetIndex: number) => {
+        updateRecipe((current) => {
+            const index = current.steps.findIndex((step) => step.id === stepId)
+            if (index < 0) return current
+            const boundedTarget = Math.max(0, Math.min(targetIndex, current.steps.length - 1))
+            if (index === boundedTarget) return current
+            const steps = [...current.steps]
+            const [step] = steps.splice(index, 1)
+            steps.splice(boundedTarget, 0, step)
+            return { ...current, steps, edges: [] }
+        })
+    }, [updateRecipe])
+
     const updateStep = React.useCallback((stepId: string, updater: (step: RecipeStep) => RecipeStep) => {
         updateRecipe((current) => ({
             ...current,
@@ -193,7 +219,7 @@ export function PipelineBuilderPage() {
         }
     }, [initialInput, recipe, text])
 
-    const saveRecipe = React.useCallback(async () => {
+    const performSaveRecipe = React.useCallback(async () => {
         if (!storageAvailable) {
             setStorageMessage(text("storage_unavailable"))
             return
@@ -239,9 +265,8 @@ export function PipelineBuilderPage() {
         await refreshSavedRecipes()
     }, [refreshSavedRecipes, selectedSavedId, storageAvailable, text])
 
-    const exportRecipe = React.useCallback(() => {
-        const portableRecipe = createPortableRecipe(recipe)
-        downloadText(`${portableRecipe.name.trim().replace(/[^\w.-]+/g, "-") || "byteflow-recipe"}.json`, exportRecipeToJson(portableRecipe))
+    const performExportRecipe = React.useCallback(() => {
+        downloadText(`${recipe.name.trim().replace(/[^\w.-]+/g, "-") || "byteflow-recipe"}.json`, exportRecipeToJson(recipe))
         toast.success(text("recipe_exported"))
     }, [recipe, text])
 
@@ -266,7 +291,7 @@ export function PipelineBuilderPage() {
         toast.success(text("recipe_imported"))
     }, [text])
 
-    const shareRecipe = React.useCallback(async () => {
+    const performShareRecipe = React.useCallback(async () => {
         const encoded = encodeRecipeForShareUrl(recipe)
         const url = `${window.location.origin}/${lang}/pipeline-builder?${SHARE_PARAM}=${encodeURIComponent(encoded)}`
         const copied = await safeClipboardWrite(url)
@@ -276,6 +301,26 @@ export function PipelineBuilderPage() {
         }
         toast.success(recipeContainsRuntimeInput(recipe) ? text("share_copied_without_runtime_input") : text("share_copied"))
     }, [lang, recipe, t.common.copy_failed, text])
+
+    const requestPrivacyPreview = React.useCallback((action: PendingPrivacyAction) => {
+        setPendingPrivacyAction(action)
+    }, [])
+
+    const cancelPrivacyPreview = React.useCallback(() => {
+        setPendingPrivacyAction(null)
+    }, [])
+
+    const confirmPrivacyPreview = React.useCallback(() => {
+        const action = pendingPrivacyAction
+        setPendingPrivacyAction(null)
+        if (action === "save") {
+            void performSaveRecipe()
+        } else if (action === "export") {
+            performExportRecipe()
+        } else if (action === "share") {
+            void performShareRecipe()
+        }
+    }, [pendingPrivacyAction, performExportRecipe, performSaveRecipe, performShareRecipe])
 
     const copyOutput = React.useCallback(async () => {
         if (!finalOutput) return
@@ -305,12 +350,17 @@ export function PipelineBuilderPage() {
         loadTemplate(PIPELINE_RECIPE_TEMPLATES[0])
     }, [loadTemplate])
 
+    const dismissOnboarding = React.useCallback(() => {
+        setOnboardingDismissed(true)
+        writeStorageString(ONBOARDING_DISMISSED_KEY, "1")
+    }, [])
+
     const actions: ToolAction[] = [
         { id: "sample", label: t.common.try_example, icon: FileInput, onClick: loadSample },
         { id: "run", label: isRunning ? text("running") : text("run_recipe"), icon: Play, onClick: () => void runCurrentRecipe(), disabled: isRunning || recipe.steps.length === 0 },
-        { id: "save", label: text("save_recipe"), icon: Save, onClick: () => void saveRecipe(), disabled: !storageAvailable },
-        { id: "export", label: text("export_recipe"), icon: Download, onClick: exportRecipe },
-        { id: "share", label: text("share_recipe"), icon: Link2, onClick: () => void shareRecipe() },
+        { id: "save", label: text("save_recipe"), icon: Save, onClick: () => requestPrivacyPreview("save"), disabled: !storageAvailable },
+        { id: "export", label: text("export_recipe"), icon: Download, onClick: () => requestPrivacyPreview("export") },
+        { id: "share", label: text("share_recipe"), icon: Link2, onClick: () => requestPrivacyPreview("share") },
         { id: "copy_output", label: t.common.copy, icon: Copy, onClick: () => void copyOutput(), disabled: !finalOutput },
     ]
 
@@ -327,9 +377,26 @@ export function PipelineBuilderPage() {
                 <ToolActionBar actions={actions} />
             </div>
 
+            <PipelineOnboarding
+                dismissed={onboardingDismissed}
+                onDismiss={dismissOnboarding}
+                onRunSample={loadSample}
+                text={text}
+            />
+
             <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-sm text-muted-foreground">
                 {text("privacy_note")}
             </div>
+
+            {pendingPrivacyAction ? (
+                <PipelinePrivacyPreview
+                    action={pendingPrivacyAction}
+                    onCancel={cancelPrivacyPreview}
+                    onConfirm={confirmPrivacyPreview}
+                    scope={RECIPE_STRUCTURE_PRIVACY_SCOPE}
+                    text={text}
+                />
+            ) : null}
 
             <div className="grid gap-4 lg:grid-cols-[340px_minmax(0,1fr)_360px]">
                 <aside className="space-y-4">
@@ -373,6 +440,7 @@ export function PipelineBuilderPage() {
                         maxSteps={recipe.settings.maxSteps}
                         onAddStep={addStep}
                         onMoveStep={moveStep}
+                        onReorderStep={reorderStep}
                         onPendingToolKeyChange={setPendingToolKey}
                         onRemoveStep={removeStep}
                         onSelectStep={setSelectedStepId}
@@ -433,7 +501,7 @@ export function PipelineBuilderPage() {
                 <PipelineStepInspector
                     fileInputRef={fileInputRef}
                     importError={importError}
-                    onExportRecipe={exportRecipe}
+                    onExportRecipe={() => requestPrivacyPreview("export")}
                     onImportRecipe={importRecipe}
                     onUpdateRecipe={updateRecipe}
                     onUpdateStep={updateStep}

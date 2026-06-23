@@ -49,6 +49,7 @@ describe("all-tools route guard", () => {
 
         expect(pageSource).toContain("TOOL_FAMILY_LABELS")
         expect(pageSource).toContain("AllToolsDiscovery")
+        expect(pageSource).toContain("AllToolsQueryRobots")
         expect(discoverySource).toContain("readRecentToolKeys")
         expect(discoverySource).toContain("clearRecentToolKeys")
         expect(discoverySource).toContain("labels.recentToolsPrivacy")

@@ -1,5 +1,5 @@
 import type { RecipeDocument } from "./recipe-types"
-import { getPipelineAdapter } from "./adapter-registry"
+import { recipeHasRuntimePersistenceRisk, sanitizeRecipeForPersistence } from "./recipe-sanitizer"
 
 export type RecipeCodecResult =
     | { ok: true; recipe: RecipeDocument }
@@ -49,43 +49,13 @@ export function decodeRecipeFromUrlParam(value: string): RecipeCodecResult {
 }
 
 export function recipeContainsRuntimeInput(recipe: RecipeDocument): boolean {
-    return recipe.steps.some((step) => step.inputMode === "constant" && typeof step.constantInput === "string" && step.constantInput.length > 0)
-}
-
-function sanitizePortableOptions(toolKey: string, options: Record<string, unknown>): Record<string, unknown> {
-    const adapter = getPipelineAdapter(toolKey)
-    if (!adapter) return {}
-
-    return Object.fromEntries(
-        adapter.publicOptionKeys
-            .filter((key) => Object.prototype.hasOwnProperty.call(options, key))
-            .map((key) => [key, options[key]]),
-    )
+    return recipeHasRuntimePersistenceRisk(recipe)
 }
 
 export function createPortableRecipe(recipe: RecipeDocument): RecipeDocument {
-    return {
-        ...recipe,
-        steps: recipe.steps.map((step) => {
-            const base = {
-                ...step,
-                options: sanitizePortableOptions(step.toolKey, step.options || {}),
-            }
-
-            if (step.inputMode === "constant") {
-                const withoutInput = { ...base }
-                delete withoutInput.constantInput
-                return {
-                    ...withoutInput,
-                    inputMode: "previous_output" as const,
-                }
-            }
-
-            return base
-        }),
-    }
+    return sanitizeRecipeForPersistence(recipe)
 }
 
-export function encodeRecipeForShareUrl(recipe: RecipeDocument): string {
-    return encodeRecipeForUrl(createPortableRecipe(recipe))
+export function encodeRecipeForShareUrl(recipe: RecipeDocument, options: { includeRuntimeInput?: boolean } = {}): string {
+    return encodeRecipeForUrl(options.includeRuntimeInput ? recipe : createPortableRecipe(recipe))
 }

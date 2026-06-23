@@ -39,11 +39,11 @@ export type ToolAction = {
 type AnalyticsAction = "tool_run" | "copy_output" | "download_output" | null
 
 const ACTION_BASE_CLASS =
-    "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
+    "inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 sm:min-h-9"
 
 const ACTION_SIZE_CLASS: Record<ActionSize, string> = {
-    sm: "h-9 px-3",
-    icon: "h-9 w-9",
+    sm: "px-3 py-2 sm:h-9 sm:py-0",
+    icon: "w-11 sm:h-9 sm:w-9",
 }
 
 const ACTION_VARIANT_CLASS: Record<ActionVariant, string> = {
@@ -121,7 +121,7 @@ export function ToolActionBar({
     )
 
     return (
-        <div className={joinClasses("flex flex-wrap items-center gap-2", className)}>
+        <div className={joinClasses("flex w-full flex-wrap items-center gap-2 sm:w-auto", className)}>
             {primaryActions.map((action) => {
                 const Icon = action.icon
                 const analyticsAction = classifyAnalyticsAction(action.id)
@@ -135,6 +135,7 @@ export function ToolActionBar({
                                 ACTION_BASE_CLASS,
                                 ACTION_SIZE_CLASS[action.size ?? "sm"],
                                 ACTION_VARIANT_CLASS[action.variant ?? "outline"],
+                                "max-w-full",
                                 action.disabled && "pointer-events-none opacity-50",
                             )}
                             aria-disabled={action.disabled || undefined}
@@ -163,6 +164,7 @@ export function ToolActionBar({
                             ACTION_BASE_CLASS,
                             ACTION_SIZE_CLASS[action.size ?? "sm"],
                             ACTION_VARIANT_CLASS[action.variant ?? "outline"],
+                            "max-w-full",
                         )}
                         onClick={() => triggerAction(action)}
                         disabled={action.disabled}
@@ -184,6 +186,7 @@ export function ToolActionBar({
                                 ACTION_BASE_CLASS,
                                 ACTION_SIZE_CLASS["sm"],
                                 ACTION_VARIANT_CLASS["outline"],
+                                "max-w-full",
                             )}
                             disabled={!handoffPayload?.trim()}
                         >

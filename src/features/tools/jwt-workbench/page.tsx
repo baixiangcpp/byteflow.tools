@@ -10,11 +10,11 @@ import {
     XCircle,
     Copy,
 } from "lucide-react"
-import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { readStorageString, writeStorageString } from "@/core/storage/tool-persistence"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import {
@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/select"
 import { ALGORITHM_STORAGE_KEY } from "./constants"
 import { decodeJsonSegment, encodeJsonSegment, safeJsonStringify, signHmac } from "./logic"
+import { JwtSecretField } from "./jwt-secret-field"
 import { SAMPLE_HEADER, SAMPLE_PAYLOAD } from "./samples"
 import type { JwtAlg } from "./types"
 
@@ -41,6 +42,8 @@ export function JwtWorkbenchPage() {
     const { t } = useLang()
     const toolT = t.tools["jwt_workbench"] as Record<string, string>
     const text = React.useCallback((key: string) => toolT[key], [toolT])
+    const revealSecretLabel = t.common.reveal_secret
+    const hideSecretLabel = t.common.hide_secret
     const notifyError = React.useCallback(async (message: string) => {
         const toast = await loadToast()
         toast.error(message)
@@ -52,6 +55,7 @@ export function JwtWorkbenchPage() {
     const [token, setToken] = React.useState("")
     const [secret, setSecret] = React.useState("")
     const [algorithm, setAlgorithm] = React.useState<JwtAlg>("HS256")
+    const [secretVisible, setSecretVisible] = React.useState(false)
     const [headerInput, setHeaderInput] = React.useState(SAMPLE_HEADER)
     const [payloadInput, setPayloadInput] = React.useState(SAMPLE_PAYLOAD)
     const [decodedHeader, setDecodedHeader] = React.useState("")
@@ -269,6 +273,8 @@ export function JwtWorkbenchPage() {
                 <ToolActionBar actions={actions} />
             </div>
 
+            <SensitiveInputWarning variant="token" />
+
             {error ? (
                 <div className="rounded-md bg-destructive/10 px-3 py-2 text-sm text-destructive">
                     {error}
@@ -328,14 +334,15 @@ export function JwtWorkbenchPage() {
 
                         <div className="space-y-2">
                             <label className="text-sm font-medium">{toolT.secret_input}</label>
-                            <Input
-                                type="password"
-                                autoComplete="off"
-                                value={secret}
-                                onChange={(event) => setSecret(event.target.value)}
+                            <JwtSecretField
+                                ariaLabel={toolT.secret_input}
+                                hideSecretLabel={hideSecretLabel}
+                                onChange={setSecret}
+                                onVisibilityChange={setSecretVisible}
                                 placeholder={toolT.secret_placeholder}
-                                className="font-mono text-sm"
-                                aria-label={toolT.secret_input}
+                                revealSecretLabel={revealSecretLabel}
+                                secretVisible={secretVisible}
+                                value={secret}
                             />
                         </div>
                     </div>
