@@ -323,7 +323,17 @@ export function GrowthIndexPage({ locale, slug }: { locale: Locale; slug: Growth
 
     return (
         <div className="mx-auto w-full max-w-6xl space-y-6">
-            <CollectionPageJsonLd lang={locale} slug={slug} title={index.title[locale]} description={index.description[locale]} />
+            <CollectionPageJsonLd
+                lang={locale}
+                slug={slug}
+                title={index.title[locale]}
+                description={index.description[locale]}
+                items={pages.map((page) => ({
+                    name: page.copy[locale].title,
+                    description: page.copy[locale].description,
+                    url: buildCanonicalUrl(locale, page.slug),
+                }))}
+            />
             <JsonLdScript data-jsonld="growth-index-breadcrumb" jsonLd={breadcrumb} />
 
             <header className="rounded-lg border border-border/70 bg-card/55 p-6 backdrop-blur-sm sm:p-7">

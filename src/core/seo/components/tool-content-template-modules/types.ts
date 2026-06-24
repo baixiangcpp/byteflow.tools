@@ -91,6 +91,11 @@ export type ToolTemplateRenderModel = {
     title: string
     content: ToolContentTemplateData
     copy: TemplateCopy
+    relatedTools: Array<{
+        slug: string
+        title: string
+        description: string
+    }>
     relatedWorkflows: Array<{
         slug: string
         title: string

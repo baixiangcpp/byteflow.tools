@@ -140,23 +140,45 @@ export function buildCollectionPageJsonLd({
     slug,
     title,
     description,
+    items = [],
 }: {
     lang: Locale
     slug: string
     title: string
     description: string
+    items?: Array<{
+        name: string
+        url: string
+        description?: string
+    }>
 }) {
     return {
         "@context": "https://schema.org",
-        "@type": "CollectionPage",
-        "@id": `${buildCanonicalUrl(lang, slug)}#collection-page`,
-        name: title,
-        description,
-        url: buildCanonicalUrl(lang, slug),
-        inLanguage: lang,
-        isPartOf: {
-            "@id": `${SITE_URL}/#website`,
-        },
+        "@graph": [
+            {
+                "@type": "CollectionPage",
+                "@id": `${buildCanonicalUrl(lang, slug)}#collection-page`,
+                name: title,
+                description,
+                url: buildCanonicalUrl(lang, slug),
+                inLanguage: lang,
+                isPartOf: {
+                    "@id": `${SITE_URL}/#website`,
+                },
+                ...(items.length > 0 ? { mainEntity: { "@id": `${buildCanonicalUrl(lang, slug)}#item-list` } } : {}),
+            },
+            ...(items.length > 0 ? [{
+                "@type": "ItemList",
+                "@id": `${buildCanonicalUrl(lang, slug)}#item-list`,
+                itemListElement: items.map((item, index) => ({
+                    "@type": "ListItem",
+                    position: index + 1,
+                    name: item.name,
+                    url: item.url,
+                    ...(item.description ? { description: item.description } : {}),
+                })),
+            }] : []),
+        ],
     }
 }
 

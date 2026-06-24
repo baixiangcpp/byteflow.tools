@@ -2,6 +2,7 @@ import * as React from "react"
 import { render } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import { getTranslation } from "@/core/i18n/translations/catalog"
+import { getToolByKey } from "@/core/registry"
 import { buildToolTemplateModel, FAQ_SCHEMA_TOOL_SLUGS, ToolContentTemplateSection } from "@/core/seo/components/tool-content-template-modules/core"
 import { EN_FALLBACK_PACK } from "@/core/seo/components/tool-content-template-modules/packs/en"
 import { ZH_CN_FALLBACK_PACK } from "@/core/seo/components/tool-content-template-modules/packs/zh-cn"
@@ -198,5 +199,29 @@ describe("tool content FAQ JSON-LD shape", () => {
         expect(container.textContent).toContain(model.copy.relatedWorkflows)
         expect(container.querySelector('a[href="/en/workflows/api-payload-cleanup"]')).not.toBeNull()
         expect(container.querySelector('a[href="/en/workflows/json-typescript-contract-review"]')).not.toBeNull()
+    })
+
+    it("renders related tool links from manifest metadata without payload URLs", () => {
+        const model = buildModelForEn("json-formatter")
+        expect(model).not.toBeNull()
+        if (!model) throw new Error("expected model to be available")
+
+        const { container } = render(
+            <ToolContentTemplateSection
+                model={model}
+                source="server"
+            />,
+        )
+
+        expect(model.relatedTools.length).toBeGreaterThanOrEqual(3)
+        expect(container.textContent).toContain(model.copy.relatedTools)
+        for (const toolKey of ["jsonpath_playground", "json_diff_viewer", "json_to_typescript", "yaml_json_converter"]) {
+            const tool = getToolByKey(toolKey)
+            expect(tool, toolKey).toBeTruthy()
+            expect(container.querySelector(`a[href="/en/${tool?.slug}"]`)).not.toBeNull()
+        }
+        expect(container.innerHTML).not.toContain("?input=")
+        expect(container.innerHTML).not.toContain("?output=")
+        expect(container.innerHTML).not.toContain("#payload=")
     })
 })

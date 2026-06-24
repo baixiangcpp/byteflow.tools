@@ -80,6 +80,13 @@ describe("JSON-LD foundation", () => {
             slug: "data-code-formats",
             title: "Data & Code Formats",
             description: "Format and convert code-oriented data formats.",
+            items: [
+                {
+                    name: "JSON Formatter",
+                    description: "Format and validate JSON.",
+                    url: "https://byteflow.tools/en/json-formatter",
+                },
+            ],
         })
         const article = buildArticleJsonLd({
             lang: "zh-CN",
@@ -98,7 +105,7 @@ describe("JSON-LD foundation", () => {
             ],
         })
 
-        expect(collectTypes(collection)).toContain("CollectionPage")
+        expect([...collectTypes(collection)]).toEqual(expect.arrayContaining(["CollectionPage", "ItemList", "ListItem"]))
         expect(collectTypes(article)).toContain("Article")
         expect([...collectTypes(howTo)]).toEqual(expect.arrayContaining(["HowTo", "HowToStep"]))
     })
@@ -110,6 +117,7 @@ describe("JSON-LD foundation", () => {
                 slug="data-code-formats"
                 title="Data & Code Formats"
                 description="Format and convert code-oriented data formats."
+                items={[{ name: "JSON Formatter", url: "https://byteflow.tools/en/json-formatter" }]}
             />,
         )
         const articleMarkup = renderToStaticMarkup(
@@ -131,7 +139,7 @@ describe("JSON-LD foundation", () => {
         )
 
         expect(collectionMarkup).toContain('data-jsonld="collection-page"')
-        expect(collectTypes(parseJsonLdFromMarkup(collectionMarkup))).toContain("CollectionPage")
+        expect([...collectTypes(parseJsonLdFromMarkup(collectionMarkup))]).toEqual(expect.arrayContaining(["CollectionPage", "ItemList"]))
         expect(articleMarkup).toContain('data-jsonld="article"')
         expect(collectTypes(parseJsonLdFromMarkup(articleMarkup))).toContain("Article")
         expect(howToMarkup).toContain('data-jsonld="how-to"')
