@@ -17,7 +17,7 @@ export function JsonErrorAlert({ details, error, text }: JsonErrorAlertProps) {
     if (!error) return null
 
     return (
-        <div role="alert" className="rounded-md bg-destructive/90 p-3 text-sm font-medium text-destructive-foreground">
+        <div id="json-formatter-error" role="alert" className="rounded-md bg-destructive/90 p-3 text-sm font-medium text-destructive-foreground">
             <p>{error}</p>
             {details?.line != null && details?.column != null ? (
                 <p className="mt-1 text-xs font-normal opacity-90">

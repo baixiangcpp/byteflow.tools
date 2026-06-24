@@ -2569,6 +2569,8 @@
       "recipe_name": "Recipe 이름",
       "recipe_description": "설명",
       "recipe_description_placeholder": "이 워크플로에 대한 선택 메모",
+      "recipe_builder": "Recipe 빌더",
+      "recipe_inspector": "Recipe 검사기",
       "recipe_settings": "Recipe 설정",
       "stop_on_error": "오류 시 중지",
       "stop_on_error_hint": "켜면 처음 실패한 단계에서 실행을 멈춥니다.",

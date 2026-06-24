@@ -399,7 +399,7 @@ export function PipelineBuilderPage() {
             ) : null}
 
             <div className="grid gap-4 lg:grid-cols-[340px_minmax(0,1fr)_360px]">
-                <aside className="space-y-4">
+                <aside className="space-y-4" aria-label={text("recipe_builder")}>
                     <section className="rounded-lg border bg-card p-4">
                         <div className="space-y-3">
                             <div>

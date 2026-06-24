@@ -37,8 +37,12 @@ function renderJsonFormatter() {
     )
 }
 
-function editorAt(index: number) {
-    return screen.getAllByRole("textbox", { name: "Code editor" })[index]
+function inputEditor() {
+    return screen.getByRole("textbox", { name: "Input" })
+}
+
+function outputEditor() {
+    return screen.getByRole("textbox", { name: "Output" })
 }
 
 function installMatchMedia(matches: boolean) {
@@ -70,15 +74,15 @@ describe("JsonFormatterPage actions", () => {
     it("clears stale output when invalid JSON replaces valid output", async () => {
         renderJsonFormatter()
 
-        fireEvent.change(editorAt(0), { target: { value: '{"ok":true}' } })
+        fireEvent.change(inputEditor(), { target: { value: '{"ok":true}' } })
         fireEvent.click(screen.getByRole("button", { name: "Format" }))
 
         await waitFor(() => {
-            expect(editorAt(1)).toHaveValue("{\n  \"ok\": true\n}")
+            expect(outputEditor()).toHaveValue("{\n  \"ok\": true\n}")
         })
         expect(screen.getAllByRole("button", { name: "Download JSON" }).some((button) => !button.hasAttribute("disabled"))).toBe(true)
 
-        fireEvent.change(editorAt(0), { target: { value: '{"ok":true,}' } })
+        fireEvent.change(inputEditor(), { target: { value: '{"ok":true,}' } })
         expect(screen.queryByDisplayValue("{\n  \"ok\": true\n}")).not.toBeInTheDocument()
         expect(screen.getAllByRole("button", { name: "Download JSON", description: "Run the tool first to create output." }).every((button) => button.hasAttribute("disabled"))).toBe(true)
 
@@ -88,10 +92,10 @@ describe("JsonFormatterPage actions", () => {
         })
         expect(screen.getByRole("button", { name: "Download JSON", description: "Fix invalid JSON before downloading." })).toBeDisabled()
 
-        fireEvent.change(editorAt(0), { target: { value: '{"ok":false}' } })
+        fireEvent.change(inputEditor(), { target: { value: '{"ok":false}' } })
         fireEvent.click(screen.getByRole("button", { name: "Format" }))
         await waitFor(() => {
-            expect(editorAt(1)).toHaveValue("{\n  \"ok\": false\n}")
+            expect(outputEditor()).toHaveValue("{\n  \"ok\": false\n}")
         })
         expect(screen.getAllByRole("button", { name: "Download JSON" }).some((button) => !button.hasAttribute("disabled"))).toBe(true)
     })
@@ -103,7 +107,7 @@ describe("JsonFormatterPage actions", () => {
         installMatchMedia(matches)
         renderJsonFormatter()
 
-        fireEvent.change(editorAt(0), { target: { value: '{"ok":true}' } })
+        fireEvent.change(inputEditor(), { target: { value: '{"ok":true}' } })
         fireEvent.click(screen.getByRole("button", { name: "Format" }))
         await waitFor(() => expect(screen.getAllByRole("button", { name: "Download JSON" }).some((button) => !button.hasAttribute("disabled"))).toBe(true))
 
@@ -113,7 +117,7 @@ describe("JsonFormatterPage actions", () => {
         expect(downloadJsonOutputMock).toHaveBeenLastCalledWith("{\n  \"ok\": true\n}", "formatted.json")
 
         fireEvent.click(screen.getByRole("button", { name: "Minify" }))
-        await waitFor(() => expect(editorAt(1)).toHaveValue("{\"ok\":true}"))
+        await waitFor(() => expect(outputEditor()).toHaveValue("{\"ok\":true}"))
 
         act(() => {
             screen.getAllByRole("button", { name: "Download JSON" }).at(-1)?.click()

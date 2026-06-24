@@ -2569,6 +2569,8 @@
       "recipe_name": "Recipe 名",
       "recipe_description": "説明",
       "recipe_description_placeholder": "このワークフローの任意メモ",
+      "recipe_builder": "Recipe ビルダー",
+      "recipe_inspector": "Recipe インスペクター",
       "recipe_settings": "Recipe 設定",
       "stop_on_error": "エラーで停止",
       "stop_on_error_hint": "有効にすると、最初に失敗したステップで実行を停止します。",

@@ -37,7 +37,7 @@ export function PipelineStepInspector({
     validation,
 }: PipelineStepInspectorProps) {
     return (
-        <aside className="space-y-4">
+        <aside className="space-y-4" aria-label={text("recipe_inspector")}>
             <section className="rounded-lg border bg-card p-4">
                 <h2 className="text-sm font-semibold">{text("recipe_settings")}</h2>
                 <div className="mt-3 space-y-3">
@@ -136,6 +136,7 @@ export function PipelineStepInspector({
                 <input
                     ref={fileInputRef}
                     type="file"
+                    aria-label={text("import_recipe")}
                     accept="application/json,.json"
                     className="hidden"
                     onChange={(event) => {

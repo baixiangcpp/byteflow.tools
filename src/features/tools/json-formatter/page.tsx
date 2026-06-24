@@ -619,7 +619,9 @@ export function JsonFormatterPage() {
                             beforeMount={(monaco) => ensureByteflowMonacoThemes(monaco)}
                             value={input}
                             onChange={(val) => handleInputChange(val || "")}
-                            options={JSON_EDITOR_OPTIONS}
+                            options={{ ...JSON_EDITOR_OPTIONS, ariaLabel: t.common.input }}
+                            aria-describedby={error ? "json-formatter-error" : undefined}
+                            aria-invalid={error ? "true" : undefined}
                         />
                     </div>
                 </div>
@@ -658,7 +660,7 @@ export function JsonFormatterPage() {
                                     theme={monacoTheme}
                                     beforeMount={(monaco) => ensureByteflowMonacoThemes(monaco)}
                                     value={output}
-                                    options={JSON_OUTPUT_EDITOR_OPTIONS}
+                                    options={{ ...JSON_OUTPUT_EDITOR_OPTIONS, ariaLabel: t.common.output }}
                                 />
                             ) : (
                                 <JsonTextOutputEmptyState hasInput={Boolean(input.trim())} text={text} />

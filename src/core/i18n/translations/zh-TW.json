@@ -2569,6 +2569,8 @@
       "recipe_name": "Recipe 名稱",
       "recipe_description": "描述",
       "recipe_description_placeholder": "此工作流程的可選備註",
+      "recipe_builder": "Recipe 建構器",
+      "recipe_inspector": "Recipe 檢查器",
       "recipe_settings": "Recipe 設定",
       "stop_on_error": "遇錯停止",
       "stop_on_error_hint": "啟用後，執行會在第一個失敗步驟停止。",

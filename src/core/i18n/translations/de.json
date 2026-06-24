@@ -2569,6 +2569,8 @@
       "recipe_name": "Rezeptname",
       "recipe_description": "Beschreibung",
       "recipe_description_placeholder": "Optionale Notiz für diesen Workflow",
+      "recipe_builder": "Rezept-Builder",
+      "recipe_inspector": "Rezept-Inspektor",
       "recipe_settings": "Rezepteinstellungen",
       "stop_on_error": "Bei Fehler stoppen",
       "stop_on_error_hint": "Wenn aktiviert, stoppt die Ausführung beim ersten fehlgeschlagenen Schritt.",

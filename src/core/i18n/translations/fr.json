@@ -2569,6 +2569,8 @@
       "recipe_name": "Nom de recette",
       "recipe_description": "Descriptif",
       "recipe_description_placeholder": "Note optionnelle pour ce workflow",
+      "recipe_builder": "Constructeur de recette",
+      "recipe_inspector": "Inspecteur de recette",
       "recipe_settings": "Paramètres de recette",
       "stop_on_error": "Arrêter en cas d’erreur",
       "stop_on_error_hint": "Si activé, l’exécution s’arrête à la première étape échouée.",

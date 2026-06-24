@@ -10,6 +10,7 @@ export type ToolEmptyStateProps = {
     description?: string
     compact?: boolean
     className?: string
+    titleAs?: "h2" | "h3" | "h4" | "p"
 }
 
 export function ToolEmptyState({
@@ -18,7 +19,10 @@ export function ToolEmptyState({
     description,
     compact = false,
     className,
+    titleAs = "p",
 }: ToolEmptyStateProps) {
+    const Title = titleAs
+
     if (compact) {
         return (
             <div className={cn("flex items-center gap-2 rounded-lg border bg-muted/30 p-3 text-xs text-muted-foreground", className)}>
@@ -36,7 +40,7 @@ export function ToolEmptyState({
                 </div>
             )}
             <div className="max-w-[240px] space-y-1">
-                <h4 className="text-sm font-semibold text-foreground">{title}</h4>
+                <Title className="text-sm font-semibold text-foreground">{title}</Title>
                 {description && <p className="text-xs text-muted-foreground leading-relaxed">{description}</p>}
             </div>
         </div>

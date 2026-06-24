@@ -339,6 +339,7 @@ export function InstagramPhotoDownloaderPage() {
                         <Textarea
                             readOnly
                             value={output}
+                            aria-label={t.common.output}
                             className="h-full min-h-[260px] w-full resize-none border-0 p-4 font-mono text-sm leading-relaxed focus-visible:ring-1 focus-visible:ring-ring/50"
                             spellCheck={false}
                         />
