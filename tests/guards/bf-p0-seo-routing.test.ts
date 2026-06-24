@@ -25,6 +25,8 @@ describe("BF P0 SEO routing policy", () => {
         const canonicalGateSource = readFileSync("scripts/gates/check-canonical.js", "utf8")
         const hreflangGateSource = readFileSync("scripts/gates/check-hreflang.js", "utf8")
 
+        expect(redirects).toContain("/en / 301")
+
         for (const locale of LOCALES) {
             expect(redirects).toContain(`/${locale}/web-api /${locale}/web-api-network 301`)
             expect(redirects).toContain(`/${locale}/design-media /${locale}/images-svg-css 301`)
@@ -37,6 +39,8 @@ describe("BF P0 SEO routing policy", () => {
 
     it("keeps legacy taxonomy URLs out of the sitemap", () => {
         const urls = sitemap().map((entry) => entry.url)
+        expect(urls).toContain(`${SITE_URL}/`)
+        expect(urls).not.toContain(`${SITE_URL}/en`)
         for (const locale of LOCALES) {
             expect(urls).not.toContain(`${SITE_URL}/${locale}/web-api`)
             expect(urls).not.toContain(`${SITE_URL}/${locale}/design-media`)

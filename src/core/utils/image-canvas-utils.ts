@@ -1,12 +1,39 @@
-import { FILE_INPUT_POLICIES, validateFileAgainstPolicy, type FileInputPolicy } from "@/core/files/file-input-policy"
+import { FILE_INPUT_POLICIES, formatPixelLimit, validateFileAgainstPolicy, type FileInputPolicy } from "@/core/files/file-input-policy"
 
-export async function fileToDataUrl(file: File, policy: FileInputPolicy = FILE_INPUT_POLICIES["image-standard"]): Promise<string> {
+export async function fileToDataUrl(
+    file: File,
+    policy: FileInputPolicy = FILE_INPUT_POLICIES["image-standard"],
+    options: { signal?: AbortSignal } = {},
+): Promise<string> {
     const validation = validateFileAgainstPolicy(file, policy)
     if (!validation.ok) throw new Error(validation.message)
     return new Promise((resolve, reject) => {
         const reader = new FileReader()
-        reader.onload = () => resolve(String(reader.result || ""))
-        reader.onerror = () => reject(new Error("Failed to read file"))
+        const cleanup = () => {
+            options.signal?.removeEventListener("abort", handleAbort)
+        }
+        const handleAbort = () => {
+            reader.abort()
+            cleanup()
+            reject(new Error("FILE_READ_ABORTED"))
+        }
+        if (options.signal?.aborted) {
+            reject(new Error("FILE_READ_ABORTED"))
+            return
+        }
+        options.signal?.addEventListener("abort", handleAbort, { once: true })
+        reader.onload = () => {
+            cleanup()
+            resolve(String(reader.result || ""))
+        }
+        reader.onerror = () => {
+            cleanup()
+            reject(new Error("Failed to read file"))
+        }
+        reader.onabort = () => {
+            cleanup()
+            reject(new Error("FILE_READ_ABORTED"))
+        }
         reader.readAsDataURL(file)
     })
 }
@@ -18,6 +45,20 @@ export async function loadImageElement(src: string): Promise<HTMLImageElement> {
         image.onerror = () => reject(new Error("Failed to load image"))
         image.src = src
     })
+}
+
+export function validateImageDimensions(width: number, height: number, policy: FileInputPolicy = FILE_INPUT_POLICIES["image-standard"]) {
+    if (!policy.maxPixels) return
+    const pixels = width * height
+    if (pixels > policy.maxPixels) {
+        throw new Error(`Image is too large for local processing. Max supported resolution is ${formatPixelLimit(policy.maxPixels)}.`)
+    }
+}
+
+export async function loadPolicyCheckedImage(src: string, policy: FileInputPolicy = FILE_INPUT_POLICIES["image-standard"]): Promise<HTMLImageElement> {
+    const image = await loadImageElement(src)
+    validateImageDimensions(image.width, image.height, policy)
+    return image
 }
 
 export async function getImageDataForAnalysis(src: string, maxSize = 240): Promise<ImageData> {

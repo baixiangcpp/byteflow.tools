@@ -69,7 +69,7 @@ describe("root x-default page guard", () => {
         expect(rootMetadata.alternates?.canonical).toBe(SITE_URL)
         expect(languages["x-default"]).toBe(SITE_URL)
         for (const locale of LOCALES) {
-            expect(languages[locale]).toBe(`${SITE_URL}/${locale}`)
+            expect(languages[locale]).toBe(locale === "en" ? SITE_URL : `${SITE_URL}/${locale}`)
         }
         expect(rootMetadata.robots).toMatchObject({ index: true, follow: true })
         expect(rootMetadata.description).toContain("No signup")

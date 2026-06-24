@@ -89,7 +89,7 @@ function expectedHreflangs(slug) {
     for (const locale of LOCALES) {
         expected.set(
             locale,
-            canonicalSlug ? `${BASE_URL}/${locale}/${canonicalSlug}` : `${BASE_URL}/${locale}`,
+            canonicalSlug ? `${BASE_URL}/${locale}/${canonicalSlug}` : locale === "en" ? BASE_URL : `${BASE_URL}/${locale}`,
         )
     }
     expected.set(

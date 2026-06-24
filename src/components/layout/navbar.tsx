@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import type { Locale } from "@/core/i18n/i18n"
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
 import { cn } from "@/core/utils/utils"
+import { buildHomepageHref } from "@/core/routing/homepage-route"
 
 export type NavbarLabels = {
     allTools: string
@@ -21,7 +22,7 @@ export function Navbar({
     lang: Locale
     labels: NavbarLabels
 }) {
-    const homeHref = `/${lang}`
+    const homeHref = buildHomepageHref(lang)
     const allToolsHref = getAllToolsHref(lang)
 
     return (

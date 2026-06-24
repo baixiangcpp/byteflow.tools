@@ -8,11 +8,14 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
+import { FileUploadStatus, type FileUploadStatusState } from "@/features/tool-shell/file-upload-status"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
-import { createDemoImageDataUrl, fileToDataUrl, loadImageElement } from "@/core/utils/image-canvas-utils"
+import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
+import { createDemoImageDataUrl, fileToDataUrl, loadPolicyCheckedImage } from "@/core/utils/image-canvas-utils"
 import { buildCssFilterString, type ImageFilterConfig } from "@/core/utils/image-edit-utils"
+import { runImageEditTask } from "@/features/tools/shared/image-edit-task"
 
-const MAX_FILE_SIZE = 12 * 1024 * 1024
+const IMAGE_FILE_POLICY = FILE_INPUT_POLICIES["image-standard"]
 
 const DEFAULT_FILTERS: ImageFilterConfig = {
     brightness: 100,
@@ -26,13 +29,19 @@ export function ImageFiltersPage() {
     const { t } = useLang()
     const toolT = t.tools["image_filters"] as Record<string, string>
     const fileInputRef = React.useRef<HTMLInputElement>(null)
-    const canvasRef = React.useRef<HTMLCanvasElement>(null)
     const demoSrcRef = React.useRef<string>("")
+    const fileAbortControllerRef = React.useRef<AbortController | null>(null)
+    const renderAbortControllerRef = React.useRef<AbortController | null>(null)
+    const renderRequestIdRef = React.useRef(0)
 
     const [imageSrc, setImageSrc] = React.useState("")
     const [fileName, setFileName] = React.useState("")
     const [filters, setFilters] = React.useState<ImageFilterConfig>(DEFAULT_FILTERS)
     const [outputDataUrl, setOutputDataUrl] = React.useState("")
+    const [uploadStatus, setUploadStatus] = React.useState<FileUploadStatusState>("idle")
+    const [uploadMessage, setUploadMessage] = React.useState("")
+    const [uploadProgress, setUploadProgress] = React.useState<number | undefined>(undefined)
+    const [isProcessing, setIsProcessing] = React.useState(false)
     const activeFileLabel = fileName || (imageSrc ? t.common.sample_image : t.common.drop_image_or_click_upload)
 
     React.useEffect(() => {
@@ -44,30 +53,41 @@ export function ImageFiltersPage() {
     React.useEffect(() => {
         const render = async () => {
             const source = imageSrc || demoSrcRef.current
-            if (!source || !canvasRef.current) return
+            if (!source) return
 
-            const image = await loadImageElement(source)
-            const canvas = canvasRef.current
-            const context = canvas.getContext("2d")
-            if (!context) return
+            const requestId = renderRequestIdRef.current + 1
+            renderRequestIdRef.current = requestId
+            renderAbortControllerRef.current?.abort()
+            const controller = new AbortController()
+            renderAbortControllerRef.current = controller
+            setIsProcessing(true)
+            setUploadStatus("processing")
+            setUploadMessage(t.common.processing_file_locally)
+            setUploadProgress(65)
 
-            const maxWidth = 980
-            const ratio = Math.min(1, maxWidth / image.width)
-            const width = Math.max(1, Math.round(image.width * ratio))
-            const height = Math.max(1, Math.round(image.height * ratio))
-
-            canvas.width = width
-            canvas.height = height
-            context.clearRect(0, 0, width, height)
-            context.filter = filterCss
-            context.drawImage(image, 0, 0, width, height)
-            context.filter = "none"
-
-            setOutputDataUrl(canvas.toDataURL("image/png"))
+            await loadPolicyCheckedImage(source, IMAGE_FILE_POLICY)
+            const result = await runImageEditTask({ operation: "filter", source, filters, maxWidth: 980 }, { signal: controller.signal })
+            if (renderRequestIdRef.current !== requestId) return
+            setOutputDataUrl(result.dataUrl)
+            setUploadStatus("complete")
+            setUploadMessage(t.common.file_ready_locally)
+            setUploadProgress(100)
+            setIsProcessing(false)
         }
 
-        void render()
-    }, [filterCss, imageSrc])
+        void render().catch((error) => {
+            if (error instanceof Error && (error.message === "FILE_READ_ABORTED" || error.message === "WORKER_ABORTED")) return
+            setOutputDataUrl("")
+            setUploadStatus("error")
+            setUploadMessage(error instanceof Error ? error.message : t.common.image_process_failed)
+            setUploadProgress(undefined)
+            setIsProcessing(false)
+        })
+
+        return () => {
+            renderAbortControllerRef.current?.abort()
+        }
+    }, [filters, imageSrc, t.common.file_ready_locally, t.common.image_process_failed, t.common.processing_file_locally])
 
     const output = React.useMemo(
         () =>
@@ -83,21 +103,46 @@ export function ImageFiltersPage() {
     )
 
     const handleFile = async (file: File) => {
-        if (!file.type.startsWith("image/")) {
-            toast.error(t.common.image_file_required)
+        const validation = validateFileAgainstPolicy(file, IMAGE_FILE_POLICY)
+        if (!validation.ok) {
+            setUploadStatus("error")
+            setUploadMessage(validation.message)
+            setUploadProgress(undefined)
+            toast.error(validation.reason === "unsupported_type" ? t.common.image_file_required : validation.message)
             return
         }
-        if (file.size > MAX_FILE_SIZE) {
-            toast.error((t.common.image_file_too_large).replace("{size}", "12MB"))
-            return
-        }
+        fileAbortControllerRef.current?.abort()
+        const controller = new AbortController()
+        fileAbortControllerRef.current = controller
+        setUploadStatus("loading")
+        setUploadMessage(t.common.loading_file_locally)
+        setUploadProgress(25)
         try {
-            const src = await fileToDataUrl(file)
+            const src = await fileToDataUrl(file, IMAGE_FILE_POLICY, { signal: controller.signal })
+            await loadPolicyCheckedImage(src, IMAGE_FILE_POLICY)
+            if (controller.signal.aborted) return
             setImageSrc(src)
             setFileName(file.name)
+            setUploadStatus("processing")
+            setUploadMessage(t.common.processing_file_locally)
+            setUploadProgress(50)
         } catch {
+            if (controller.signal.aborted) return
+            setUploadStatus("error")
+            setUploadMessage(t.common.image_file_read_failed)
+            setUploadProgress(undefined)
             toast.error(t.common.image_file_read_failed)
         }
+    }
+
+    const cancelProcessing = () => {
+        fileAbortControllerRef.current?.abort()
+        renderAbortControllerRef.current?.abort()
+        renderRequestIdRef.current += 1
+        setIsProcessing(false)
+        setUploadStatus("cancelled")
+        setUploadMessage(t.common.file_processing_cancelled)
+        setUploadProgress(undefined)
     }
 
     const handleSample = () => {
@@ -110,12 +155,18 @@ export function ImageFiltersPage() {
             grayscale: 0,
             blur: 0,
         })
+        setUploadStatus("complete")
+        setUploadMessage(t.common.file_ready_locally)
+        setUploadProgress(100)
     }
 
     const handleReset = () => {
+        cancelProcessing()
         setImageSrc("")
         setFileName("")
         setFilters(DEFAULT_FILTERS)
+        setUploadStatus("idle")
+        setUploadMessage("")
     }
 
     const handleCopy = async () => {
@@ -138,8 +189,8 @@ export function ImageFiltersPage() {
     const actions: ToolAction[] = [
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: handleSample },
         { id: "reset", label: t.common.reset, icon: Eraser, onClick: handleReset },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy() },
-        { id: "download", label: t.common.download, icon: Download, onClick: handleDownload },
+        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy(), disabled: isProcessing },
+        { id: "download", label: t.common.download, icon: Download, onClick: handleDownload, disabled: isProcessing || !outputDataUrl },
     ]
 
     return (
@@ -169,11 +220,19 @@ export function ImageFiltersPage() {
                             if (file) void handleFile(file)
                         }}
                     >
-                        <canvas ref={canvasRef} className="max-h-[300px] max-w-full rounded-lg border object-contain" />
+                        {outputDataUrl ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={outputDataUrl} alt={toolT.preview_alt} className="max-h-[300px] max-w-full rounded-lg border object-contain" />
+                        ) : (
+                            <div className="text-center text-muted-foreground">
+                                <Upload className="mx-auto mb-3 h-10 w-10 opacity-60" />
+                                <p className="text-sm font-medium">{t.common.drop_image_or_click_upload}</p>
+                            </div>
+                        )}
                         <input
                             ref={fileInputRef}
                             type="file"
-                            accept="image/*"
+                            accept={IMAGE_FILE_POLICY.accept}
                             className="hidden"
                             onChange={(event) => {
                                 const file = event.target.files?.[0]
@@ -185,6 +244,14 @@ export function ImageFiltersPage() {
                             <span>{activeFileLabel}</span>
                         </div>
                     </div>
+
+                    <FileUploadStatus
+                        policy={IMAGE_FILE_POLICY}
+                        status={uploadStatus}
+                        message={uploadMessage}
+                        progress={uploadProgress}
+                        onCancel={isProcessing || uploadStatus === "loading" ? cancelProcessing : undefined}
+                    />
 
                     <div className="rounded-lg border bg-background/60 p-3 text-xs text-muted-foreground">
                         {t.common.file}: <span className="font-medium text-foreground">{fileName || (t.common.sample_image)}</span>

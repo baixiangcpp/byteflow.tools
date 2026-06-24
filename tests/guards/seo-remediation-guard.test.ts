@@ -40,7 +40,8 @@ describe("SEO remediation guardrails", () => {
         const enEntry = sitemap().find((entry) => entry.url === "https://byteflow.tools/en")
 
         expect(rootEntry?.alternates?.languages?.["x-default"]).toBe("https://byteflow.tools")
-        expect(enEntry?.alternates?.languages?.["x-default"]).toBe("https://byteflow.tools")
+        expect(rootEntry?.alternates?.languages?.en).toBe("https://byteflow.tools")
+        expect(enEntry).toBeUndefined()
     })
 
     it("blocks handoff query URLs from crawler entry points", () => {

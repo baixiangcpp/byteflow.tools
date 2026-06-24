@@ -6,9 +6,19 @@ import { getTranslation } from "@/core/i18n/translations/catalog"
 import type { Locale } from "@/core/i18n/i18n"
 import { PipelineStepList } from "@/features/tools/pipeline-builder/pipeline-step-list"
 
+const trackPipelineTemplateOpenedMock = vi.hoisted(() => vi.fn())
+
 vi.mock("next/navigation", () => ({
     usePathname: () => "/en/pipeline-builder",
 }))
+
+vi.mock("@/core/analytics/analytics", async (importOriginal) => {
+    const actual = await importOriginal<typeof import("@/core/analytics/analytics")>()
+    return {
+        ...actual,
+        trackPipelineTemplateOpened: trackPipelineTemplateOpenedMock,
+    }
+})
 
 function installMemoryStorage() {
     const store = new Map<string, string>()
@@ -44,6 +54,7 @@ function renderWithLocale(locale: Locale, ui: React.ReactNode) {
 
 describe("phase 3 pipeline builder page", () => {
     beforeEach(() => {
+        trackPipelineTemplateOpenedMock.mockReset()
         installMemoryStorage()
     })
 
@@ -70,13 +81,29 @@ describe("phase 3 pipeline builder page", () => {
         expect(screen.getByLabelText("Initial input")).toBeInTheDocument()
         expect(screen.getByLabelText("Final output")).toBeInTheDocument()
         expect(screen.getByText("Steps")).toBeInTheDocument()
-        expect(screen.getByText("Built-in recipes")).toBeInTheDocument()
+        expect(screen.getByText("Recipe Gallery")).toBeInTheDocument()
+        expect(screen.getByLabelText("Search recipe templates")).toBeInTheDocument()
         expect(screen.getByText("API payload cleanup")).toBeInTheDocument()
         expect(screen.getByText("Security token review")).toBeInTheDocument()
         expect(screen.getByText("Log scrub before sharing")).toBeInTheDocument()
+        expect(screen.getByText("Step diagnostics")).toBeInTheDocument()
         expect(screen.getByRole("button", { name: /Run Recipe/i })).toBeInTheDocument()
         expect(screen.getAllByRole("button", { name: /Export JSON/i }).length).toBeGreaterThan(0)
         expect(screen.getByRole("button", { name: /Share URL/i })).toBeInTheDocument()
+    })
+
+    it("tracks template opens with safe template metadata only", () => {
+        renderWithEnglish(<PipelineBuilderPage />)
+
+        fireEvent.click(screen.getAllByRole("button", { name: "Use" })[0])
+
+        expect(trackPipelineTemplateOpenedMock).toHaveBeenCalledWith({
+            templateId: "api_payload_cleanup",
+            language: "en",
+            sourcePage: "pipeline_gallery",
+            action: "handoff",
+        })
+        expect(JSON.stringify(trackPipelineTemplateOpenedMock.mock.calls)).not.toContain("alice@example.com")
     })
 
     it("persists only onboarding dismissal preference data", () => {

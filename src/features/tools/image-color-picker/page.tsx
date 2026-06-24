@@ -6,11 +6,13 @@ import { toast } from "sonner"
 import { useLang } from "@/core/i18n/lang-provider"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { FileUploadStatus, type FileUploadStatusState } from "@/features/tool-shell/file-upload-status"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
-import { createDemoImageDataUrl, fileToDataUrl, loadImageElement } from "@/core/utils/image-canvas-utils"
+import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
+import { createDemoImageDataUrl, fileToDataUrl, loadPolicyCheckedImage } from "@/core/utils/image-canvas-utils"
 import { rgbToHex } from "@/core/utils/color-utils"
 
-const MAX_FILE_SIZE = 12 * 1024 * 1024
+const IMAGE_FILE_POLICY = FILE_INPUT_POLICIES["image-standard"]
 
 type PickedColor = {
     hex: string
@@ -36,10 +38,14 @@ export function ImageColorPickerPage() {
     const fileInputRef = React.useRef<HTMLInputElement>(null)
     const canvasRef = React.useRef<HTMLCanvasElement>(null)
     const demoSrcRef = React.useRef<string>("")
+    const fileAbortControllerRef = React.useRef<AbortController | null>(null)
 
     const [imageSrc, setImageSrc] = React.useState("")
     const [fileName, setFileName] = React.useState("")
     const [picked, setPicked] = React.useState<PickedColor>(DEFAULT_PICK)
+    const [uploadStatus, setUploadStatus] = React.useState<FileUploadStatusState>("idle")
+    const [uploadMessage, setUploadMessage] = React.useState("")
+    const [uploadProgress, setUploadProgress] = React.useState<number | undefined>(undefined)
 
     React.useEffect(() => {
         if (!demoSrcRef.current) demoSrcRef.current = createDemoImageDataUrl(1200, 700)
@@ -49,7 +55,7 @@ export function ImageColorPickerPage() {
         const source = imageSrc || demoSrcRef.current
         if (!source || !canvasRef.current) return
 
-        const image = await loadImageElement(source)
+        const image = await loadPolicyCheckedImage(source, IMAGE_FILE_POLICY)
         const canvas = canvasRef.current
         const context = canvas.getContext("2d")
         if (!context) return
@@ -98,33 +104,63 @@ export function ImageColorPickerPage() {
     }
 
     const handleFile = async (file: File) => {
-        if (!file.type.startsWith("image/")) {
-            toast.error(t.common.image_file_required)
+        const validation = validateFileAgainstPolicy(file, IMAGE_FILE_POLICY)
+        if (!validation.ok) {
+            setUploadStatus("error")
+            setUploadMessage(validation.message)
+            setUploadProgress(undefined)
+            toast.error(validation.reason === "unsupported_type" ? t.common.image_file_required : validation.message)
             return
         }
-        if (file.size > MAX_FILE_SIZE) {
-            toast.error((t.common.image_file_too_large).replace("{size}", "12MB"))
-            return
-        }
+        fileAbortControllerRef.current?.abort()
+        const controller = new AbortController()
+        fileAbortControllerRef.current = controller
+        setUploadStatus("loading")
+        setUploadMessage(t.common.loading_file_locally)
+        setUploadProgress(25)
         try {
-            const src = await fileToDataUrl(file)
+            const src = await fileToDataUrl(file, IMAGE_FILE_POLICY, { signal: controller.signal })
+            await loadPolicyCheckedImage(src, IMAGE_FILE_POLICY)
+            if (controller.signal.aborted) return
             setImageSrc(src)
             setFileName(file.name)
+            setUploadStatus("complete")
+            setUploadMessage(t.common.file_ready_locally)
+            setUploadProgress(100)
         } catch {
+            if (controller.signal.aborted) return
+            setUploadStatus("error")
+            setUploadMessage(t.common.image_file_read_failed)
+            setUploadProgress(undefined)
             toast.error(t.common.image_file_read_failed)
         }
     }
 
     const handleSample = () => {
+        fileAbortControllerRef.current?.abort()
         setImageSrc("")
         setFileName(t.common.sample_image)
         setPicked(DEFAULT_PICK)
+        setUploadStatus("complete")
+        setUploadMessage(t.common.file_ready_locally)
+        setUploadProgress(100)
     }
 
     const handleReset = () => {
+        fileAbortControllerRef.current?.abort()
         setImageSrc("")
         setFileName("")
         setPicked(DEFAULT_PICK)
+        setUploadStatus("idle")
+        setUploadMessage("")
+        setUploadProgress(undefined)
+    }
+
+    const cancelProcessing = () => {
+        fileAbortControllerRef.current?.abort()
+        setUploadStatus("cancelled")
+        setUploadMessage(t.common.file_processing_cancelled)
+        setUploadProgress(undefined)
     }
 
     const handleCopy = async () => {
@@ -201,7 +237,7 @@ export function ImageColorPickerPage() {
                         <input
                             ref={fileInputRef}
                             type="file"
-                            accept="image/*"
+                            accept={IMAGE_FILE_POLICY.accept}
                             className="hidden"
                             onChange={(event) => {
                                 const file = event.target.files?.[0]
@@ -215,6 +251,14 @@ export function ImageColorPickerPage() {
                             </div>
                         ) : null}
                     </div>
+
+                    <FileUploadStatus
+                        policy={IMAGE_FILE_POLICY}
+                        status={uploadStatus}
+                        message={uploadMessage}
+                        progress={uploadProgress}
+                        onCancel={uploadStatus === "loading" ? cancelProcessing : undefined}
+                    />
 
                     <div className="grid gap-3 sm:grid-cols-2">
                         <div className="rounded-lg border bg-background/60 p-3 text-xs text-muted-foreground">

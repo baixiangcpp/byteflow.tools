@@ -1,6 +1,7 @@
 import type { Locale } from "@/core/i18n/i18n"
 import { requireTranslationValue } from "@/core/i18n/i18n"
 import { MENU_GROUP_DEFS } from "@/core/registry/menu-groups"
+import { buildHomepageHref } from "@/core/routing/homepage-route"
 import { FooterContent } from "./footer-content"
 import type { TranslationSchema } from "@/core/i18n/translations/catalog"
 
@@ -45,7 +46,7 @@ export function ServerFooter({
             navigationLabel={requireTranslationValue(translations.nav.navigation, "nav.navigation")}
             pageLinks={pageLinks}
             siteDescription={translations.site.description}
-            siteHref={`/${lang}`}
+            siteHref={buildHomepageHref(lang)}
         />
     )
 }

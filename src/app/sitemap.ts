@@ -82,15 +82,17 @@ function buildCoreEntries(): MetadataRoute.Sitemap {
 
     for (const locale of LOCALES) {
         const homeLastmod = getHomeLastmod(locale, manifestFallback)
-        entries.push({
-            url: buildCanonicalUrl(locale),
-            lastModified: homeLastmod,
-            changeFrequency: "weekly",
-            priority: 1,
-            alternates: {
-                languages: buildLocalizedAlternates(),
-            },
-        })
+        if (locale !== "en") {
+            entries.push({
+                url: buildCanonicalUrl(locale),
+                lastModified: homeLastmod,
+                changeFrequency: "weekly",
+                priority: 1,
+                alternates: {
+                    languages: buildLocalizedAlternates(),
+                },
+            })
+        }
 
         for (const hub of HUB_SLUGS) {
             entries.push({

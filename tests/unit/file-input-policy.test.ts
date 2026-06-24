@@ -3,6 +3,7 @@ import {
     FILE_INPUT_POLICIES,
     filterFilesByPolicy,
     formatFilePolicyLimit,
+    formatPixelLimit,
     readArrayBufferWithPolicy,
     readTextFileWithPolicy,
     validateFileAgainstPolicy,
@@ -14,6 +15,9 @@ describe("file-input-policy", () => {
         expect(FILE_INPUT_POLICIES["csv-json"].maxBytes).toBe(1024 * 1024)
         expect(FILE_INPUT_POLICIES["base64-file"].maxBytes).toBe(10 * 1024 * 1024)
         expect(FILE_INPUT_POLICIES["hash-file"].maxBytes).toBe(50 * 1024 * 1024)
+        expect(FILE_INPUT_POLICIES["image-standard"].maxPixels).toBe(24_000_000)
+        expect(FILE_INPUT_POLICIES["image-compact"].maxPixels).toBe(16_000_000)
+        expect(formatPixelLimit(FILE_INPUT_POLICIES["scan-image"].maxPixels ?? 0)).toBe("24 MP")
         expect(FILE_INPUT_POLICIES["scan-image"].maxFiles).toBe(20)
         expect(formatFilePolicyLimit(FILE_INPUT_POLICIES["recipe-json"])).toBe("256 KB")
     })

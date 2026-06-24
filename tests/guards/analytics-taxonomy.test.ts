@@ -24,7 +24,14 @@ describe("BF-031 analytics taxonomy guard", () => {
             "download_output",
             "search_performed",
             "related_tool_click",
+            "pipeline_template_opened",
             "pwa_installed",
+        ])
+        expect(taxonomy.events.pipeline_template_opened.allowedParams).toEqual([
+            "tool_id",
+            "action_type",
+            "language",
+            "source_page",
         ])
         expect(taxonomy.events.search_performed.allowedParams).toEqual([
             "language",

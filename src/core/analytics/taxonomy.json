@@ -24,6 +24,10 @@
       "description": "A user clicked a related tool recommendation.",
       "allowedParams": ["tool_id", "related_tool_id", "language", "source_page"]
     },
+    "pipeline_template_opened": {
+      "description": "A user opened a structure-only Pipeline Builder template.",
+      "allowedParams": ["tool_id", "action_type", "language", "source_page"]
+    },
     "pwa_installed": {
       "description": "The browser reported successful PWA installation.",
       "allowedParams": ["language", "platform", "source_page"]

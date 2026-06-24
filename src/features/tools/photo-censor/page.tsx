@@ -8,74 +8,25 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
-import { createDemoImageDataUrl, fileToDataUrl, loadImageElement } from "@/core/utils/image-canvas-utils"
+import { FileUploadStatus, type FileUploadStatusState } from "@/features/tool-shell/file-upload-status"
+import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
+import { createDemoImageDataUrl, fileToDataUrl, loadPolicyCheckedImage } from "@/core/utils/image-canvas-utils"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import {
-    intensityToBlockSize,
     normalizeCensorRect,
     percentRectToPixels,
     type CensorMode,
     type CensorRectPercent,
 } from "@/features/tools/photo-censor/utils"
+import { runImageEditTask } from "@/features/tools/shared/image-edit-task"
 
-const MAX_FILE_SIZE = 12 * 1024 * 1024
+const IMAGE_FILE_POLICY = FILE_INPUT_POLICIES["image-standard"]
 
 const DEFAULT_RECT: CensorRectPercent = {
     x: 28,
     y: 28,
     width: 40,
     height: 28,
-}
-
-function applyPixelateRegion(
-    context: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    intensity: number,
-) {
-    const block = intensityToBlockSize(intensity)
-    const sampled = context.getImageData(x, y, width, height)
-    const { data } = sampled
-    const imageWidth = width
-
-    for (let by = 0; by < height; by += block) {
-        for (let bx = 0; bx < width; bx += block) {
-            const baseIndex = (by * imageWidth + bx) * 4
-            const r = data[baseIndex]
-            const g = data[baseIndex + 1]
-            const b = data[baseIndex + 2]
-            const a = data[baseIndex + 3] / 255
-            context.fillStyle = `rgba(${r}, ${g}, ${b}, ${a})`
-            context.fillRect(x + bx, y + by, block, block)
-        }
-    }
-}
-
-function applyBlurRegion(
-    context: CanvasRenderingContext2D,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    intensity: number,
-) {
-    const sampleScale = Math.max(0.04, 1 - intensity / 100)
-    const tinyWidth = Math.max(1, Math.round(width * sampleScale))
-    const tinyHeight = Math.max(1, Math.round(height * sampleScale))
-
-    const temp = document.createElement("canvas")
-    temp.width = tinyWidth
-    temp.height = tinyHeight
-    const tempContext = temp.getContext("2d")
-    if (!tempContext) return
-
-    tempContext.imageSmoothingEnabled = true
-    tempContext.drawImage(context.canvas, x, y, width, height, 0, 0, tinyWidth, tinyHeight)
-
-    context.imageSmoothingEnabled = true
-    context.drawImage(temp, 0, 0, tinyWidth, tinyHeight, x, y, width, height)
 }
 
 export function PhotoCensorPage() {
@@ -89,8 +40,10 @@ export function PhotoCensorPage() {
     const outputCensorRectPixelsLabel = toolT.output_censor_rect_pixels_label
     const outputDownloadHint = toolT.output_download_hint
     const fileInputRef = React.useRef<HTMLInputElement>(null)
-    const previewCanvasRef = React.useRef<HTMLCanvasElement>(null)
     const demoSrcRef = React.useRef<string>("")
+    const fileAbortControllerRef = React.useRef<AbortController | null>(null)
+    const renderAbortControllerRef = React.useRef<AbortController | null>(null)
+    const renderRequestIdRef = React.useRef(0)
 
     const [imageSrc, setImageSrc] = React.useState("")
     const [fileName, setFileName] = React.useState("")
@@ -98,6 +51,10 @@ export function PhotoCensorPage() {
     const [mode, setMode] = React.useState<CensorMode>("pixelate")
     const [intensity, setIntensity] = React.useState(70)
     const [outputDataUrl, setOutputDataUrl] = React.useState("")
+    const [uploadStatus, setUploadStatus] = React.useState<FileUploadStatusState>("idle")
+    const [uploadMessage, setUploadMessage] = React.useState("")
+    const [uploadProgress, setUploadProgress] = React.useState<number | undefined>(undefined)
+    const [isProcessing, setIsProcessing] = React.useState(false)
     const formatRectSummary = React.useCallback(
         (value: { x: number; y: number; width: number; height: number }) =>
             `x=${value.x}, y=${value.y}, ${t.common.width}=${value.width}, ${t.common.height}=${value.height}`,
@@ -114,54 +71,44 @@ export function PhotoCensorPage() {
             const source = imageSrc || demoSrcRef.current
             if (!source) return
 
-            const image = await loadImageElement(source)
+            const requestId = renderRequestIdRef.current + 1
+            renderRequestIdRef.current = requestId
+            renderAbortControllerRef.current?.abort()
+            const controller = new AbortController()
+            renderAbortControllerRef.current = controller
+            setIsProcessing(true)
+            setUploadStatus("processing")
+            setUploadMessage(t.common.processing_file_locally)
+            setUploadProgress(65)
+
+            const image = await loadPolicyCheckedImage(source, IMAGE_FILE_POLICY)
             const safeRect = normalizeCensorRect(rect)
             const sourceRect = percentRectToPixels(image.width, image.height, safeRect)
+            if (renderRequestIdRef.current !== requestId) return
             setRectText(formatRectSummary(sourceRect))
 
-            const outputCanvas = document.createElement("canvas")
-            outputCanvas.width = image.width
-            outputCanvas.height = image.height
-            const outputContext = outputCanvas.getContext("2d")
-            if (!outputContext) return
-            outputContext.drawImage(image, 0, 0, image.width, image.height)
-
-            if (mode === "pixelate") {
-                applyPixelateRegion(outputContext, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, intensity)
-            } else {
-                applyBlurRegion(outputContext, sourceRect.x, sourceRect.y, sourceRect.width, sourceRect.height, intensity)
-            }
-
-            setOutputDataUrl(outputCanvas.toDataURL("image/png"))
-
-            if (previewCanvasRef.current) {
-                const previewCanvas = previewCanvasRef.current
-                const maxWidth = 980
-                const ratio = Math.min(1, maxWidth / image.width)
-                const previewWidth = Math.max(1, Math.round(image.width * ratio))
-                const previewHeight = Math.max(1, Math.round(image.height * ratio))
-                previewCanvas.width = previewWidth
-                previewCanvas.height = previewHeight
-
-                const previewContext = previewCanvas.getContext("2d")
-                if (!previewContext) return
-                previewContext.clearRect(0, 0, previewWidth, previewHeight)
-                previewContext.drawImage(outputCanvas, 0, 0, previewWidth, previewHeight)
-
-                const previewRect = percentRectToPixels(previewWidth, previewHeight, safeRect)
-                previewContext.strokeStyle = "#22d3ee"
-                previewContext.lineWidth = 2
-                previewContext.strokeRect(
-                    previewRect.x + 1,
-                    previewRect.y + 1,
-                    Math.max(0, previewRect.width - 2),
-                    Math.max(0, previewRect.height - 2),
-                )
-            }
+            const result = await runImageEditTask({ operation: "censor", source, rect: safeRect, mode, intensity }, { signal: controller.signal })
+            if (renderRequestIdRef.current !== requestId) return
+            setOutputDataUrl(result.dataUrl)
+            setUploadStatus("complete")
+            setUploadMessage(t.common.file_ready_locally)
+            setUploadProgress(100)
+            setIsProcessing(false)
         }
 
-        void render()
-    }, [formatRectSummary, imageSrc, intensity, mode, rect])
+        void render().catch((error) => {
+            if (error instanceof Error && (error.message === "FILE_READ_ABORTED" || error.message === "WORKER_ABORTED")) return
+            setOutputDataUrl("")
+            setUploadStatus("error")
+            setUploadMessage(error instanceof Error ? error.message : t.common.image_process_failed)
+            setUploadProgress(undefined)
+            setIsProcessing(false)
+        })
+
+        return () => {
+            renderAbortControllerRef.current?.abort()
+        }
+    }, [formatRectSummary, imageSrc, intensity, mode, rect, t.common.file_ready_locally, t.common.image_process_failed, t.common.processing_file_locally])
 
     const output = React.useMemo(
         () =>
@@ -189,21 +136,46 @@ export function PhotoCensorPage() {
     )
 
     const handleFile = async (file: File) => {
-        if (!file.type.startsWith("image/")) {
-            toast.error(t.common.image_file_required)
+        const validation = validateFileAgainstPolicy(file, IMAGE_FILE_POLICY)
+        if (!validation.ok) {
+            setUploadStatus("error")
+            setUploadMessage(validation.message)
+            setUploadProgress(undefined)
+            toast.error(validation.reason === "unsupported_type" ? t.common.image_file_required : validation.message)
             return
         }
-        if (file.size > MAX_FILE_SIZE) {
-            toast.error((t.common.image_file_too_large).replace("{size}", "12MB"))
-            return
-        }
+        fileAbortControllerRef.current?.abort()
+        const controller = new AbortController()
+        fileAbortControllerRef.current = controller
+        setUploadStatus("loading")
+        setUploadMessage(t.common.loading_file_locally)
+        setUploadProgress(25)
         try {
-            const src = await fileToDataUrl(file)
+            const src = await fileToDataUrl(file, IMAGE_FILE_POLICY, { signal: controller.signal })
+            await loadPolicyCheckedImage(src, IMAGE_FILE_POLICY)
+            if (controller.signal.aborted) return
             setImageSrc(src)
             setFileName(file.name)
+            setUploadStatus("processing")
+            setUploadMessage(t.common.processing_file_locally)
+            setUploadProgress(50)
         } catch {
+            if (controller.signal.aborted) return
+            setUploadStatus("error")
+            setUploadMessage(t.common.image_file_read_failed)
+            setUploadProgress(undefined)
             toast.error(t.common.image_file_read_failed)
         }
+    }
+
+    const cancelProcessing = () => {
+        fileAbortControllerRef.current?.abort()
+        renderAbortControllerRef.current?.abort()
+        renderRequestIdRef.current += 1
+        setIsProcessing(false)
+        setUploadStatus("cancelled")
+        setUploadMessage(t.common.file_processing_cancelled)
+        setUploadProgress(undefined)
     }
 
     const handleSample = () => {
@@ -212,14 +184,20 @@ export function PhotoCensorPage() {
         setMode("pixelate")
         setIntensity(72)
         setRect({ x: 24, y: 26, width: 44, height: 32 })
+        setUploadStatus("complete")
+        setUploadMessage(t.common.file_ready_locally)
+        setUploadProgress(100)
     }
 
     const handleReset = () => {
+        cancelProcessing()
         setImageSrc("")
         setFileName("")
         setRect(DEFAULT_RECT)
         setMode("pixelate")
         setIntensity(70)
+        setUploadStatus("idle")
+        setUploadMessage("")
     }
 
     const handleCopy = async () => {
@@ -242,8 +220,8 @@ export function PhotoCensorPage() {
     const actions: ToolAction[] = [
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: handleSample },
         { id: "reset", label: t.common.reset, icon: Eraser, onClick: handleReset },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy() },
-        { id: "download", label: t.common.download, icon: Download, onClick: handleDownload },
+        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy(), disabled: isProcessing },
+        { id: "download", label: t.common.download, icon: Download, onClick: handleDownload, disabled: isProcessing || !outputDataUrl },
     ]
 
     return (
@@ -273,11 +251,19 @@ export function PhotoCensorPage() {
                             if (file) void handleFile(file)
                         }}
                     >
-                        <canvas ref={previewCanvasRef} className="max-h-[300px] max-w-full rounded-lg border object-contain" />
+                        {outputDataUrl ? (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={outputDataUrl} alt={toolT.preview_alt} className="max-h-[300px] max-w-full rounded-lg border object-contain" />
+                        ) : (
+                            <div className="text-center text-muted-foreground">
+                                <Upload className="mx-auto mb-3 h-10 w-10 opacity-60" />
+                                <p className="text-sm font-medium">{t.common.drop_image_or_click_upload}</p>
+                            </div>
+                        )}
                         <input
                             ref={fileInputRef}
                             type="file"
-                            accept="image/*"
+                            accept={IMAGE_FILE_POLICY.accept}
                             className="hidden"
                             onChange={(event) => {
                                 const file = event.target.files?.[0]
@@ -289,6 +275,14 @@ export function PhotoCensorPage() {
                             <span>{fileName || (t.common.drop_image_or_click_upload)}</span>
                         </div>
                     </div>
+
+                    <FileUploadStatus
+                        policy={IMAGE_FILE_POLICY}
+                        status={uploadStatus}
+                        message={uploadMessage}
+                        progress={uploadProgress}
+                        onCancel={isProcessing || uploadStatus === "loading" ? cancelProcessing : undefined}
+                    />
 
                     <div className="grid gap-3 sm:grid-cols-2">
                         <div className="space-y-1.5 rounded-lg border bg-background/60 p-3">

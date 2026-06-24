@@ -110,6 +110,11 @@ Privacy-first browser-local developer tools. Most tools process input and output
 - https://byteflow.tools/en/compare/byteflow-vs-cyberchef
 - https://byteflow.tools/en/compare/byteflow-vs-jwt-io
 - https://byteflow.tools/en/compare/md5-vs-sha256
+- https://byteflow.tools/en/compare/json-formatter-vs-json-validator
+- https://byteflow.tools/en/compare/base64-encoding-vs-encryption
+- https://byteflow.tools/en/compare/har-sanitizer-vs-log-scrubber
+- https://byteflow.tools/en/compare/curl-to-code-vs-http-request-builder
+- https://byteflow.tools/en/compare/svg-optimizer-vs-svg-converter
 - https://byteflow.tools/en/alternatives/json-formatter-privacy-first
 - https://byteflow.tools/en/how-to/decode-jwt-locally
 - https://byteflow.tools/en/fix/base64-invalid-length

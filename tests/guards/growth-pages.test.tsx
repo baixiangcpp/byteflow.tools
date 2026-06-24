@@ -72,12 +72,31 @@ describe("BF-028 growth content pages", () => {
     it("ships the required first-batch pages", () => {
         expect(GROWTH_PAGES.map((page) => page.slug).sort()).toEqual([
             "alternatives/json-formatter-privacy-first",
+            "compare/base64-encoding-vs-encryption",
             "compare/byteflow-vs-cyberchef",
             "compare/byteflow-vs-jwt-io",
+            "compare/curl-to-code-vs-http-request-builder",
+            "compare/har-sanitizer-vs-log-scrubber",
+            "compare/json-formatter-vs-json-validator",
             "compare/md5-vs-sha256",
+            "compare/svg-optimizer-vs-svg-converter",
             "fix/base64-invalid-length",
             "how-to/decode-jwt-locally",
         ])
+    })
+
+    it("ships at least eight high-quality comparison pages for BF-048", () => {
+        const comparisonPages = GROWTH_PAGES.filter((page) => page.kind === "comparison")
+        expect(comparisonPages.length).toBeGreaterThanOrEqual(8)
+
+        for (const page of comparisonPages) {
+            const copy = page.copy.en
+            expect(copy.comparisonRows?.length, page.slug).toBeGreaterThanOrEqual(3)
+            expect(copy.sections.length, page.slug).toBeGreaterThanOrEqual(2)
+            expect(copy.faq.length, page.slug).toBeGreaterThanOrEqual(2)
+            expect(page.relatedToolKeys.length, page.slug).toBeGreaterThanOrEqual(2)
+            expect(flattenCopy(copy).join(" "), page.slug).toMatch(/Use|Choose|Compare|Decide|Prefer|When/)
+        }
     })
 
     it("requires complete localized copy for every growth page and locale", () => {

@@ -231,7 +231,7 @@ describe("layout components", () => {
             />,
         )
 
-        expect(screen.getByRole("link", { name: "byteflow.tools" })).toHaveAttribute("href", "/en")
+        expect(screen.getByRole("link", { name: "byteflow.tools" })).toHaveAttribute("href", "/")
         expect(screen.getByRole("link", { name: "Pipeline Builder" })).toHaveAttribute("href", "/en/pipeline-builder")
         expect(screen.getByRole("link", { name: "All tools" })).toHaveAttribute("href", getAllToolsHref("en"))
         expect(screen.getByLabelText("Search")).toHaveAttribute("data-command-palette-trigger")
@@ -250,7 +250,7 @@ describe("layout components", () => {
     it("renders footer category and navigation links with locale prefix", () => {
         render(<Footer />)
 
-        expect(screen.getByRole("link", { name: "byteflow.tools" })).toHaveAttribute("href", "/en")
+        expect(screen.getByRole("link", { name: "byteflow.tools" })).toHaveAttribute("href", "/")
         expect(screen.getByRole("link", { name: "data_code_formats" })).toHaveAttribute("href", "/en/data-code-formats")
         expect(screen.getByRole("link", { name: "About" })).toHaveAttribute("href", "/en/about")
         expect(screen.getByRole("link", { name: "Trust Center" })).toHaveAttribute("href", "/en/trust-center")
@@ -269,7 +269,7 @@ describe("layout components", () => {
 
         fireEvent.click(screen.getByRole("button", { name: "Home" }))
 
-        await waitFor(() => expect(mocks.push).toHaveBeenCalledWith("/en"))
+        await waitFor(() => expect(mocks.push).toHaveBeenCalledWith("/"))
         await waitFor(() => expect(screen.queryByTestId("command-dialog")).not.toBeInTheDocument())
     })
 

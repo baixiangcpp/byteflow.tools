@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
+import { FileUploadStatus, type FileUploadStatusState } from "@/features/tool-shell/file-upload-status"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { FILE_INPUT_POLICIES, filterFilesByPolicy, formatFilePolicyLimit } from "@/core/files/file-input-policy"
 import {
@@ -82,6 +83,7 @@ export function ScannedPdfConverterPage() {
     const fileInputRef = React.useRef<HTMLInputElement>(null)
     const previewRequestIdRef = React.useRef(0)
     const previewAbortControllerRef = React.useRef<AbortController | null>(null)
+    const exportAbortControllerRef = React.useRef<AbortController | null>(null)
     const objectUrlsRef = React.useRef<string[]>([])
 
     const [pages, setPages] = React.useState<ScanPage[]>([])
@@ -89,6 +91,9 @@ export function ScannedPdfConverterPage() {
     const [enhance, setEnhance] = React.useState<ScanEnhanceConfig>(DEFAULT_ENHANCE)
     const [previewSrc, setPreviewSrc] = React.useState("")
     const [isBusy, setIsBusy] = React.useState(false)
+    const [uploadStatus, setUploadStatus] = React.useState<FileUploadStatusState>("idle")
+    const [uploadMessage, setUploadMessage] = React.useState("")
+    const [uploadProgress, setUploadProgress] = React.useState<number | undefined>(undefined)
 
     const selectedPage = pages[selectedIndex]
 
@@ -155,11 +160,17 @@ export function ScannedPdfConverterPage() {
 
     const handleFiles = async (files: FileList | null) => {
         if (!files || files.length === 0) return
-        const { accepted } = filterFilesByPolicy(Array.from(files), SCAN_FILE_POLICY)
+        setUploadStatus("loading")
+        setUploadMessage(t.common.loading_file_locally)
+        setUploadProgress(10)
+        const { accepted, rejected } = filterFilesByPolicy(Array.from(files), SCAN_FILE_POLICY)
+        if (rejected.length > 0) {
+            toast.error(rejected[0].message)
+        }
         const results: ScanPage[] = []
         const nextObjectUrls: string[] = []
 
-        for (const file of accepted) {
+        for (const [index, file] of accepted.entries()) {
             const loaded = await loadScanImageFile(file)
             nextObjectUrls.push(loaded.objectUrl)
             results.push({
@@ -171,9 +182,13 @@ export function ScannedPdfConverterPage() {
                 width: loaded.width,
                 height: loaded.height,
             })
+            setUploadProgress(Math.round(((index + 1) / accepted.length) * 85))
         }
 
         if (results.length === 0) {
+            setUploadStatus("error")
+            setUploadMessage(t.common.no_valid_image_files_loaded)
+            setUploadProgress(undefined)
             toast.error(t.common.no_valid_image_files_loaded)
             return
         }
@@ -182,6 +197,9 @@ export function ScannedPdfConverterPage() {
         objectUrlsRef.current = nextObjectUrls
         setPages(results)
         setSelectedIndex(0)
+        setUploadStatus("complete")
+        setUploadMessage(t.common.file_ready_locally)
+        setUploadProgress(100)
     }
 
     const handleSample = async () => {
@@ -191,14 +209,23 @@ export function ScannedPdfConverterPage() {
         setPages([first, second])
         setSelectedIndex(0)
         setEnhance(DEFAULT_ENHANCE)
+        setUploadStatus("complete")
+        setUploadMessage(t.common.file_ready_locally)
+        setUploadProgress(100)
     }
 
     const handleReset = () => {
+        previewAbortControllerRef.current?.abort()
+        exportAbortControllerRef.current?.abort()
         revokeObjectUrls()
         setPages([])
         setSelectedIndex(0)
         setEnhance(DEFAULT_ENHANCE)
         setPreviewSrc("")
+        setIsBusy(false)
+        setUploadStatus("idle")
+        setUploadMessage("")
+        setUploadProgress(undefined)
     }
 
     const handleCopy = async () => {
@@ -212,18 +239,23 @@ export function ScannedPdfConverterPage() {
 
     const handleDownload = async () => {
         if (pages.length === 0 || isBusy) return
+        const controller = new AbortController()
+        exportAbortControllerRef.current = controller
         setIsBusy(true)
+        setUploadStatus("processing")
+        setUploadMessage(t.common.processing_file_locally)
+        setUploadProgress(0)
         try {
             const { PDFDocument } = await loadPdfLib()
             const pdf = await PDFDocument.create()
 
-            for (const page of pages) {
+            for (const [index, page] of pages.entries()) {
                 const enhanced = await runScanEnhanceTask({
                     source: page.src,
                     sourceBytes: page.bytes?.slice(0),
                     sourceMime: page.mime,
                     enhance,
-                })
+                }, { signal: controller.signal })
                 const imageBytes = new Uint8Array(enhanced.bytes)
                 const jpg = await pdf.embedJpg(imageBytes)
                 const pdfPage = pdf.addPage([jpg.width, jpg.height])
@@ -233,14 +265,36 @@ export function ScannedPdfConverterPage() {
                     width: jpg.width,
                     height: jpg.height,
                 })
+                setUploadProgress(Math.round(((index + 1) / pages.length) * 90))
             }
 
             downloadPdfBytes(new Uint8Array(await pdf.save()), "scanned-document.pdf")
-        } catch {
+            setUploadStatus("complete")
+            setUploadMessage(t.common.file_ready_locally)
+            setUploadProgress(100)
+        } catch (error) {
+            if (error instanceof Error && error.message === "WORKER_ABORTED") {
+                setUploadStatus("cancelled")
+                setUploadMessage(t.common.file_processing_cancelled)
+                setUploadProgress(undefined)
+                return
+            }
+            setUploadStatus("error")
+            setUploadMessage(t.common.export_pdf_failed)
+            setUploadProgress(undefined)
             toast.error(t.common.export_pdf_failed)
         } finally {
             setIsBusy(false)
         }
+    }
+
+    const cancelProcessing = () => {
+        previewAbortControllerRef.current?.abort()
+        exportAbortControllerRef.current?.abort()
+        setIsBusy(false)
+        setUploadStatus("cancelled")
+        setUploadMessage(t.common.file_processing_cancelled)
+        setUploadProgress(undefined)
     }
 
     const actions: ToolAction[] = [
@@ -290,6 +344,14 @@ export function ScannedPdfConverterPage() {
                             <p className="mt-1 text-xs">{toolT.upload_limit_hint.replace("{count}", String(MAX_FILES)).replace("{size}", formatFilePolicyLimit(SCAN_FILE_POLICY))}</p>
                         </div>
                     </div>
+
+                    <FileUploadStatus
+                        policy={SCAN_FILE_POLICY}
+                        status={uploadStatus}
+                        message={uploadMessage}
+                        progress={uploadProgress}
+                        onCancel={isBusy || uploadStatus === "loading" || uploadStatus === "processing" ? cancelProcessing : undefined}
+                    />
 
                     <div className="grid gap-3 sm:grid-cols-2">
                         <RangeField

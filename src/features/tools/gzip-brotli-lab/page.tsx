@@ -19,12 +19,12 @@ import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import {
     formatByteSize,
     hasCompressionStreamSupport,
-    runCompressionLab,
     validateBase64Input,
     type CompressionFormatName,
     type CompressionMode,
     type CompressionResult,
 } from "@/features/tools/gzip-brotli-lab/utils"
+import { runCompressionTask } from "@/features/tools/gzip-brotli-lab/compression-task"
 
 export function GzipBrotliLabPage() {
     const { t } = useLang()
@@ -38,6 +38,7 @@ export function GzipBrotliLabPage() {
     const [result, setResult] = React.useState<CompressionResult | null>(null)
     const [error, setError] = React.useState<string | null>(null)
     const [isRunning, setIsRunning] = React.useState(false)
+    const abortControllerRef = React.useRef<AbortController | null>(null)
 
     const formatSupported = hasCompressionStreamSupport(format)
     const inputEncoding = mode === "compress" ? "text" : "base64"
@@ -55,17 +56,25 @@ export function GzipBrotliLabPage() {
 
         setIsRunning(true)
         setError(null)
+        abortControllerRef.current?.abort()
+        const controller = new AbortController()
+        abortControllerRef.current = controller
         try {
-            const nextResult = await runCompressionLab(input, {
+            const nextResult = await runCompressionTask({
+                input,
                 mode,
                 format,
                 inputEncoding,
                 outputEncoding,
-            })
+            }, { signal: controller.signal })
             setOutput(nextResult.output)
             setResult(nextResult)
             toast.success(text(mode === "compress" ? "compressed" : "decompressed"))
         } catch (runError) {
+            if (runError instanceof Error && runError.message === "WORKER_ABORTED") {
+                setError(text("operation_cancelled"))
+                return
+            }
             setOutput("")
             setResult(null)
             setError(runError instanceof Error ? runError.message : text("operation_failed"))
@@ -93,6 +102,12 @@ export function GzipBrotliLabPage() {
         setError(null)
     }, [])
 
+    const cancelRun = React.useCallback(() => {
+        abortControllerRef.current?.abort()
+        setIsRunning(false)
+        setError(text("operation_cancelled"))
+    }, [text])
+
     return (
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -109,6 +124,11 @@ export function GzipBrotliLabPage() {
                         <Play className="mr-2 h-4 w-4" />
                         {isRunning ? text("running") : text("run_action")}
                     </Button>
+                    {isRunning ? (
+                        <Button variant="outline" size="sm" onClick={cancelRun}>
+                            {t.common.cancel}
+                        </Button>
+                    ) : null}
                     <Button variant="outline" size="sm" onClick={() => void copyOutput()} disabled={!output}>
                         <Copy className="mr-2 h-4 w-4" />
                         {t.common.copy}

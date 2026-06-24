@@ -5,6 +5,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { Globe, ChevronDown } from "lucide-react"
 import { LOCALES, LOCALE_NAMES, type Locale } from "@/core/i18n/i18n"
 import { useLang } from "@/core/i18n/lang-provider"
+import { buildHomepageHref } from "@/core/routing/homepage-route"
 
 import {
     DropdownMenu,
@@ -30,11 +31,14 @@ export function LanguageSwitcher() {
             // localStorage not available, ignore
         }
 
-        const segments = pathname.split("/")
-        segments[1] = newLang
+        const segments = pathname.split("/").filter(Boolean)
+        const currentIsHome = pathname === "/" || (segments.length === 1 && LOCALES.includes(segments[0] as Locale))
+        const targetPathname = currentIsHome
+            ? buildHomepageHref(newLang)
+            : `/${[newLang, ...segments.slice(1)].join("/")}`
         const queryString = searchParams.toString()
         const hash = typeof window !== "undefined" ? window.location.hash : ""
-        const targetPath = `${segments.join("/")}${queryString ? `?${queryString}` : ""}${hash}`
+        const targetPath = `${targetPathname}${queryString ? `?${queryString}` : ""}${hash}`
         router.replace(targetPath)
     }
 

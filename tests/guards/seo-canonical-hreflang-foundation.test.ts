@@ -23,7 +23,7 @@ describe("SEO canonical and hreflang foundation", () => {
 
         const homeAlternates = buildLocalizedAlternates()
         for (const locale of LOCALES) {
-            expect(homeAlternates[locale]).toBe(`https://byteflow.tools/${locale}`)
+            expect(homeAlternates[locale]).toBe(locale === "en" ? SITE_URL : `https://byteflow.tools/${locale}`)
         }
         expect(homeAlternates["x-default"]).toBe(SITE_URL)
     })
@@ -47,8 +47,10 @@ describe("SEO canonical and hreflang foundation", () => {
         const homeLanguages = getLanguages(homeMetadata)
 
         expect(rootMetadata.alternates?.canonical).toBe(SITE_URL)
+        expect(rootLanguages.en).toBe(SITE_URL)
         expect(rootLanguages["x-default"]).toBe(SITE_URL)
         expect(homeMetadata.alternates?.canonical).toBe("https://byteflow.tools/ja")
+        expect(homeLanguages.en).toBe(SITE_URL)
         expect(homeLanguages["x-default"]).toBe(SITE_URL)
     })
 

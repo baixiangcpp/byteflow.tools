@@ -68,6 +68,9 @@ function expectedCanonicalFor(relativePath) {
     const localeRoot = relativePath.match(/^([^/]+)\.html$/)
     if (localeRoot) {
         const locale = localeRoot[1]
+        if (locale === "en") {
+            return BASE_URL
+        }
         if (LOCALES.has(locale)) {
             return `${BASE_URL}/${locale}`
         }

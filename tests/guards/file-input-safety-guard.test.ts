@@ -61,5 +61,29 @@ describe("file input safety guard", () => {
             expect(policySource).toContain("maxBytes")
             expect(policySource).toContain("description")
         }
+        for (const id of ["image-standard", "image-compact", "image-logo", "scan-image"]) {
+            expect(policySource).toMatch(new RegExp(`"${id}"[\\s\\S]*maxPixels`))
+        }
+    })
+
+    it("keeps representative image tools on shared upload policy and status UI", () => {
+        const files = [
+            "src/features/tools/image-cropper/page.tsx",
+            "src/features/tools/image-filters/page.tsx",
+            "src/features/tools/image-color-picker/page.tsx",
+            "src/features/tools/image-color-extractor/page.tsx",
+            "src/features/tools/photo-censor/page.tsx",
+            "src/features/tools/scanned-pdf-converter/page.tsx",
+            "src/features/tools/svg-optimizer/page.tsx",
+        ]
+
+        for (const file of files) {
+            const source = read(file)
+            expect(source, file).toContain("FILE_INPUT_POLICIES")
+            expect(source, file).toContain("FileUploadStatus")
+            expect(source, file).not.toContain("MAX_FILE_SIZE")
+            expect(source, file).not.toContain('accept="image/*"')
+            expect(source, file).not.toContain('file.type.startsWith("image/")')
+        }
     })
 })

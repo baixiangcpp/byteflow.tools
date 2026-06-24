@@ -11,16 +11,6 @@
       "maxHtmlBytes": 90000
     },
     {
-      "route": "/en",
-      "label": "English home",
-      "maxInitialJsGzipBytes": 255000,
-      "maxInitialJsRawBytes": 900000,
-      "maxInitialScriptFiles": 17,
-      "maxCssGzipBytes": 35000,
-      "maxCssRawBytes": 220000,
-      "maxHtmlBytes": 360000
-    },
-    {
       "route": "/en/all-tools",
       "label": "All Tools",
       "maxInitialJsGzipBytes": 285000,

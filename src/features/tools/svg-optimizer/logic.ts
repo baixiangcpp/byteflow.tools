@@ -16,6 +16,10 @@ export function optimizeSvg(svg: string): string {
     return result.trim()
 }
 
+export function sanitizeOptimizedSvg(svg: string): string {
+    return sanitizeSvg(svg)
+}
+
 export function optimizeAndSanitizeSvg(svg: string): string {
     return sanitizeSvg(optimizeSvg(svg))
 }

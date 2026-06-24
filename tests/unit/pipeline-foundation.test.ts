@@ -5,7 +5,7 @@ import { createPortableRecipe, decodeRecipeFromUrlParam, encodeRecipeForShareUrl
 import { createEmptyRecipe, runRecipe, validateRecipe } from "@/features/pipeline/executor"
 import { exportRecipeToJson, importRecipeFromJson } from "@/features/pipeline/recipe-import-export"
 import { sanitizeRecipeForPersistence } from "@/features/pipeline/recipe-sanitizer"
-import { createRecipeFromTemplate, PIPELINE_RECIPE_TEMPLATES } from "@/features/pipeline/recipe-templates"
+import { createRecipeFromTemplate, getPipelineRecipeTemplateForWorkflow, PIPELINE_RECIPE_TEMPLATES } from "@/features/pipeline/recipe-templates"
 import { createSavedRecipeRecord, isRecipeStoreAvailable } from "@/features/pipeline/recipe-store"
 import { DEFAULT_RECIPE_SETTINGS, type PipelineToolAdapter, type RecipeDocument } from "@/features/pipeline/recipe-types"
 import { getStepCompatibilityHints } from "@/features/tools/pipeline-builder/logic"
@@ -945,6 +945,10 @@ describe("pipeline foundation", () => {
             })
 
             expect(generated.initialInput).toBe(template.sampleInput)
+            expect(template.categoryKey).toMatch(/^recipe_category_/)
+            expect(template.difficultyKey).toMatch(/^recipe_difficulty_/)
+            expect(template.privacyBoundaryKey).toBe("recipe_privacy_structure_only")
+            expect(template.tags.length).toBeGreaterThan(0)
             expect(validateRecipe(generated.recipe)).toEqual({ ok: true, errors: [] })
             expect(generated.recipe.steps).toHaveLength(template.steps.length)
             expect(generated.recipe.edges).toEqual(
@@ -953,6 +957,25 @@ describe("pipeline foundation", () => {
                     toStepId: generated.recipe.steps[index + 1].id,
                 })),
             )
+        }
+    })
+
+    it("maps workflow pages to structure-only pipeline templates", () => {
+        expect(getPipelineRecipeTemplateForWorkflow("api-payload-cleanup")?.id).toBe("api_payload_cleanup")
+        expect(getPipelineRecipeTemplateForWorkflow("security-token-review")?.id).toBe("security_token_review")
+        expect(getPipelineRecipeTemplateForWorkflow("log-scrub-before-sharing")?.id).toBe("log_scrub_before_sharing")
+
+        for (const template of PIPELINE_RECIPE_TEMPLATES.filter((candidate) => "workflowSlug" in candidate)) {
+            const generated = createRecipeFromTemplate(template, {
+                recipeId: `recipe_${template.id}`,
+                now: "2026-06-10T00:00:00.000Z",
+                createStepId: (index) => `step_${index + 1}`,
+                translate: (key) => key,
+            })
+            const encoded = encodeRecipeForShareUrl(generated.recipe)
+
+            expect(encoded).not.toContain(generated.initialInput)
+            expect(recipeContainsRuntimeInput(generated.recipe)).toBe(false)
         }
     })
 

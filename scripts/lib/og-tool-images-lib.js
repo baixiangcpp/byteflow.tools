@@ -8,7 +8,10 @@ const TOOL_INDEX_PATH = path.join(ROOT_DIR, "src/generated/tool-index.json");
 const TRANSLATIONS_DIR = path.join(ROOT_DIR, "src/core/i18n/translations");
 const OUTPUT_ROOT = path.join(ROOT_DIR, "public/og");
 const TOOL_OUTPUT_ROOT = path.join(OUTPUT_ROOT, "tools");
+const PAGE_OUTPUT_ROOT = path.join(OUTPUT_ROOT, "pages");
 const DEFAULT_OUTPUT_ROOT = path.join(OUTPUT_ROOT, "default");
+const ROUTE_GROUPS_PATH = path.join(ROOT_DIR, "src/lib/sitemap-route-groups.json");
+const GROWTH_PAGES_SOURCE_PATH = path.join(ROOT_DIR, "src/core/growth/growth-pages.ts");
 
 export const OG_IMAGE_LOCALES = ["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr"];
 export const OG_IMAGE_WIDTH = 1200;
@@ -53,6 +56,79 @@ const CATEGORY_LABEL_KEY = {
     "network-web": "network_web",
 };
 
+const PAGE_CATEGORY_COPY = {
+    en: {
+        hub: "Tool hub",
+        workflow: "Workflow",
+        comparison: "Comparison",
+        alternative: "Alternative",
+        howTo: "How-to",
+        fix: "Fix guide",
+        guide: "Developer guide",
+        static: "byteflow.tools",
+    },
+    "zh-CN": {
+        hub: "工具导航",
+        workflow: "工作流",
+        comparison: "对比",
+        alternative: "替代方案",
+        howTo: "操作指南",
+        fix: "修复指南",
+        guide: "开发指南",
+        static: "byteflow.tools",
+    },
+    "zh-TW": {
+        hub: "工具導航",
+        workflow: "工作流程",
+        comparison: "比較",
+        alternative: "替代方案",
+        howTo: "操作指南",
+        fix: "修復指南",
+        guide: "開發指南",
+        static: "byteflow.tools",
+    },
+    ja: {
+        hub: "ツールハブ",
+        workflow: "ワークフロー",
+        comparison: "比較",
+        alternative: "代替案",
+        howTo: "手順ガイド",
+        fix: "修正ガイド",
+        guide: "開発ガイド",
+        static: "byteflow.tools",
+    },
+    ko: {
+        hub: "도구 허브",
+        workflow: "워크플로",
+        comparison: "비교",
+        alternative: "대안",
+        howTo: "방법 가이드",
+        fix: "해결 가이드",
+        guide: "개발 가이드",
+        static: "byteflow.tools",
+    },
+    de: {
+        hub: "Tool-Hub",
+        workflow: "Workflow",
+        comparison: "Vergleich",
+        alternative: "Alternative",
+        howTo: "Anleitung",
+        fix: "Fehlerbehebung",
+        guide: "Entwicklerleitfaden",
+        static: "byteflow.tools",
+    },
+    fr: {
+        hub: "Hub d'outils",
+        workflow: "Workflow",
+        comparison: "Comparatif",
+        alternative: "Alternative",
+        howTo: "Guide pratique",
+        fix: "Correction",
+        guide: "Guide développeur",
+        static: "byteflow.tools",
+    },
+};
+
 function readJson(filePath) {
     return JSON.parse(fs.readFileSync(filePath, "utf8"));
 }
@@ -77,6 +153,95 @@ function loadToolIndex() {
 
 function loadTranslations(locale) {
     return readJson(path.join(TRANSLATIONS_DIR, `${locale}.json`));
+}
+
+function loadRouteGroups() {
+    return readJson(ROUTE_GROUPS_PATH);
+}
+
+function slugTitle(slug) {
+    const lastSegment = slug.split("/").slice(-1)[0];
+    return lastSegment
+        .split("-")
+        .filter(Boolean)
+        .map((part) => part.length <= 3 ? part.toUpperCase() : `${part[0].toUpperCase()}${part.slice(1)}`)
+        .join(" ");
+}
+
+function staticPageCopy(locale, slug) {
+    const translation = loadTranslations(locale);
+    const pages = translation.pages ?? {};
+    const map = {
+        "all-tools": { title: translation.site?.root_cta_browse ?? "All tools", description: translation.site?.root_popular_subtitle ?? translation.site?.description },
+        about: { title: pages.about_title, description: pages.about_intro },
+        pricing: { title: pages.pricing_title, description: pages.pricing_intro },
+        contact: { title: pages.contact_title, description: pages.contact_intro },
+        privacy: { title: pages.privacy_title, description: pages.privacy_no_collection_desc },
+        "trust-center": { title: pages.trust_center_title, description: pages.trust_center_intro },
+        roadmap: { title: pages.roadmap_title, description: pages.roadmap_intro },
+        changelog: { title: pages.changelog_title, description: pages.changelog_intro },
+        "self-hosting": { title: pages.self_hosting_title, description: pages.self_hosting_intro },
+        "distribution-research": { title: pages.distribution_research_title, description: pages.distribution_research_intro },
+        terms: { title: pages.terms_title, description: pages.terms_use_desc },
+        "install-app": { title: pages.install_title ?? "Install byteflow.tools", description: pages.install_intro ?? translation.site?.description },
+    };
+    return map[slug] ?? null;
+}
+
+function pageCategory(locale, slug, hubSlugs) {
+    const copy = PAGE_CATEGORY_COPY[locale];
+    if (hubSlugs.has(slug)) return copy.hub;
+    if (slug.startsWith("workflows/")) return copy.workflow;
+    if (slug.startsWith("compare/") || slug === "compare") return copy.comparison;
+    if (slug.startsWith("alternatives/") || slug === "alternatives") return copy.alternative;
+    if (slug.startsWith("how-to/") || slug === "how-to") return copy.howTo;
+    if (slug.startsWith("fix/") || slug === "fix") return copy.fix;
+    if (staticPageCopy(locale, slug)) return copy.static;
+    return copy.guide;
+}
+
+function parsePageCopyFunctionNames() {
+    const source = fs.readFileSync(GROWTH_PAGES_SOURCE_PATH, "utf8");
+    const names = new Map();
+    for (const match of source.matchAll(/slug:\s*"([^"]+)"[\s\S]*?en:\s*([A-Za-z0-9_]+)\(/g)) {
+        names.set(match[1], match[2]);
+    }
+    return names;
+}
+
+function getGrowthPageCopy(locale, slug) {
+    if (locale !== "en") return null;
+    const functionNames = parsePageCopyFunctionNames();
+    const functionName = functionNames.get(slug);
+    if (!functionName) return null;
+    const source = fs.readFileSync(GROWTH_PAGES_SOURCE_PATH, "utf8");
+    const start = source.indexOf(`function ${functionName}`);
+    if (start < 0) return null;
+    const next = source.indexOf("\nfunction ", start + 1);
+    const block = source.slice(start, next > start ? next : undefined);
+    const title = block.match(/title:\s*"([^"]+)"/)?.[1];
+    const description = block.match(/description:\s*"([^"]+)"/)?.[1];
+    return title && description ? { title, description } : null;
+}
+
+function getPageCardData(locale, slug, hubSlugs) {
+    const translation = loadTranslations(locale);
+    const navTranslation = translation.nav ?? {};
+    const defaultCopy = DEFAULT_CARD_COPY[locale];
+    const staticCopy = staticPageCopy(locale, slug);
+    const growthCopy = getGrowthPageCopy(locale, slug);
+    const navKey = slug.replaceAll("-", "_");
+    const title = staticCopy?.title ?? growthCopy?.title ?? navTranslation[navKey] ?? slugTitle(slug);
+    const description = staticCopy?.description ?? growthCopy?.description ?? translation.site?.description ?? defaultCopy.tagline;
+
+    return {
+        locale,
+        slug,
+        title: clampText(title, 72),
+        description: clampText(description, 180),
+        category: pageCategory(locale, slug, hubSlugs),
+        tagline: defaultCopy.tagline,
+    };
 }
 
 function getToolCardData(locale, tool) {
@@ -133,6 +298,14 @@ export function getDefaultOgImageUrl(locale) {
     return `https://byteflow.tools/og/default/${locale}.jpg`;
 }
 
+export function getPageOgImagePath(locale, slug) {
+    return path.join(PAGE_OUTPUT_ROOT, locale, `${slug}.jpg`);
+}
+
+export function getPageOgImageUrl(locale, slug) {
+    return `https://byteflow.tools/og/pages/${locale}/${slug}.jpg`;
+}
+
 export function getDefaultOgTargets() {
     return OG_IMAGE_LOCALES.map((locale) => ({
         locale,
@@ -153,10 +326,28 @@ export function getAllToolOgTargets() {
     );
 }
 
+export function getAllPageOgTargets() {
+    const routeGroups = loadRouteGroups();
+    const hubSlugs = new Set(routeGroups.hubSlugs);
+    const pageSlugs = [...new Set([...routeGroups.hubSlugs, ...routeGroups.staticSlugs])]
+        .filter((slug) => slug !== "about" && slug !== "pricing" && slug !== "terms")
+        .sort((a, b) => a.localeCompare(b));
+
+    return pageSlugs.flatMap((slug) =>
+        OG_IMAGE_LOCALES.map((locale) => ({
+            locale,
+            slug,
+            outputPath: getPageOgImagePath(locale, slug),
+            card: getPageCardData(locale, slug, hubSlugs),
+        }))
+    );
+}
+
 export function getAllOgTargets() {
     return [
         ...getDefaultOgTargets(),
         ...getAllToolOgTargets(),
+        ...getAllPageOgTargets(),
     ];
 }
 
@@ -375,5 +566,6 @@ export function ensureOgDirectories() {
     fs.mkdirSync(DEFAULT_OUTPUT_ROOT, { recursive: true });
     for (const locale of OG_IMAGE_LOCALES) {
         fs.mkdirSync(path.join(TOOL_OUTPUT_ROOT, locale), { recursive: true });
+        fs.mkdirSync(path.join(PAGE_OUTPUT_ROOT, locale), { recursive: true });
     }
 }
