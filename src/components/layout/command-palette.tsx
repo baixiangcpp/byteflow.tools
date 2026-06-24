@@ -16,7 +16,6 @@ import {
 } from "@/components/ui/command"
 
 import { toolGroups } from "./tool-groups"
-import { DialogTitle } from "@/components/ui/dialog"
 import { useLang } from "@/core/i18n/lang-provider"
 import { getCommandSearchToolByKey } from "@/generated/command-search-index"
 import { readFavoriteToolKeys, readRecentToolKeys, TOOL_DISCOVERY_UPDATED_EVENT } from "@/core/storage/tool-discovery-state"
@@ -392,7 +391,6 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
                 })
             }}
         >
-            <DialogTitle className="sr-only">{navigationLabel}</DialogTitle>
             <CommandInput 
                 aria-label={searchLabel}
                 placeholder={searchLabel} 
@@ -411,7 +409,7 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
                                 <button
                                     key={`empty-${item.toolKey}`}
                                     type="button"
-                                    className="rounded-md border border-border/75 px-2 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+                                    className="rounded-md border border-border/75 px-2 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
                                     onClick={() => runCommand(() => router.push(item.href))}
                                 >
                                     {item.title}
@@ -419,7 +417,7 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
                             ))}
                             <button
                                 type="button"
-                                className="rounded-md border border-border/75 px-2 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+                                className="rounded-md border border-border/75 px-2 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
                                 onClick={() => runCommand(() => router.push(`/${lang}/contact`))}
                             >
                                 {requestToolLabel}

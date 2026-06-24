@@ -90,6 +90,7 @@
     "run": "執行",
     "apply": "套用",
     "minify": "壓縮",
+    "tool_actions": "工具操作",
     "copied": "已複製到剪貼簿",
     "copied_desc": "結果已複製。",
     "copy_failed": "複製失敗，請手動複製。",

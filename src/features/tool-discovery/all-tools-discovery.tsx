@@ -156,6 +156,14 @@ const FILTER_QUERY_KEYS = {
     useCase: "use",
     tag: "tag",
 } as const
+const MOBILE_FILTER_FOCUSABLE_SELECTOR = [
+    "a[href]",
+    "button:not([disabled])",
+    "input:not([disabled])",
+    "select:not([disabled])",
+    "textarea:not([disabled])",
+    "[tabindex]:not([tabindex='-1'])",
+].join(",")
 
 function sortCapabilitiesForDisplay(capabilities: string[]): string[] {
     return [...capabilities].sort((left, right) => {
@@ -288,7 +296,7 @@ function FilterButton({
         <button
             type="button"
             className={cn(
-                "min-h-11 min-w-11 rounded-md border px-2.5 py-1 text-left text-xs font-medium transition-colors",
+                "min-h-11 min-w-11 rounded-md border px-2.5 py-1 text-left text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45",
                 active
                     ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-background text-muted-foreground hover:border-primary/40 hover:text-foreground",
@@ -397,6 +405,9 @@ export function AllToolsDiscovery({
     const [personalizationReady, setPersonalizationReady] = React.useState(false)
     const [urlFiltersLoaded, setUrlFiltersLoaded] = React.useState(false)
     const [showMobileFilters, setShowMobileFilters] = React.useState(false)
+    const mobileFilterDialogRef = React.useRef<HTMLDivElement>(null)
+    const mobileFilterTriggerRef = React.useRef<HTMLButtonElement>(null)
+    const mobileFilterPreviousFocusRef = React.useRef<HTMLElement | null>(null)
 
     const categoryOptions = React.useMemo(
         () => groups.map((group) => ({ id: group.key, label: group.title })),
@@ -444,6 +455,65 @@ export function AllToolsDiscovery({
         const nextUrl = `${window.location.pathname}${queryString ? `?${queryString}` : ""}${window.location.hash}`
         window.history.replaceState(null, "", nextUrl)
     }, [selectedCategories, selectedExecutionModes, selectedInputTypes, selectedTags, selectedUseCases, urlFiltersLoaded])
+
+    React.useEffect(() => {
+        if (!showMobileFilters || typeof document === "undefined") return
+        mobileFilterPreviousFocusRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+        const fallbackFocusTarget = mobileFilterTriggerRef.current
+
+        const getFocusable = () => {
+            const dialog = mobileFilterDialogRef.current
+            if (!dialog) return []
+            return Array.from(dialog.querySelectorAll<HTMLElement>(MOBILE_FILTER_FOCUSABLE_SELECTOR))
+                .filter((element) => !element.closest("[hidden], [aria-hidden='true']"))
+        }
+
+        const focusInitialControl = () => {
+            const dialog = mobileFilterDialogRef.current
+            const firstFocusable = getFocusable()[0]
+            if (firstFocusable) {
+                firstFocusable.focus()
+            } else {
+                dialog?.focus()
+            }
+        }
+
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === "Escape") {
+                event.preventDefault()
+                setShowMobileFilters(false)
+                return
+            }
+            if (event.key !== "Tab") return
+
+            const focusable = getFocusable()
+            if (focusable.length === 0) {
+                event.preventDefault()
+                mobileFilterDialogRef.current?.focus()
+                return
+            }
+
+            const first = focusable[0]
+            const last = focusable[focusable.length - 1]
+            if (event.shiftKey && document.activeElement === first) {
+                event.preventDefault()
+                last.focus()
+            } else if (!event.shiftKey && document.activeElement === last) {
+                event.preventDefault()
+                first.focus()
+            }
+        }
+
+        window.setTimeout(focusInitialControl, 0)
+        document.addEventListener("keydown", handleKeyDown)
+        return () => {
+            document.removeEventListener("keydown", handleKeyDown)
+            const focusTarget = mobileFilterPreviousFocusRef.current ?? fallbackFocusTarget
+            if (focusTarget?.isConnected) {
+                window.setTimeout(() => focusTarget.focus(), 0)
+            }
+        }
+    }, [showMobileFilters])
 
     const toolByKey = React.useMemo(() => {
         const map = new Map<string, DiscoveryTool>()
@@ -707,7 +777,7 @@ export function AllToolsDiscovery({
                             <Link
                                 key={tool.key}
                                 href={`/${locale}/${tool.slug}`}
-                                className="inline-flex min-h-10 items-center rounded-md border border-border bg-background px-2 py-1 text-sm text-foreground hover:border-primary/40"
+                                className="inline-flex min-h-10 items-center rounded-md border border-border bg-background px-2 py-1 text-sm text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
                             >
                                 {tool.title}
                             </Link>
@@ -738,7 +808,7 @@ export function AllToolsDiscovery({
                             <Link
                                 key={tool.key}
                                 href={`/${locale}/${tool.slug}`}
-                                className="inline-flex min-h-10 items-center rounded-md border border-border bg-background px-2 py-1 text-sm text-foreground hover:border-primary/40"
+                                className="inline-flex min-h-10 items-center rounded-md border border-border bg-background px-2 py-1 text-sm text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
                             >
                                 {tool.title}
                             </Link>
@@ -763,6 +833,8 @@ export function AllToolsDiscovery({
                             placeholder={labels.searchPlaceholder}
                             className="min-h-11 pl-9"
                             aria-label={labels.filterSearch}
+                            aria-controls="all-tools-results"
+                            aria-describedby="all-tools-result-status"
                         />
                     </div>
                     <Button type="button" variant="outline" className="hidden lg:inline-flex" onClick={clearFilters} disabled={!hasFilters}>
@@ -772,11 +844,13 @@ export function AllToolsDiscovery({
                 </div>
 
                 <button
+                    ref={mobileFilterTriggerRef}
                     type="button"
-                    className="mt-4 flex min-h-11 w-full items-center justify-between gap-3 rounded-lg border border-border/70 bg-background/45 px-3 text-sm font-medium lg:hidden"
+                    className="mt-4 flex min-h-11 w-full items-center justify-between gap-3 rounded-lg border border-border/70 bg-background/45 px-3 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45 lg:hidden"
                     onClick={() => setShowMobileFilters(true)}
                     aria-expanded={showMobileFilters}
                     aria-controls="all-tools-filter-drawer"
+                    aria-describedby="all-tools-result-status"
                 >
                         <span className="inline-flex items-center gap-2">
                             <Filter className="h-4 w-4" />
@@ -801,7 +875,7 @@ export function AllToolsDiscovery({
 
                 <div className="mt-4 border-t border-border/70 pt-3">
                     <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-muted-foreground">
-                        <span>
+                        <span id="all-tools-result-status" role="status" aria-live="polite" aria-atomic="true">
                             {resultCount} {labels.toolsLabel}
                         </span>
                     </div>
@@ -813,7 +887,7 @@ export function AllToolsDiscovery({
                                 <button
                                     key={filter.id}
                                     type="button"
-                                    className="inline-flex min-h-11 min-w-11 items-center gap-1 rounded-md border border-primary/30 bg-primary/10 px-2 text-xs font-medium text-primary transition-colors hover:border-primary/55"
+                                    className="inline-flex min-h-11 min-w-11 items-center gap-1 rounded-md border border-primary/30 bg-primary/10 px-2 text-xs font-medium text-primary transition-colors hover:border-primary/55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
                                     onClick={filter.onRemove}
                                     aria-label={`${labels.removeFilter}: ${filter.label}`}
                                 >
@@ -827,24 +901,29 @@ export function AllToolsDiscovery({
             </section>
 
             {showMobileFilters ? (
-                <div className="fixed inset-0 z-[70] lg:hidden" role="dialog" aria-modal="true" aria-label={labels.showFilters}>
-                    <button
-                        type="button"
+                <div className="fixed inset-0 z-[70] lg:hidden">
+                    <div
                         className="absolute inset-0 bg-background/80 backdrop-blur-sm"
-                        aria-label={labels.closeFilters}
+                        aria-hidden="true"
                         onClick={() => setShowMobileFilters(false)}
                     />
                     <div
+                        ref={mobileFilterDialogRef}
                         id="all-tools-filter-drawer"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-labelledby="all-tools-filter-title"
+                        aria-describedby="all-tools-filter-summary"
+                        tabIndex={-1}
                         className="absolute inset-x-0 bottom-0 max-h-[86dvh] overflow-y-auto rounded-t-2xl border border-border/70 bg-background p-4 shadow-2xl"
                     >
                         <div className="mb-4 flex items-center justify-between gap-3">
                             <div>
-                                <h2 className="inline-flex items-center gap-2 text-base font-semibold">
+                                <h2 id="all-tools-filter-title" className="inline-flex items-center gap-2 text-base font-semibold">
                                     <Filter className="h-4 w-4" />
                                     {labels.showFilters}
                                 </h2>
-                                <p className="mt-1 text-xs text-muted-foreground">
+                                <p id="all-tools-filter-summary" className="mt-1 text-xs text-muted-foreground">
                                     {resultCount} {labels.toolsLabel} - {activeFilters.length} {labels.activeFilters}
                                 </p>
                             </div>
@@ -899,7 +978,7 @@ export function AllToolsDiscovery({
             ) : null}
 
             {filteredGroups.length > 0 ? (
-                <div className="grid gap-5">
+                <div id="all-tools-results" className="grid gap-5">
                     {filteredGroups.map((group) => (
                         <section key={group.key} className="min-w-0 rounded-xl border border-border/70 bg-card/55 p-4 backdrop-blur-sm sm:p-5">
                             <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
@@ -922,18 +1001,21 @@ export function AllToolsDiscovery({
                                 {group.tools.map((tool) => {
                                     const isFavorite = favoriteToolKeySet.has(tool.key)
                                     return (
-                                    <Link
+                                    <article
                                         key={tool.key}
-                                        href={`/${locale}/${tool.slug}`}
-                                    className="group flex min-h-36 min-w-0 flex-col rounded-lg border border-border/70 bg-background/45 p-4 transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-lg hover:shadow-black/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45 dark:hover:shadow-black/35"
+                                        className="group flex min-h-36 min-w-0 flex-col rounded-lg border border-border/70 bg-background/45 p-4 transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-lg hover:shadow-black/10 dark:hover:shadow-black/35"
                                     >
                                         <div className="flex items-start justify-between gap-3">
-                                            <div className="min-w-0 flex-1">
-                                        <ToolCardBadges capabilityLabels={capabilityLabels} tool={tool} />
-                                        <h3 className="break-words text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
-                                            {tool.title}
-                                        </h3>
-                                            </div>
+                                            <Link
+                                                href={`/${locale}/${tool.slug}`}
+                                                aria-label={tool.title}
+                                                className="min-w-0 flex-1 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
+                                            >
+                                                <ToolCardBadges capabilityLabels={capabilityLabels} tool={tool} />
+                                                <h3 className="break-words text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
+                                                    {tool.title}
+                                                </h3>
+                                            </Link>
                                             {personalizationReady ? (
                                                 <FavoriteButton
                                                     active={isFavorite}
@@ -946,14 +1028,14 @@ export function AllToolsDiscovery({
                                         <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
                                             {tool.description}
                                         </p>
-                                    </Link>
+                                    </article>
                                 )})}
                             </div>
                         </section>
                     ))}
                 </div>
             ) : (
-                <section className="rounded-xl border border-dashed border-border/80 bg-card/35 p-8 text-center">
+                <section id="all-tools-results" className="rounded-xl border border-dashed border-border/80 bg-card/35 p-8 text-center">
                     <h2 className="text-lg font-semibold">{labels.noResults}</h2>
                     <p className="mx-auto mt-2 max-w-xl text-sm text-muted-foreground">{labels.noResultsSuggestion}</p>
                     <div className="mt-4 flex flex-wrap justify-center gap-2">
@@ -964,7 +1046,7 @@ export function AllToolsDiscovery({
                             <Link
                                 key={workflow.id}
                                 href={workflow.href}
-                                className="inline-flex min-h-11 items-center rounded-md border border-border bg-background px-3 text-sm font-medium text-foreground transition-colors hover:border-primary/40"
+                                className="inline-flex min-h-11 items-center rounded-md border border-border bg-background px-3 text-sm font-medium text-foreground transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
                             >
                                 {workflow.title}
                             </Link>

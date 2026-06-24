@@ -167,8 +167,15 @@ export function ToolActionBar({
         [lang, toolKey],
     )
 
+    const handoffDisabledReason = !handoffPayload?.trim() ? t.common.action_disabled_no_output : undefined
+    const handoffDisabledDescriptionId = handoffDisabledReason ? "tool-action-send-to-disabled-reason" : undefined
+
     return (
-        <div className={joinClasses("flex w-full flex-wrap items-center gap-2 sm:w-auto", className)}>
+        <div
+            className={joinClasses("flex w-full flex-wrap items-center gap-2 sm:w-auto", className)}
+            role="toolbar"
+            aria-label={t.common.tool_actions}
+        >
             {primaryActions.map((action) => {
                 const Icon = action.icon
                 const analyticsAction = classifyAnalyticsAction(action.id)
@@ -210,7 +217,7 @@ export function ToolActionBar({
                                 {action.label}
                             </Link>
                             {disabledReason ? (
-                                <span id={disabledDescriptionId} className="sr-only">: {disabledReason}</span>
+                                <span id={disabledDescriptionId} className="sr-only">{disabledReason}</span>
                             ) : null}
                         </React.Fragment>
                     )
@@ -237,64 +244,69 @@ export function ToolActionBar({
                             {action.label}
                         </button>
                         {disabledReason ? (
-                            <span id={disabledDescriptionId} className="sr-only">: {disabledReason}</span>
+                            <span id={disabledDescriptionId} className="sr-only">{disabledReason}</span>
                         ) : null}
                     </React.Fragment>
                 )
             })}
 
             {handoffActions.length > 0 && (
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                        <button
-                            type="button"
-                            className={joinClasses(
-                                ACTION_BASE_CLASS,
-                                ACTION_SIZE_CLASS["sm"],
-                                ACTION_VARIANT_CLASS["outline"],
-                                "max-w-full",
-                            )}
-                            disabled={!handoffPayload?.trim()}
-                            title={!handoffPayload?.trim() ? t.common.action_disabled_no_output : undefined}
-                            aria-label={!handoffPayload?.trim() ? `${t.common.send_to || "Send to..."}: ${t.common.action_disabled_no_output}` : undefined}
-                        >
-                            <Share2 className="h-4 w-4" />
-                            {t.common.send_to || "Send to..."}
-                            <ChevronDown className="h-3 w-3 opacity-50" />
-                        </button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-56">
-                        <DropdownMenuLabel>{t.common.recommended_tools || "Recommended Tools"}</DropdownMenuLabel>
-                        <DropdownMenuSeparator />
-                        {handoffActions.map((action) => {
-                            const analyticsAction = classifyAnalyticsAction(action.id)
-                            return (
-                                <DropdownMenuItem key={action.id} asChild disabled={action.disabled}>
-                                    <Link
-                                        href={action.href!}
-                                        onClick={(e) => {
-                                            if (action.disabled) {
-                                                e.preventDefault()
-                                                return
-                                            }
-                                            triggerAction(action)
-                                        }}
-                                        className={joinClasses(
-                                            "flex w-full items-center gap-2 cursor-pointer",
-                                            action.disabled && "opacity-50 pointer-events-none",
-                                        )}
-                                        aria-disabled={action.disabled || undefined}
-                                        data-analytics-action={analyticsAction || undefined}
-                                        data-analytics-id={action.id}
-                                    >
-                                        {action.icon && <action.icon className="h-4 w-4 opacity-70" />}
-                                        <span>{action.label}</span>
-                                    </Link>
-                                </DropdownMenuItem>
-                            )
-                        })}
-                    </DropdownMenuContent>
-                </DropdownMenu>
+                <React.Fragment>
+                    <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                            <button
+                                type="button"
+                                className={joinClasses(
+                                    ACTION_BASE_CLASS,
+                                    ACTION_SIZE_CLASS["sm"],
+                                    ACTION_VARIANT_CLASS["outline"],
+                                    "max-w-full",
+                                )}
+                                disabled={Boolean(handoffDisabledReason)}
+                                title={handoffDisabledReason}
+                                aria-describedby={handoffDisabledDescriptionId}
+                            >
+                                <Share2 className="h-4 w-4" />
+                                {t.common.send_to || "Send to..."}
+                                <ChevronDown className="h-3 w-3 opacity-50" />
+                            </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end" className="w-56">
+                            <DropdownMenuLabel>{t.common.recommended_tools || "Recommended Tools"}</DropdownMenuLabel>
+                            <DropdownMenuSeparator />
+                            {handoffActions.map((action) => {
+                                const analyticsAction = classifyAnalyticsAction(action.id)
+                                return (
+                                    <DropdownMenuItem key={action.id} asChild disabled={action.disabled}>
+                                        <Link
+                                            href={action.href!}
+                                            onClick={(e) => {
+                                                if (action.disabled) {
+                                                    e.preventDefault()
+                                                    return
+                                                }
+                                                triggerAction(action)
+                                            }}
+                                            className={joinClasses(
+                                                "flex w-full items-center gap-2 cursor-pointer",
+                                                action.disabled && "opacity-50 pointer-events-none",
+                                            )}
+                                            aria-disabled={action.disabled || undefined}
+                                            data-analytics-action={analyticsAction || undefined}
+                                            data-analytics-id={action.id}
+                                        >
+                                            {action.icon && <action.icon className="h-4 w-4 opacity-70" />}
+                                            <span>{action.label}</span>
+                                        </Link>
+                                    </DropdownMenuItem>
+                                )
+                            })}
+                        </DropdownMenuContent>
+                    </DropdownMenu>
+                    {handoffDisabledReason ? (
+                        <span id={handoffDisabledDescriptionId} className="sr-only">{handoffDisabledReason}</span>
+                    ) : null}
+                </React.Fragment>
             )}
         </div>
     )

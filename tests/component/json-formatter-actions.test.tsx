@@ -80,13 +80,13 @@ describe("JsonFormatterPage actions", () => {
 
         fireEvent.change(editorAt(0), { target: { value: '{"ok":true,}' } })
         expect(screen.queryByDisplayValue("{\n  \"ok\": true\n}")).not.toBeInTheDocument()
-        expect(screen.getAllByRole("button", { name: "Download JSON", description: ": Run the tool first to create output." }).every((button) => button.hasAttribute("disabled"))).toBe(true)
+        expect(screen.getAllByRole("button", { name: "Download JSON", description: "Run the tool first to create output." }).every((button) => button.hasAttribute("disabled"))).toBe(true)
 
         fireEvent.click(screen.getByRole("button", { name: "Format" }))
         await waitFor(() => {
             expect(screen.getByRole("alert")).toHaveTextContent(/Line:Column|Invalid JSON/)
         })
-        expect(screen.getByRole("button", { name: "Download JSON", description: ": Fix invalid JSON before downloading." })).toBeDisabled()
+        expect(screen.getByRole("button", { name: "Download JSON", description: "Fix invalid JSON before downloading." })).toBeDisabled()
 
         fireEvent.change(editorAt(0), { target: { value: '{"ok":false}' } })
         fireEvent.click(screen.getByRole("button", { name: "Format" }))

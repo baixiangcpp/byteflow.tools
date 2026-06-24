@@ -24,6 +24,7 @@ vi.mock("@/core/i18n/lang-provider", () => ({
                 action_disabled_unavailable: "This action is unavailable right now.",
                 recommended_tools: "Recommended Tools",
                 send_to: "Send to...",
+                tool_actions: "Tool actions",
             },
         },
     }),
@@ -41,12 +42,11 @@ describe("ToolActionBar", () => {
 
         render(<ToolActionBar actions={actions} />)
 
-        const toolbar = screen.getByRole("button", { name: "Sample" }).parentElement
-        expect(toolbar).not.toBeNull()
-        const labels = within(toolbar!).getAllByRole("button").map((button) => button.textContent)
+        const toolbar = screen.getByRole("toolbar", { name: "Tool actions" })
+        const labels = within(toolbar).getAllByRole("button").map((button) => button.textContent)
 
         expect(labels).toEqual(["Sample", "Clear", "Format", "Copy", "Download"])
-        expect(screen.getByRole("button", { name: "Download", description: ": Nothing to download." })).toHaveAttribute("title", "Download: Nothing to download.")
+        expect(screen.getByRole("button", { name: "Download", description: "Nothing to download." })).toHaveAttribute("title", "Download: Nothing to download.")
     })
 
     it("marks clear and reset style actions as destructive", () => {
@@ -58,6 +58,15 @@ describe("ToolActionBar", () => {
     it("falls back to a generic disabled reason when a tool omits one", () => {
         render(<ToolActionBar actions={[{ id: "download", label: "Download", icon: Download, disabled: true }]} />)
 
-        expect(screen.getByRole("button", { name: "Download", description: ": This action is unavailable right now." })).toBeDisabled()
+        expect(screen.getByRole("button", { name: "Download", description: "This action is unavailable right now." })).toBeDisabled()
+    })
+
+    it("describes disabled handoff actions without changing their accessible name", () => {
+        render(<ToolActionBar actions={[{ id: "to_json", label: "JSON Formatter", icon: Copy, href: "/en/json-formatter" }]} />)
+
+        expect(screen.getByRole("button", {
+            name: "Send to...",
+            description: "Run the tool first to create output.",
+        })).toBeDisabled()
     })
 })

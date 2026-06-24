@@ -156,10 +156,6 @@ vi.mock("@/components/ui/accordion", () => ({
     AccordionContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }))
 
-vi.mock("@/components/ui/dialog", () => ({
-    DialogTitle: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-}))
-
 vi.mock("@/components/ui/command", () => ({
     CommandDialog: ({
         open,
@@ -182,12 +178,14 @@ vi.mock("@/components/ui/command", () => ({
         placeholder,
         onValueChange,
         value,
+        ...props
     }: {
         placeholder: string
         onValueChange?: (value: string) => void
         value?: string
-    }) => (
+    } & React.InputHTMLAttributes<HTMLInputElement>) => (
         <input
+            {...props}
             placeholder={placeholder}
             value={value ?? ""}
             onChange={(event) => onValueChange?.(event.target.value)}
@@ -267,6 +265,7 @@ describe("layout components", () => {
         fireEvent.keyDown(document, { key: "k", ctrlKey: true })
         expect(screen.getByTestId("command-dialog")).toBeInTheDocument()
         expect(screen.getByTestId("command-dialog")).toHaveAttribute("data-has-filter", "true")
+        expect(screen.getByRole("textbox", { name: "Search" })).toBeInTheDocument()
 
         fireEvent.click(screen.getByRole("button", { name: "Home" }))
 

@@ -26,6 +26,7 @@ describe("playwright smoke matrix guard", () => {
         expect(SMOKE_SOURCE).toContain('route: "/en/jwt-decoder"')
         expect(SMOKE_SOURCE).toContain('route: "/en/regex-tester"')
         expect(SMOKE_SOURCE).toContain('route: "/en/crontab-generator"')
+        expect(SMOKE_SOURCE).toContain('getByRole("dialog", { name: /Show filters/i })')
         expect(SMOKE_SOURCE).toContain("assertNoHorizontalOverflow")
         expect(SMOKE_SOURCE).toContain("clickCopyAndExpectToast")
     })

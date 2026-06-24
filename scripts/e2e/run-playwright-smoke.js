@@ -600,11 +600,13 @@ async function assertMobileRegexTester(page) {
 
 async function assertMobileAllTools(page) {
     await page.getByRole("button", { name: /Show filters/i }).first().click();
-    await page.getByRole("group", { name: /Input type/i }).first().waitFor({ state: "visible", timeout: 15_000 });
-    await page.getByRole("button", { name: /^File$/ }).first().click();
+    const filterDialog = page.getByRole("dialog", { name: /Show filters/i }).first();
+    await filterDialog.waitFor({ state: "visible", timeout: 15_000 });
+    await filterDialog.getByRole("group", { name: /Input type/i }).first().waitFor({ state: "visible", timeout: 15_000 });
+    await filterDialog.getByRole("button", { name: /^File$/ }).first().click();
     await page.getByText(/Active filters/i).first().waitFor({ state: "visible", timeout: 15_000 });
     await page.locator('a[href="/en/json-formatter"]').first().waitFor({ state: "visible", timeout: 15_000 });
-    await page.getByRole("button", { name: /Clear filters/i }).first().click();
+    await filterDialog.getByRole("button", { name: /Clear filters/i }).first().click();
     await page.getByText(/123 tools/i).first().waitFor({ state: "visible", timeout: 15_000 });
 }
 

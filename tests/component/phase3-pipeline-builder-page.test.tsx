@@ -66,7 +66,9 @@ describe("phase 3 pipeline builder page", () => {
 
         expect(screen.getByRole("heading", { name: "Pipeline Builder" })).toBeInTheDocument()
         expect(screen.getByRole("heading", { name: "Build a recipe in three moves" })).toBeInTheDocument()
+        expect(screen.getByRole("toolbar", { name: "Tool actions" })).toBeInTheDocument()
         expect(screen.getByLabelText("Initial input")).toBeInTheDocument()
+        expect(screen.getByLabelText("Final output")).toBeInTheDocument()
         expect(screen.getByText("Steps")).toBeInTheDocument()
         expect(screen.getByText("Built-in recipes")).toBeInTheDocument()
         expect(screen.getByText("API payload cleanup")).toBeInTheDocument()
@@ -199,6 +201,8 @@ describe("phase 3 pipeline builder page", () => {
   "active": true
 }`)
         })
+        expect(screen.getByRole("status")).toHaveTextContent("OK: 2 Run log")
+        expect(screen.getByRole("table", { name: "Run log" })).toBeInTheDocument()
         expect(screen.getByText("Recipe is valid for the linear MVP executor.")).toBeInTheDocument()
     })
 
