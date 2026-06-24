@@ -108,6 +108,8 @@ const discoveryLabels = {
     popularTags: "Popular tags",
     removeFilter: "Remove filter",
     showFilters: "Show filters",
+    showFewerTools: "Show fewer",
+    showMoreTools: "Show more",
     closeFilters: "Done",
     clearRecentTools: "Clear recent tools",
     recentTools: "Recent tools",

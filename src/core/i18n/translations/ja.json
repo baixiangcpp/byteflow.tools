@@ -423,6 +423,8 @@
     "input_url_domain": "URL/ドメイン",
     "remove_filter": "フィルターを削除",
     "show_filters": "フィルターを表示",
+    "show_fewer_tools": "少なく表示",
+    "show_more_tools": "もっと表示",
     "use_case_encode": "エンコード/デコード",
     "use_case_format": "整形/検証",
     "use_case_image": "画像/デザイン",

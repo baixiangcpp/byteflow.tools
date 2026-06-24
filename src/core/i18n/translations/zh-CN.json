@@ -423,6 +423,8 @@
     "input_url_domain": "URL/域名",
     "remove_filter": "移除筛选",
     "show_filters": "显示筛选",
+    "show_fewer_tools": "收起",
+    "show_more_tools": "显示更多",
     "use_case_encode": "编码/解码",
     "use_case_format": "格式化/校验",
     "use_case_image": "图片/设计",

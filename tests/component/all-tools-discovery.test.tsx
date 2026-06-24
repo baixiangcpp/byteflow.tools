@@ -35,6 +35,8 @@ const labels = {
     popularTags: "Popular tags",
     removeFilter: "Remove filter",
     showFilters: "Show filters",
+    showFewerTools: "Show fewer",
+    showMoreTools: "Show more",
     closeFilters: "Done",
     clearRecentTools: "Clear recent tools",
     recentTools: "Recent tools",
@@ -91,6 +93,66 @@ const groups = [
                 tags: ["base64"],
                 capabilities: ["browser-local", "offline-capable", "pipeline-ready"],
             },
+            {
+                key: "json_diff_viewer",
+                slug: "json-diff-viewer",
+                title: "JSON Diff Viewer",
+                description: "Compare JSON documents.",
+                family: "data-formats",
+                familyLabel: "Data formats",
+                tags: ["json"],
+                capabilities: ["browser-local", "offline-capable"],
+            },
+            {
+                key: "jsonpath_playground",
+                slug: "jsonpath-playground",
+                title: "JSONPath Playground",
+                description: "Query JSON with JSONPath.",
+                family: "data-formats",
+                familyLabel: "Data formats",
+                tags: ["json"],
+                capabilities: ["browser-local", "offline-capable"],
+            },
+            {
+                key: "json_to_typescript",
+                slug: "json-to-typescript",
+                title: "JSON to TypeScript",
+                description: "Generate TypeScript types.",
+                family: "data-formats",
+                familyLabel: "Data formats",
+                tags: ["json"],
+                capabilities: ["browser-local", "offline-capable"],
+            },
+            {
+                key: "yaml_json_converter",
+                slug: "yaml-json-converter",
+                title: "YAML JSON Converter",
+                description: "Convert YAML and JSON.",
+                family: "data-formats",
+                familyLabel: "Data formats",
+                tags: ["json"],
+                capabilities: ["browser-local", "offline-capable"],
+            },
+            {
+                key: "jq_playground",
+                slug: "jq-playground",
+                title: "jq Playground",
+                description: "Run jq-style examples locally.",
+                family: "data-formats",
+                familyLabel: "Data formats",
+                tags: ["json"],
+                capabilities: ["browser-local", "offline-capable"],
+            },
+            {
+                key: "ndjson_formatter",
+                slug: "ndjson-formatter",
+                title: "NDJSON Formatter",
+                description: "Format newline-delimited JSON.",
+                family: "data-formats",
+                familyLabel: "Data formats",
+                tags: ["json"],
+                capabilities: ["browser-local", "offline-capable"],
+            },
         ],
     },
     {
@@ -139,7 +201,7 @@ function renderDiscovery() {
             labels={labels}
             locale="en"
             tags={["json", "base64", "http", "image", "pipeline-ready"]}
-            totalTools={4}
+            totalTools={10}
             workflows={[{ id: "api", title: "API payload cleanup", href: "/en/pipeline-builder", tags: ["json", "pipeline-ready"] }]}
         />,
     )
@@ -178,7 +240,7 @@ describe("AllToolsDiscovery", () => {
         expect(screen.getByRole("group", { name: "Input type" })).toBeInTheDocument()
         expect(screen.getByRole("group", { name: "Execution" })).toBeInTheDocument()
         expect(screen.getByRole("group", { name: "Use case" })).toBeInTheDocument()
-        expect(screen.getByRole("status")).toHaveTextContent("4 tools")
+        expect(screen.getByRole("status")).toHaveTextContent("10 tools")
 
         fireEvent.click(screen.getAllByRole("button", { name: "File" })[0])
         expect(screen.getByText("Active filters")).toBeInTheDocument()
@@ -192,7 +254,7 @@ describe("AllToolsDiscovery", () => {
         expect(screen.getByRole("link", { name: "API payload cleanup" })).toHaveAttribute("href", "/en/pipeline-builder")
 
         fireEvent.click(screen.getAllByRole("button", { name: "Clear filters" })[0])
-        expect(screen.getByRole("status")).toHaveTextContent("4 tools")
+        expect(screen.getByRole("status")).toHaveTextContent("10 tools")
         expect(window.location.search).toBe("")
     })
 
@@ -214,10 +276,27 @@ describe("AllToolsDiscovery", () => {
     it("keeps tool cards compact with only key badges", () => {
         renderDiscovery()
 
-        const card = screen.getByRole("link", { name: /JSON Formatter/ })
+        const card = screen.getByRole("link", { name: "JSON Formatter" })
         expect(card.closest("article")).toContainElement(screen.getByRole("button", { name: "Add to favorites: JSON Formatter" }))
         const badges = within(card).getAllByText(/Data formats|Browser-local|File input|Offline capable|Pipeline ready/)
         expect(badges.length).toBeLessThanOrEqual(3)
+    })
+
+    it("progressively discloses large groups while keeping collapsed tools crawlable as lightweight links", () => {
+        const { container } = renderDiscovery()
+
+        expect(container.querySelectorAll("[data-all-tools-card='true']")).toHaveLength(8)
+        expect(container.querySelectorAll("[data-all-tools-compact-link='true']")).toHaveLength(2)
+        expect(screen.getByRole("link", { name: "jq Playground" })).toHaveAttribute("href", "/en/jq-playground")
+        expect(screen.getByRole("link", { name: "NDJSON Formatter" })).toHaveAttribute("href", "/en/ndjson-formatter")
+
+        const showMore = screen.getByRole("button", { name: "Show more (2)" })
+        expect(showMore).toHaveAttribute("aria-expanded", "false")
+        fireEvent.click(showMore)
+
+        expect(container.querySelectorAll("[data-all-tools-card='true']")).toHaveLength(10)
+        expect(container.querySelectorAll("[data-all-tools-compact-link='true']")).toHaveLength(0)
+        expect(screen.getByRole("button", { name: "Show fewer" })).toHaveAttribute("aria-expanded", "true")
     })
 
     it("uses a mobile filter drawer with counts, close, clear, and focus restoration", async () => {
@@ -229,13 +308,13 @@ describe("AllToolsDiscovery", () => {
 
         const drawer = screen.getByRole("dialog", { name: "Show filters" })
         await waitFor(() => expect(drawer).toContainElement(document.activeElement as HTMLElement))
-        expect(drawer).toHaveAccessibleDescription("4 tools - 0 Active filters")
-        expect(within(drawer).getByText(/4 tools/)).toBeInTheDocument()
+        expect(drawer).toHaveAccessibleDescription("10 tools - 0 Active filters")
+        expect(within(drawer).getByText(/10 tools/)).toBeInTheDocument()
         fireEvent.click(within(drawer).getAllByRole("button", { name: "File" })[0])
         expect(within(drawer).getByText(/1 tools/)).toBeInTheDocument()
 
         fireEvent.click(within(drawer).getByRole("button", { name: "Clear filters" }))
-        expect(within(drawer).getByText(/4 tools/)).toBeInTheDocument()
+        expect(within(drawer).getByText(/10 tools/)).toBeInTheDocument()
 
         const doneButtons = within(drawer).getAllByRole("button", { name: "Done" })
         fireEvent.click(doneButtons[doneButtons.length - 1])
