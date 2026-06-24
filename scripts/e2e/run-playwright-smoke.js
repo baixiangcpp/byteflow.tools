@@ -1,5 +1,5 @@
 import { createServer } from "node:http";
-import { existsSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
@@ -23,6 +23,21 @@ const MOBILE_TOOL_VIEWPORTS = [
     { width: 390, height: 844 },
     { width: 430, height: 932 },
 ];
+const GENERATED_TOOL_INDEX_PATH = path.resolve(process.cwd(), "src/generated/tool-index.json");
+
+function getExpectedToolCount() {
+    try {
+        const rawIndex = JSON.parse(readFileSync(GENERATED_TOOL_INDEX_PATH, "utf8"));
+        const count = Number(rawIndex?.counts?.canonicalTools);
+        if (Number.isFinite(count) && count > 0) return count;
+    } catch (error) {
+        throw new Error(`[playwright-smoke] Unable to read generated tool count from ${GENERATED_TOOL_INDEX_PATH}: ${error.message}`);
+    }
+
+    throw new Error(`[playwright-smoke] Missing counts.canonicalTools in ${GENERATED_TOOL_INDEX_PATH}`);
+}
+
+const EXPECTED_TOOL_COUNT = getExpectedToolCount();
 
 function parseArgs(argv) {
     const args = {
@@ -607,7 +622,7 @@ async function assertMobileAllTools(page) {
     await page.getByText(/Active filters/i).first().waitFor({ state: "visible", timeout: 15_000 });
     await page.locator('a[href="/en/json-formatter"]').first().waitFor({ state: "visible", timeout: 15_000 });
     await filterDialog.getByRole("button", { name: /Clear filters/i }).first().click();
-    await page.getByText(/123 tools/i).first().waitFor({ state: "visible", timeout: 15_000 });
+    await page.getByText(new RegExp(`${EXPECTED_TOOL_COUNT}\\s+tools`, "i")).first().waitFor({ state: "visible", timeout: 15_000 });
 }
 
 async function assertMobileCrontabGenerator(page) {
