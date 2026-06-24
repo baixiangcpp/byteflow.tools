@@ -59,6 +59,9 @@ describe("install app analytics", () => {
                 copy={copy}
                 allToolsLabel="All tools"
                 trustCenterLabel="Trust Center"
+                offlineMatrixTitle="Offline support matrix"
+                offlineMatrixDescription="Review which workflows keep running after cache warm-up."
+                offlineMatrixLink="Offline matrix"
             />,
         )
 

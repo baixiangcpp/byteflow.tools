@@ -25,7 +25,16 @@ vi.mock("sonner", () => ({
 class MockImage {
     onload: (() => void) | null = null
     onerror: (() => void) | null = null
-    src = ""
+    #src = ""
+
+    get src() {
+        return this.#src
+    }
+
+    set src(value: string) {
+        this.#src = value
+        queueMicrotask(() => this.onload?.())
+    }
 }
 
 function renderEnglish(ui: React.ReactNode) {
@@ -41,6 +50,10 @@ describe("external request media tools", () => {
         toastErrorMock.mockClear()
         toastSuccessMock.mockClear()
         toastInfoMock.mockClear()
+        Object.defineProperty(window.navigator, "onLine", {
+            configurable: true,
+            value: true,
+        })
         vi.stubGlobal("Image", MockImage)
         vi.stubGlobal("fetch", vi.fn())
         vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => undefined)
@@ -50,6 +63,10 @@ describe("external request media tools", () => {
     afterEach(() => {
         vi.restoreAllMocks()
         vi.unstubAllGlobals()
+        Object.defineProperty(window.navigator, "onLine", {
+            configurable: true,
+            value: true,
+        })
     })
 
     it("keeps YouTube thumbnail requests behind explicit confirmation", async () => {
@@ -71,6 +88,21 @@ describe("external request media tools", () => {
         expect(globalThis.fetch).not.toHaveBeenCalled()
     })
 
+    it("shows a graceful offline error before YouTube preview network work", () => {
+        Object.defineProperty(window.navigator, "onLine", {
+            configurable: true,
+            value: false,
+        })
+        renderEnglish(<YouTubeThumbnailGrabberPage />)
+
+        fireEvent.click(screen.getByRole("button", { name: "Sample" }))
+        fireEvent.click(screen.getByLabelText("I understand this action may request the disclosed external asset from my browser."))
+        fireEvent.click(screen.getByRole("button", { name: "Preview" }))
+
+        expect(toastErrorMock).toHaveBeenCalledWith("This external-request action needs network access. Reconnect and try again.")
+        expect(globalThis.fetch).not.toHaveBeenCalled()
+    })
+
     it("keeps Vimeo thumbnail requests behind explicit confirmation", () => {
         renderEnglish(<VimeoThumbnailGrabberPage />)
 
@@ -84,6 +116,28 @@ describe("external request media tools", () => {
 
         expect(screen.getByRole("button", { name: "Preview" })).not.toBeDisabled()
         expect(globalThis.fetch).not.toHaveBeenCalled()
+    })
+
+    it("shows a graceful offline error before Vimeo download opens a remote asset", async () => {
+        const anchorClick = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => undefined)
+        renderEnglish(<VimeoThumbnailGrabberPage />)
+
+        fireEvent.click(screen.getByRole("button", { name: "Sample" }))
+        fireEvent.click(screen.getByLabelText("I understand this action may request the disclosed external asset from my browser."))
+        fireEvent.click(screen.getByRole("button", { name: "Preview" }))
+
+        await waitFor(() => {
+            expect(screen.getByRole("button", { name: "Download" })).not.toBeDisabled()
+        })
+
+        Object.defineProperty(window.navigator, "onLine", {
+            configurable: true,
+            value: false,
+        })
+        fireEvent.click(screen.getByRole("button", { name: "Download" }))
+
+        expect(toastErrorMock).toHaveBeenCalledWith("This external-request action needs network access. Reconnect and try again.")
+        expect(anchorClick).not.toHaveBeenCalled()
     })
 
     it("requires Instagram rights confirmation and external request confirmation before fetch download", async () => {
@@ -109,5 +163,24 @@ describe("external request media tools", () => {
         await waitFor(() => {
             expect(fetchMock).toHaveBeenCalledWith("https://cdn.instagram.com/public/photo.jpg")
         })
+    })
+
+    it("shows a graceful offline error before Instagram fetch download", () => {
+        Object.defineProperty(window.navigator, "onLine", {
+            configurable: true,
+            value: false,
+        })
+        const fetchMock = vi.fn()
+        vi.stubGlobal("fetch", fetchMock)
+
+        renderEnglish(<InstagramPhotoDownloaderPage />)
+
+        fireEvent.change(screen.getByPlaceholderText("https://…"), { target: { value: "https://cdn.instagram.com/public/photo.jpg" } })
+        fireEvent.click(screen.getByLabelText("I confirm this media URL is mine or I have explicit permission to download and use it."))
+        fireEvent.click(screen.getByLabelText("I understand this action may request the disclosed external asset from my browser."))
+        fireEvent.click(screen.getByRole("button", { name: "Download" }))
+
+        expect(toastErrorMock).toHaveBeenCalledWith("This external-request action needs network access. Reconnect and try again.")
+        expect(fetchMock).not.toHaveBeenCalled()
     })
 })

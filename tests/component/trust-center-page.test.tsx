@@ -20,12 +20,18 @@ describe("TrustCenterPage", () => {
         expect(screen.getByRole("heading", { name: "Privacy and Trust Center", level: 1 })).toBeInTheDocument()
         expect(screen.getByRole("heading", { name: "Verify local processing in DevTools" })).toBeInTheDocument()
         expect(screen.getByText("Open the tool page, then open DevTools and select the Network panel.")).toBeInTheDocument()
-        expect(screen.getByText(/External-request responses are network-only/i)).toBeInTheDocument()
+        expect(screen.getAllByText(/External-request responses are network-only/i).length).toBeGreaterThanOrEqual(1)
         expect(screen.getByText(/clear cached app files from the install page/i)).toBeInTheDocument()
+        expect(screen.getByRole("heading", { name: "Offline support matrix" })).toBeInTheDocument()
+        expect(screen.getByRole("link", { name: "Offline matrix" })).toHaveAttribute("href", "#offline-support-matrix")
+        expect(screen.getByRole("rowheader", { name: "Browser-local tools" })).toBeInTheDocument()
+        expect(screen.getByRole("rowheader", { name: "File-based tools" })).toBeInTheDocument()
+        expect(screen.getByRole("rowheader", { name: "Pipeline Builder" })).toBeInTheDocument()
+        expect(screen.getByRole("rowheader", { name: "External-request tools" })).toBeInTheDocument()
 
         const externalTools = TOOL_REGISTRY.filter((tool) => tool.privacy.externalRequest.required)
         const toolCopy = getTranslation("en").tools as Record<string, { title?: string }>
-        const table = screen.getByRole("table")
+        const table = screen.getByRole("table", { name: "External request tools" })
 
         for (const tool of externalTools) {
             const title = toolCopy[tool.key]?.title ?? tool.slug

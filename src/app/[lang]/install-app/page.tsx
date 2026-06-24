@@ -14,6 +14,19 @@ export default async function InstallAppPage({ params }: { params: Promise<{ lan
     const copy = getInstallPageCopy(locale)
     const allToolsLabel = t.common.all_tools
     const trustCenterLabel = t.pages.trust_center_title
+    const offlineMatrixTitle = t.pages.trust_center_offline_matrix_title
+    const offlineMatrixDescription = t.pages.trust_center_offline_matrix_install_desc
+    const offlineMatrixLink = t.pages.trust_center_offline_matrix_link
 
-    return <InstallAppClient locale={locale} copy={copy} allToolsLabel={allToolsLabel} trustCenterLabel={trustCenterLabel} />
+    return (
+        <InstallAppClient
+            locale={locale}
+            copy={copy}
+            allToolsLabel={allToolsLabel}
+            trustCenterLabel={trustCenterLabel}
+            offlineMatrixTitle={offlineMatrixTitle}
+            offlineMatrixDescription={offlineMatrixDescription}
+            offlineMatrixLink={offlineMatrixLink}
+        />
+    )
 }

@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { ExternalRequestConfirmation } from "@/features/tool-shell/external-request-confirmation"
+import { isBrowserOffline } from "@/features/tool-shell/external-request-offline"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import {
@@ -90,6 +91,11 @@ export function VimeoThumbnailGrabberPage() {
             toast.error(t.common.external_network_notice.confirm_required)
             return
         }
+        if (isBrowserOffline()) {
+            toast.error(t.common.external_network_notice.offline_required)
+            setStatus(t.common.external_network_notice.offline_required)
+            return
+        }
         setPreviewApproved(true)
         setStatus(statusReady)
         void (async () => {
@@ -116,6 +122,11 @@ export function VimeoThumbnailGrabberPage() {
         if (!selectedUrl) return
         if (!externalRequestConfirmed) {
             toast.error(t.common.external_network_notice.confirm_required)
+            return
+        }
+        if (isBrowserOffline()) {
+            toast.error(t.common.external_network_notice.offline_required)
+            setStatus(t.common.external_network_notice.offline_required)
             return
         }
         const filename = `vimeo-thumbnail-${videoId || "image"}.jpg`

@@ -69,6 +69,28 @@ export default async function TrustCenterPage({
         { q: p.trust_center_faq_q2, a: p.trust_center_faq_a2 },
         { q: p.trust_center_faq_q3, a: p.trust_center_faq_a3 },
     ]
+    const offlineMatrix = [
+        {
+            type: p.trust_center_offline_matrix_local_type,
+            behavior: p.trust_center_offline_matrix_local_behavior,
+            cache: p.trust_center_offline_matrix_local_cache,
+        },
+        {
+            type: p.trust_center_offline_matrix_file_type,
+            behavior: p.trust_center_offline_matrix_file_behavior,
+            cache: p.trust_center_offline_matrix_file_cache,
+        },
+        {
+            type: p.trust_center_offline_matrix_pipeline_type,
+            behavior: p.trust_center_offline_matrix_pipeline_behavior,
+            cache: p.trust_center_offline_matrix_pipeline_cache,
+        },
+        {
+            type: p.trust_center_offline_matrix_external_type,
+            behavior: p.trust_center_offline_matrix_external_behavior,
+            cache: p.trust_center_offline_matrix_external_cache,
+        },
+    ]
     const url = buildCanonicalUrl(locale, "trust-center")
     const jsonLd = {
         "@context": "https://schema.org",
@@ -149,6 +171,13 @@ export default async function TrustCenterPage({
                         <FileText className="h-4 w-4" aria-hidden="true" />
                         {p.trust_center_securitytxt_link}
                     </a>
+                    <a
+                        href="#offline-support-matrix"
+                        className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                        <WifiOff className="h-4 w-4" aria-hidden="true" />
+                        {p.trust_center_offline_matrix_link}
+                    </a>
                 </div>
             </section>
 
@@ -211,11 +240,36 @@ export default async function TrustCenterPage({
                 </ol>
             </section>
 
+            <section id="offline-support-matrix" className="rounded-lg border border-border/70 bg-background/55 p-5 sm:p-6">
+                <h2 className="text-xl font-semibold tracking-tight">{p.trust_center_offline_matrix_title}</h2>
+                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.trust_center_offline_matrix_desc}</p>
+                <div className="mt-4 overflow-x-auto rounded-lg border border-border/70">
+                    <table className="min-w-full divide-y divide-border/70 text-left text-sm" aria-label={p.trust_center_offline_matrix_title}>
+                        <thead className="bg-muted/45 text-xs uppercase tracking-wide text-muted-foreground">
+                            <tr>
+                                <th scope="col" className="px-3 py-2">{p.trust_center_offline_matrix_col_type}</th>
+                                <th scope="col" className="px-3 py-2">{p.trust_center_offline_matrix_col_behavior}</th>
+                                <th scope="col" className="px-3 py-2">{p.trust_center_offline_matrix_col_cache}</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-border/70 bg-card/35">
+                            {offlineMatrix.map((row) => (
+                                <tr key={row.type}>
+                                    <th scope="row" className="px-3 py-3 font-medium text-foreground">{row.type}</th>
+                                    <td className="px-3 py-3 text-muted-foreground">{row.behavior}</td>
+                                    <td className="px-3 py-3 text-muted-foreground">{row.cache}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
             <section className="rounded-lg border border-border/70 bg-background/55 p-5 sm:p-6">
                 <h2 className="text-xl font-semibold tracking-tight">{p.trust_center_external_tools_title}</h2>
                 <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.trust_center_external_tools_desc}</p>
                 <div className="mt-4 overflow-x-auto rounded-lg border border-border/70">
-                    <table className="min-w-full divide-y divide-border/70 text-left text-sm">
+                    <table className="min-w-full divide-y divide-border/70 text-left text-sm" aria-label={p.trust_center_external_tools_title}>
                         <thead className="bg-muted/45 text-xs uppercase tracking-wide text-muted-foreground">
                             <tr>
                                 <th scope="col" className="px-3 py-2">{p.trust_center_external_tool_col_tool}</th>

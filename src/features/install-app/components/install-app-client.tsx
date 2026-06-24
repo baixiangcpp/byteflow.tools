@@ -73,9 +73,20 @@ type InstallAppClientProps = {
     copy: InstallPageCopy
     allToolsLabel: string
     trustCenterLabel: string
+    offlineMatrixTitle: string
+    offlineMatrixDescription: string
+    offlineMatrixLink: string
 }
 
-export function InstallAppClient({ locale, copy, allToolsLabel, trustCenterLabel }: InstallAppClientProps) {
+export function InstallAppClient({
+    locale,
+    copy,
+    allToolsLabel,
+    trustCenterLabel,
+    offlineMatrixTitle,
+    offlineMatrixDescription,
+    offlineMatrixLink,
+}: InstallAppClientProps) {
     const [platform, setPlatform] = React.useState<GuidePlatform>("chrome_desktop")
     const [deferredPrompt, setDeferredPrompt] = React.useState<BeforeInstallPromptEvent | null>(null)
     const [installed, setInstalled] = React.useState(false)
@@ -218,6 +229,23 @@ export function InstallAppClient({ locale, copy, allToolsLabel, trustCenterLabel
                             </article>
                         )
                     })}
+                </div>
+            </section>
+
+            <section className="rounded-2xl border border-border/70 bg-background/55 p-5 sm:p-6" aria-labelledby="install-offline-matrix-title">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h2 id="install-offline-matrix-title" className="text-xl font-semibold tracking-tight">{offlineMatrixTitle}</h2>
+                        <p className="mt-1.5 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+                            {offlineMatrixDescription}
+                        </p>
+                    </div>
+                    <Button asChild variant="outline" className="min-h-11 shrink-0">
+                        <Link href={`/${locale}/trust-center#offline-support-matrix`}>
+                            <WifiOff className="mr-2 h-4 w-4" />
+                            {offlineMatrixLink}
+                        </Link>
+                    </Button>
                 </div>
             </section>
 

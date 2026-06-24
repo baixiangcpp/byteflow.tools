@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { ExternalRequestConfirmation } from "@/features/tool-shell/external-request-confirmation"
+import { isBrowserOffline } from "@/features/tool-shell/external-request-offline"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { openExternalUrl } from "@/core/security/external-url"
@@ -150,6 +151,11 @@ export function InstagramPhotoDownloaderPage() {
             toast.error(t.common.external_network_notice.confirm_required)
             return
         }
+        if (isBrowserOffline()) {
+            toast.error(t.common.external_network_notice.offline_required)
+            setStatusNote(t.common.external_network_notice.offline_required)
+            return
+        }
         setPreviewApproved(true)
     }
 
@@ -169,6 +175,11 @@ export function InstagramPhotoDownloaderPage() {
         }
         if (!externalRequestConfirmed) {
             toast.error(t.common.external_network_notice.confirm_required)
+            return
+        }
+        if (isBrowserOffline()) {
+            toast.error(t.common.external_network_notice.offline_required)
+            setStatusNote(t.common.external_network_notice.offline_required)
             return
         }
 
