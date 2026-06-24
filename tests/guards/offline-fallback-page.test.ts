@@ -77,7 +77,7 @@ describe("offline fallback page", () => {
         expect(source).toContain("/en/har-viewer-sanitizer")
         expect(source).toContain("offline HAR sanitizer output")
         expect(source).toContain("/en/pipeline-builder")
-        expect(source).toContain("offline pipeline")
+        expect(source).toContain("\"message\": \"offline pipeline\"")
         expect(source).toContain("/en/youtube-thumbnail-grabber")
         expect(source).toContain("external-request action needs network access")
     })

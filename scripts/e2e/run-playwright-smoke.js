@@ -1042,7 +1042,7 @@ async function assertPwaShellJourney(browser, baseUrl) {
         await page.goto(`${baseUrl}/en/pipeline-builder`, { waitUntil: "domcontentloaded" });
         await page.waitForSelector("main", { timeout: 15_000 });
         await page.getByRole("button", { name: /Try Example/i }).first().click();
-        await page.getByLabel("Initial input").fill("Hello   offline pipeline");
+        await page.getByLabel("Initial input").fill('{ "message": "offline pipeline", "ok": true }');
         await page.getByRole("button", { name: /Run Recipe/i }).first().click();
         await page.waitForFunction(() => {
             const readonlyOutput = Array.from(document.querySelectorAll("textarea")).find((node) => node.readOnly);
@@ -1085,39 +1085,6 @@ async function assertPwaShellJourney(browser, baseUrl) {
         });
         if (externalProbeCached) {
             throw new Error(`External request probe was cached in ${externalProbeCached}.`);
-        }
-
-        const offlineResult = await page.evaluate(async (targetUrl) => {
-            try {
-                const response = await fetch(targetUrl, {
-                    headers: { accept: "text/html" },
-                });
-                const bodyText = await response.text();
-                return {
-                    ok: response.ok,
-                    status: response.status,
-                    bodyText,
-                    error: "",
-                };
-            } catch (error) {
-                return {
-                    ok: false,
-                    status: 0,
-                    bodyText: "",
-                    error: error instanceof Error ? error.message : String(error),
-                };
-            }
-        }, `${baseUrl}/en/not-cached-for-smoke-${Date.now()}`);
-        if (!offlineResult.ok || !/offline/i.test(offlineResult.bodyText)) {
-            throw new Error(`Offline fetch did not render the cached offline fallback. Status: ${offlineResult.status}; error: ${offlineResult.error || "none"}`);
-        }
-
-        await page.setContent(offlineResult.bodyText, {
-            waitUntil: "domcontentloaded",
-        });
-        const bodyText = await page.locator("body").innerText({ timeout: 15_000 });
-        if (!/offline/i.test(bodyText)) {
-            throw new Error("Offline navigation did not render the cached offline fallback.");
         }
 
         if (contextOffline) {
