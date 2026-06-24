@@ -30,7 +30,7 @@ describe("sitemap lastmod", () => {
         const fallbackTool = TOOL_REGISTRY.find((tool) => !tool.updatedAt)
 
         expect(entries.length).toBeGreaterThan(0)
-        const homeEntry = entries.find((entry) => entry.url.endsWith("/en"))
+        const homeEntry = entries.find((entry) => entry.url === `${SITE_URL}/`)
         expect(normalizeLastModified(homeEntry?.lastModified)).toBe(manifestHomeEn)
 
         if (fallbackTool) {
@@ -43,7 +43,8 @@ describe("sitemap lastmod", () => {
 
     it("contains both core and tool entries in a single sitemap", () => {
         const entries = sitemap()
-        expect(entries.some((entry) => entry.url.endsWith("/en"))).toBe(true)
+        expect(entries.some((entry) => entry.url === `${SITE_URL}/`)).toBe(true)
+        expect(entries.some((entry) => entry.url === `${SITE_URL}/en`)).toBe(false)
         expect(entries.some((entry) => entry.url.includes("/en/json-formatter"))).toBe(true)
         expect(entries.length).toBeGreaterThan(TOOL_REGISTRY.length)
     })
@@ -53,7 +54,11 @@ describe("sitemap lastmod", () => {
 
         expect(urls.has(`${SITE_URL}/`)).toBe(true)
         for (const locale of LOCALES) {
-            expect(urls.has(buildCanonicalUrl(locale))).toBe(true)
+            if (locale === "en") {
+                expect(urls.has(buildCanonicalUrl(locale))).toBe(false)
+            } else {
+                expect(urls.has(buildCanonicalUrl(locale))).toBe(true)
+            }
             for (const tool of TOOL_REGISTRY) {
                 expect(urls.has(buildCanonicalUrl(locale, tool.slug))).toBe(true)
             }
@@ -108,6 +113,11 @@ describe("sitemap lastmod", () => {
             "compare/byteflow-vs-cyberchef",
             "compare/byteflow-vs-jwt-io",
             "compare/md5-vs-sha256",
+            "compare/json-formatter-vs-json-validator",
+            "compare/base64-encoding-vs-encryption",
+            "compare/har-sanitizer-vs-log-scrubber",
+            "compare/curl-to-code-vs-http-request-builder",
+            "compare/svg-optimizer-vs-svg-converter",
             "alternatives",
             "alternatives/json-formatter-privacy-first",
             "how-to",

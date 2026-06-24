@@ -27,6 +27,7 @@ import {
 } from "@/core/search/tool-search-metadata"
 import { trackSearchPerformed } from "@/core/analytics/analytics"
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
+import { buildHomepageHref } from "@/core/routing/homepage-route"
 import { cn } from "@/core/utils/utils"
 
 const STATIC_PAGES = [
@@ -491,7 +492,7 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
                             <CommandItem
                                 value={buildSearchValue([requireTranslationValue(t.nav.home, "nav.home"), "home", lang])}
                                 keywords={["home", "start", "index"]}
-                                onSelect={() => runCommand(() => router.push(`/${lang}`))}
+                                onSelect={() => runCommand(() => router.push(buildHomepageHref(lang)))}
                             >
                                 <Search className="mr-2 h-4 w-4" />
                                 <span>{requireTranslationValue(t.nav.home, "nav.home")}</span>

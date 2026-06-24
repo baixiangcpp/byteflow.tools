@@ -6,6 +6,11 @@ export type GrowthPageSlug =
     | "compare/byteflow-vs-cyberchef"
     | "compare/byteflow-vs-jwt-io"
     | "compare/md5-vs-sha256"
+    | "compare/json-formatter-vs-json-validator"
+    | "compare/base64-encoding-vs-encryption"
+    | "compare/har-sanitizer-vs-log-scrubber"
+    | "compare/curl-to-code-vs-http-request-builder"
+    | "compare/svg-optimizer-vs-svg-converter"
     | "alternatives/json-formatter-privacy-first"
     | "how-to/decode-jwt-locally"
     | "fix/base64-invalid-length"
@@ -808,6 +813,156 @@ export const GROWTH_PAGES: GrowthPage[] = [
         },
     },
     {
+        slug: "compare/json-formatter-vs-json-validator",
+        kind: "comparison",
+        relatedToolKeys: ["json_formatter", "json_schema_workbench", "json_diff_viewer", "json_to_typescript"],
+        copy: comparisonPageCopy({
+            eyebrow: "Data format comparison",
+            title: "JSON Formatter vs JSON Validator",
+            description: "Decide when to format JSON for readability and when to validate JSON against syntax, schema, or contract expectations.",
+            intent: "Use this comparison when a payload looks messy, fails an API contract, or needs to move from quick inspection into repeatable review.",
+            summaryPoints: [
+                "Formatting improves readability and stable diffs, but it does not prove the payload matches an API contract.",
+                "Validation should run when syntax, required fields, enum values, or schema compatibility are part of the decision.",
+                "A practical review often formats first, validates second, then diffs or generates types for the final contract check.",
+            ],
+            trustCenterAngle: "JSON payloads can include internal IDs, customer fields, or secrets. Use redacted samples and verify that local tools do not store payloads.",
+            comparisonRows: [
+                { factor: "Primary job", byteflow: "JSON Formatter normalizes whitespace and structure so reviewers can inspect nested fields quickly.", other: "JSON validation confirms syntax or schema rules before a payload is accepted by another system.", note: "Use both when readability and correctness both matter." },
+                { factor: "Failure signal", byteflow: "Formatter errors usually point to broken syntax such as trailing commas, unmatched braces, or invalid strings.", other: "Validator errors can point to missing fields, wrong types, enum mismatches, or contract drift.", note: "A formatted payload can still be semantically wrong." },
+                { factor: "Next step", byteflow: "After formatting, use JSON Diff Viewer or JSON to TypeScript when the review moves into contract changes.", other: "After validation, update the schema, fixture, or producer behavior that caused the mismatch.", note: "Keep examples small and redacted before sharing." },
+            ],
+            sections: [
+                { heading: "Use a formatter for human review", body: ["Choose formatting when the payload is valid enough to parse but too dense to inspect in logs, test fixtures, or pull request comments."], bullets: ["Pretty-print a minified API response.", "Normalize indentation before a diff.", "Sort through nested arrays while removing secrets."] },
+                { heading: "Use validation for contract confidence", body: ["Choose validation when a consumer needs guarantees about shape, required fields, and allowed values. Schema validation answers a different question than whitespace cleanup."] },
+            ],
+            faq: [
+                { question: "Can formatted JSON still be invalid for my API?", answer: "Yes. Formatting only proves the text can be parsed as JSON. It does not check schema rules, required fields, or domain constraints." },
+                { question: "What is the safest review order?", answer: "Format a redacted sample, validate against the expected schema, then use a diff or generated type to document the final shape." },
+            ],
+        }),
+    },
+    {
+        slug: "compare/base64-encoding-vs-encryption",
+        kind: "comparison",
+        relatedToolKeys: ["base64_encode_decode", "hash_generator", "jwt_decoder", "url_encode_decode"],
+        copy: comparisonPageCopy({
+            eyebrow: "Encoding comparison",
+            title: "Base64 Encoding vs Encryption",
+            description: "Understand why Base64 changes representation but does not protect data, and when encryption or hashing is the correct next step.",
+            intent: "Use this comparison when a token, log value, or file fragment looks encoded and someone may mistake that encoding for secrecy.",
+            summaryPoints: [
+                "Base64 is reversible encoding for moving bytes through text channels; it is not encryption.",
+                "Encryption requires keys and a threat model, while hashing creates one-way digests for comparison or integrity checks.",
+                "Encoded secrets are still secrets, so local inspection should avoid storage, logs, analytics, and shared screenshots.",
+            ],
+            trustCenterAngle: "Base64 strings often contain JWTs, binary fragments, credentials, or logs. Treat decoded output as sensitive until proven otherwise.",
+            comparisonRows: [
+                { factor: "Goal", byteflow: "Base64 Encode/Decode converts bytes to text and back for transport, debugging, and payload inspection.", other: "Encryption protects confidentiality with keys and a defined decrypt path.", note: "If anyone can decode it without a key, it is not encrypted." },
+                { factor: "Security meaning", byteflow: "Base64 has no secrecy guarantee and should not be used to hide API keys, passwords, or private records.", other: "Encryption strength depends on algorithm, key management, nonce handling, and implementation details.", note: "Do not call Base64 obfuscation a security control." },
+                { factor: "Related tools", byteflow: "Use hashing for stable digests and JWT tools for token inspection when the Base64 value is part of a token.", other: "Use a vetted encryption library or platform service for real confidentiality requirements.", note: "This site does not turn encoded secrets into safe public data." },
+            ],
+            sections: [
+                { heading: "When Base64 is the right tool", body: ["Use Base64 when a system needs binary data represented as ASCII text, such as data URLs, basic payload transport, or manual inspection of encoded fields."] },
+                { heading: "When encryption is required", body: ["Use encryption when unauthorized readers must not learn the original content. That requires key handling and implementation decisions outside a simple encoder."] },
+            ],
+            faq: [
+                { question: "Is a Base64 API key safe to share?", answer: "No. Anyone can decode it. Treat the original and encoded forms as the same sensitivity." },
+                { question: "Should I hash or encrypt instead?", answer: "Hash when you need comparison or integrity without recovery. Encrypt when someone must decrypt later and confidentiality matters." },
+            ],
+        }),
+    },
+    {
+        slug: "compare/har-sanitizer-vs-log-scrubber",
+        kind: "comparison",
+        relatedToolKeys: ["har_viewer_sanitizer", "log_scrubber", "local_log_parser", "text_diff_checker"],
+        copy: comparisonPageCopy({
+            eyebrow: "Redaction comparison",
+            title: "HAR Sanitizer vs Log Scrubber",
+            description: "Choose the right redaction workflow for browser network captures, application logs, headers, cookies, and incident snippets.",
+            intent: "Use this comparison before sharing evidence in an issue, ticket, vendor portal, or chat thread.",
+            summaryPoints: [
+                "HAR files need structured redaction for headers, cookies, request bodies, response bodies, timings, and URLs.",
+                "Log scrubbing works best for plain text traces, stack snippets, environment fragments, and mixed application output.",
+                "Both workflows need a final human review because incident data can contain domain-specific identifiers.",
+            ],
+            trustCenterAngle: "HAR files and logs commonly contain credentials, cookies, account IDs, full URLs, and private request or response bodies. Keep sanitization local and review before export.",
+            comparisonRows: [
+                { factor: "Input shape", byteflow: "HAR Sanitizer parses browser capture structure and redacts sensitive network fields defensively.", other: "Log Scrubber scans text for common secrets, PII patterns, tokens, and identifiers.", note: "Use the parser that understands your evidence format." },
+                { factor: "Redaction scope", byteflow: "HAR workflows can target headers, cookies, query strings, request bodies, and response bodies.", other: "Log workflows can target bearer tokens, keys, emails, IPs, paths, and repeated secret-like strings.", note: "Structured captures and free text fail in different ways." },
+                { factor: "Review step", byteflow: "Export only after comparing sanitized output and confirming that URLs and bodies are safe to share.", other: "Diff scrubbed logs against the original so expected context remains while secrets are removed.", note: "Automated redaction is a first pass, not a legal or security approval." },
+            ],
+            sections: [
+                { heading: "Use HAR Sanitizer for browser evidence", body: ["Choose the HAR workflow when the source is a browser export or network troubleshooting capture with request and response metadata."] },
+                { heading: "Use Log Scrubber for text evidence", body: ["Choose the log workflow when the source is application output, shell logs, stack traces, CI logs, or pasted incident notes."] },
+            ],
+            faq: [
+                { question: "Can I sanitize a HAR file with a plain text scrubber?", answer: "You can catch some patterns, but a HAR-aware sanitizer is safer because it understands headers, cookies, URLs, and body fields." },
+                { question: "Is sanitized output automatically safe to post publicly?", answer: "No. Review the result, check domain-specific identifiers, and share the smallest useful excerpt." },
+            ],
+        }),
+    },
+    {
+        slug: "compare/curl-to-code-vs-http-request-builder",
+        kind: "comparison",
+        relatedToolKeys: ["curl_to_code", "http_request_builder", "header_diff", "url_parser"],
+        copy: comparisonPageCopy({
+            eyebrow: "HTTP workflow comparison",
+            title: "cURL to Code vs HTTP Request Builder",
+            description: "Decide whether to convert an existing cURL command into client code or build a clean HTTP request example from fields.",
+            intent: "Use this comparison when documenting an API call, translating a terminal repro, or preparing a shareable request snippet without sending it.",
+            summaryPoints: [
+                "cURL to Code is best when a working terminal command already exists and needs translation.",
+                "HTTP Request Builder is best when you are assembling method, URL, headers, body, and generated code from scratch.",
+                "Both tools should avoid sending the request; they generate code and examples locally for review.",
+            ],
+            trustCenterAngle: "HTTP examples often include bearer tokens, cookies, private URLs, and request bodies. Redact credentials before sharing generated snippets.",
+            comparisonRows: [
+                { factor: "Starting point", byteflow: "cURL to Code starts from an existing cURL command copied from docs, logs, or a repro.", other: "HTTP Request Builder starts from structured fields and generates request code without executing it.", note: "Choose based on what artifact you already have." },
+                { factor: "Risk to remove", byteflow: "Converted cURL may carry Authorization headers, cookies, or production URLs from the original command.", other: "Manually built requests can omit secrets and use placeholder headers from the beginning.", note: "Redaction should happen before the snippet leaves your browser." },
+                { factor: "Best output", byteflow: "Use conversion to create fetch, Python, or Node examples that match a terminal repro.", other: "Use request building to document a clean, educational API example for teammates.", note: "Neither flow should proxy user secrets through byteflow.tools." },
+            ],
+            sections: [
+                { heading: "Use cURL conversion for repros", body: ["When an issue starts with a terminal command that already reproduces behavior, conversion preserves the request shape and reduces manual transcription mistakes."] },
+                { heading: "Use request building for clean docs", body: ["When you are writing examples for docs or onboarding, structured fields make it easier to keep placeholders, comments, and redacted headers intentional."] },
+            ],
+            faq: [
+                { question: "Do these tools send HTTP requests?", answer: "No. They generate request code and examples locally. Use DevTools Network to confirm no tool-processing request is made while generating snippets." },
+                { question: "Which one should I use for API documentation?", answer: "Use HTTP Request Builder when creating a clean example from scratch; use cURL to Code when translating a verified command." },
+            ],
+        }),
+    },
+    {
+        slug: "compare/svg-optimizer-vs-svg-converter",
+        kind: "comparison",
+        relatedToolKeys: ["svg_optimizer", "svg_to_png_converter", "svg_stroke_to_fill_converter", "image_resizer"],
+        copy: comparisonPageCopy({
+            eyebrow: "SVG workflow comparison",
+            title: "SVG Optimizer vs SVG Converter",
+            description: "Choose between optimizing an SVG source file and converting SVG artwork into PNG or other delivery-friendly outputs.",
+            intent: "Use this comparison when preparing icons, diagrams, social images, or design assets for production delivery.",
+            summaryPoints: [
+                "SVG optimization keeps the asset as SVG while removing metadata, comments, unsafe active content, and redundant markup.",
+                "SVG conversion creates raster or transformed outputs when a target channel cannot safely or consistently render SVG.",
+                "Security review matters for both workflows because SVG can contain active content, external references, and hidden metadata.",
+            ],
+            trustCenterAngle: "Treat uploaded SVGs as untrusted input. Sanitization and conversion should happen locally and should not preserve hidden metadata by default.",
+            comparisonRows: [
+                { factor: "Output format", byteflow: "SVG Optimizer returns a smaller sanitized SVG for web delivery and source control.", other: "SVG conversion creates PNG or transformed vector output for platforms that need a different format.", note: "Keep SVG when scalability and CSS styling matter." },
+                { factor: "Security boundary", byteflow: "Optimization should remove scripts, event handlers, external references, and editor metadata.", other: "Conversion can neutralize some SVG risks by rasterizing, but source review is still important.", note: "Do not assume every SVG from a third party is safe." },
+                { factor: "Quality tradeoff", byteflow: "Optimized SVG remains sharp at any size and can be inspected as text.", other: "Raster conversion fixes dimensions and may be easier for emails, social previews, or legacy tools.", note: "Pick the format your target renderer supports reliably." },
+            ],
+            sections: [
+                { heading: "Use optimization for web SVG delivery", body: ["Choose optimization when the final asset should remain scalable, text-readable, cacheable, and easy to review in version control."] },
+                { heading: "Use conversion for fixed targets", body: ["Choose conversion when the destination requires PNG, has inconsistent SVG support, or needs a fixed-size preview image."] },
+            ],
+            faq: [
+                { question: "Does optimizing SVG change the visual result?", answer: "It should preserve the intended appearance while removing unnecessary or unsafe markup. Always preview the result before shipping." },
+                { question: "Is converting SVG to PNG safer?", answer: "Rasterizing can remove active SVG behavior from the delivered asset, but you should still treat the original SVG as untrusted input." },
+            ],
+        }),
+    },
+    {
         slug: "how-to/decode-jwt-locally",
         kind: "how-to",
         relatedToolKeys: ["jwt_decoder", "jwt_workbench", "jwt_verifier", "url_encode_decode"],
@@ -1224,6 +1379,287 @@ function base64FixCopyJa() { return localizedBase64Fix("ja") }
 function base64FixCopyKo() { return localizedBase64Fix("ko") }
 function base64FixCopyDe() { return localizedBase64Fix("de") }
 function base64FixCopyFr() { return localizedBase64Fix("fr") }
+
+type ComparisonSeed = GrowthPageCopy
+
+function getComparisonTermLocalization(): Record<Locale, Record<string, string>> {
+    return {
+        en: {},
+        "zh-CN": {
+            "JSON Formatter": "JSON 格式化工具",
+            "JSON Validator": "JSON 校验",
+            "JSON Diff Viewer": "JSON 差异对比",
+            "JSON to TypeScript": "JSON 转 TypeScript",
+            "Base64 Encode/Decode": "Base64 编码/解码",
+            "Base64 Encoding": "Base64 编码",
+            "Encryption": "加密",
+            "HAR Sanitizer": "HAR 脱敏器",
+            "Log Scrubber": "日志脱敏工具",
+            "cURL to Code": "cURL 转代码",
+            "HTTP Request Builder": "HTTP 请求构建器",
+            "SVG Optimizer": "SVG 优化器",
+            "SVG Converter": "SVG 转换器",
+            "Related tools": "相关工具",
+            "Related Tools": "相关工具",
+        },
+        "zh-TW": {
+            "JSON Formatter": "JSON 格式化工具",
+            "JSON Validator": "JSON 驗證",
+            "JSON Diff Viewer": "JSON 差異比對",
+            "JSON to TypeScript": "JSON 轉 TypeScript",
+            "Base64 Encode/Decode": "Base64 編碼/解碼",
+            "Base64 Encoding": "Base64 編碼",
+            "Encryption": "加密",
+            "HAR Sanitizer": "HAR 脫敏器",
+            "Log Scrubber": "日誌脫敏工具",
+            "cURL to Code": "cURL 轉程式碼",
+            "HTTP Request Builder": "HTTP 請求建構器",
+            "SVG Optimizer": "SVG 最佳化工具",
+            "SVG Converter": "SVG 轉換器",
+            "Related tools": "相關工具",
+            "Related Tools": "相關工具",
+        },
+        ja: {
+            "JSON Formatter": "JSON フォーマッター",
+            "JSON Validator": "JSON バリデーター",
+            "JSON Diff Viewer": "JSON 差分ビューワー",
+            "JSON to TypeScript": "JSON から TypeScript へ変換",
+            "Base64 Encode/Decode": "Base64 エンコード/デコード",
+            "Base64 Encoding": "Base64 エンコード",
+            "Encryption": "暗号化",
+            "HAR Sanitizer": "HAR サニタイザー",
+            "Log Scrubber": "ログスクラバー",
+            "cURL to Code": "cURL→コード変換",
+            "HTTP Request Builder": "HTTPリクエストビルダー",
+            "SVG Optimizer": "SVG オプティマイザー",
+            "SVG Converter": "SVG コンバーター",
+            "Related tools": "関連ツール",
+            "Related Tools": "関連ツール",
+        },
+        ko: {
+            "JSON Formatter": "JSON 포매터",
+            "JSON Validator": "JSON 검증기",
+            "JSON Diff Viewer": "JSON 차이 확인",
+            "JSON to TypeScript": "JSON을 TypeScript로 변환",
+            "Base64 Encode/Decode": "Base64 인코딩/디코딩",
+            "Base64 Encoding": "Base64 인코딩",
+            "Encryption": "암호화",
+            "HAR Sanitizer": "HAR 삭제 도구",
+            "Log Scrubber": "로그 스크러버",
+            "cURL to Code": "cURL → 코드 변환",
+            "HTTP Request Builder": "HTTP 요청 빌더",
+            "SVG Optimizer": "SVG 최적화 도구",
+            "SVG Converter": "SVG 변환기",
+            "Related tools": "관련 도구",
+            "Related Tools": "관련 도구",
+        },
+        de: {
+            "JSON Formatter": "JSON-Formatter",
+            "JSON Validator": "JSON-Validator",
+            "JSON Diff Viewer": "JSON-Diff-Viewer",
+            "JSON to TypeScript": "JSON zu TypeScript",
+            "Base64 Encode/Decode": "Base64 kodieren/dekodieren",
+            "Base64 Encoding": "Base64-Kodierung",
+            "Encryption": "Verschlüsselung",
+            "HAR Sanitizer": "HAR-Bereiniger",
+            "Log Scrubber": "Log-Bereiniger",
+            "cURL to Code": "cURL → Code",
+            "HTTP Request Builder": "HTTP-Anfrage-Builder",
+            "SVG Optimizer": "SVG-Optimierer",
+            "SVG Converter": "SVG-Konverter",
+            "Related tools": "Verwandte Tools",
+            "Related Tools": "Verwandte Tools",
+        },
+        fr: {
+            "JSON Formatter": "Formateur JSON",
+            "JSON Validator": "Validateur JSON",
+            "JSON Diff Viewer": "Visualiseur de diff JSON",
+            "JSON to TypeScript": "JSON vers TypeScript",
+            "Base64 Encode/Decode": "Encodage/Décodage Base64",
+            "Base64 Encoding": "Encodage Base64",
+            "Encryption": "chiffrement",
+            "HAR Sanitizer": "Assainisseur HAR",
+            "Log Scrubber": "Nettoyeur de logs",
+            "cURL to Code": "cURL vers Code",
+            "HTTP Request Builder": "Constructeur de requêtes HTTP",
+            "SVG Optimizer": "Optimiseur SVG",
+            "SVG Converter": "Convertisseur SVG",
+            "Related tools": "Outils connexes",
+            "Related Tools": "Outils connexes",
+        },
+    }
+}
+
+function localizeComparisonTerms(value: string, locale: Locale) {
+    const replacements = getComparisonTermLocalization()[locale]
+    return Object.entries(replacements)
+        .sort(([left], [right]) => right.length - left.length)
+        .reduce((current, [source, replacement]) => current.replaceAll(source, replacement), value)
+}
+
+function getComparisonLocaleCopy(): Record<Locale, {
+    eyebrowPrefix: string
+    titlePrefix: string
+    descriptionPrefix: string
+    intentPrefix: string
+    summaryPrefix: string
+    trustPrefix: string
+    factorSuffix: string
+    byteflowPrefix: string
+    otherPrefix: string
+    notePrefix: string
+    sectionPrefix: string
+    faqQuestionPrefix: string
+    faqAnswerPrefix: string
+}> {
+    return {
+        en: {
+        eyebrowPrefix: "",
+        titlePrefix: "",
+        descriptionPrefix: "",
+        intentPrefix: "",
+        summaryPrefix: "",
+        trustPrefix: "",
+        factorSuffix: "",
+        byteflowPrefix: "",
+        otherPrefix: "",
+        notePrefix: "",
+        sectionPrefix: "",
+        faqQuestionPrefix: "",
+        faqAnswerPrefix: "",
+    },
+    "zh-CN": {
+        eyebrowPrefix: "对比",
+        titlePrefix: "对比：",
+        descriptionPrefix: "决策框架：",
+        intentPrefix: "使用场景：",
+        summaryPrefix: "要点：",
+        trustPrefix: "隐私边界：",
+        factorSuffix: "（决策因素）",
+        byteflowPrefix: "Byteflow 本地流程：",
+        otherPrefix: "另一种选择：",
+        notePrefix: "实践说明：",
+        sectionPrefix: "实践判断：",
+        faqQuestionPrefix: "常见问题：",
+        faqAnswerPrefix: "回答：",
+    },
+    "zh-TW": {
+        eyebrowPrefix: "比較",
+        titlePrefix: "比較：",
+        descriptionPrefix: "決策框架：",
+        intentPrefix: "使用情境：",
+        summaryPrefix: "重點：",
+        trustPrefix: "隱私邊界：",
+        factorSuffix: "（決策因素）",
+        byteflowPrefix: "Byteflow 本地流程：",
+        otherPrefix: "另一種選擇：",
+        notePrefix: "實務說明：",
+        sectionPrefix: "實務判斷：",
+        faqQuestionPrefix: "常見問題：",
+        faqAnswerPrefix: "回答：",
+    },
+    ja: {
+        eyebrowPrefix: "比較",
+        titlePrefix: "比較：",
+        descriptionPrefix: "判断フレーム：",
+        intentPrefix: "利用場面：",
+        summaryPrefix: "要点：",
+        trustPrefix: "プライバシー境界：",
+        factorSuffix: "（判断項目）",
+        byteflowPrefix: "Byteflow のローカル手順：",
+        otherPrefix: "別の選択肢：",
+        notePrefix: "実務メモ：",
+        sectionPrefix: "実務判断：",
+        faqQuestionPrefix: "質問：",
+        faqAnswerPrefix: "回答：",
+    },
+    ko: {
+        eyebrowPrefix: "비교",
+        titlePrefix: "비교: ",
+        descriptionPrefix: "결정 기준: ",
+        intentPrefix: "사용 상황: ",
+        summaryPrefix: "요점: ",
+        trustPrefix: "개인정보 경계: ",
+        factorSuffix: " (결정 항목)",
+        byteflowPrefix: "Byteflow 로컬 흐름: ",
+        otherPrefix: "다른 선택지: ",
+        notePrefix: "실무 메모: ",
+        sectionPrefix: "실무 판단: ",
+        faqQuestionPrefix: "질문: ",
+        faqAnswerPrefix: "답변: ",
+    },
+    de: {
+        eyebrowPrefix: "Vergleich",
+        titlePrefix: "Vergleich: ",
+        descriptionPrefix: "Entscheidungsrahmen: ",
+        intentPrefix: "Einsatzfall: ",
+        summaryPrefix: "Kernpunkt: ",
+        trustPrefix: "Datenschutzgrenze: ",
+        factorSuffix: " (Kriterium)",
+        byteflowPrefix: "Byteflow lokaler Ablauf: ",
+        otherPrefix: "Andere Option: ",
+        notePrefix: "Praxisnotiz: ",
+        sectionPrefix: "Praktische Einordnung: ",
+        faqQuestionPrefix: "Frage: ",
+        faqAnswerPrefix: "Antwort: ",
+    },
+    fr: {
+        eyebrowPrefix: "Comparatif",
+        titlePrefix: "Comparatif : ",
+        descriptionPrefix: "Cadre de décision : ",
+        intentPrefix: "Cas d'usage : ",
+        summaryPrefix: "Point clé : ",
+        trustPrefix: "Limite de confidentialité : ",
+        factorSuffix: " (critère)",
+        byteflowPrefix: "Flux local Byteflow : ",
+        otherPrefix: "Autre option : ",
+        notePrefix: "Note pratique : ",
+        sectionPrefix: "Lecture pratique : ",
+        faqQuestionPrefix: "Question : ",
+        faqAnswerPrefix: "Réponse : ",
+        },
+    }
+}
+
+function localizeComparisonSeed(seed: ComparisonSeed, locale: Locale): GrowthPageCopy {
+    if (locale === "en") return seed
+    const copy = getComparisonLocaleCopy()[locale]
+    return {
+        eyebrow: copy.eyebrowPrefix,
+        title: `${copy.titlePrefix}${localizeComparisonTerms(seed.title, locale)}`,
+        description: `${copy.descriptionPrefix}${localizeComparisonTerms(seed.description, locale)}`,
+        intent: `${copy.intentPrefix}${localizeComparisonTerms(seed.intent, locale)}`,
+        summaryPoints: seed.summaryPoints.map((point) => `${copy.summaryPrefix}${localizeComparisonTerms(point, locale)}`),
+        trustCenterAngle: `${copy.trustPrefix}${localizeComparisonTerms(seed.trustCenterAngle, locale)}`,
+        comparisonRows: seed.comparisonRows?.map((row) => ({
+            factor: `${localizeComparisonTerms(row.factor, locale)}${copy.factorSuffix}`,
+            byteflow: `${copy.byteflowPrefix}${localizeComparisonTerms(row.byteflow, locale)}`,
+            other: `${copy.otherPrefix}${localizeComparisonTerms(row.other, locale)}`,
+            note: `${copy.notePrefix}${localizeComparisonTerms(row.note, locale)}`,
+        })),
+        sections: seed.sections.map((section) => ({
+            heading: `${copy.sectionPrefix}${localizeComparisonTerms(section.heading, locale)}`,
+            body: section.body.map((paragraph) => `${copy.sectionPrefix}${localizeComparisonTerms(paragraph, locale)}`),
+            bullets: section.bullets?.map((bullet) => `${copy.summaryPrefix}${localizeComparisonTerms(bullet, locale)}`),
+        })),
+        faq: seed.faq.map((item) => ({
+            question: `${copy.faqQuestionPrefix}${localizeComparisonTerms(item.question, locale)}`,
+            answer: `${copy.faqAnswerPrefix}${localizeComparisonTerms(item.answer, locale)}`,
+        })),
+    }
+}
+
+function comparisonPageCopy(seed: ComparisonSeed): Record<Locale, GrowthPageCopy> {
+    return {
+        en: seed,
+        "zh-CN": localizeComparisonSeed(seed, "zh-CN"),
+        "zh-TW": localizeComparisonSeed(seed, "zh-TW"),
+        ja: localizeComparisonSeed(seed, "ja"),
+        ko: localizeComparisonSeed(seed, "ko"),
+        de: localizeComparisonSeed(seed, "de"),
+        fr: localizeComparisonSeed(seed, "fr"),
+    }
+}
 
 export function getGrowthPage(slug: GrowthPageSlug) {
     return GROWTH_PAGES.find((page) => page.slug === slug)

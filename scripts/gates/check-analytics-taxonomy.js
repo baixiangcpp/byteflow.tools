@@ -15,6 +15,7 @@ const REQUIRED_EVENTS = [
     "download_output",
     "search_performed",
     "related_tool_click",
+    "pipeline_template_opened",
     "pwa_installed",
 ]
 
@@ -58,6 +59,7 @@ const ALLOWED_TRACK_FUNCTIONS = new Set([
     "trackDownloadOutput",
     "trackSearchPerformed",
     "trackRelatedToolClick",
+    "trackPipelineTemplateOpened",
     "trackPwaInstalled",
 ])
 
@@ -127,6 +129,7 @@ function checkAnalyticsFacade(taxonomy, failures) {
         "trackDownloadOutput",
         "trackSearchPerformed",
         "trackRelatedToolClick",
+        "trackPipelineTemplateOpened",
         "trackPwaInstalled",
     ]
     for (const exportName of requiredExports) {

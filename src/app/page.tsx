@@ -156,7 +156,7 @@ export default function RootPage() {
                             {LOCALES.map((locale) => (
                                 <li key={locale}>
                                     <Link
-                                        href={`/${locale}`}
+                                        href={locale === "en" ? "/" : `/${locale}`}
                                         className="flex min-h-11 items-center justify-between rounded-lg border border-border/70 bg-card/55 px-3 text-sm transition-colors hover:border-primary/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
                                     >
                                         <span>{LOCALE_NAMES[locale]}</span>

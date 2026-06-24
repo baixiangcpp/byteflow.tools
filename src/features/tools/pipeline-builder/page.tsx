@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { useLang } from "@/core/i18n/lang-provider"
+import { trackPipelineTemplateOpened } from "@/core/analytics/analytics"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { FILE_INPUT_POLICIES, readTextFileWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { getToolByKey } from "@/core/registry"
@@ -26,7 +27,7 @@ import { decodeRecipeFromUrlParam, encodeRecipeForShareUrl, recipeContainsRuntim
 import { runRecipe, validateRecipe } from "@/features/pipeline/executor"
 import { exportRecipeToJson, importRecipeFromJson } from "@/features/pipeline/recipe-import-export"
 import { RECIPE_STRUCTURE_PRIVACY_SCOPE } from "@/features/pipeline/recipe-sanitizer"
-import { createRecipeFromTemplate, PIPELINE_RECIPE_TEMPLATES, type PipelineRecipeTemplate } from "@/features/pipeline/recipe-templates"
+import { createRecipeFromTemplate, getPipelineRecipeTemplate, PIPELINE_RECIPE_TEMPLATES, type PipelineRecipeTemplate } from "@/features/pipeline/recipe-templates"
 import {
     deleteSavedRecipe,
     isRecipeStoreAvailable,
@@ -35,7 +36,7 @@ import {
     saveRecipeRecord,
     type SavedRecipeRecord,
 } from "@/features/pipeline/recipe-store"
-import type { PipelineExecutionResult, RecipeDocument, RecipeStep } from "@/features/pipeline/recipe-types"
+import type { PipelineExecutionResult, PipelineStepExecution, RecipeDocument, RecipeStep } from "@/features/pipeline/recipe-types"
 import { downloadText } from "./browser-actions"
 import { FIRST_ADAPTER, SHARE_PARAM } from "./constants"
 import { createId, createRecipe, createStep, getStepCompatibilityHints, updateRecipeTimestamp } from "./logic"
@@ -43,12 +44,14 @@ import { PipelineRunLog } from "./pipeline-run-log"
 import { PipelineOnboarding } from "./pipeline-onboarding"
 import { PipelinePrivacyPreview } from "./pipeline-privacy-preview"
 import { PipelineSavedRecipes } from "./pipeline-saved-recipes"
+import { PipelineStepDiagnostics } from "./pipeline-step-diagnostics"
 import { PipelineStepInspector } from "./pipeline-step-inspector"
 import { PipelineStepList } from "./pipeline-step-list"
 import { PipelineTemplateList } from "./pipeline-template-list"
 import type { OptionValue } from "./types"
 
 const ONBOARDING_DISMISSED_KEY = "byteflow:pipeline-builder:onboarding-dismissed"
+const TEMPLATE_PARAM = "template"
 type PendingPrivacyAction = "save" | "export" | "share"
 
 export function PipelineBuilderPage() {
@@ -106,37 +109,6 @@ export function PipelineBuilderPage() {
         if (!storageAvailable) return
         void refreshSavedRecipes()
     }, [refreshSavedRecipes, storageAvailable])
-
-    React.useEffect(() => {
-        const params = new URLSearchParams(window.location.search)
-        const recipeParam = params.get(SHARE_PARAM)
-        if (recipeParam) {
-            const decoded = decodeRecipeFromUrlParam(recipeParam)
-            if (decoded.ok) {
-                const decodedValidation = validateRecipe(decoded.recipe)
-                if (decodedValidation.ok) {
-                    setRecipe(decoded.recipe)
-                    setSelectedStepId(decoded.recipe.steps[0]?.id ?? null)
-                } else {
-                    setImportError(decodedValidation.errors.join("\n"))
-                }
-            } else {
-                setImportError(decoded.error)
-            }
-        }
-
-        const handoff = getToolHandoffFromSearchParams(params, window.location.hash)
-        if (handoff) {
-            setInitialInput(handoff)
-            toast.success(text("handoff_loaded"))
-        }
-    }, [text])
-
-    React.useEffect(() => {
-        if (!selectedStepId && recipe.steps.length > 0) {
-            setSelectedStepId(recipe.steps[0].id)
-        }
-    }, [recipe.steps, selectedStepId])
 
     const updateRecipe = React.useCallback((updater: (current: RecipeDocument) => RecipeDocument) => {
         setRecipe((current) => updateRecipeTimestamp(updater(current)))
@@ -203,6 +175,63 @@ export function PipelineBuilderPage() {
             },
         }))
     }, [updateStep])
+
+    const loadTemplate = React.useCallback((template: PipelineRecipeTemplate, sourcePage = "pipeline_gallery") => {
+        trackPipelineTemplateOpened({
+            templateId: template.id,
+            language: lang,
+            sourcePage,
+            action: "handoff",
+        })
+        const generated = createRecipeFromTemplate(template, {
+            recipeId: createId("recipe"),
+            createStepId: (index) => createId(`step${index + 1}`),
+            translate: text,
+        })
+        setRecipe(generated.recipe)
+        setInitialInput(generated.initialInput)
+        setSelectedStepId(generated.recipe.steps[0]?.id ?? null)
+        setResult(null)
+        setImportError(null)
+        toast.success(text("template_loaded"))
+    }, [lang, text])
+
+    React.useEffect(() => {
+        const params = new URLSearchParams(window.location.search)
+        const recipeParam = params.get(SHARE_PARAM)
+        if (recipeParam) {
+            const decoded = decodeRecipeFromUrlParam(recipeParam)
+            if (decoded.ok) {
+                const decodedValidation = validateRecipe(decoded.recipe)
+                if (decodedValidation.ok) {
+                    setRecipe(decoded.recipe)
+                    setSelectedStepId(decoded.recipe.steps[0]?.id ?? null)
+                } else {
+                    setImportError(decodedValidation.errors.join("\n"))
+                }
+            } else {
+                setImportError(decoded.error)
+            }
+        } else {
+            const templateParam = params.get(TEMPLATE_PARAM)
+            const template = templateParam ? getPipelineRecipeTemplate(templateParam) : undefined
+            if (template) {
+                loadTemplate(template, "workflow_page")
+            }
+        }
+
+        const handoff = getToolHandoffFromSearchParams(params, window.location.hash)
+        if (handoff) {
+            setInitialInput(handoff)
+            toast.success(text("handoff_loaded"))
+        }
+    }, [loadTemplate, text])
+
+    React.useEffect(() => {
+        if (!selectedStepId && recipe.steps.length > 0) {
+            setSelectedStepId(recipe.steps[0].id)
+        }
+    }, [recipe.steps, selectedStepId])
 
     const runCurrentRecipe = React.useCallback(async () => {
         setIsRunning(true)
@@ -332,22 +361,18 @@ export function PipelineBuilderPage() {
         toast.success(t.common.copied)
     }, [finalOutput, t.common.copied, t.common.copy_failed])
 
-    const loadTemplate = React.useCallback((template: PipelineRecipeTemplate) => {
-        const generated = createRecipeFromTemplate(template, {
-            recipeId: createId("recipe"),
-            createStepId: (index) => createId(`step${index + 1}`),
-            translate: text,
-        })
-        setRecipe(generated.recipe)
-        setInitialInput(generated.initialInput)
-        setSelectedStepId(generated.recipe.steps[0]?.id ?? null)
-        setResult(null)
-        setImportError(null)
-        toast.success(text("template_loaded"))
-    }, [text])
+    const copyStepOutput = React.useCallback(async (step: PipelineStepExecution) => {
+        if (!step.output) return
+        const copied = await safeClipboardWrite(step.output)
+        if (!copied.ok) {
+            toast.error(t.common.copy_failed)
+            return
+        }
+        toast.success(t.common.copied)
+    }, [t.common.copied, t.common.copy_failed])
 
     const loadSample = React.useCallback(() => {
-        loadTemplate(PIPELINE_RECIPE_TEMPLATES[0])
+        loadTemplate(PIPELINE_RECIPE_TEMPLATES[0], "sample_action")
     }, [loadTemplate])
 
     const dismissOnboarding = React.useCallback(() => {
@@ -499,6 +524,12 @@ export function PipelineBuilderPage() {
                     </section>
 
                     <PipelineRunLog result={result} text={text} />
+                    <PipelineStepDiagnostics
+                        onCopyStepOutput={(step) => void copyStepOutput(step)}
+                        recipe={recipe}
+                        result={result}
+                        text={text}
+                    />
                 </main>
 
                 <PipelineStepInspector

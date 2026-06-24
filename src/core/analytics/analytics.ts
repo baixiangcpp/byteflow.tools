@@ -210,6 +210,20 @@ export function trackRelatedToolClick(params: {
     }))
 }
 
+export function trackPipelineTemplateOpened(params: {
+    templateId: string
+    language?: string | null
+    sourcePage?: string | null
+    action?: ToolInteractionTrigger
+}): void {
+    trackAllowlistedEvent("pipeline_template_opened", buildAnalyticsPayload("pipeline_template_opened", {
+        tool_id: safeIdentifier(params.templateId),
+        action_type: normalizeActionType(params.action ?? "handoff"),
+        language: safeLocale(params.language),
+        source_page: safeSourcePage(params.sourcePage),
+    }))
+}
+
 export function trackPwaInstalled(language?: string | null, platform?: string | null, sourcePage = "install_app"): void {
     trackAllowlistedEvent("pwa_installed", buildAnalyticsPayload("pwa_installed", {
         language: safeLocale(language),

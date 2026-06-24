@@ -12,6 +12,7 @@ anonymous, and aggregate-only.
 - `download_output`
 - `search_performed`
 - `related_tool_click`
+- `pipeline_template_opened`
 - `pwa_installed`
 
 ## Allowed parameters

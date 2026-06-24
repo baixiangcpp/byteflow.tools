@@ -11,6 +11,7 @@ const LOCALES = ["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr"]
 const REDIRECT_STATUSES = new Set([301, 302])
 const STATIC_REDIRECT_LINES = [
     "/security.txt /.well-known/security.txt 301",
+    "/en / 301",
 ]
 const CHECK_ONLY = process.argv.includes("--check")
 

@@ -23,7 +23,7 @@ import { formatToolRegistryStatsTemplate, getToolRegistryStats } from "@/core/re
 import { PopularToolsSection } from "@/features/home/components/popular-tools-section"
 import { HomeCategoryPreview } from "@/features/home/components/home-category-preview"
 import { ALL_TOOLS_SECTION_ID } from "@/core/routing/all-tools-route"
-import { buildCanonicalUrl, buildLocalizedAlternates } from "@/core/seo/urls"
+import { buildHomepageCanonicalUrl, buildLocalizedAlternates } from "@/core/seo/urls"
 
 type FeatureCard = {
   key: "privacy" | "speed" | "keyboard" | "tools"
@@ -44,9 +44,10 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
       absolute: getTranslation(lang).site.title,
     },
     alternates: {
-      canonical: buildCanonicalUrl(lang),
+      canonical: buildHomepageCanonicalUrl(lang),
       languages: buildLocalizedAlternates(),
     },
+    robots: lang === "en" ? { index: false, follow: true } : undefined,
   }
 }
 

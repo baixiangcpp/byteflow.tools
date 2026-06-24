@@ -6,11 +6,13 @@ import { toast } from "sonner"
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { FileUploadStatus, type FileUploadStatusState } from "@/features/tool-shell/file-upload-status"
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
 import { FILE_INPUT_POLICIES, readTextFileWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
-import { optimizeAndSanitizeSvg } from "./logic"
+import { sanitizeOptimizedSvg } from "./logic"
+import { runSvgOptimizeTask } from "./svg-optimize-task"
 
 const SAMPLE_SVG = `<?xml version="1.0" encoding="UTF-8"?>
 <!-- BF -->
@@ -35,18 +37,54 @@ export function SvgOptimizerPage() {
     const toolT = t.tools["svg_optimizer"] as Record<string, string>
     const [input, setInput] = React.useState(SAMPLE_SVG)
     const [output, setOutput] = React.useState("")
+    const [uploadStatus, setUploadStatus] = React.useState<FileUploadStatusState>("idle")
+    const [uploadMessage, setUploadMessage] = React.useState("")
+    const [uploadProgress, setUploadProgress] = React.useState<number | undefined>(undefined)
+    const [isRunning, setIsRunning] = React.useState(false)
     const fileInputRef = React.useRef<HTMLInputElement>(null)
+    const abortControllerRef = React.useRef<AbortController | null>(null)
     const filePolicy = FILE_INPUT_POLICIES.svg
     const { theme } = useThemePreference()
     const monacoTheme = getByteflowMonacoThemeName(theme)
 
     React.useEffect(() => {
         if (!input.trim()) {
+            abortControllerRef.current?.abort()
             setOutput("")
+            setIsRunning(false)
             return
         }
-        setOutput(optimizeAndSanitizeSvg(input))
-    }, [input])
+        abortControllerRef.current?.abort()
+        const controller = new AbortController()
+        abortControllerRef.current = controller
+        setIsRunning(true)
+        setUploadStatus("processing")
+        setUploadMessage(t.common.processing_file_locally)
+        setUploadProgress(65)
+
+        void runSvgOptimizeTask({ svg: input }, { signal: controller.signal })
+            .then((result) => {
+                if (controller.signal.aborted) return
+                setOutput(sanitizeOptimizedSvg(result.optimized))
+                setUploadStatus("complete")
+                setUploadMessage(t.common.file_ready_locally)
+                setUploadProgress(100)
+            })
+            .catch((error) => {
+                if (error instanceof Error && error.message === "WORKER_ABORTED") return
+                setOutput("")
+                setUploadStatus("error")
+                setUploadMessage(error instanceof Error ? error.message : t.common.image_process_failed)
+                setUploadProgress(undefined)
+            })
+            .finally(() => {
+                if (!controller.signal.aborted) setIsRunning(false)
+            })
+
+        return () => {
+            controller.abort()
+        }
+    }, [input, t.common.file_ready_locally, t.common.image_process_failed, t.common.processing_file_locally])
 
     const originalSize = new Blob([input]).size
     const optimizedSize = new Blob([output]).size
@@ -63,8 +101,14 @@ export function SvgOptimizerPage() {
             return
         }
         try {
+            setUploadStatus("loading")
+            setUploadMessage(t.common.loading_file_locally)
+            setUploadProgress(25)
             setInput(await readTextFileWithPolicy(file, filePolicy))
         } catch (error) {
+            setUploadStatus("error")
+            setUploadMessage(error instanceof Error ? error.message : t.common.svg_file_required)
+            setUploadProgress(undefined)
             toast.error(error instanceof Error ? error.message : t.common.svg_file_required)
         }
     }
@@ -91,13 +135,20 @@ export function SvgOptimizerPage() {
             label: t.common.copy,
             icon: Copy,
             onClick: handleCopy,
-            disabled: !output,
+            disabled: !output || isRunning,
         },
         {
             id: "clear",
             label: t.common.clear,
             icon: Trash2,
-            onClick: () => setInput(""),
+            onClick: () => {
+                abortControllerRef.current?.abort()
+                setInput("")
+                setUploadStatus("idle")
+                setUploadMessage("")
+                setUploadProgress(undefined)
+                setIsRunning(false)
+            },
             variant: "outline",
         },
     ]
@@ -114,6 +165,19 @@ export function SvgOptimizerPage() {
                 </div>
                 
                 <ToolActionBar actions={actions} />
+                <FileUploadStatus
+                    policy={filePolicy}
+                    status={uploadStatus}
+                    message={uploadMessage}
+                    progress={uploadProgress}
+                    onCancel={isRunning || uploadStatus === "loading" ? () => {
+                        abortControllerRef.current?.abort()
+                        setIsRunning(false)
+                        setUploadStatus("cancelled")
+                        setUploadMessage(t.common.file_processing_cancelled)
+                        setUploadProgress(undefined)
+                    } : undefined}
+                />
                 <input
                     ref={fileInputRef}
                     type="file"

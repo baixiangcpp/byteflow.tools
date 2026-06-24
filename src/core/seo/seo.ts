@@ -252,6 +252,10 @@ export function buildToolOgImageUrl(lang: Locale, slug: string) {
     return `${SITE_URL}/og/tools/${lang}/${slug}.jpg`;
 }
 
+export function buildPageOgImageUrl(lang: Locale, slug: string) {
+    return `${SITE_URL}/og/pages/${lang}/${slug}.jpg`;
+}
+
 export function buildDefaultOgImageUrl(lang: Locale) {
     return `${SITE_URL}/og/default/${lang}.jpg`;
 }
@@ -384,7 +388,7 @@ export function buildHubMetadata({
 }): Metadata {
     const boosted = applySeoSnippetAngle({ lang, routeType: "hub", title, description });
     const canonicalUrl = buildCanonicalUrl(lang, slug);
-    const ogImage = buildDefaultOgImageUrl(lang);
+    const ogImage = buildPageOgImageUrl(lang, slug);
 
     return {
         title: buildPageTitle(boosted.title),
@@ -440,7 +444,7 @@ export function buildContentMetadata({
         description: localized.description,
     });
     const canonicalUrl = buildCanonicalUrl(lang, slug);
-    const ogImage = buildDefaultOgImageUrl(lang);
+    const ogImage = buildPageOgImageUrl(lang, slug);
 
     return {
         title: buildPageTitle(boosted.title),

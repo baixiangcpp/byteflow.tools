@@ -17,6 +17,7 @@ export type FileInputPolicy = {
     accept: string
     description: string
     maxBytes: number
+    maxPixels?: number
     maxFiles?: number
     allowedExtensions?: readonly string[]
     allowedMimePrefixes?: readonly string[]
@@ -88,24 +89,27 @@ export const FILE_INPUT_POLICIES = {
     "image-standard": {
         id: "image-standard",
         accept: "image/*",
-        description: "Image files up to 12 MB",
+        description: "Image files up to 12 MB and 24 MP",
         maxBytes: 12 * 1024 * 1024,
+        maxPixels: 24_000_000,
         allowedMimePrefixes: ["image/"],
         allowedExtensions: [".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".avif"],
     },
     "image-compact": {
         id: "image-compact",
         accept: "image/*",
-        description: "Image files up to 10 MB",
+        description: "Image files up to 10 MB and 16 MP",
         maxBytes: 10 * 1024 * 1024,
+        maxPixels: 16_000_000,
         allowedMimePrefixes: ["image/"],
         allowedExtensions: [".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".avif"],
     },
     "image-logo": {
         id: "image-logo",
         accept: "image/*",
-        description: "Logo/avatar images up to 2 MB",
+        description: "Logo/avatar images up to 2 MB and 4 MP",
         maxBytes: 2 * 1024 * 1024,
+        maxPixels: 4_000_000,
         allowedMimePrefixes: ["image/"],
         allowedExtensions: [".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"],
     },
@@ -120,8 +124,9 @@ export const FILE_INPUT_POLICIES = {
     "scan-image": {
         id: "scan-image",
         accept: "image/*",
-        description: "Up to 20 image pages, 12 MB each",
+        description: "Up to 20 image pages, 12 MB and 24 MP each",
         maxBytes: 12 * 1024 * 1024,
+        maxPixels: 24_000_000,
         maxFiles: 20,
         allowedMimePrefixes: ["image/"],
         allowedExtensions: [".png", ".jpg", ".jpeg", ".webp"],
@@ -138,6 +143,12 @@ export const FILE_INPUT_POLICIES = {
 
 export function formatFilePolicyLimit(policy: FileInputPolicy): string {
     return formatByteLimit(policy.maxBytes)
+}
+
+export function formatPixelLimit(maxPixels: number): string {
+    if (maxPixels >= 1_000_000) return `${Number((maxPixels / 1_000_000).toFixed(1))} MP`
+    if (maxPixels >= 1_000) return `${Number((maxPixels / 1_000).toFixed(1))} KP`
+    return `${maxPixels} px`
 }
 
 export function describeFilePolicy(policy: FileInputPolicy): string {

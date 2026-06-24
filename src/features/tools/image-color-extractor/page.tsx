@@ -9,20 +9,26 @@ import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { extractPaletteFromPixels } from "@/core/utils/image-color-utils"
-import { createDemoImageDataUrl, fileToDataUrl, getImageDataForAnalysis } from "@/core/utils/image-canvas-utils"
+import { FileUploadStatus, type FileUploadStatusState } from "@/features/tool-shell/file-upload-status"
+import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
+import { createDemoImageDataUrl, fileToDataUrl, getImageDataForAnalysis, loadPolicyCheckedImage } from "@/core/utils/image-canvas-utils"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024
+const IMAGE_FILE_POLICY = FILE_INPUT_POLICIES["image-compact"]
 
 export function ImageColorExtractorPage() {
     const { t } = useLang()
     const toolT = t.tools["image_color_extractor"] as Record<string, string>
     const fileInputRef = React.useRef<HTMLInputElement>(null)
+    const fileAbortControllerRef = React.useRef<AbortController | null>(null)
 
     const [imageSrc, setImageSrc] = React.useState("")
     const [fileName, setFileName] = React.useState("")
     const [count, setCount] = React.useState(6)
     const [palette, setPalette] = React.useState<string[]>(["#0F172A", "#1E293B", "#38BDF8", "#A78BFA", "#F59E0B", "#F8FAFC"])
+    const [uploadStatus, setUploadStatus] = React.useState<FileUploadStatusState>("idle")
+    const [uploadMessage, setUploadMessage] = React.useState("")
+    const [uploadProgress, setUploadProgress] = React.useState<number | undefined>(undefined)
 
     const output = React.useMemo(
         () =>
@@ -36,28 +42,46 @@ export function ImageColorExtractorPage() {
         [palette, toolT.output_color_prefix],
     )
 
-    const analyzeFromSource = async (src: string, colors: number) => {
+    const analyzeFromSource = React.useCallback(async (src: string, colors: number) => {
+        setUploadStatus("processing")
+        setUploadMessage(t.common.processing_file_locally)
+        setUploadProgress(65)
         const imageData = await getImageDataForAnalysis(src, 320)
         const extracted = extractPaletteFromPixels(imageData.data, colors)
         setPalette(extracted)
-    }
+        setUploadStatus("complete")
+        setUploadMessage(t.common.file_ready_locally)
+        setUploadProgress(100)
+    }, [t.common.file_ready_locally, t.common.processing_file_locally])
 
     const handleFile = async (file: File) => {
-        if (!file.type.startsWith("image/")) {
-            toast.error(t.common.image_file_required)
-            return
-        }
-        if (file.size > MAX_FILE_SIZE) {
-            toast.error((t.common.image_file_too_large).replace("{size}", "10MB"))
+        const validation = validateFileAgainstPolicy(file, IMAGE_FILE_POLICY)
+        if (!validation.ok) {
+            setUploadStatus("error")
+            setUploadMessage(validation.message)
+            setUploadProgress(undefined)
+            toast.error(validation.reason === "unsupported_type" ? t.common.image_file_required : validation.message)
             return
         }
 
+        fileAbortControllerRef.current?.abort()
+        const controller = new AbortController()
+        fileAbortControllerRef.current = controller
+        setUploadStatus("loading")
+        setUploadMessage(t.common.loading_file_locally)
+        setUploadProgress(25)
         try {
-            const dataUrl = await fileToDataUrl(file)
+            const dataUrl = await fileToDataUrl(file, IMAGE_FILE_POLICY, { signal: controller.signal })
+            await loadPolicyCheckedImage(dataUrl, IMAGE_FILE_POLICY)
+            if (controller.signal.aborted) return
             setImageSrc(dataUrl)
             setFileName(file.name)
             await analyzeFromSource(dataUrl, count)
         } catch {
+            if (controller.signal.aborted) return
+            setUploadStatus("error")
+            setUploadMessage(t.common.image_process_failed)
+            setUploadProgress(undefined)
             toast.error(t.common.image_process_failed)
         }
     }
@@ -74,10 +98,21 @@ export function ImageColorExtractorPage() {
     }
 
     const handleReset = () => {
+        fileAbortControllerRef.current?.abort()
         setImageSrc("")
         setFileName("")
         setCount(6)
         setPalette(["#0F172A", "#1E293B", "#38BDF8", "#A78BFA", "#F59E0B", "#F8FAFC"])
+        setUploadStatus("idle")
+        setUploadMessage("")
+        setUploadProgress(undefined)
+    }
+
+    const cancelProcessing = () => {
+        fileAbortControllerRef.current?.abort()
+        setUploadStatus("cancelled")
+        setUploadMessage(t.common.file_processing_cancelled)
+        setUploadProgress(undefined)
     }
 
     const handleCopy = async () => {
@@ -125,7 +160,7 @@ export function ImageColorExtractorPage() {
     React.useEffect(() => {
         if (!imageSrc) return
         void analyzeFromSource(imageSrc, count)
-    }, [count, imageSrc])
+    }, [analyzeFromSource, count, imageSrc])
 
     const actions: ToolAction[] = [
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: handleSample },
@@ -173,7 +208,7 @@ export function ImageColorExtractorPage() {
                         <input
                             ref={fileInputRef}
                             type="file"
-                            accept="image/*"
+                            accept={IMAGE_FILE_POLICY.accept}
                             className="hidden"
                             onChange={(event) => {
                                 const file = event.target.files?.[0]
@@ -181,6 +216,14 @@ export function ImageColorExtractorPage() {
                             }}
                         />
                     </div>
+
+                    <FileUploadStatus
+                        policy={IMAGE_FILE_POLICY}
+                        status={uploadStatus}
+                        message={uploadMessage}
+                        progress={uploadProgress}
+                        onCancel={uploadStatus === "loading" || uploadStatus === "processing" ? cancelProcessing : undefined}
+                    />
 
                     <div className="grid gap-3 sm:grid-cols-2">
                         <div className="rounded-lg border bg-background/60 p-3 text-xs text-muted-foreground">
