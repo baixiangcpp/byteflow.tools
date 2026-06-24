@@ -423,6 +423,8 @@
     "input_url_domain": "URL/domaine",
     "remove_filter": "Retirer le filtre",
     "show_filters": "Afficher les filtres",
+    "show_fewer_tools": "Afficher moins",
+    "show_more_tools": "Afficher plus",
     "use_case_encode": "Encoder/décoder",
     "use_case_format": "Formater/valider",
     "use_case_image": "Image et design",

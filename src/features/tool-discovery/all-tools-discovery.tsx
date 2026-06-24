@@ -88,8 +88,10 @@ type AllToolsDiscoveryLabels = {
     open: string
     popularTags: string
     removeFilter: string
-    showFilters: string
     closeFilters: string
+    showFilters: string
+    showFewerTools: string
+    showMoreTools: string
     clearRecentTools: string
     recentTools: string
     recentToolsPrivacy: string
@@ -126,6 +128,8 @@ type ActiveFilter = {
     label: string
     onRemove: () => void
 }
+
+const INITIAL_GROUP_TOOL_LIMIT = 6
 
 const CAPABILITY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
     "browser-local": ShieldCheck,
@@ -405,6 +409,7 @@ export function AllToolsDiscovery({
     const [personalizationReady, setPersonalizationReady] = React.useState(false)
     const [urlFiltersLoaded, setUrlFiltersLoaded] = React.useState(false)
     const [showMobileFilters, setShowMobileFilters] = React.useState(false)
+    const [expandedGroupKeys, setExpandedGroupKeys] = React.useState<Set<string>>(() => new Set())
     const mobileFilterDialogRef = React.useRef<HTMLDivElement>(null)
     const mobileFilterTriggerRef = React.useRef<HTMLButtonElement>(null)
     const mobileFilterPreviousFocusRef = React.useRef<HTMLElement | null>(null)
@@ -618,6 +623,15 @@ export function AllToolsDiscovery({
         setFavoriteToolKeys(toggleFavoriteToolKey(toolKey))
     }, [])
 
+    const toggleGroupExpansion = React.useCallback((groupKey: string) => {
+        setExpandedGroupKeys((current) => {
+            const next = new Set(current)
+            if (next.has(groupKey)) next.delete(groupKey)
+            else next.add(groupKey)
+            return next
+        })
+    }, [])
+
     const removeSelectedValue = React.useCallback((setter: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
         setter((current) => current.filter((item) => item !== value))
     }, [])
@@ -755,6 +769,13 @@ export function AllToolsDiscovery({
         </div>
     )
 
+    const clearFiltersDisabledDescriptionId = "all-tools-clear-filters-disabled-reason"
+    const clearFavoritesDisabledDescriptionId = "all-tools-clear-favorites-disabled-reason"
+    const clearRecentDisabledDescriptionId = "all-tools-clear-recent-disabled-reason"
+    const noActiveFiltersDescription = `${labels.activeFilters}: 0`
+    const noFavoritesDescription = `${labels.favorites}: 0`
+    const noRecentToolsDescription = `${labels.recentTools}: 0`
+
     const localToolsPanel = personalizationReady ? (
         <div className="grid gap-3 lg:grid-cols-2">
             <section className="rounded-lg border border-border/70 bg-background/35 p-3">
@@ -766,10 +787,19 @@ export function AllToolsDiscovery({
                         </h2>
                         <p className="mt-1 text-xs text-muted-foreground">{labels.favoritesPrivacy}</p>
                     </div>
-                    <Button type="button" variant="ghost" className="min-h-10 px-2 text-xs" onClick={handleClearFavorites} disabled={favoriteTools.length === 0}>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        className="min-h-10 px-2 text-xs"
+                        onClick={handleClearFavorites}
+                        disabled={favoriteTools.length === 0}
+                        aria-describedby={favoriteTools.length === 0 ? clearFavoritesDisabledDescriptionId : undefined}
+                        title={favoriteTools.length === 0 ? `${labels.clearFavorites}: ${noFavoritesDescription}` : labels.clearFavorites}
+                    >
                         <Trash2 className="h-3.5 w-3.5" />
                         {labels.clearFavorites}
                     </Button>
+                    {favoriteTools.length === 0 ? <span id={clearFavoritesDisabledDescriptionId} className="sr-only">{noFavoritesDescription}</span> : null}
                 </div>
                 {favoriteTools.length > 0 ? (
                     <div className="mt-3 flex flex-wrap gap-2">
@@ -797,10 +827,19 @@ export function AllToolsDiscovery({
                         </h2>
                         <p className="mt-1 text-xs text-muted-foreground">{labels.recentToolsPrivacy}</p>
                     </div>
-                    <Button type="button" variant="ghost" className="min-h-10 px-2 text-xs" onClick={handleClearRecentTools} disabled={recentTools.length === 0}>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        className="min-h-10 px-2 text-xs"
+                        onClick={handleClearRecentTools}
+                        disabled={recentTools.length === 0}
+                        aria-describedby={recentTools.length === 0 ? clearRecentDisabledDescriptionId : undefined}
+                        title={recentTools.length === 0 ? `${labels.clearRecentTools}: ${noRecentToolsDescription}` : labels.clearRecentTools}
+                    >
                         <Trash2 className="h-3.5 w-3.5" />
                         {labels.clearRecentTools}
                     </Button>
+                    {recentTools.length === 0 ? <span id={clearRecentDisabledDescriptionId} className="sr-only">{noRecentToolsDescription}</span> : null}
                 </div>
                 {recentTools.length > 0 ? (
                     <div className="mt-3 flex flex-wrap gap-2">
@@ -837,10 +876,19 @@ export function AllToolsDiscovery({
                             aria-describedby="all-tools-result-status"
                         />
                     </div>
-                    <Button type="button" variant="outline" className="hidden lg:inline-flex" onClick={clearFilters} disabled={!hasFilters}>
+                    <Button
+                        type="button"
+                        variant="outline"
+                        className="hidden lg:inline-flex"
+                        onClick={clearFilters}
+                        disabled={!hasFilters}
+                        aria-describedby={!hasFilters ? clearFiltersDisabledDescriptionId : undefined}
+                        title={!hasFilters ? `${labels.clearFilters}: ${noActiveFiltersDescription}` : labels.clearFilters}
+                    >
                         <X className="h-4 w-4" />
                         {labels.clearFilters}
                     </Button>
+                    {!hasFilters ? <span id={clearFiltersDisabledDescriptionId} className="sr-only">{noActiveFiltersDescription}</span> : null}
                 </div>
 
                 <button
@@ -887,11 +935,11 @@ export function AllToolsDiscovery({
                                 <button
                                     key={filter.id}
                                     type="button"
-                                    className="inline-flex min-h-11 min-w-11 items-center gap-1 rounded-md border border-primary/30 bg-primary/10 px-2 text-xs font-medium text-primary transition-colors hover:border-primary/55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
+                                    className="inline-flex min-h-11 min-w-11 max-w-full items-center gap-1 rounded-md border border-primary/30 bg-primary/10 px-2 text-left text-xs font-medium text-primary transition-colors hover:border-primary/55 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
                                     onClick={filter.onRemove}
                                     aria-label={`${labels.removeFilter}: ${filter.label}`}
                                 >
-                                    {filter.label}
+                                    <span className="break-words">{filter.label}</span>
                                     <X className="h-3 w-3" />
                                 </button>
                             ))}
@@ -935,7 +983,15 @@ export function AllToolsDiscovery({
                             {filterPanel}
                             <div className="border-t border-border/70 pt-4">{tagFilterPanel}</div>
                             <div className="flex gap-2 border-t border-border/70 pt-4">
-                                <Button type="button" variant="outline" className="flex-1" onClick={clearFilters} disabled={!hasFilters}>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    className="flex-1"
+                                    onClick={clearFilters}
+                                    disabled={!hasFilters}
+                                    aria-describedby={!hasFilters ? clearFiltersDisabledDescriptionId : undefined}
+                                    title={!hasFilters ? `${labels.clearFilters}: ${noActiveFiltersDescription}` : labels.clearFilters}
+                                >
                                     <X className="h-4 w-4" />
                                     {labels.clearFilters}
                                 </Button>
@@ -979,12 +1035,23 @@ export function AllToolsDiscovery({
 
             {filteredGroups.length > 0 ? (
                 <div id="all-tools-results" className="grid gap-5">
-                    {filteredGroups.map((group) => (
+                    {filteredGroups.map((group) => {
+                        const isExpanded = expandedGroupKeys.has(group.key)
+                        const hasOverflowTools = group.tools.length > INITIAL_GROUP_TOOL_LIMIT
+                        const visibleTools = hasOverflowTools && !isExpanded
+                            ? group.tools.slice(0, INITIAL_GROUP_TOOL_LIMIT)
+                            : group.tools
+                        const compactTools = hasOverflowTools && !isExpanded
+                            ? group.tools.slice(INITIAL_GROUP_TOOL_LIMIT)
+                            : []
+                        const compactListId = `all-tools-compact-${group.key}`
+
+                        return (
                         <section key={group.key} className="min-w-0 rounded-xl border border-border/70 bg-card/55 p-4 backdrop-blur-sm sm:p-5">
                             <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-                                <div>
-                                    <h2 className="text-xl font-semibold tracking-tight">{group.title}</h2>
-                                    <p className="mt-1 max-w-3xl text-sm leading-relaxed text-muted-foreground">
+                                <div className="min-w-0">
+                                    <h2 className="break-words text-xl font-semibold tracking-tight">{group.title}</h2>
+                                    <p className="mt-1 max-w-3xl break-words text-sm leading-relaxed text-muted-foreground">
                                         {group.description}
                                     </p>
                                 </div>
@@ -998,12 +1065,13 @@ export function AllToolsDiscovery({
                             </div>
 
                             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                                {group.tools.map((tool) => {
+                                {visibleTools.map((tool) => {
                                     const isFavorite = favoriteToolKeySet.has(tool.key)
                                     return (
                                     <article
                                         key={tool.key}
-                                        className="group flex min-h-36 min-w-0 flex-col rounded-lg border border-border/70 bg-background/45 p-4 transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-lg hover:shadow-black/10 dark:hover:shadow-black/35"
+                                        data-all-tools-card="true"
+                                        className="group flex min-h-36 min-w-0 overflow-hidden rounded-lg border border-border/70 bg-background/45 p-4 transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-lg hover:shadow-black/10 dark:hover:shadow-black/35"
                                     >
                                         <div className="flex items-start justify-between gap-3">
                                             <Link
@@ -1025,14 +1093,48 @@ export function AllToolsDiscovery({
                                                 />
                                             ) : null}
                                         </div>
-                                        <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
+                                        <p className="mt-2 line-clamp-3 break-words text-sm leading-relaxed text-muted-foreground">
                                             {tool.description}
                                         </p>
                                     </article>
                                 )})}
                             </div>
+
+                            {hasOverflowTools ? (
+                                <div className="mt-4 rounded-lg border border-border/70 bg-background/35 p-3">
+                                    <div className="flex flex-wrap items-center justify-between gap-2">
+                                        <p className="text-xs text-muted-foreground">
+                                            {isExpanded ? group.tools.length : visibleTools.length} / {group.tools.length} {labels.toolsLabel}
+                                        </p>
+                                        <Button
+                                            type="button"
+                                            variant="outline"
+                                            className="min-h-11 px-3 text-xs"
+                                            onClick={() => toggleGroupExpansion(group.key)}
+                                            aria-expanded={isExpanded}
+                                            aria-controls={compactTools.length > 0 ? compactListId : undefined}
+                                        >
+                                            {isExpanded ? labels.showFewerTools : `${labels.showMoreTools} (${compactTools.length})`}
+                                        </Button>
+                                    </div>
+                                    {compactTools.length > 0 ? (
+                                        <div id={compactListId} className="mt-3 flex flex-wrap gap-2">
+                                            {compactTools.map((tool) => (
+                                                <Link
+                                                    key={tool.key}
+                                                    href={`/${locale}/${tool.slug}`}
+                                                    data-all-tools-compact-link="true"
+                                                    className="inline-flex min-h-11 max-w-full items-center rounded-md border border-border/70 bg-background px-2.5 py-1 text-sm text-foreground transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
+                                                >
+                                                    <span className="break-words">{tool.title}</span>
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    ) : null}
+                                </div>
+                            ) : null}
                         </section>
-                    ))}
+                    )})}
                 </div>
             ) : (
                 <section id="all-tools-results" className="rounded-xl border border-dashed border-border/80 bg-card/35 p-8 text-center">
