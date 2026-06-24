@@ -1,0 +1,5 @@
+Contact: https://github.com/baixiangcpp/byteflow.tools/security/advisories/new
+Policy: https://github.com/baixiangcpp/byteflow.tools/security/policy
+Canonical: https://byteflow.tools/.well-known/security.txt
+Preferred-Languages: en
+Expires: 2027-06-24T00:00:00Z

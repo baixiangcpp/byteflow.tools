@@ -140,6 +140,22 @@ export function HarViewerSanitizerPage() {
                         <div className="rounded-lg border p-3"><div className="text-xs text-muted-foreground">{text("requests")}</div><div className="text-2xl font-bold">{summary?.totalRequests ?? 0}</div></div>
                         <div className="rounded-lg border p-3"><div className="text-xs text-muted-foreground">{text("redactions")}</div><div className="text-2xl font-bold">{sanitized?.redactionCount ?? 0}</div></div>
                     </div>
+                    <div className="rounded-lg border border-amber-500/35 bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-300">
+                        {text("review_warning")}
+                    </div>
+                    {sanitized && Object.keys(sanitized.summary).length > 0 && (
+                        <div className="rounded-lg border p-4">
+                            <h2 className="text-sm font-semibold">{text("summary_title")}</h2>
+                            <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
+                                {Object.entries(sanitized.summary).map(([type, count]) => (
+                                    <li key={type} className="flex items-center justify-between gap-3">
+                                        <span className="font-mono text-xs">{type}</span>
+                                        <span className="font-semibold text-foreground">{count}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </div>
             </div>
 

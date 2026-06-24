@@ -1,12 +1,18 @@
 export type ScrubFindingType =
     | "email"
     | "ipv4"
+    | "ipv6"
     | "jwt"
     | "bearer-token"
     | "api-key"
     | "aws-access-key"
+    | "aws-secret-key"
+    | "cloud-token"
     | "private-key"
+    | "certificate"
     | "url-credential"
+    | "cookie"
+    | "session-id"
 
 export interface ScrubOptions {
     emails: boolean
@@ -17,6 +23,8 @@ export interface ScrubOptions {
     awsAccessKeys: boolean
     privateKeys: boolean
     urlCredentials: boolean
+    cookies: boolean
+    sessionIds: boolean
 }
 
 export interface ScrubFinding {
@@ -45,6 +53,8 @@ export const DEFAULT_SCRUB_OPTIONS: ScrubOptions = {
     awsAccessKeys: true,
     privateKeys: true,
     urlCredentials: true,
+    cookies: true,
+    sessionIds: true,
 }
 
 type ScrubRule = {
@@ -71,6 +81,13 @@ const RULES: ScrubRule[] = [
         label: "Private key block",
         replacement: "[PRIVATE_KEY_REDACTED]",
         pattern: /-----BEGIN [A-Z ]*PRIVATE KEY-----[\s\S]*?-----END [A-Z ]*PRIVATE KEY-----/g,
+    },
+    {
+        enabled: "privateKeys",
+        type: "certificate",
+        label: "Certificate block",
+        replacement: "[CERTIFICATE_REDACTED]",
+        pattern: /-----BEGIN CERTIFICATE-----[\s\S]*?-----END CERTIFICATE-----/g,
     },
     {
         enabled: "urlCredentials",
@@ -102,12 +119,43 @@ const RULES: ScrubRule[] = [
         pattern: /\b(A3T[A-Z0-9]|AKIA|ASIA|AGPA|AIDA|AROA|AIPA|ANPA)[A-Z0-9]{16}\b/g,
     },
     {
+        enabled: "awsAccessKeys",
+        type: "aws-secret-key",
+        label: "AWS secret key",
+        replacement: "$1[SECRET_REDACTED]",
+        pattern: /\b((?:aws[_-]?secret[_-]?access[_-]?key|AWS_SECRET_ACCESS_KEY)\s*[:=]\s*)(["']?)[A-Za-z0-9/+=]{32,}(\2)/g,
+        replace: (match) => match.replace(/(:|=)\s*(["']?)[A-Za-z0-9/+=]{32,}(\2)$/i, "$1 $2[SECRET_REDACTED]$3"),
+    },
+    {
+        enabled: "apiKeys",
+        type: "cloud-token",
+        label: "Cloud or SaaS token",
+        replacement: "[TOKEN_REDACTED]",
+        pattern: /\b(?:gh[pousr]_[A-Za-z0-9_]{20,}|sk_(?:live|test)_[A-Za-z0-9]{16,}|SG\.[A-Za-z0-9_-]{16,}\.[A-Za-z0-9_-]{16,}|AIza[0-9A-Za-z_-]{35}|xox[baprs]-[A-Za-z0-9-]{20,})\b/g,
+    },
+    {
         enabled: "apiKeys",
         type: "api-key",
         label: "Key/value secret",
         replacement: "$1[SECRET_REDACTED]",
-        pattern: /\b((?:api[_-]?key|access[_-]?token|auth[_-]?token|secret|password|passwd|pwd|client[_-]?secret)\s*[:=]\s*)(["']?)[^\s"',;]+(\2)/gi,
+        pattern: /\b((?:api[_-]?key|access[_-]?token|auth[_-]?token|refresh[_-]?token|id[_-]?token|secret|password|passwd|pwd|client[_-]?secret|private[_-]?token)\s*[:=]\s*)(["']?)[^\s"',;]+(\2)/gi,
         replace: (match) => match.replace(/(:|=)\s*(["']?)[^\s"',;]+(\2)$/i, "$1 $2[SECRET_REDACTED]$3"),
+    },
+    {
+        enabled: "cookies",
+        type: "cookie",
+        label: "Cookie header",
+        replacement: "$1[COOKIE_REDACTED]",
+        pattern: /\b((?:cookie|set-cookie)\s*:\s*)[^\r\n]+/gi,
+        replace: (match) => match.replace(/(:\s*)[^\r\n]+$/i, "$1[COOKIE_REDACTED]"),
+    },
+    {
+        enabled: "sessionIds",
+        type: "session-id",
+        label: "Session identifier",
+        replacement: "$1[SESSION_REDACTED]",
+        pattern: /\b((?:session[_-]?id|sid|xsrf[_-]?token|csrf[_-]?token|trace[_-]?id|request[_-]?id)\s*[:=]\s*)(["']?)[A-Za-z0-9._~+/=-]{8,}(\2)/gi,
+        replace: (match) => match.replace(/(:|=)\s*(["']?)[A-Za-z0-9._~+/=-]{8,}(\2)$/i, "$1 $2[SESSION_REDACTED]$3"),
     },
     {
         enabled: "emails",
@@ -122,6 +170,13 @@ const RULES: ScrubRule[] = [
         label: "IPv4 address",
         replacement: "[IP_REDACTED]",
         pattern: /\b(?:(?:25[0-5]|2[0-4]\d|1?\d?\d)\.){3}(?:25[0-5]|2[0-4]\d|1?\d?\d)\b/g,
+    },
+    {
+        enabled: "ipAddresses",
+        type: "ipv6",
+        label: "IPv6 address",
+        replacement: "[IP_REDACTED]",
+        pattern: /\b(?:[A-F0-9]{1,4}:){2,7}[A-F0-9]{1,4}\b/gi,
     },
 ]
 

@@ -7,6 +7,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { ExternalRequestConfirmation } from "@/features/tool-shell/external-request-confirmation"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import {
@@ -17,6 +18,7 @@ import {
 } from "@/core/utils/thumbnail-grabber-utils"
 
 const SAMPLE_URL = "https://vimeo.com/76979871"
+const EXTERNAL_HOSTS = ["vimeo.com", "player.vimeo.com", "vumbnail.com"] as const
 
 export function VimeoThumbnailGrabberPage() {
     const { t } = useLang()
@@ -40,6 +42,7 @@ export function VimeoThumbnailGrabberPage() {
     const [selectedUrl, setSelectedUrl] = React.useState("")
     const [status, setStatus] = React.useState(statusIdle)
     const [previewApproved, setPreviewApproved] = React.useState(false)
+    const [externalRequestConfirmed, setExternalRequestConfirmed] = React.useState(false)
 
     React.useEffect(() => {
         const id = parseVimeoVideoId(url)
@@ -48,6 +51,7 @@ export function VimeoThumbnailGrabberPage() {
             setCandidates([])
             setSelectedUrl("")
             setPreviewApproved(false)
+            setExternalRequestConfirmed(false)
             setStatus(url.trim() ? statusInvalid : statusIdle)
             return
         }
@@ -57,6 +61,7 @@ export function VimeoThumbnailGrabberPage() {
         setCandidates(next)
         setSelectedUrl(next[0]?.url || "")
         setPreviewApproved(false)
+        setExternalRequestConfirmed(false)
         setStatus(statusReady)
     }, [statusAutoSelectedTemplate, statusIdle, statusInvalid, statusReady, statusUnreachable, url])
 
@@ -75,9 +80,16 @@ export function VimeoThumbnailGrabberPage() {
     )
 
     const handleSample = () => setUrl(SAMPLE_URL)
-    const handleReset = () => setUrl("")
+    const handleReset = () => {
+        setUrl("")
+        setExternalRequestConfirmed(false)
+    }
     const handleLoadPreview = () => {
         if (candidates.length === 0) return
+        if (!externalRequestConfirmed) {
+            toast.error(t.common.external_network_notice.confirm_required)
+            return
+        }
         setPreviewApproved(true)
         setStatus(statusReady)
         void (async () => {
@@ -102,6 +114,10 @@ export function VimeoThumbnailGrabberPage() {
 
     const handleDownload = () => {
         if (!selectedUrl) return
+        if (!externalRequestConfirmed) {
+            toast.error(t.common.external_network_notice.confirm_required)
+            return
+        }
         const filename = `vimeo-thumbnail-${videoId || "image"}.jpg`
         const anchor = document.createElement("a")
         anchor.href = selectedUrl
@@ -120,8 +136,10 @@ export function VimeoThumbnailGrabberPage() {
             label: t.common.preview,
             icon: ImageDown,
             onClick: handleLoadPreview,
-            disabled: candidates.length === 0,
-            disabledReason: t.common.action_disabled_input_required,
+            disabled: candidates.length === 0 || !externalRequestConfirmed,
+            disabledReason: candidates.length === 0
+                ? t.common.action_disabled_input_required
+                : t.common.external_network_notice.confirm_required,
         },
         { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy() },
         {
@@ -129,10 +147,12 @@ export function VimeoThumbnailGrabberPage() {
             label: t.common.download,
             icon: Download,
             onClick: handleDownload,
-            disabled: !selectedUrl || !previewApproved,
+            disabled: !selectedUrl || !previewApproved || !externalRequestConfirmed,
             disabledReason: !selectedUrl
                 ? t.common.action_disabled_no_output
-                : t.common.action_disabled_preview_required,
+                : !externalRequestConfirmed
+                    ? t.common.external_network_notice.confirm_required
+                    : t.common.action_disabled_preview_required,
         },
     ]
 
@@ -166,6 +186,17 @@ export function VimeoThumbnailGrabberPage() {
                     <div className="rounded-lg border bg-background/60">
                         <div className="tool-pane-header">{t.common.compliance_guidance}</div>
                         <div className="space-y-2 border-t p-3 text-sm text-muted-foreground">
+                            <ExternalRequestConfirmation
+                                hosts={EXTERNAL_HOSTS}
+                                purposeKey="thumbnail_preview"
+                                dataSent="derived_url"
+                                confirmed={externalRequestConfirmed}
+                                onConfirmedChange={(confirmed) => {
+                                    setExternalRequestConfirmed(confirmed)
+                                    if (!confirmed) setPreviewApproved(false)
+                                }}
+                                rightsGuidance={t.common.thumbnail_public_only_notice}
+                            />
                             <div className="flex items-start gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 p-3 text-emerald-700 dark:text-emerald-300">
                                 <ShieldCheck className="mt-0.5 h-4 w-4" />
                                 <span>{t.common.thumbnail_public_only_notice}</span>

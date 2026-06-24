@@ -36,6 +36,7 @@ export interface HarSanitizeResult {
     output: string
     findings: HarFinding[]
     redactionCount: number
+    summary: Partial<Record<HarFinding["type"], number>>
     error?: string
 }
 
@@ -55,6 +56,8 @@ const SENSITIVE_HEADER_NAMES = new Set([
     "x-api-key",
     "x-auth-token",
     "x-csrf-token",
+    "x-xsrf-token",
+    "x-amz-security-token",
 ])
 
 type HarNameValue = {
@@ -88,6 +91,7 @@ type HarEntryRecord = {
 
 type HarFileRecord = {
     log: {
+        _byteflowSanitizerSummary?: unknown
         entries: HarEntryRecord[]
     }
 }
@@ -210,6 +214,13 @@ function sanitizeUrl(rawUrl: string, path: string, findings: HarFinding[]): stri
     }
 }
 
+function summarizeHarFindings(findings: HarFinding[]): Partial<Record<HarFinding["type"], number>> {
+    return findings.reduce((summary, finding) => {
+        summary[finding.type] = (summary[finding.type] || 0) + 1
+        return summary
+    }, {} as Partial<Record<HarFinding["type"], number>>)
+}
+
 export function sanitizeHar(input: string, options: HarSanitizeOptions = DEFAULT_HAR_SANITIZE_OPTIONS): HarSanitizeResult {
     try {
         const har = parseHar(input)
@@ -238,17 +249,33 @@ export function sanitizeHar(input: string, options: HarSanitizeOptions = DEFAULT
                 findings.push({ path: `${base}.response.content.text`, type: "content", label: "response content" })
             }
         })
+        const summary = summarizeHarFindings(findings)
+        har.log._byteflowSanitizerSummary = {
+            generatedBy: "byteflow.tools HAR Viewer / Sanitizer",
+            redactionCount: findings.length,
+            categories: summary,
+            defaults: {
+                headers: DEFAULT_HAR_SANITIZE_OPTIONS.headers,
+                cookies: DEFAULT_HAR_SANITIZE_OPTIONS.cookies,
+                queryStrings: DEFAULT_HAR_SANITIZE_OPTIONS.queryStrings,
+                postData: DEFAULT_HAR_SANITIZE_OPTIONS.postData,
+                responseContent: DEFAULT_HAR_SANITIZE_OPTIONS.responseContent,
+            },
+            reviewRequired: true,
+        }
 
         return {
             output: JSON.stringify(har, null, 2),
             findings,
             redactionCount: findings.length,
+            summary,
         }
     } catch (error) {
         return {
             output: "",
             findings: [],
             redactionCount: 0,
+            summary: {},
             error: error instanceof Error ? error.message : "Unable to sanitize HAR.",
         }
     }

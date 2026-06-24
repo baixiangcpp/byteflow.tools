@@ -31,6 +31,8 @@ const OPTION_KEYS: OptionKey[] = [
     "awsAccessKeys",
     "privateKeys",
     "urlCredentials",
+    "cookies",
+    "sessionIds",
 ]
 
 export function LogScrubberPage() {
@@ -180,6 +182,22 @@ password=hunter2`)
                             <div className="text-2xl font-bold">{Object.keys(summary).length}</div>
                         </div>
                     </div>
+                    <div className="rounded-lg border border-amber-500/35 bg-amber-500/10 p-3 text-sm text-amber-700 dark:text-amber-300">
+                        {text("manual_review_note")}
+                    </div>
+                    {Object.keys(summary).length > 0 && (
+                        <div className="rounded-lg border p-4">
+                            <h2 className="text-sm font-semibold">{text("summary_title")}</h2>
+                            <ul className="mt-3 space-y-1 text-sm text-muted-foreground">
+                                {Object.entries(summary).map(([type, count]) => (
+                                    <li key={type} className="flex items-center justify-between gap-3">
+                                        <span className="font-mono text-xs">{type}</span>
+                                        <span className="font-semibold text-foreground">{count}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
                 </div>
             </div>
 

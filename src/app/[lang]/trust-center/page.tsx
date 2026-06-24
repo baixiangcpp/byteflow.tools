@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { CheckCircle2, ExternalLink, Github, LockKeyhole, Network, ShieldCheck, WifiOff } from "lucide-react"
+import { CheckCircle2, ExternalLink, FileText, Github, LockKeyhole, Network, ShieldCheck, WifiOff } from "lucide-react"
 import { isValidLocale, requireTranslationValue } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { TOOL_REGISTRY } from "@/core/registry"
@@ -9,6 +9,7 @@ import { SITE_URL, buildCanonicalUrl } from "@/core/seo/urls"
 
 const SECURITY_ADVISORY_URL = "https://github.com/baixiangcpp/byteflow.tools/security/advisories/new"
 const GITHUB_REPO_URL = "https://github.com/baixiangcpp/byteflow.tools"
+const SECURITY_TXT_URL = "/.well-known/security.txt"
 
 function TrustPill({
     icon,
@@ -140,6 +141,13 @@ export default async function TrustCenterPage({
                     >
                         <Github className="h-4 w-4" aria-hidden="true" />
                         {p.trust_center_source_link}
+                    </a>
+                    <a
+                        href={SECURITY_TXT_URL}
+                        className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                        <FileText className="h-4 w-4" aria-hidden="true" />
+                        {p.trust_center_securitytxt_link}
                     </a>
                 </div>
             </section>
@@ -280,6 +288,13 @@ export default async function TrustCenterPage({
                     >
                         <Github className="h-4 w-4" aria-hidden="true" />
                         {p.trust_center_source_link}
+                    </a>
+                    <a
+                        href={SECURITY_TXT_URL}
+                        className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                        <FileText className="h-4 w-4" aria-hidden="true" />
+                        {p.trust_center_securitytxt_link}
                     </a>
                 </div>
             </section>
