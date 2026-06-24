@@ -1,4 +1,4 @@
-import { Copy, ListTree, Maximize2, Minimize2, Search } from "lucide-react"
+import { Copy, Download, ListTree, Maximize2, Minimize2, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import type { ViewMode } from "./types"
 
@@ -8,7 +8,9 @@ type JsonOutputToolbarProps = {
     isSearchOpen: boolean
     labels: {
         collapseAll: string
+        downloadJson: string
         copyOutput: string
+        disabledNoOutput: string
         expandAll: string
         output: string
         search: string
@@ -17,6 +19,7 @@ type JsonOutputToolbarProps = {
     }
     onCollapseAll: () => void
     onCopy: () => void
+    onDownload: () => void
     onExpandAll: () => void
     onToggleSearch: () => void
     onViewModeChange: (mode: ViewMode) => void
@@ -30,6 +33,7 @@ export function JsonOutputToolbar({
     labels,
     onCollapseAll,
     onCopy,
+    onDownload,
     onExpandAll,
     onToggleSearch,
     onViewModeChange,
@@ -97,9 +101,27 @@ export function JsonOutputToolbar({
                     </div>
                 ) : null}
 
-                <Button variant="ghost" size="icon" onClick={onCopy} disabled={!canCopy}>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={onCopy}
+                    disabled={!canCopy}
+                    aria-label={canCopy ? labels.copyOutput : `${labels.copyOutput}: ${labels.disabledNoOutput}`}
+                    title={canCopy ? labels.copyOutput : labels.disabledNoOutput}
+                >
                     <Copy className="h-4 w-4" />
                     <span className="sr-only">{labels.copyOutput}</span>
+                </Button>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={onDownload}
+                    disabled={!canCopy}
+                    aria-label={canCopy ? labels.downloadJson : `${labels.downloadJson}: ${labels.disabledNoOutput}`}
+                    title={canCopy ? labels.downloadJson : labels.disabledNoOutput}
+                >
+                    <Download className="h-4 w-4" />
+                    <span className="sr-only">{labels.downloadJson}</span>
                 </Button>
             </div>
         </div>

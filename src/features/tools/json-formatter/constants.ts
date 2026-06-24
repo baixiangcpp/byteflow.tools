@@ -7,3 +7,18 @@ export const JSON_FORMATTER_PERSISTENCE_POLICY = {
     inputStorageKey: INPUT_STORAGE_KEY,
     maxInputChars: INPUT_STORAGE_MAX_CHARS,
 } as const
+
+export const JSON_EDITOR_OPTIONS = {
+    minimap: { enabled: false },
+    fontSize: 14,
+    fontFamily: "var(--font-mono)",
+    lineHeight: 24,
+    padding: { top: 16 },
+    scrollBeyondLastLine: false,
+    wordWrap: "on",
+} as const
+
+export const JSON_OUTPUT_EDITOR_OPTIONS = {
+    ...JSON_EDITOR_OPTIONS,
+    readOnly: true,
+} as const

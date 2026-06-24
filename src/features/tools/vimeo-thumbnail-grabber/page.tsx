@@ -102,20 +102,38 @@ export function VimeoThumbnailGrabberPage() {
 
     const handleDownload = () => {
         if (!selectedUrl) return
+        const filename = `vimeo-thumbnail-${videoId || "image"}.jpg`
         const anchor = document.createElement("a")
         anchor.href = selectedUrl
         anchor.target = "_blank"
         anchor.rel = "noopener noreferrer"
-        anchor.download = `vimeo-thumbnail-${videoId || "image"}.jpg`
+        anchor.download = filename
         anchor.click()
+        toast.success(t.common.downloaded_file.replace("{filename}", filename))
     }
 
     const actions: ToolAction[] = [
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: handleSample },
-        { id: "reset", label: t.common.reset, icon: Eraser, onClick: handleReset },
-        { id: "preview", label: t.common.preview, icon: ImageDown, onClick: handleLoadPreview, disabled: candidates.length === 0 },
+        { id: "clear", label: t.common.clear, icon: Eraser, onClick: handleReset, destructive: true },
+        {
+            id: "preview",
+            label: t.common.preview,
+            icon: ImageDown,
+            onClick: handleLoadPreview,
+            disabled: candidates.length === 0,
+            disabledReason: t.common.action_disabled_input_required,
+        },
         { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy() },
-        { id: "download", label: t.common.download, icon: Download, onClick: handleDownload, disabled: !selectedUrl || !previewApproved },
+        {
+            id: "download",
+            label: t.common.download,
+            icon: Download,
+            onClick: handleDownload,
+            disabled: !selectedUrl || !previewApproved,
+            disabledReason: !selectedUrl
+                ? t.common.action_disabled_no_output
+                : t.common.action_disabled_preview_required,
+        },
     ]
 
     return (

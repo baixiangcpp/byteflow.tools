@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Copy, Eraser, Terminal, Plus, Trash2, Code2 } from "lucide-react"
+import { Copy, Eraser, Terminal, Plus, Trash2, Code2, ShieldCheck } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
+import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import {
     Select,
@@ -84,6 +85,22 @@ export function HttpRequestBuilderPage() {
         toast.success(t.common.copied)
     }
 
+    const actions: ToolAction[] = [
+        {
+            id: "clear",
+            label: t.common.clear,
+            icon: Eraser,
+            onClick: handleClear,
+            destructive: true,
+        },
+        {
+            id: "copy_code",
+            label: t.common.copy,
+            icon: Copy,
+            onClick: () => void handleCopy(),
+        },
+    ]
+
     const methodColors: Record<HttpMethod, string> = {
         GET: "text-emerald-500",
         POST: "text-blue-500",
@@ -107,14 +124,20 @@ export function HttpRequestBuilderPage() {
                         {toolT.description}
                     </p>
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
-                    <Button variant="outline" size="sm" onClick={handleClear}>
-                        <Eraser className="mr-2 h-4 w-4" />{t.common.clear}
-                    </Button>
-                </div>
+                <ToolActionBar actions={actions} />
             </div>
 
             <SensitiveInputWarning variant="request" />
+
+            <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 p-4 text-sm text-emerald-800 dark:text-emerald-200">
+                <div className="flex items-start gap-3">
+                    <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0" />
+                    <div className="space-y-1">
+                        <p className="font-semibold">{toolT.no_send_title}</p>
+                        <p>{toolT.no_send_desc}</p>
+                    </div>
+                </div>
+            </div>
 
             {/* Method + URL */}
             <div className="flex gap-2">
@@ -233,7 +256,12 @@ export function HttpRequestBuilderPage() {
                                     <SelectItem value="python">Python</SelectItem>
                                 </SelectContent>
                             </Select>
-                            <Button variant="outline" size="sm" onClick={() => void handleCopy()}>
+                            <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => void handleCopy()}
+                                aria-label={`${t.common.copy}: ${toolT.generated_code}`}
+                            >
                                 <Copy className="mr-2 h-4 w-4" />{t.common.copy}
                             </Button>
                         </div>

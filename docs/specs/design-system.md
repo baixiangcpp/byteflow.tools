@@ -56,6 +56,18 @@ Large tools should split orchestration, pure logic, browser effects, samples, ty
 - Errors should be specific and local to the affected input or output area.
 - Toasts are useful for command confirmation, but validation errors should not rely on toast-only feedback.
 
+## Tool Action Semantics
+
+Shared tool actions should appear in this order: Sample, Import or Upload, Clear, Reset, Preview, Run or task-specific primary actions, Copy, Download or Export, Share, then Send to.
+
+- Sample loads safe example input and expected example settings without persisting user data.
+- Clear removes current input, output, transient errors, selected files, and sensitive fields; it should not unexpectedly change durable settings unless the tool documents that behavior.
+- Reset restores documented defaults and may also clear current input/output when returning the tool to its initial state.
+- Run, Format, Minify, Validate, Convert, Generate, Decode, Encode, and Hash create or refresh output and should be disabled with a reason when required input is missing.
+- Copy, Download, and Export operate only on current valid output, provide visible feedback, and remain disabled with an accessible reason when output is empty, stale, or invalid.
+- Share and Send to must not include sensitive payloads unless the flow explicitly uses the approved sensitive handoff or share preview.
+- Destructive Clear and Reset actions use destructive styling in the shared action bar.
+
 ## Accessibility
 
 - Preserve semantic HTML before adding custom roles.

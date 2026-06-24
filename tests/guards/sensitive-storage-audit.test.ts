@@ -6,6 +6,7 @@ const ROOT = process.cwd()
 
 const SENSITIVE_AUDIT_TOOLS = [
     "jwt-decoder",
+    "hash-generator",
     "log-scrubber",
     "har-viewer-sanitizer",
     "certificate-decoder",

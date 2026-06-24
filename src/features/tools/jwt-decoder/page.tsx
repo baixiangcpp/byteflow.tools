@@ -38,6 +38,11 @@ function getClaimStatusClass(status: JwtClaimSemantic["status"]): string {
     return "border-border/70 bg-muted/45 text-muted-foreground"
 }
 
+function getClaimCopyValue(claim: JwtClaimSemantic): string {
+    if (typeof claim.epochSeconds === "number") return String(claim.epochSeconds)
+    return claim.valueSummary ?? ""
+}
+
 export function JwtDecoderPage() {
     const { t, lang } = useLang()
     const toolT = t.tools["jwt_decoder"] as Record<string, string>
@@ -111,6 +116,19 @@ export function JwtDecoderPage() {
         })
     }
 
+    const handleCopyClaim = async (claim: JwtClaimSemantic) => {
+        const value = getClaimCopyValue(claim)
+        if (!value) return
+        const result = await safeClipboardWrite(value)
+        if (!result.ok) {
+            toast.error(t.common.copy_failed)
+            return
+        }
+        toast.success(t.common.copied, {
+            description: toolT.claim_copied.replace("{claim}", claim.claim),
+        })
+    }
+
     const actions: ToolAction[] = [
         {
             id: "sample",
@@ -123,6 +141,7 @@ export function JwtDecoderPage() {
             label: t.common.clear,
             icon: Eraser,
             onClick: handleClear,
+            destructive: true,
         },
     ]
 
@@ -310,7 +329,21 @@ export function JwtDecoderPage() {
                                 <div key={claim.claim} className={`rounded-md border p-3 text-sm ${getClaimStatusClass(claim.status)}`}>
                                     <div className="flex items-center justify-between gap-3">
                                         <span className="font-mono font-semibold">{claim.claim}</span>
-                                        <span className="text-xs uppercase tracking-wide">{toolT[`claim_status_${claim.status}`]}</span>
+                                        <div className="flex items-center gap-1.5">
+                                            <span className="rounded border border-current/20 px-1.5 py-0.5 text-xs uppercase tracking-wide">
+                                                {toolT[`claim_status_${claim.status}`]}
+                                            </span>
+                                            <Button
+                                                variant="ghost"
+                                                size="icon-xs"
+                                                aria-label={toolT.copy_claim_value.replace("{claim}", claim.claim)}
+                                                title={toolT.copy_claim_value.replace("{claim}", claim.claim)}
+                                                onClick={() => void handleCopyClaim(claim)}
+                                                disabled={!getClaimCopyValue(claim)}
+                                            >
+                                                <Copy className="h-3.5 w-3.5" />
+                                            </Button>
+                                        </div>
                                     </div>
                                     <p className="mt-1">{toolT[`claim_detail_${claim.detail}`]}</p>
                                     {claim.utc ? (

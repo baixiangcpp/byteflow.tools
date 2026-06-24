@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Copy, Download, Eraser, Image as ImageIcon, Lock, LockOpen, TestTube2, Upload } from "lucide-react"
+import { Copy, Download, Eraser, Image as ImageIcon, Lock, LockOpen, RotateCcw, TestTube2, Upload } from "lucide-react"
 import { toast } from "sonner"
 import { useLang } from "@/core/i18n/lang-provider"
 import { Input } from "@/components/ui/input"
@@ -202,7 +202,7 @@ export function ImageResizerPage() {
         setLockAspect(true)
     }
 
-    const handleReset = () => {
+    const handleClear = () => {
         replaceObjectUrl(imageObjectUrlRef, null)
         setImageSrc("")
         setImageBytes(null)
@@ -210,6 +210,11 @@ export function ImageResizerPage() {
         setFileName("")
         setSourceWidth(0)
         setSourceHeight(0)
+        setOutputDataUrl("")
+    }
+
+    const handleReset = () => {
+        handleClear()
         setTargetWidth(DEFAULT_STATE.width)
         setTargetHeight(DEFAULT_STATE.height)
         setFitMode(DEFAULT_STATE.fitMode)
@@ -234,13 +239,22 @@ export function ImageResizerPage() {
         anchor.href = outputDataUrl
         anchor.download = `resized-image.${extension}`
         anchor.click()
+        toast.success(t.common.downloaded_file.replace("{filename}", `resized-image.${extension}`))
     }
 
     const actions: ToolAction[] = [
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: () => void handleSample() },
-        { id: "reset", label: t.common.reset, icon: Eraser, onClick: handleReset },
+        { id: "clear", label: t.common.clear, icon: Eraser, onClick: handleClear, destructive: true },
+        { id: "reset", label: t.common.reset, icon: RotateCcw, onClick: handleReset, destructive: true },
         { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy() },
-        { id: "download", label: t.common.download, icon: Download, onClick: handleDownload },
+        {
+            id: "download",
+            label: t.common.download,
+            icon: Download,
+            onClick: handleDownload,
+            disabled: !outputDataUrl,
+            disabledReason: t.common.action_disabled_no_output,
+        },
     ]
 
     return (

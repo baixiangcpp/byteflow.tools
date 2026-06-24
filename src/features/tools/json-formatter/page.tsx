@@ -11,6 +11,7 @@ import {
     ArrowRightLeft,
     TestTube2,
     Workflow,
+    Download,
 } from "lucide-react"
 import { toast } from "sonner"
 import { useLang } from "@/core/i18n/lang-provider"
@@ -32,7 +33,7 @@ import { JsonImportDropzone } from "./json-import-dropzone"
 import { JsonOutputToolbar } from "./json-output-toolbar"
 import { JsonTreeSearch } from "./json-tree-search"
 import { JsonErrorAlert, JsonInputHeader, JsonTextOutputEmptyState, JsonTreeEditDialog } from "./panels"
-import { INPUT_STORAGE_DEBOUNCE_MS, INPUT_STORAGE_KEY, JSON_FORMATTER_PERSISTENCE_POLICY, VIEW_MODE_STORAGE_KEY } from "./constants"
+import { INPUT_STORAGE_DEBOUNCE_MS, INPUT_STORAGE_KEY, JSON_EDITOR_OPTIONS, JSON_FORMATTER_PERSISTENCE_POLICY, JSON_OUTPUT_EDITOR_OPTIONS, VIEW_MODE_STORAGE_KEY } from "./constants"
 import {
     findMatchingPaths,
     getAllPaths,
@@ -45,6 +46,7 @@ import {
 } from "./logic"
 import { JsonTreeNode } from "./components"
 import { SAMPLE_JSON_SOURCE } from "./samples"
+import { downloadJsonOutput } from "./browser-actions"
 import type { JsonPath, JsonValue, TreeDialogState, ViewMode } from "./types"
 
 export function JsonFormatterPage() {
@@ -87,6 +89,7 @@ export function JsonFormatterPage() {
     const appliedHandoffRef = React.useRef<string | null>(null)
     const formatRequestIdRef = React.useRef(0)
     const formatAbortControllerRef = React.useRef<AbortController | null>(null)
+    const [lastFormatMode, setLastFormatMode] = React.useState<JsonFormatMode>("format")
     React.useEffect(() => {
         const savedMode = readStorageString(VIEW_MODE_STORAGE_KEY)
         if (savedMode === "text" || savedMode === "tree") {
@@ -175,6 +178,17 @@ export function JsonFormatterPage() {
         }
     }, [])
 
+    const handleInputChange = React.useCallback((nextInput: string) => {
+        setInput(nextInput)
+        if (output || treeData !== null) {
+            setOutput("")
+            setTreeData(null)
+            setExpanded(new Set(["$"]))
+        }
+        setError(null)
+        setErrorDetails(null)
+    }, [output, treeData])
+
     const runJsonFormat = React.useCallback(async (source: string, mode: JsonFormatMode) => {
         const requestId = formatRequestIdRef.current + 1
         formatRequestIdRef.current = requestId
@@ -197,12 +211,16 @@ export function JsonFormatterPage() {
             if (formatRequestIdRef.current !== requestId) return
             setOutput(result.output)
             setTreeData(result.parsed)
+            setLastFormatMode(mode)
             setError(null)
             setErrorDetails(null)
             scrollOutputIntoViewOnMobile()
         } catch (err) {
             if (formatRequestIdRef.current !== requestId) return
             const details = buildJsonParseErrorDetails(source, err, text)
+            setOutput("")
+            setTreeData(null)
+            setExpanded(new Set(["$"]))
             setError(details.message)
             setErrorDetails(details)
         } finally {
@@ -242,6 +260,17 @@ export function JsonFormatterPage() {
             description: t.common.copied_desc,
         })
     }, [output, t.common, treeData, viewMode])
+
+    const handleDownload = React.useCallback(() => {
+        const content = viewMode === "tree" && treeData !== null
+            ? JSON.stringify(treeData, null, 2)
+            : output
+
+        if (!content || error) return
+        const filename = lastFormatMode === "minify" ? "minified.json" : "formatted.json"
+        downloadJsonOutput(content, filename)
+        toast.success(t.common.downloaded_file.replace("{filename}", filename))
+    }, [error, lastFormatMode, output, t.common.downloaded_file, treeData, viewMode])
 
     const handleClear = () => {
         setInput("")
@@ -370,6 +399,7 @@ export function JsonFormatterPage() {
             href: jsonToTypescriptHandoff.href,
             onClick: jsonToTypescriptHandoff.prime,
             disabled: !handoffPayload.trim(),
+            disabledReason: t.common.action_disabled_no_output,
         },
         {
             id: "to_pipeline_builder",
@@ -378,19 +408,22 @@ export function JsonFormatterPage() {
             href: pipelineHandoff.href,
             onClick: pipelineHandoff.prime,
             disabled: !handoffPayload.trim(),
+            disabledReason: t.common.action_disabled_no_output,
         },
         {
             id: "clear",
             label: t.common.clear,
             icon: Eraser,
             onClick: handleClear,
+            destructive: true,
         },
         {
             id: "minify",
             label: t.common.minify,
             icon: AlignLeft,
             onClick: minifyJson,
-            disabled: isFormatting,
+            disabled: isFormatting || !input.trim(),
+            disabledReason: !input.trim() ? t.common.action_disabled_input_required : undefined,
         },
         {
             id: "format",
@@ -398,7 +431,18 @@ export function JsonFormatterPage() {
             icon: Play,
             onClick: formatJson,
             variant: "default",
-            disabled: isFormatting,
+            disabled: isFormatting || !input.trim(),
+            disabledReason: !input.trim() ? t.common.action_disabled_input_required : undefined,
+        },
+        {
+            id: "download_json",
+            label: text("download_json"),
+            icon: Download,
+            onClick: handleDownload,
+            disabled: Boolean(error) || !(output || treeData !== null),
+            disabledReason: Boolean(error)
+                ? text("download_disabled_invalid")
+                : t.common.action_disabled_no_output,
         },
     ]
 
@@ -574,16 +618,8 @@ export function JsonFormatterPage() {
                             theme={monacoTheme}
                             beforeMount={(monaco) => ensureByteflowMonacoThemes(monaco)}
                             value={input}
-                            onChange={(val) => setInput(val || "")}
-                            options={{
-                                minimap: { enabled: false },
-                                fontSize: 14,
-                                fontFamily: "var(--font-mono)",
-                                lineHeight: 24,
-                                padding: { top: 16 },
-                                scrollBeyondLastLine: false,
-                                wordWrap: "on",
-                            }}
+                            onChange={(val) => handleInputChange(val || "")}
+                            options={JSON_EDITOR_OPTIONS}
                         />
                     </div>
                 </div>
@@ -595,6 +631,8 @@ export function JsonFormatterPage() {
                         isSearchOpen={isSearchOpen}
                         labels={{
                             collapseAll: text("tree_collapse_all"),
+                            disabledNoOutput: t.common.action_disabled_no_output,
+                            downloadJson: text("download_json"),
                             copyOutput: t.common.copy_output,
                             expandAll: text("tree_expand_all"),
                             output: t.common.output,
@@ -604,6 +642,7 @@ export function JsonFormatterPage() {
                         }}
                         onCollapseAll={handleCollapseAll}
                         onCopy={handleCopy}
+                        onDownload={handleDownload}
                         onExpandAll={handleExpandAll}
                         onToggleSearch={() => setIsSearchOpen(!isSearchOpen)}
                         onViewModeChange={switchViewMode}
@@ -619,16 +658,7 @@ export function JsonFormatterPage() {
                                     theme={monacoTheme}
                                     beforeMount={(monaco) => ensureByteflowMonacoThemes(monaco)}
                                     value={output}
-                                    options={{
-                                        readOnly: true,
-                                        minimap: { enabled: false },
-                                        fontSize: 14,
-                                        fontFamily: "var(--font-mono)",
-                                        lineHeight: 24,
-                                        padding: { top: 16 },
-                                        scrollBeyondLastLine: false,
-                                        wordWrap: "on",
-                                    }}
+                                    options={JSON_OUTPUT_EDITOR_OPTIONS}
                                 />
                             ) : (
                                 <JsonTextOutputEmptyState hasInput={Boolean(input.trim())} text={text} />
