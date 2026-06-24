@@ -3,10 +3,10 @@
 import * as React from "react"
 import { Copy, RefreshCw, Hash } from "lucide-react"
 import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
 import { useLang } from "@/core/i18n/lang-provider"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { v1 as uuidv1, v4 as uuidv4 } from "uuid"
 import {
@@ -62,9 +62,27 @@ export function UuidGeneratorPage() {
         })
     }
 
+    const actions: ToolAction[] = [
+        {
+            id: "generate",
+            label: toolT.regenerate_action,
+            icon: RefreshCw,
+            onClick: generateUuids,
+            variant: "default",
+        },
+        {
+            id: "copy_all",
+            label: t.common.copy_all,
+            icon: Copy,
+            onClick: () => void handleCopyAll(),
+            disabled: uuids.length === 0,
+            disabledReason: t.common.action_disabled_no_output,
+        },
+    ]
+
     return (
         <div className="flex flex-col h-full space-y-6 max-w-5xl mx-auto">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+            <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
                         <Hash className="h-6 w-6 text-primary" />
@@ -73,12 +91,7 @@ export function UuidGeneratorPage() {
                         {toolT.description}
                     </p>
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
-                    <Button size="sm" onClick={generateUuids}>
-                        <RefreshCw className="mr-2 h-4 w-4" />
-                        {toolT.regenerate_action}
-                    </Button>
-                </div>
+                <ToolActionBar actions={actions} />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
@@ -145,10 +158,6 @@ export function UuidGeneratorPage() {
                 <div className="md:col-span-8 lg:col-span-9 flex flex-col border rounded-lg bg-card overflow-hidden shadow-sm">
                     <div className="tool-pane-header tool-pane-header-between">
                         <span>{toolT.generated_heading} ({uuids.length})</span>
-                        <Button variant="ghost" size="sm" className="h-8 gap-2" onClick={() => void handleCopyAll()}>
-                            <Copy className="h-4 w-4" />
-                            {t.common.copy_all}
-                        </Button>
                     </div>
                     <div className="flex-1 p-0">
                         <Textarea

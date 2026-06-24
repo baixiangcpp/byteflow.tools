@@ -163,6 +163,7 @@ export function RegexGeneratorPage() {
         anchor.download = "regex-pattern.txt"
         anchor.click()
         URL.revokeObjectURL(url)
+        void notifySuccess(t.common.downloaded_file.replace("{filename}", "regex-pattern.txt"))
     }
 
     const actions: ToolAction[] = [
@@ -177,6 +178,7 @@ export function RegexGeneratorPage() {
             label: t.common.clear,
             icon: Eraser,
             onClick: handleClear,
+            destructive: true,
         },
         {
             id: "generate",
@@ -191,6 +193,7 @@ export function RegexGeneratorPage() {
             icon: Download,
             onClick: handleDownload,
             disabled: !literal,
+            disabledReason: t.common.action_disabled_no_output,
         },
         {
             id: "open-tester",

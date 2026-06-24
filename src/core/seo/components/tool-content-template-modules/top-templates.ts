@@ -4038,6 +4038,7 @@ export const TOP_TOOL_CONTENT_TEMPLATES: Record<string, ToolContentTemplateData>
             "Mask authorization tokens before sharing generated snippets.",
         ],
         faqs: [
+            { q: "Does this builder send the HTTP request?", a: "No. It only generates cURL, fetch, and Python request snippets in your browser. Network access happens only after you copy generated code and run it yourself outside byteflow.tools." },
             { q: "Can I generate code for multiple clients?", a: "Yes, cURL, fetch, and Python requests outputs are available." },
             { q: "Does it support custom headers?", a: "Yes, headers can be added, edited, toggled, and removed." },
             { q: "Can I send form-urlencoded bodies?", a: "Yes, form-urlencoded mode is supported." },

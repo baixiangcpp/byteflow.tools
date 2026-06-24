@@ -33,6 +33,8 @@ export type ToolAction = {
     variant?: ActionVariant
     size?: ActionSize
     disabled?: boolean
+    disabledReason?: string
+    destructive?: boolean
     href?: string
 }
 
@@ -52,6 +54,28 @@ const ACTION_VARIANT_CLASS: Record<ActionVariant, string> = {
     ghost: "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
 }
 
+const ACTION_ORDER_PREFIXES = [
+    "sample",
+    "import",
+    "upload",
+    "clear",
+    "reset",
+    "preview",
+    "format",
+    "minify",
+    "run",
+    "validate",
+    "convert",
+    "generate",
+    "decode",
+    "encode",
+    "hash",
+    "copy",
+    "download",
+    "export",
+    "share",
+]
+
 function joinClasses(...values: Array<string | null | undefined | false>) {
     return values.filter(Boolean).join(" ")
 }
@@ -65,6 +89,28 @@ function classifyAnalyticsAction(actionId: string): AnalyticsAction {
     if (["sample", "reset", "clear"].includes(normalized)) return null
 
     return "tool_run"
+}
+
+function getActionOrder(action: ToolAction): number {
+    const normalized = action.id.trim().toLowerCase()
+    const index = ACTION_ORDER_PREFIXES.findIndex((prefix) => normalized === prefix || normalized.startsWith(`${prefix}_`))
+    return index === -1 ? ACTION_ORDER_PREFIXES.length : index
+}
+
+function getActionLabel(action: ToolAction, fallbackDisabledReason: string): string {
+    const disabledReason = action.disabled ? action.disabledReason || fallbackDisabledReason : ""
+    return disabledReason
+        ? `${action.label}: ${disabledReason}`
+        : action.label
+}
+
+function getActionDescriptionId(actionId: string): string {
+    return `tool-action-${actionId.replace(/[^a-zA-Z0-9_-]/g, "-")}-disabled-reason`
+}
+
+function isDestructiveAction(action: ToolAction): boolean {
+    const normalized = action.id.trim().toLowerCase()
+    return action.destructive === true || normalized === "clear" || normalized === "reset" || normalized.startsWith("clear_") || normalized.startsWith("reset_")
 }
 
 export function ToolActionBar({
@@ -86,19 +132,20 @@ export function ToolActionBar({
 
     const { handoffActions, primaryActions } = React.useMemo(() => {
         const handoffs: ToolAction[] = []
-        const primary: ToolAction[] = []
+        const primary: Array<ToolAction & { orderIndex: number }> = []
 
-        actions.forEach((action) => {
+        actions.forEach((action, orderIndex) => {
             const isHandoff =
                 action.href?.startsWith("/") &&
                 (action.id.startsWith("to_") || action.id.includes("handoff"))
             if (isHandoff) {
                 handoffs.push(action)
             } else {
-                primary.push(action)
+                primary.push({ ...action, orderIndex })
             }
         })
 
+        primary.sort((left, right) => getActionOrder(left) - getActionOrder(right) || left.orderIndex - right.orderIndex)
         return { handoffActions: handoffs, primaryActions: primary }
     }, [actions])
 
@@ -125,55 +172,74 @@ export function ToolActionBar({
             {primaryActions.map((action) => {
                 const Icon = action.icon
                 const analyticsAction = classifyAnalyticsAction(action.id)
+                const disabledReason = action.disabled ? action.disabledReason || t.common.action_disabled_unavailable : undefined
+                const accessibleLabel = getActionLabel(action, t.common.action_disabled_unavailable)
+                const disabledDescriptionId = disabledReason ? getActionDescriptionId(action.id) : undefined
+                const isDestructive = isDestructiveAction(action)
+                const variantClass = isDestructive
+                    ? "border border-destructive/35 bg-background text-destructive shadow-xs hover:bg-destructive/10 dark:bg-input/30"
+                    : ACTION_VARIANT_CLASS[action.variant ?? "outline"]
 
                 if (action.href) {
                     return (
-                        <Link
-                            key={action.id}
-                            href={action.href}
-                            className={joinClasses(
-                                ACTION_BASE_CLASS,
-                                ACTION_SIZE_CLASS[action.size ?? "sm"],
-                                ACTION_VARIANT_CLASS[action.variant ?? "outline"],
-                                "max-w-full",
-                                action.disabled && "pointer-events-none opacity-50",
-                            )}
-                            aria-disabled={action.disabled || undefined}
-                            tabIndex={action.disabled ? -1 : undefined}
-                            data-analytics-action={analyticsAction || undefined}
-                            data-analytics-id={action.id}
-                            onClick={(event) => {
-                                if (action.disabled) {
-                                    event.preventDefault()
-                                    return
-                                }
-                                triggerAction(action)
-                            }}
-                        >
-                            {Icon ? <Icon className="h-4 w-4" /> : null}
-                            {action.label}
-                        </Link>
+                        <React.Fragment key={action.id}>
+                            <Link
+                                href={action.href}
+                                className={joinClasses(
+                                    ACTION_BASE_CLASS,
+                                    ACTION_SIZE_CLASS[action.size ?? "sm"],
+                                    variantClass,
+                                    "max-w-full",
+                                    action.disabled && "pointer-events-none opacity-50",
+                                )}
+                                aria-disabled={action.disabled || undefined}
+                                aria-describedby={disabledDescriptionId}
+                                tabIndex={action.disabled ? -1 : undefined}
+                                title={accessibleLabel}
+                                data-analytics-action={analyticsAction || undefined}
+                                data-analytics-id={action.id}
+                                onClick={(event) => {
+                                    if (action.disabled) {
+                                        event.preventDefault()
+                                        return
+                                    }
+                                    triggerAction(action)
+                                }}
+                            >
+                                {Icon ? <Icon className="h-4 w-4" /> : null}
+                                {action.label}
+                            </Link>
+                            {disabledReason ? (
+                                <span id={disabledDescriptionId} className="sr-only">: {disabledReason}</span>
+                            ) : null}
+                        </React.Fragment>
                     )
                 }
 
                 return (
-                    <button
-                        key={action.id}
-                        type="button"
-                        className={joinClasses(
-                            ACTION_BASE_CLASS,
-                            ACTION_SIZE_CLASS[action.size ?? "sm"],
-                            ACTION_VARIANT_CLASS[action.variant ?? "outline"],
-                            "max-w-full",
-                        )}
-                        onClick={() => triggerAction(action)}
-                        disabled={action.disabled}
-                        data-analytics-action={analyticsAction || undefined}
-                        data-analytics-id={action.id}
-                    >
-                        {Icon ? <Icon className="h-4 w-4" /> : null}
-                        {action.label}
-                    </button>
+                    <React.Fragment key={action.id}>
+                        <button
+                            type="button"
+                            className={joinClasses(
+                                ACTION_BASE_CLASS,
+                                ACTION_SIZE_CLASS[action.size ?? "sm"],
+                                variantClass,
+                                "max-w-full",
+                            )}
+                            onClick={() => triggerAction(action)}
+                            disabled={action.disabled}
+                            aria-describedby={disabledDescriptionId}
+                            title={accessibleLabel}
+                            data-analytics-action={analyticsAction || undefined}
+                            data-analytics-id={action.id}
+                        >
+                            {Icon ? <Icon className="h-4 w-4" /> : null}
+                            {action.label}
+                        </button>
+                        {disabledReason ? (
+                            <span id={disabledDescriptionId} className="sr-only">: {disabledReason}</span>
+                        ) : null}
+                    </React.Fragment>
                 )
             })}
 
@@ -189,6 +255,8 @@ export function ToolActionBar({
                                 "max-w-full",
                             )}
                             disabled={!handoffPayload?.trim()}
+                            title={!handoffPayload?.trim() ? t.common.action_disabled_no_output : undefined}
+                            aria-label={!handoffPayload?.trim() ? `${t.common.send_to || "Send to..."}: ${t.common.action_disabled_no_output}` : undefined}
                         >
                             <Share2 className="h-4 w-4" />
                             {t.common.send_to || "Send to..."}

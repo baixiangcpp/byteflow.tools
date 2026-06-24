@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ArrowLeft, ArrowRight, Binary, Download, FileUp, Share2, TestTube2, RotateCcw, Workflow } from "lucide-react"
+import { Binary, Copy, Download, Eraser, FileUp, Play, Share2, TestTube2, Workflow } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { ModeSelector } from "@/features/tool-shell/mode-selector"
@@ -301,16 +301,30 @@ export function Base64Page() {
             onClick: handleUseSample,
         },
         {
-            id: "reset",
-            label: t.common.reset,
-            icon: RotateCcw,
+            id: "clear",
+            label: t.common.clear,
+            icon: Eraser,
             onClick: handleClear,
+            destructive: true,
+        },
+        {
+            id: operation === "encode" ? "encode" : "decode",
+            label: operation === "encode" ? text("encode_action") : t.common.decode_base64,
+            icon: Play,
+            onClick: handleExecute,
+            variant: "default",
+            disabled: isBusy || (mode === "file" ? operation === "encode" ? !sourceFile : !input.trim() : !input.trim()),
+            disabledReason: mode === "file" && operation === "encode" && !sourceFile
+                ? text("error_file_required")
+                : t.common.action_disabled_input_required,
         },
         {
             id: "copy",
             label: t.common.copy,
+            icon: Copy,
             onClick: handleCopyOutput,
             disabled: !output,
+            disabledReason: t.common.action_disabled_no_output,
         },
         {
             id: "download",
@@ -318,6 +332,7 @@ export function Base64Page() {
             icon: Download,
             onClick: handleDownload,
             disabled: !canDownload || isBusy,
+            disabledReason: t.common.action_disabled_no_output,
         },
         {
             id: "share",
@@ -332,6 +347,7 @@ export function Base64Page() {
             href: pipelineHandoff.href,
             onClick: pipelineHandoff.prime,
             disabled: !handoffPayload.trim(),
+            disabledReason: t.common.action_disabled_no_output,
         },
     ]
 
@@ -368,19 +384,6 @@ export function Base64Page() {
                 <ToolActionBar actions={standardActions} handoffPayload={handoffPayload} />
 
                 <div className="flex flex-wrap items-center gap-2">
-                    <Button size="sm" onClick={handleExecute} disabled={isBusy}>
-                        {operation === "encode" ? (
-                            <>
-                                {text("encode_action")}
-                                <ArrowRight className="h-4 w-4" />
-                            </>
-                        ) : (
-                            <>
-                                <ArrowLeft className="h-4 w-4" />
-                                {t.common.decode_base64}
-                            </>
-                        )}
-                    </Button>
                     {mode === "file" ? (
                         <>
                             <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>

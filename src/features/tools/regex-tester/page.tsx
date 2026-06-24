@@ -1,19 +1,23 @@
 "use client"
 
 import * as React from "react"
-import { Regex, Eraser } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Regex, Eraser, TestTube2 } from "lucide-react"
 import { useLang } from "@/core/i18n/lang-provider"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
+import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { testRegexPattern, type RegexMatchSummary } from "./utils"
+
+const SAMPLE_PATTERN = "[A-Z][a-z]+"
+const SAMPLE_FLAGS = "g"
+const SAMPLE_TEST_STRING = "Ab1 Cd2 Ef3 Gh4."
 
 export function RegexTesterPage() {
     const { t } = useLang()
     const toolT = t.tools["regex_tester"] as Record<string, string>
-    const [pattern, setPattern] = React.useState("[A-Z][a-z]+")
-    const [flags, setFlags] = React.useState("g")
-    const [testString, setTestString] = React.useState("Ab1 Cd2 Ef3 Gh4.")
+    const [pattern, setPattern] = React.useState(SAMPLE_PATTERN)
+    const [flags, setFlags] = React.useState(SAMPLE_FLAGS)
+    const [testString, setTestString] = React.useState(SAMPLE_TEST_STRING)
     const [matches, setMatches] = React.useState<RegexMatchSummary[]>([])
     const [error, setError] = React.useState<string | null>(null)
 
@@ -36,13 +40,37 @@ export function RegexTesterPage() {
 
     const handleClear = () => {
         setPattern("")
-        setFlags("g")
+        setFlags(SAMPLE_FLAGS)
         setTestString("")
+        setMatches([])
+        setError(null)
     }
+
+    const handleSample = () => {
+        setPattern(SAMPLE_PATTERN)
+        setFlags(SAMPLE_FLAGS)
+        setTestString(SAMPLE_TEST_STRING)
+    }
+
+    const actions: ToolAction[] = [
+        {
+            id: "sample",
+            label: t.common.sample,
+            icon: TestTube2,
+            onClick: handleSample,
+        },
+        {
+            id: "clear",
+            label: t.common.clear,
+            icon: Eraser,
+            onClick: handleClear,
+            destructive: true,
+        },
+    ]
 
     return (
         <div className="flex flex-col h-full space-y-6 max-w-5xl mx-auto">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
+            <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
                         <Regex className="h-6 w-6 text-primary" />
@@ -51,12 +79,7 @@ export function RegexTesterPage() {
                         {t.tools['regex_tester'].description}
                     </p>
                 </div>
-                <div className="flex flex-wrap items-center gap-2">
-                    <Button variant="outline" size="sm" onClick={handleClear}>
-                        <Eraser className="mr-2 h-4 w-4" />
-                        {toolT.clear_all_action}
-                    </Button>
-                </div>
+                <ToolActionBar actions={actions} />
             </div>
 
             <div className="grid min-w-0 grid-cols-1 gap-6 pt-2 md:grid-cols-12">
