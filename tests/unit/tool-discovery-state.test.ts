@@ -2,7 +2,9 @@ import { beforeEach, describe, expect, it } from "vitest"
 import {
     clearHistory,
     clearRecentToolKeys,
+    readFavoriteToolRecords,
     readFavoriteToolKeys,
+    readRecentToolRecords,
     readRecentToolKeys,
     recordRecentToolKey,
     toggleFavoriteToolKey,
@@ -21,8 +23,13 @@ function installMemoryStorage() {
             removeItem: (key: string) => {
                 store.delete(key)
             },
+            key: (index: number) => [...store.keys()][index] ?? null,
+            get length() {
+                return store.size
+            },
         },
     })
+    return store
 }
 
 describe("tool-discovery-state", () => {
@@ -35,6 +42,8 @@ describe("tool-discovery-state", () => {
 
         toggleFavoriteToolKey("json_formatter")
         expect(readFavoriteToolKeys()).toEqual(["json_formatter"])
+        expect(readFavoriteToolRecords()[0]).toMatchObject({ toolKey: "json_formatter" })
+        expect(Date.parse(readFavoriteToolRecords()[0].updatedAt)).not.toBeNaN()
 
         toggleFavoriteToolKey("list_randomizer")
         expect(readFavoriteToolKeys()).toEqual(["list_randomizer", "json_formatter"])
@@ -56,6 +65,31 @@ describe("tool-discovery-state", () => {
 
         expect(readRecentToolKeys()).toHaveLength(10)
         expect(readRecentToolKeys()[0]).toBe("tool_11")
+        expect(readRecentToolRecords()[0]).toMatchObject({ toolKey: "tool_11" })
+        expect(Date.parse(readRecentToolRecords()[0].updatedAt)).not.toBeNaN()
+    })
+
+    it("migrates legacy key arrays without storing payload-shaped fields", () => {
+        window.localStorage.setItem("byteflow:tools:favorites", JSON.stringify(["json_formatter", "jwt_decoder"]))
+        window.localStorage.setItem("byteflow:tools:recent", JSON.stringify(["base64_encode_decode"]))
+
+        expect(readFavoriteToolKeys()).toEqual(["json_formatter", "jwt_decoder"])
+        expect(readRecentToolKeys()).toEqual(["base64_encode_decode"])
+
+        recordRecentToolKey("json_formatter")
+        toggleFavoriteToolKey("base64_encode_decode")
+
+        const favoriteRaw = window.localStorage.getItem("byteflow:tools:favorites") ?? ""
+        const recentRaw = window.localStorage.getItem("byteflow:tools:recent") ?? ""
+        const combined = `${favoriteRaw}\n${recentRaw}`
+
+        expect(JSON.parse(favoriteRaw)).toEqual(expect.arrayContaining([
+            expect.objectContaining({ toolKey: "base64_encode_decode", updatedAt: expect.any(String) }),
+        ]))
+        expect(JSON.parse(recentRaw)).toEqual(expect.arrayContaining([
+            expect.objectContaining({ toolKey: "json_formatter", updatedAt: expect.any(String) }),
+        ]))
+        expect(combined).not.toMatch(/input|output|payload|token|secret|url|file|log/i)
     })
 
     it("clears recent tools without clearing favorites", () => {

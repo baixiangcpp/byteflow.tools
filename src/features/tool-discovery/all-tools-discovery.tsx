@@ -6,6 +6,7 @@ import {
     FileText,
     Filter,
     History,
+    Heart,
     ImageIcon,
     Link2,
     Network,
@@ -21,7 +22,14 @@ import {
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { scoreToolSearch } from "@/core/search/command-search"
-import { clearRecentToolKeys, readRecentToolKeys, TOOL_DISCOVERY_UPDATED_EVENT } from "@/core/storage/tool-discovery-state"
+import {
+    clearFavoriteToolKeys,
+    clearRecentToolKeys,
+    readFavoriteToolKeys,
+    readRecentToolKeys,
+    toggleFavoriteToolKey,
+    TOOL_DISCOVERY_UPDATED_EVENT,
+} from "@/core/storage/tool-discovery-state"
 import { cn } from "@/core/utils/utils"
 
 type DiscoveryTool = {
@@ -31,6 +39,12 @@ type DiscoveryTool = {
     description: string
     family: string
     familyLabel: string
+    keywords?: readonly string[]
+    searchKeywords?: readonly string[]
+    aliases?: readonly string[]
+    localizedAliases?: readonly string[]
+    categoryTerms?: readonly string[]
+    popularity?: number
     tags: string[]
     capabilities: string[]
 }
@@ -54,7 +68,9 @@ type AllToolsDiscoveryLabels = {
     activeFilters: string
     allFamilies: string
     clearFilters: string
+    clearFavorites: string
     commonWorkflows: string
+    favorites: string
     filterByCategory: string
     filterByExecution: string
     filterByInputType: string
@@ -67,13 +83,19 @@ type AllToolsDiscoveryLabels = {
     inputUrlDomain: string
     noResults: string
     noResultsSuggestion: string
+    noFavorites: string
+    noRecentTools: string
     open: string
     popularTags: string
     removeFilter: string
     showFilters: string
+    closeFilters: string
     clearRecentTools: string
     recentTools: string
     recentToolsPrivacy: string
+    addFavorite: string
+    removeFavorite: string
+    favoritesPrivacy: string
     searchPlaceholder: string
     toolsLabel: string
     useCaseEncode: string
@@ -322,6 +344,39 @@ function ToolCardBadges({
     )
 }
 
+function FavoriteButton({
+    active,
+    addLabel,
+    removeLabel,
+    onToggle,
+}: {
+    active: boolean
+    addLabel: string
+    removeLabel: string
+    onToggle: () => void
+}) {
+    return (
+        <button
+            type="button"
+            className={cn(
+                "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45",
+                active
+                    ? "border-primary/35 bg-primary/10 text-primary"
+                    : "border-border/70 bg-background/55 text-muted-foreground hover:border-primary/35 hover:text-primary",
+            )}
+            aria-label={active ? removeLabel : addLabel}
+            aria-pressed={active}
+            onClick={(event) => {
+                event.preventDefault()
+                event.stopPropagation()
+                onToggle()
+            }}
+        >
+            <Heart className={cn("h-4 w-4", active ? "fill-current" : "")} />
+        </button>
+    )
+}
+
 export function AllToolsDiscovery({
     capabilityLabels,
     groups,
@@ -338,6 +393,8 @@ export function AllToolsDiscovery({
     const [selectedUseCases, setSelectedUseCases] = React.useState<string[]>([])
     const [selectedTags, setSelectedTags] = React.useState<string[]>([])
     const [recentToolKeys, setRecentToolKeys] = React.useState<string[]>([])
+    const [favoriteToolKeys, setFavoriteToolKeys] = React.useState<string[]>([])
+    const [personalizationReady, setPersonalizationReady] = React.useState(false)
     const [urlFiltersLoaded, setUrlFiltersLoaded] = React.useState(false)
     const [showMobileFilters, setShowMobileFilters] = React.useState(false)
 
@@ -353,10 +410,14 @@ export function AllToolsDiscovery({
     const useCaseOptions = React.useMemo(() => buildUseCaseOptions(labels), [labels])
 
     React.useEffect(() => {
-        const syncRecentTools = () => setRecentToolKeys(readRecentToolKeys())
-        syncRecentTools()
-        window.addEventListener(TOOL_DISCOVERY_UPDATED_EVENT, syncRecentTools)
-        return () => window.removeEventListener(TOOL_DISCOVERY_UPDATED_EVENT, syncRecentTools)
+        const syncDiscoveryState = () => {
+            setRecentToolKeys(readRecentToolKeys())
+            setFavoriteToolKeys(readFavoriteToolKeys())
+            setPersonalizationReady(true)
+        }
+        syncDiscoveryState()
+        window.addEventListener(TOOL_DISCOVERY_UPDATED_EVENT, syncDiscoveryState)
+        return () => window.removeEventListener(TOOL_DISCOVERY_UPDATED_EVENT, syncDiscoveryState)
     }, [])
 
     React.useEffect(() => {
@@ -396,6 +457,18 @@ export function AllToolsDiscovery({
         () => recentToolKeys.map((key) => toolByKey.get(key)).filter((tool): tool is DiscoveryTool => Boolean(tool)).slice(0, 6),
         [recentToolKeys, toolByKey],
     )
+    const favoriteTools = React.useMemo(
+        () => favoriteToolKeys.map((key) => toolByKey.get(key)).filter((tool): tool is DiscoveryTool => Boolean(tool)).slice(0, 8),
+        [favoriteToolKeys, toolByKey],
+    )
+    const favoriteToolKeySet = React.useMemo(() => new Set(favoriteToolKeys), [favoriteToolKeys])
+    const recentRankByToolKey = React.useMemo(() => {
+        const map = new Map<string, number>()
+        recentToolKeys.forEach((key, index) => {
+            if (!map.has(key)) map.set(key, index)
+        })
+        return map
+    }, [recentToolKeys])
 
     const filteredGroups = React.useMemo(() => {
         const normalizedQuery = query.trim()
@@ -406,7 +479,13 @@ export function AllToolsDiscovery({
                 tools: group.tools
                     .map((tool, index) => ({
                         index,
-                        score: normalizedQuery ? scoreToolSearch(tool, normalizedQuery) : 1,
+                        score: normalizedQuery
+                            ? scoreToolSearch(tool, normalizedQuery, {
+                                favorite: favoriteToolKeySet.has(tool.key),
+                                locale,
+                                recentRank: recentRankByToolKey.get(tool.key),
+                            })
+                            : 1,
                         tool,
                     }))
                     .filter(({ score, tool }) => {
@@ -422,9 +501,12 @@ export function AllToolsDiscovery({
             .filter((group) => group.tools.length > 0)
     }, [
         executionOptions,
+        favoriteToolKeySet,
         groups,
         inputOptions,
+        locale,
         query,
+        recentRankByToolKey,
         selectedCategories,
         selectedExecutionModes,
         selectedInputTypes,
@@ -456,6 +538,14 @@ export function AllToolsDiscovery({
 
     const handleClearRecentTools = React.useCallback(() => {
         setRecentToolKeys(clearRecentToolKeys())
+    }, [])
+
+    const handleClearFavorites = React.useCallback(() => {
+        setFavoriteToolKeys(clearFavoriteToolKeys())
+    }, [])
+
+    const handleToggleFavorite = React.useCallback((toolKey: string) => {
+        setFavoriteToolKeys(toggleFavoriteToolKey(toolKey))
     }, [])
 
     const removeSelectedValue = React.useCallback((setter: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
@@ -530,6 +620,26 @@ export function AllToolsDiscovery({
         useCaseOptions,
     ])
 
+    const tagFilterPanel = (
+        <div className="flex min-w-0 flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
+                <Tag className="h-3.5 w-3.5" />
+                {labels.popularTags}
+            </span>
+            {tags.map((tag) => {
+                const active = selectedTags.includes(tag)
+                return (
+                    <FilterButton
+                        key={tag}
+                        active={active}
+                        label={tag}
+                        onClick={() => setSelectedTags((current) => toggleValue(current, tag))}
+                    />
+                )
+            })}
+        </div>
+    )
+
     const filterPanel = (
         <div className="grid gap-4 lg:grid-cols-[1.15fr_1fr_1fr_1fr]">
             <FilterGroup heading={labels.filterByCategory}>
@@ -575,6 +685,72 @@ export function AllToolsDiscovery({
         </div>
     )
 
+    const localToolsPanel = personalizationReady ? (
+        <div className="grid gap-3 lg:grid-cols-2">
+            <section className="rounded-lg border border-border/70 bg-background/35 p-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                        <h2 className="inline-flex items-center gap-1.5 text-sm font-semibold">
+                            <Heart className="h-4 w-4 text-primary" />
+                            {labels.favorites}
+                        </h2>
+                        <p className="mt-1 text-xs text-muted-foreground">{labels.favoritesPrivacy}</p>
+                    </div>
+                    <Button type="button" variant="ghost" className="min-h-10 px-2 text-xs" onClick={handleClearFavorites} disabled={favoriteTools.length === 0}>
+                        <Trash2 className="h-3.5 w-3.5" />
+                        {labels.clearFavorites}
+                    </Button>
+                </div>
+                {favoriteTools.length > 0 ? (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                        {favoriteTools.map((tool) => (
+                            <Link
+                                key={tool.key}
+                                href={`/${locale}/${tool.slug}`}
+                                className="inline-flex min-h-10 items-center rounded-md border border-border bg-background px-2 py-1 text-sm text-foreground hover:border-primary/40"
+                            >
+                                {tool.title}
+                            </Link>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="mt-3 text-xs text-muted-foreground">{labels.noFavorites}</p>
+                )}
+            </section>
+
+            <section className="rounded-lg border border-border/70 bg-background/35 p-3">
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                    <div>
+                        <h2 className="inline-flex items-center gap-1.5 text-sm font-semibold">
+                            <History className="h-4 w-4 text-primary" />
+                            {labels.recentTools}
+                        </h2>
+                        <p className="mt-1 text-xs text-muted-foreground">{labels.recentToolsPrivacy}</p>
+                    </div>
+                    <Button type="button" variant="ghost" className="min-h-10 px-2 text-xs" onClick={handleClearRecentTools} disabled={recentTools.length === 0}>
+                        <Trash2 className="h-3.5 w-3.5" />
+                        {labels.clearRecentTools}
+                    </Button>
+                </div>
+                {recentTools.length > 0 ? (
+                    <div className="mt-3 flex flex-wrap gap-2">
+                        {recentTools.map((tool) => (
+                            <Link
+                                key={tool.key}
+                                href={`/${locale}/${tool.slug}`}
+                                className="inline-flex min-h-10 items-center rounded-md border border-border bg-background px-2 py-1 text-sm text-foreground hover:border-primary/40"
+                            >
+                                {tool.title}
+                            </Link>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="mt-3 text-xs text-muted-foreground">{labels.noRecentTools}</p>
+                )}
+            </section>
+        </div>
+    ) : null
+
     return (
         <div id="tool-discovery" className="min-w-0 space-y-5">
             <section className="min-w-0 rounded-xl border border-border/70 bg-card/55 p-4 backdrop-blur-sm">
@@ -589,7 +765,7 @@ export function AllToolsDiscovery({
                             aria-label={labels.filterSearch}
                         />
                     </div>
-                    <Button type="button" variant="outline" onClick={clearFilters} disabled={!hasFilters}>
+                    <Button type="button" variant="outline" className="hidden lg:inline-flex" onClick={clearFilters} disabled={!hasFilters}>
                         <X className="h-4 w-4" />
                         {labels.clearFilters}
                     </Button>
@@ -598,8 +774,9 @@ export function AllToolsDiscovery({
                 <button
                     type="button"
                     className="mt-4 flex min-h-11 w-full items-center justify-between gap-3 rounded-lg border border-border/70 bg-background/45 px-3 text-sm font-medium lg:hidden"
-                    onClick={() => setShowMobileFilters((current) => !current)}
+                    onClick={() => setShowMobileFilters(true)}
                     aria-expanded={showMobileFilters}
+                    aria-controls="all-tools-filter-drawer"
                 >
                         <span className="inline-flex items-center gap-2">
                             <Filter className="h-4 w-4" />
@@ -612,28 +789,14 @@ export function AllToolsDiscovery({
 
                 <div className={cn(
                     "mt-4 rounded-lg border border-border/70 bg-background/35 p-4",
-                    showMobileFilters ? "block" : "hidden",
+                    "hidden",
                     "lg:block",
                 )}>
                     {filterPanel}
                 </div>
 
-                <div className="mt-4 flex min-w-0 flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center gap-1 text-xs font-medium text-muted-foreground">
-                        <Tag className="h-3.5 w-3.5" />
-                        {labels.popularTags}
-                    </span>
-                    {tags.map((tag) => {
-                        const active = selectedTags.includes(tag)
-                        return (
-                            <FilterButton
-                                key={tag}
-                                active={active}
-                                label={tag}
-                                onClick={() => setSelectedTags((current) => toggleValue(current, tag))}
-                            />
-                        )
-                    })}
+                <div className="mt-4 hidden lg:block">
+                    {tagFilterPanel}
                 </div>
 
                 <div className="mt-4 border-t border-border/70 pt-3">
@@ -641,30 +804,6 @@ export function AllToolsDiscovery({
                         <span>
                             {resultCount} {labels.toolsLabel}
                         </span>
-                        {recentTools.length > 0 ? (
-                            <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">
-                                <span className="inline-flex items-center gap-1 font-medium">
-                                    <History className="h-3.5 w-3.5" />
-                                    {labels.recentTools}
-                                </span>
-                                <span className="text-[11px]">{labels.recentToolsPrivacy}</span>
-                                <div className="flex min-w-0 flex-wrap items-center justify-end gap-2">
-                                    {recentTools.map((tool) => (
-                                        <Link
-                                            key={tool.key}
-                                            href={`/${locale}/${tool.slug}`}
-                                            className="inline-flex min-h-11 items-center rounded-md border border-border bg-background px-2 py-1 text-foreground hover:border-primary/40"
-                                        >
-                                            {tool.title}
-                                        </Link>
-                                    ))}
-                                    <Button type="button" variant="ghost" className="min-h-11 px-2 text-xs" onClick={handleClearRecentTools}>
-                                        <Trash2 className="h-3.5 w-3.5" />
-                                        {labels.clearRecentTools}
-                                    </Button>
-                                </div>
-                            </div>
-                        ) : null}
                     </div>
 
                     {activeFilters.length > 0 ? (
@@ -686,6 +825,51 @@ export function AllToolsDiscovery({
                     ) : null}
                 </div>
             </section>
+
+            {showMobileFilters ? (
+                <div className="fixed inset-0 z-[70] lg:hidden" role="dialog" aria-modal="true" aria-label={labels.showFilters}>
+                    <button
+                        type="button"
+                        className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+                        aria-label={labels.closeFilters}
+                        onClick={() => setShowMobileFilters(false)}
+                    />
+                    <div
+                        id="all-tools-filter-drawer"
+                        className="absolute inset-x-0 bottom-0 max-h-[86dvh] overflow-y-auto rounded-t-2xl border border-border/70 bg-background p-4 shadow-2xl"
+                    >
+                        <div className="mb-4 flex items-center justify-between gap-3">
+                            <div>
+                                <h2 className="inline-flex items-center gap-2 text-base font-semibold">
+                                    <Filter className="h-4 w-4" />
+                                    {labels.showFilters}
+                                </h2>
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                    {resultCount} {labels.toolsLabel} - {activeFilters.length} {labels.activeFilters}
+                                </p>
+                            </div>
+                            <Button type="button" variant="ghost" size="icon" aria-label={labels.closeFilters} onClick={() => setShowMobileFilters(false)}>
+                                <X className="h-4 w-4" />
+                            </Button>
+                        </div>
+                        <div className="space-y-4">
+                            {filterPanel}
+                            <div className="border-t border-border/70 pt-4">{tagFilterPanel}</div>
+                            <div className="flex gap-2 border-t border-border/70 pt-4">
+                                <Button type="button" variant="outline" className="flex-1" onClick={clearFilters} disabled={!hasFilters}>
+                                    <X className="h-4 w-4" />
+                                    {labels.clearFilters}
+                                </Button>
+                                <Button type="button" className="flex-1" onClick={() => setShowMobileFilters(false)}>
+                                    {labels.closeFilters}
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ) : null}
+
+            {localToolsPanel}
 
             {workflows.length > 0 ? (
                 <section className="min-w-0 rounded-xl border border-border/70 bg-card/55 p-4 backdrop-blur-sm">
@@ -735,21 +919,35 @@ export function AllToolsDiscovery({
                             </div>
 
                             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                                {group.tools.map((tool) => (
+                                {group.tools.map((tool) => {
+                                    const isFavorite = favoriteToolKeySet.has(tool.key)
+                                    return (
                                     <Link
                                         key={tool.key}
                                         href={`/${locale}/${tool.slug}`}
                                     className="group flex min-h-36 min-w-0 flex-col rounded-lg border border-border/70 bg-background/45 p-4 transition-[transform,border-color,box-shadow] duration-200 hover:-translate-y-0.5 hover:border-primary/35 hover:shadow-lg hover:shadow-black/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45 dark:hover:shadow-black/35"
                                     >
+                                        <div className="flex items-start justify-between gap-3">
+                                            <div className="min-w-0 flex-1">
                                         <ToolCardBadges capabilityLabels={capabilityLabels} tool={tool} />
                                         <h3 className="break-words text-sm font-semibold text-foreground transition-colors group-hover:text-primary">
                                             {tool.title}
                                         </h3>
+                                            </div>
+                                            {personalizationReady ? (
+                                                <FavoriteButton
+                                                    active={isFavorite}
+                                                    addLabel={`${labels.addFavorite}: ${tool.title}`}
+                                                    removeLabel={`${labels.removeFavorite}: ${tool.title}`}
+                                                    onToggle={() => handleToggleFavorite(tool.key)}
+                                                />
+                                            ) : null}
+                                        </div>
                                         <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted-foreground">
                                             {tool.description}
                                         </p>
                                     </Link>
-                                ))}
+                                )})}
                             </div>
                         </section>
                     ))}

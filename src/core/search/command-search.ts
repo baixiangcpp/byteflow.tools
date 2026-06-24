@@ -1,5 +1,8 @@
+import { getToolSearchMetadataTerms, getToolSearchPopularity } from "./tool-search-metadata"
+
 const DIACRITIC_RE = /[\u0300-\u036f]/g
 const WORD_SPLIT_RE = /[\s/_+.#"@[\]({&:;|,<>?!=`~\\-]+/g
+const MIXED_SCRIPT_TOKEN_RE = /[a-z0-9]+|[\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}]+/gu
 
 function normalizeSearchText(value: string): string {
     return value
@@ -16,10 +19,23 @@ function compactSearchText(value: string): string {
 }
 
 function tokenizeSearchText(value: string): string[] {
-    return normalizeSearchText(value)
+    const tokens = normalizeSearchText(value)
         .split(" ")
         .map((token) => token.trim())
         .filter(Boolean)
+
+    const expanded: string[] = []
+    const seen = new Set<string>()
+    for (const token of tokens) {
+        const parts = token.match(MIXED_SCRIPT_TOKEN_RE) ?? []
+        for (const value of [token, ...parts]) {
+            if (!value || seen.has(value)) continue
+            seen.add(value)
+            expanded.push(value)
+        }
+    }
+
+    return expanded
 }
 
 function editDistanceWithin(left: string, right: string, maxDistance: number): number {
@@ -167,8 +183,13 @@ export type ToolSearchDocument = {
     familyLabel?: string
     keywords?: readonly string[]
     aliases?: readonly string[]
+    searchKeywords?: readonly string[]
+    localizedAliases?: readonly string[]
+    categoryTerms?: readonly string[]
     tags?: readonly string[]
     capabilities?: readonly string[]
+    popularity?: number
+    locale?: string
 }
 
 export function buildToolSearchKeywords(tool: ToolSearchDocument): string[] {
@@ -180,11 +201,50 @@ export function buildToolSearchKeywords(tool: ToolSearchDocument): string[] {
         tool.familyLabel,
         ...(tool.keywords ?? []),
         ...(tool.aliases ?? []),
+        ...(tool.searchKeywords ?? []),
+        ...(tool.localizedAliases ?? []),
+        ...(tool.categoryTerms ?? []),
+        ...getToolSearchMetadataTerms(tool.key, tool.locale),
         ...(tool.tags ?? []),
         ...(tool.capabilities ?? []),
     ].filter((value): value is string => typeof value === "string" && value.trim().length > 0)
 }
 
-export function scoreToolSearch(tool: ToolSearchDocument, search: string): number {
-    return scoreCommandSearch(tool.title, search, buildToolSearchKeywords(tool))
+export type ToolSearchScoreOptions = {
+    locale?: string
+    favorite?: boolean
+    recentRank?: number
+}
+
+export function applyToolSearchScoreBonuses(
+    toolKey: string | undefined,
+    score: number,
+    options: ToolSearchScoreOptions & { popularity?: number } = {},
+): number {
+    if (score <= 0) return 0
+
+    const popularity = options.popularity ?? getToolSearchPopularity(toolKey)
+    const popularityBonus = Math.min(10, Math.max(0, popularity) / 12)
+    const favoriteBonus = options.favorite ? 6 : 0
+    const recentBonus = typeof options.recentRank === "number" && options.recentRank >= 0
+        ? Math.max(0, 4 - options.recentRank * 0.5)
+        : 0
+
+    return score + popularityBonus + favoriteBonus + recentBonus
+}
+
+export function scoreToolSearch(tool: ToolSearchDocument, search: string, options: ToolSearchScoreOptions = {}): number {
+    const score = scoreCommandSearch(
+        tool.title,
+        search,
+        buildToolSearchKeywords({
+            ...tool,
+            locale: options.locale ?? tool.locale,
+        }),
+    )
+
+    return applyToolSearchScoreBonuses(tool.key, score, {
+        ...options,
+        popularity: tool.popularity,
+    })
 }

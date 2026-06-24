@@ -51,6 +51,9 @@ const mocks = vi.hoisted(() => {
             install_guide: "Install guide",
             install_inline_description: "Install description",
             install_inline_title: "Install Byteflow",
+            add_favorite: "Add to favorites",
+            remove_favorite: "Remove from favorites",
+            favorites_local_only: "Favorite IDs stay local.",
         },
     }
 
@@ -77,6 +80,9 @@ vi.mock("@/core/i18n/lang-provider", () => ({
 
 vi.mock("@/core/storage/tool-discovery-state", () => ({
     recordRecentToolKey: vi.fn(),
+    readFavoriteToolKeys: vi.fn(() => []),
+    toggleFavoriteToolKey: vi.fn(() => ["json_formatter"]),
+    TOOL_DISCOVERY_UPDATED_EVENT: "byteflow:tool-discovery-updated",
 }))
 
 vi.mock("@/core/seo/components/related-tools", () => ({

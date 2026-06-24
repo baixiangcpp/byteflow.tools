@@ -430,7 +430,10 @@
     "sensitive_warning_privacy_policy": "Politique de confidentialité",
     "sensitive_warning_verify_devtools": "Vérifier dans DevTools",
     "reveal_secret": "Afficher le secret",
-    "hide_secret": "Masquer le secret"
+    "hide_secret": "Masquer le secret",
+    "close_filters": "Terminé",
+    "clear_favorites": "Effacer les favoris",
+    "favorites_local_only": "Les IDs d’outils favoris sont stockés uniquement dans ce navigateur."
   },
   "tools": {
     "json_formatter": {
@@ -2833,7 +2836,7 @@
     "privacy_no_collection_title": "Traitement des saisies d’outils",
     "privacy_no_collection_desc": "La plupart des flux byteflow.tools traitent les saisies et sorties dans votre navigateur. Nous ne collectons, stockons, analysons ni téléversons les payloads des outils locaux au navigateur. Les outils marqués Requête externe ne contactent la cible réseau listée que lorsque vous lancez explicitement cette action.",
     "privacy_cookies_title": "Cookies et stockage",
-    "privacy_cookies_desc": "Nous utilisons localStorage uniquement pour des préférences d’interface sûres comme le thème, la langue, l’état de la barre latérale et les réglages locaux d’outils. Les payloads sensibles, tokens, logs, contenus de fichiers et sorties d’outils ne sont pas destinés à y être stockés.",
+    "privacy_cookies_desc": "Nous utilisons localStorage uniquement pour des préférences d’interface sûres comme le thème, la langue, l’état de la barre latérale, les IDs d’outils favoris, les IDs d’outils récents, les horodatages et les réglages locaux d’outils. Les payloads sensibles, tokens, logs, contenus de fichiers, URL complètes et sorties d’outils ne sont pas destinés à y être stockés.",
     "privacy_analytics_title": "Analytique",
     "privacy_analytics_desc": "L’analytics est limitée à une taxonomie d’événements sur liste d’autorisation, sans cookie, pour des signaux produit agrégés. Les événements autorisés sont outil chargé, action d’outil, copie, téléchargement, recherche effectuée, clic sur outil connexe et PWA installée. Les événements de recherche enregistrent seulement des tranches de longueur et le nombre de résultats. Entrées, sorties, JWT, secrets, journaux, noms de fichiers, contenus de fichiers, contenus d’images, valeurs de hachage, URL complètes, identifiants utilisateur et identifiants de session ne sont jamais des champs analytics.",
     "privacy_third_party_title": "Services tiers",
@@ -2887,7 +2890,7 @@
     "trust_center_external_tool_col_purpose": "But",
     "trust_center_external_tool_col_data": "Données envoyées",
     "trust_center_storage_title": "Stratégie de stockage local",
-    "trust_center_storage_desc": "Le stockage local est réservé aux préférences sûres comme le thème, la langue, l’état de la barre latérale, les IDs d’outils récents et les presets locaux. Les payloads d’outil, tokens, journaux, contenus de fichiers et sorties générées ne doivent pas être persistés par défaut.",
+    "trust_center_storage_desc": "Le stockage local est réservé aux préférences sûres comme le thème, la langue, l’état de la barre latérale, les IDs d’outils favoris, les IDs d’outils récents avec horodatages et les presets locaux. Les payloads d’outil, tokens, journaux, contenus de fichiers, URL complètes et sorties générées ne doivent pas être persistés par défaut.",
     "trust_center_analytics_title": "Stratégie analytics",
     "trust_center_analytics_desc": "L’analytics utilise une taxonomie d’événements sur liste d’autorisation et le code d’exécution désactive l’envoi par défaut. Si un fournisseur d’agrégation sans cookie est activé, il ne peut recevoir que des noms d’événements sûrs et des paramètres grossiers comme l’ID d’outil, le type d’action, la langue, la tranche de taille, le nombre de résultats et la page source. Entrées, sorties, JWT, secrets, corps de journaux, noms de fichiers, contenus de fichiers, contenus d’images, valeurs de hachage, texte de recherche, URL complètes, identifiants utilisateur et identifiants de session sont interdits.",
     "trust_center_pwa_title": "Stratégie de cache PWA",

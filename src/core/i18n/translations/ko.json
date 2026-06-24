@@ -430,7 +430,10 @@
     "sensitive_warning_privacy_policy": "개인정보 처리방침",
     "sensitive_warning_verify_devtools": "DevTools에서 확인",
     "reveal_secret": "비밀값 표시",
-    "hide_secret": "비밀값 숨기기"
+    "hide_secret": "비밀값 숨기기",
+    "close_filters": "완료",
+    "clear_favorites": "즐겨찾기 지우기",
+    "favorites_local_only": "즐겨찾기 도구 ID는 이 브라우저에만 저장됩니다."
   },
   "tools": {
     "json_formatter": {
@@ -2833,7 +2836,7 @@
     "privacy_no_collection_title": "도구 입력 처리",
     "privacy_no_collection_desc": "byteflow.tools의 대부분 워크플로는 입력과 출력을 브라우저에서 처리합니다. 브라우저 로컬 도구 payload를 수집, 저장, 분석 또는 업로드하지 않습니다. “외부 요청” 도구는 사용자가 명시적으로 실행할 때만 표시된 네트워크 대상으로 연결합니다.",
     "privacy_cookies_title": "쿠키 및 저장소",
-    "privacy_cookies_desc": "localStorage는 테마, 언어, 사이드바 상태, 로컬 도구 설정 같은 안전한 UI 환경설정에만 사용합니다. 민감한 payload, token, 로그, 파일 내용, 도구 출력은 저장 대상이 아닙니다.",
+    "privacy_cookies_desc": "localStorage는 테마, 언어, 사이드바 상태, 즐겨찾기 도구 ID, 최근 도구 ID, 타임스탬프, 로컬 도구 설정 같은 안전한 UI 환경설정에만 사용합니다. 민감한 payload, token, 로그, 파일 내용, 전체 URL, 도구 출력은 저장 대상이 아닙니다.",
     "privacy_analytics_title": "분석",
     "privacy_analytics_desc": "분석은 쿠키 없는 허용 목록 이벤트 분류의 집계 제품 신호로 제한됩니다. 허용 이벤트는 도구 로드, 도구 작업, 복사, 다운로드, 검색 실행, 관련 도구 클릭, PWA 설치입니다. 검색 이벤트는 쿼리 길이 버킷과 결과 수만 기록합니다. 도구 입력, 출력, JWT, 비밀값, 로그, 파일 이름, 파일 내용, 이미지 내용, 해시값, 전체 URL, 사용자 ID, 세션 ID는 분석 필드가 아닙니다.",
     "privacy_third_party_title": "제3자 서비스",
@@ -2887,7 +2890,7 @@
     "trust_center_external_tool_col_purpose": "목적",
     "trust_center_external_tool_col_data": "전송 데이터",
     "trust_center_storage_title": "로컬 저장소 전략",
-    "trust_center_storage_desc": "로컬 저장소는 테마, 언어, 사이드바 상태, 최근 도구 ID, 로컬 프리셋 같은 안전한 설정에 한정됩니다. 도구 payload, token, 로그, 파일 내용, 생성 출력은 기본적으로 지속 저장하면 안 됩니다.",
+    "trust_center_storage_desc": "로컬 저장소는 테마, 언어, 사이드바 상태, 즐겨찾기 도구 ID, 타임스탬프가 있는 최근 도구 ID, 로컬 프리셋 같은 안전한 설정에 한정됩니다. 도구 payload, token, 로그, 파일 내용, 전체 URL, 생성 출력은 기본적으로 지속 저장하면 안 됩니다.",
     "trust_center_analytics_title": "분석 전략",
     "trust_center_analytics_desc": "분석은 허용 목록 이벤트 분류를 사용하며 런타임 코드는 기본적으로 전송을 비활성화합니다. 쿠키 없는 집계 제공자가 활성화되더라도 안전한 이벤트 이름과 도구 ID, 작업 유형, 언어, 크기 버킷, 결과 수, 출처 페이지 같은 거친 매개변수만 받을 수 있습니다. 도구 입력, 출력, JWT, 비밀값, 로그 본문, 파일 이름, 파일 내용, 이미지 내용, 해시값, 검색 원문, 전체 URL, 사용자 ID, 세션 ID는 금지됩니다.",
     "trust_center_pwa_title": "PWA 캐시 전략",

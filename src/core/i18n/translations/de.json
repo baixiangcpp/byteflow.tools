@@ -430,7 +430,10 @@
     "sensitive_warning_privacy_policy": "Datenschutzrichtlinie",
     "sensitive_warning_verify_devtools": "In DevTools prüfen",
     "reveal_secret": "Geheimnis anzeigen",
-    "hide_secret": "Geheimnis ausblenden"
+    "hide_secret": "Geheimnis ausblenden",
+    "close_filters": "Fertig",
+    "clear_favorites": "Favoriten löschen",
+    "favorites_local_only": "Favorisierte Tool-IDs werden nur in diesem Browser gespeichert."
   },
   "tools": {
     "json_formatter": {
@@ -2833,7 +2836,7 @@
     "privacy_no_collection_title": "Umgang mit Tool-Eingaben",
     "privacy_no_collection_desc": "Die meisten Workflows von byteflow.tools verarbeiten Eingaben und Ausgaben im Browser. Wir erfassen, speichern, analysieren oder laden Payloads browser-lokaler Tools nicht hoch. Tools mit externer Anfrage kontaktieren das angegebene Netzwerkziel nur, wenn Sie diese Aktion ausdrücklich ausführen.",
     "privacy_cookies_title": "Cookies & Speicherung",
-    "privacy_cookies_desc": "localStorage wird nur für sichere UI-Einstellungen wie Theme, Sprache, Sidebar-Status und lokale Tool-Optionen verwendet. Sensible Payloads, Tokens, Logs, Dateiinhalte und Tool-Ausgaben sind nicht zur Speicherung vorgesehen.",
+    "privacy_cookies_desc": "localStorage wird nur für sichere UI-Einstellungen wie Theme, Sprache, Sidebar-Status, Favoriten-Tool-IDs, zuletzt genutzte Tool-IDs, Zeitstempel und lokale Tool-Optionen verwendet. Sensible Payloads, Tokens, Logs, Dateiinhalte, vollständige URLs und Tool-Ausgaben sind nicht zur Speicherung vorgesehen.",
     "privacy_analytics_title": "Analyse",
     "privacy_analytics_desc": "Analytics sind auf eine Cookie-freie Ereignistaxonomie mit Positivliste für aggregierte Produktsignale begrenzt. Erlaubte Ereignisse sind Tool geladen, Tool-Aktion, Kopieren, Download, Suche ausgeführt, Klick auf verwandtes Tool und PWA installiert. Suchereignisse erfassen nur Längen-Buckets und Ergebniszahlen. Tool-Eingaben, Ausgaben, JWTs, Geheimnisse, Logs, Dateinamen, Dateiinhalte, Bildinhalte, Hashwerte, vollständige URLs, Nutzer-IDs und Sitzungs-IDs sind niemals Analytics-Felder.",
     "privacy_third_party_title": "Drittanbieter-Dienste",
@@ -2887,7 +2890,7 @@
     "trust_center_external_tool_col_purpose": "Zweck",
     "trust_center_external_tool_col_data": "Gesendete Daten",
     "trust_center_storage_title": "Strategie für lokalen Speicher",
-    "trust_center_storage_desc": "Lokaler Speicher ist für sichere Einstellungen wie Theme, Sprache, Sidebar-Status, zuletzt genutzte Tool-IDs und lokale Presets reserviert. Tool-Payloads, Token, Logs, Dateiinhalte und erzeugte Ausgaben dürfen standardmäßig nicht persistiert werden.",
+    "trust_center_storage_desc": "Lokaler Speicher ist für sichere Einstellungen wie Theme, Sprache, Sidebar-Status, Favoriten-Tool-IDs, zuletzt genutzte Tool-IDs mit Zeitstempeln und lokale Presets reserviert. Tool-Payloads, Token, Logs, Dateiinhalte, vollständige URLs und erzeugte Ausgaben dürfen standardmäßig nicht persistiert werden.",
     "trust_center_analytics_title": "Analytics-Strategie",
     "trust_center_analytics_desc": "Analytics verwenden eine Ereignistaxonomie mit Positivliste und sind im Laufzeitcode standardmäßig deaktiviert. Wenn ein Cookie-freier Aggregationsanbieter aktiviert wird, darf er nur sichere Ereignisnamen und grobe Parameter wie Tool-ID, Aktionstyp, Sprache, Größen-Bucket, Ergebniszahl und Quellseite erhalten. Tool-Eingaben, Ausgaben, JWTs, Geheimnisse, Logtexte, Dateinamen, Dateiinhalte, Bildinhalte, Hashwerte, Suchtexte, vollständige URLs, Nutzer-IDs und Sitzungs-IDs sind verboten.",
     "trust_center_pwa_title": "PWA-Cache-Strategie",
