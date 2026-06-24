@@ -14,6 +14,11 @@ export const toolManifest = {
             endpointType: "none",
         },
     },
+    relatedWorkflows: [
+        { toolKey: "image_cropper", reasonKey: "crop_before_resize" },
+        { toolKey: "image_filters", reasonKey: "adjust_after_resize" },
+        { toolKey: "image_base64", reasonKey: "embed_resized_asset" },
+    ],
     inputSizePolicy: {
         warnAtBytes: 6291456,
         workerAtBytes: 3145728,

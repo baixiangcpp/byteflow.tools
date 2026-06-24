@@ -14,6 +14,11 @@ export const toolManifest = {
             endpointType: "none",
         },
     },
+    compliance: {
+        platformName: "X (Twitter)",
+        rightsGuidance: "Use forecast values as planning estimates; verify actual platform terms and analytics separately.",
+        affiliationDisclaimer: "byteflow.tools is not affiliated with, endorsed by, or sponsored by X Corp. or Twitter.",
+    },
     keywords: ["twitter ad revenue generator", "x ad revenue calculator", "social ad revenue forecast", "cpm ctr calculator"],
     deprecated: {
         reason: "strategic-refocus",

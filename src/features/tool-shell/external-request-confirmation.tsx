@@ -1,6 +1,7 @@
 "use client"
 
 import { ExternalLink, ShieldCheck } from "lucide-react"
+import Link from "next/link"
 import type { ToolExternalDataSent } from "@/core/registry/types"
 import { requireTranslationValue } from "@/core/i18n/i18n"
 import { useLang } from "@/core/i18n/lang-provider"
@@ -23,7 +24,7 @@ export function ExternalRequestConfirmation({
     onConfirmedChange,
     rightsGuidance,
 }: ExternalRequestConfirmationProps) {
-    const { t } = useLang()
+    const { lang, t } = useLang()
     const labels = t.common.external_network_notice
     const purpose = labels.purposes?.[purposeKey as keyof typeof labels.purposes]
     const dataSentLabel = labels.external_data?.[dataSent as keyof typeof labels.external_data]
@@ -54,6 +55,13 @@ export function ExternalRequestConfirmation({
                         <ShieldCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
                         <span>{rightsGuidance || requireTranslationValue(labels.confirm_rights, "common.external_network_notice.confirm_rights")}</span>
                     </p>
+                    <Link
+                        href={`/${lang}/trust-center#external-request-tools`}
+                        className="inline-flex min-h-8 items-center gap-1.5 text-xs font-medium text-primary underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                        <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
+                        {t.common.tool_trust_header.trust_center_link}
+                    </Link>
                     <label className="flex items-start gap-2 rounded-md border border-background/70 bg-background/80 p-2 text-xs font-medium leading-relaxed text-foreground">
                         <Checkbox
                             checked={confirmed}

@@ -2,7 +2,7 @@
 
 import { AlertTriangle, ExternalLink, Github, Info, LockKeyhole, ShieldCheck, Wifi, WifiOff } from "lucide-react"
 import Link from "next/link"
-import type { ToolExternalDataSent, ToolNetworkAccess, ToolPrivacyManifest } from "@/core/registry/types"
+import type { ToolComplianceMetadata, ToolExternalDataSent, ToolNetworkAccess, ToolPrivacyManifest } from "@/core/registry/types"
 import { requireTranslationValue } from "@/core/i18n/i18n"
 import { useLang } from "@/core/i18n/lang-provider"
 
@@ -14,6 +14,7 @@ type ToolTrustHeaderProps = {
     networkHosts?: readonly string[]
     networkPurposeKey?: string | null
     externalDataSent?: ToolExternalDataSent | null
+    compliance?: ToolComplianceMetadata | null
 }
 
 function StatusItem({
@@ -78,6 +79,7 @@ export function ToolTrustHeader({
     networkHosts = [],
     networkPurposeKey,
     externalDataSent,
+    compliance,
 }: ToolTrustHeaderProps) {
     const { lang, t } = useLang()
     const copy = t.common.tool_trust_header
@@ -96,7 +98,19 @@ export function ToolTrustHeader({
         : privacy.externalRequest.userDataSent
             ? externalCopy.external_data?.[privacy.externalRequest.userDataSent as keyof typeof externalCopy.external_data]
             : undefined
+    const complianceRightsGuidance = lang === "en" && compliance?.rightsGuidance
+        ? compliance.rightsGuidance
+        : copy.rights_desc
+    const complianceAffiliation = lang === "en" && compliance?.affiliationDisclaimer
+        ? compliance.affiliationDisclaimer
+        : copy.affiliation_desc
 
+    const primaryTrustCenterHref = privacy.sensitiveInput
+        ? `/${lang}/trust-center#verify-local-processing`
+        : isExternalRequest
+            ? `/${lang}/trust-center#external-request-tools`
+            : `/${lang}/trust-center`
+    const externalTrustCenterHref = `/${lang}/trust-center#external-request-tools`
     const runtimeLabel = isExternalRequest
         ? requireTranslationValue(copy.external_request_label, "common.tool_trust_header.external_request_label")
         : requireTranslationValue(copy.browser_local_label, "common.tool_trust_header.browser_local_label")
@@ -126,7 +140,7 @@ export function ToolTrustHeader({
                         label={requireTranslationValue(copy.github_label, "common.tool_trust_header.github_label")}
                     />
                     <TrustLink
-                        href={`/${lang}/trust-center`}
+                        href={primaryTrustCenterHref}
                         icon={<ShieldCheck className="h-4 w-4" aria-hidden="true" />}
                         label={requireTranslationValue(copy.trust_center_link, "common.tool_trust_header.trust_center_link")}
                     />
@@ -179,6 +193,40 @@ export function ToolTrustHeader({
                 />
             </ul>
 
+            {compliance ? (
+                <div className="mt-4 rounded-lg border border-border/70 bg-background/60 p-3 text-sm">
+                    <p className="font-medium text-foreground">
+                        {requireTranslationValue(copy.compliance_label, "common.tool_trust_header.compliance_label")}
+                    </p>
+                    <dl className="mt-2 grid gap-2 text-xs leading-5 text-muted-foreground sm:grid-cols-3">
+                        {compliance.platformName ? (
+                            <div>
+                                <dt className="font-medium text-foreground">
+                                    {requireTranslationValue(copy.platform_label, "common.tool_trust_header.platform_label")}
+                                </dt>
+                                <dd>{compliance.platformName}</dd>
+                            </div>
+                        ) : null}
+                        {complianceRightsGuidance ? (
+                            <div>
+                                <dt className="font-medium text-foreground">
+                                    {requireTranslationValue(copy.rights_label, "common.tool_trust_header.rights_label")}
+                                </dt>
+                                <dd>{requireTranslationValue(complianceRightsGuidance, "common.tool_trust_header.rights_desc")}</dd>
+                            </div>
+                        ) : null}
+                        {complianceAffiliation ? (
+                            <div>
+                                <dt className="font-medium text-foreground">
+                                    {requireTranslationValue(copy.affiliation_label, "common.tool_trust_header.affiliation_label")}
+                                </dt>
+                                <dd>{requireTranslationValue(complianceAffiliation, "common.tool_trust_header.affiliation_desc")}</dd>
+                            </div>
+                        ) : null}
+                    </dl>
+                </div>
+            ) : null}
+
             {isExternalRequest ? (
                 <div className="mt-4 border-t border-amber-500/30 pt-3 text-sm">
                     <div className="flex gap-2.5">
@@ -221,7 +269,7 @@ export function ToolTrustHeader({
                             ) : null}
                             <div className="mt-2 flex flex-wrap gap-x-4 gap-y-2">
                                 <Link
-                                    href={`/${lang}/trust-center`}
+                                    href={externalTrustCenterHref}
                                     className="inline-flex min-h-9 items-center gap-1.5 text-sm font-medium text-primary underline underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                                 >
                                     <ShieldCheck className="h-4 w-4" aria-hidden="true" />

@@ -14,6 +14,11 @@ export const toolManifest = {
             endpointType: "none",
         },
     },
+    compliance: {
+        platformName: "X (Twitter)",
+        rightsGuidance: "Use generated copy only with accounts and content you are authorized to manage.",
+        affiliationDisclaimer: "byteflow.tools is not affiliated with, endorsed by, or sponsored by X Corp. or Twitter.",
+    },
     keywords: ["tweet generator", "twitter post generator", "tweet image maker", "social tweet mockup"],
     deprecated: {
         alternatives: ["code_to_image_converter", "open_graph_meta_generator"],

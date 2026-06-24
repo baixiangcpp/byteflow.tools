@@ -19,6 +19,11 @@ export const toolManifest = {
             consentRequired: true,
         },
     },
+    compliance: {
+        platformName: "YouTube",
+        rightsGuidance: "Use thumbnail previews only for videos you own, manage, or are allowed to reference; derived thumbnail URLs load only after confirmation.",
+        affiliationDisclaimer: "byteflow.tools is not affiliated with, endorsed by, or sponsored by YouTube or Google.",
+    },
     keywords: ["youtube thumbnail grabber", "youtube thumbnail downloader", "youtube video thumbnail", "get youtube thumbnail url"],
     deprecated: {
         alternatives: ["image_resizer"],

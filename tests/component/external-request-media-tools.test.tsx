@@ -76,6 +76,7 @@ describe("external request media tools", () => {
 
         expect(screen.getByText("Confirm external request")).toBeInTheDocument()
         expect(screen.getByText("youtube.com, youtube-nocookie.com, youtu.be, i.ytimg.com")).toBeInTheDocument()
+        expect(screen.getByRole("link", { name: "Trust Center" })).toHaveAttribute("href", "/en/trust-center#external-request-tools")
         expect(screen.getByRole("button", { name: "Preview", description: "Confirm the external request before previewing or downloading." })).toBeDisabled()
         expect(globalThis.fetch).not.toHaveBeenCalled()
 

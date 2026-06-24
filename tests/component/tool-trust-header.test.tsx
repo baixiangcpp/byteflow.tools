@@ -49,6 +49,11 @@ function renderTrustHeader(privacy: ToolPrivacyManifest, slug = "url-encode-deco
                 networkHosts={privacy.externalRequest.domains ?? []}
                 networkPurposeKey={privacy.externalRequest.purposeKey ?? null}
                 externalDataSent={privacy.externalRequest.userDataSent ?? null}
+                compliance={slug === "instagram-photo-downloader" ? {
+                    platformName: "Instagram",
+                    rightsGuidance: "Download only media you own or have explicit permission to use.",
+                    affiliationDisclaimer: "byteflow.tools is not affiliated with, endorsed by, or sponsored by Instagram or Meta.",
+                } : null}
             />
         </LangProvider>,
     )
@@ -78,7 +83,12 @@ describe("ToolTrustHeader", () => {
         expect(screen.getByText("instagram.com")).toBeInTheDocument()
         expect(screen.getByText("The URL you provide may be requested by your browser.")).toBeInTheDocument()
         expect(screen.getByText("Requests the Instagram URL you provide only after you confirm rights and click Download.")).toBeInTheDocument()
-        expect(screen.getAllByRole("link", { name: "Trust Center" })[0]).toHaveAttribute("href", "/en/trust-center")
+        expect(screen.getByText("Platform and rights guidance")).toBeInTheDocument()
+        expect(screen.getByText("Instagram")).toBeInTheDocument()
+        expect(screen.getByText("Download only media you own or have explicit permission to use.")).toBeInTheDocument()
+        expect(screen.getByText("byteflow.tools is not affiliated with, endorsed by, or sponsored by Instagram or Meta.")).toBeInTheDocument()
+        expect(screen.getAllByRole("link", { name: "Trust Center" })[0]).toHaveAttribute("href", "/en/trust-center#verify-local-processing")
+        expect(screen.getAllByRole("link", { name: "Trust Center" })[1]).toHaveAttribute("href", "/en/trust-center#external-request-tools")
         expect(screen.getByRole("link", { name: "Privacy policy" })).toHaveAttribute("href", "/en/privacy")
     })
 })

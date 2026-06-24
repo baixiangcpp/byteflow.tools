@@ -195,6 +195,7 @@ function buildIndexData() {
                 sampleInput: tool.sampleInput || null,
                 sampleMode: tool.sampleMode || null,
                 inputSizePolicy: tool.inputSizePolicy || null,
+                compliance: tool.compliance || null,
                 privacy: tool.privacy,
                 networkAccess: privacyNetwork.networkAccess,
                 networkHosts: privacyNetwork.networkHosts,

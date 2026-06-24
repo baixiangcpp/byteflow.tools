@@ -11,6 +11,7 @@ export type DiscoveryToolIndexEntry = {
     sampleInput: string | null
     sampleMode: string | null
     inputSizePolicy: Readonly<{ warnAtBytes?: number; workerAtBytes?: number; hardLimitBytes?: number; streamingSupported?: boolean }> | null
+    compliance: Readonly<{ platformName?: string; rightsGuidance?: string; affiliationDisclaimer?: string }> | null
     family: string
     tags: readonly string[]
     capabilities: readonly string[]
@@ -58,6 +59,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "hardLimitBytes": 52428800,
             "streamingSupported": false
         },
+        "compliance": null,
         "family": "data-formats",
         "tags": [
             "data-formats",
@@ -84,6 +86,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "formatters-validators",
         "tags": [
             "formatters-validators",
@@ -106,6 +109,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "formatters-validators",
         "tags": [
             "formatters-validators"
@@ -128,6 +132,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "formatters-validators",
         "tags": [
             "formatters-validators"
@@ -150,6 +155,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "formatters-validators",
         "tags": [
             "formatters-validators"
@@ -172,6 +178,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "formatters-validators",
         "tags": [
             "formatters-validators",
@@ -195,6 +202,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "encoders-decoders",
         "tags": [
             "encoders-decoders",
@@ -218,6 +226,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "formatters-validators",
         "tags": [
             "css",
@@ -242,6 +251,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "formatters-validators",
         "tags": [
             "formatters-validators",
@@ -286,6 +296,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "hardLimitBytes": 10485760,
             "streamingSupported": false
         },
+        "compliance": null,
         "family": "data-formats",
         "tags": [
             "data-formats",
@@ -313,6 +324,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "text-strings",
         "tags": [
             "html",
@@ -337,6 +349,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "text-strings",
         "tags": [
             "html",
@@ -361,6 +374,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "data-formats",
         "tags": [
             "data-formats",
@@ -384,6 +398,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "formatters-validators",
         "tags": [
             "css",
@@ -406,6 +421,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "svg",
@@ -430,6 +446,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "data-formats",
         "tags": [
             "data-formats",
@@ -453,6 +470,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "network-http",
         "tags": [
             "http",
@@ -475,6 +493,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "data-formats",
         "tags": [
             "data-formats",
@@ -504,6 +523,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "hardLimitBytes": 1048576,
             "streamingSupported": false
         },
+        "compliance": null,
         "family": "data-formats",
         "tags": [
             "csv",
@@ -551,6 +571,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "hardLimitBytes": 10485760,
             "streamingSupported": false
         },
+        "compliance": null,
         "family": "encoders-decoders",
         "tags": [
             "base64",
@@ -596,6 +617,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "hardLimitBytes": 10485760,
             "streamingSupported": false
         },
+        "compliance": null,
         "family": "encoders-decoders",
         "tags": [
             "encoders-decoders"
@@ -617,6 +639,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "encoders-decoders",
         "tags": [
             "encoders-decoders",
@@ -637,10 +660,27 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "hash_generator",
             "url_encode_decode"
         ],
-        "relatedWorkflows": [],
+        "relatedWorkflows": [
+            {
+                "toolKey": "jwt_workbench",
+                "reasonKey": "verify_token_claims",
+                "handoffSupported": true
+            },
+            {
+                "toolKey": "base64_encode_decode",
+                "reasonKey": "inspect_token_segments",
+                "handoffSupported": true
+            },
+            {
+                "toolKey": "hash_generator",
+                "reasonKey": "compare_token_hashes",
+                "handoffSupported": true
+            }
+        ],
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "security-tokens",
         "tags": [
             "json",
@@ -668,6 +708,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "security-tokens",
         "tags": [
             "jwt",
@@ -697,6 +738,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "hardLimitBytes": 52428800,
             "streamingSupported": false
         },
+        "compliance": null,
         "family": "security-tokens",
         "tags": [
             "hash",
@@ -722,6 +764,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "security-tokens",
         "tags": [
             "hash",
@@ -745,6 +788,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "text-strings",
         "tags": [
             "text-strings"
@@ -767,6 +811,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "text-strings",
         "tags": [
             "text-strings"
@@ -790,6 +835,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "text-strings",
         "tags": [
             "logs",
@@ -813,6 +859,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "text-strings",
         "tags": [
             "text-strings"
@@ -835,6 +882,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "svg-css-visual"
@@ -858,6 +906,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "images-media",
         "tags": [
             "image",
@@ -883,6 +932,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "images-media",
         "tags": [
             "image",
@@ -907,6 +957,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "encoders-decoders",
         "tags": [
             "base64",
@@ -930,6 +981,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "generators",
         "tags": [
             "generators"
@@ -946,12 +998,27 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "relatedToolKeys": [
             "password_generator",
             "unix_timestamp",
-            "lorem_ipsum"
+            "lorem_ipsum",
+            "id_generator"
         ],
-        "relatedWorkflows": [],
+        "relatedWorkflows": [
+            {
+                "toolKey": "password_generator",
+                "reasonKey": "generate_test_credentials"
+            },
+            {
+                "toolKey": "unix_timestamp",
+                "reasonKey": "stamp_seed_data"
+            },
+            {
+                "toolKey": "lorem_ipsum",
+                "reasonKey": "fill_fixture_records"
+            }
+        ],
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "generators",
         "tags": [
             "generators"
@@ -973,6 +1040,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "generators",
         "tags": [
             "generators"
@@ -994,6 +1062,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "generators",
         "tags": [
             "generators"
@@ -1016,6 +1085,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "color",
@@ -1040,6 +1110,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "hash",
@@ -1064,6 +1135,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "images-media",
         "tags": [
             "color",
@@ -1089,6 +1161,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "color",
@@ -1113,6 +1186,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "color",
@@ -1139,6 +1213,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "images-media",
         "tags": [
             "color",
@@ -1165,6 +1240,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "images-media",
         "tags": [
             "image",
@@ -1190,6 +1266,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "images-media",
         "tags": [
             "color",
@@ -1216,6 +1293,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "images-media",
         "tags": [
             "color",
@@ -1242,6 +1320,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "images-media",
         "tags": [
             "image",
@@ -1267,6 +1346,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "images-media",
         "tags": [
             "image",
@@ -1292,6 +1372,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "social-metadata",
         "tags": [
             "image",
@@ -1316,6 +1397,11 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": {
+            "platformName": "Instagram",
+            "rightsGuidance": "Use generated mockups only with media, captions, and profile details you own or can reuse.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by Instagram or Meta."
+        },
         "family": "social-metadata",
         "tags": [
             "social-metadata"
@@ -1339,6 +1425,11 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": {
+            "platformName": "Instagram",
+            "rightsGuidance": "Use story mockups only with assets, captions, and profile details you own or can reuse.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by Instagram or Meta."
+        },
         "family": "social-metadata",
         "tags": [
             "social-metadata"
@@ -1358,10 +1449,28 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "instagram_post_generator",
             "instagram_story_generator"
         ],
-        "relatedWorkflows": [],
+        "relatedWorkflows": [
+            {
+                "toolKey": "tweet_generator",
+                "reasonKey": "draft_social_copy"
+            },
+            {
+                "toolKey": "tweet_to_image_converter",
+                "reasonKey": "turn_copy_into_preview"
+            },
+            {
+                "toolKey": "instagram_post_generator",
+                "reasonKey": "adapt_preview_for_instagram"
+            }
+        ],
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": {
+            "platformName": "Open Graph and social cards",
+            "rightsGuidance": "Generate metadata for pages, images, and descriptions you control or have rights to publish.",
+            "affiliationDisclaimer": "Open Graph, X (Twitter), Instagram, YouTube, and Vimeo names are used descriptively only."
+        },
         "family": "social-metadata",
         "tags": [
             "social-metadata"
@@ -1385,6 +1494,11 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": {
+            "platformName": "X (Twitter)",
+            "rightsGuidance": "Use generated copy only with accounts and content you are authorized to manage.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by X Corp. or Twitter."
+        },
         "family": "social-metadata",
         "tags": [
             "image",
@@ -1409,6 +1523,11 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": {
+            "platformName": "X (Twitter)",
+            "rightsGuidance": "Export images only from text and profile details you have rights to use.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by X Corp. or Twitter."
+        },
         "family": "social-metadata",
         "tags": [
             "image",
@@ -1433,6 +1552,11 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": {
+            "platformName": "X (Twitter)",
+            "rightsGuidance": "Use forecast values as planning estimates; verify actual platform terms and analytics separately.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by X Corp. or Twitter."
+        },
         "family": "social-metadata",
         "tags": [
             "social-metadata"
@@ -1456,6 +1580,11 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": {
+            "platformName": "Instagram",
+            "rightsGuidance": "Download only media you own or have explicit permission to use; the provided URL leaves your browser only after confirmation.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by Instagram or Meta."
+        },
         "family": "social-metadata",
         "tags": [
             "image",
@@ -1480,6 +1609,11 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": {
+            "platformName": "Vimeo",
+            "rightsGuidance": "Use thumbnail previews only for videos you own, manage, or are allowed to reference; derived thumbnail URLs load only after confirmation.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by Vimeo."
+        },
         "family": "social-metadata",
         "tags": [
             "image",
@@ -1503,6 +1637,11 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": {
+            "platformName": "YouTube",
+            "rightsGuidance": "Use thumbnail previews only for videos you own, manage, or are allowed to reference; derived thumbnail URLs load only after confirmation.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by YouTube or Google."
+        },
         "family": "social-metadata",
         "tags": [
             "social-metadata",
@@ -1522,7 +1661,20 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "image_base64",
             "code_to_image_converter"
         ],
-        "relatedWorkflows": [],
+        "relatedWorkflows": [
+            {
+                "toolKey": "image_cropper",
+                "reasonKey": "crop_before_resize"
+            },
+            {
+                "toolKey": "image_filters",
+                "reasonKey": "adjust_after_resize"
+            },
+            {
+                "toolKey": "image_base64",
+                "reasonKey": "embed_resized_asset"
+            }
+        ],
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": {
@@ -1531,6 +1683,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "hardLimitBytes": 12582912,
             "streamingSupported": false
         },
+        "compliance": null,
         "family": "images-media",
         "tags": [
             "image",
@@ -1556,6 +1709,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "images-media",
         "tags": [
             "image",
@@ -1586,6 +1740,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "hardLimitBytes": 12582912,
             "streamingSupported": false
         },
+        "compliance": null,
         "family": "images-media",
         "tags": [
             "images-media"
@@ -1610,6 +1765,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "hash",
@@ -1635,6 +1791,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "svg",
@@ -1659,6 +1816,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "svg",
@@ -1683,6 +1841,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "image",
@@ -1708,6 +1867,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "css",
@@ -1732,6 +1892,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "css",
@@ -1756,6 +1917,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "css",
@@ -1781,6 +1943,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "css",
@@ -1805,6 +1968,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "css",
@@ -1830,6 +1994,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "css",
@@ -1854,6 +2019,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "css",
@@ -1878,6 +2044,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "color",
@@ -1903,6 +2070,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "css",
@@ -1927,6 +2095,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "css",
@@ -1951,6 +2120,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "css",
@@ -1975,6 +2145,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "svg-css-visual",
         "tags": [
             "css",
@@ -1998,6 +2169,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "generators",
         "tags": [
             "generators"
@@ -2020,6 +2192,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "generators",
         "tags": [
             "generators",
@@ -2044,6 +2217,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "generators",
         "tags": [
             "generators",
@@ -2067,6 +2241,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "generators",
         "tags": [
             "generators"
@@ -2088,6 +2263,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "generators",
         "tags": [
             "generators"
@@ -2109,6 +2285,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "devops-logs",
         "tags": [
             "devops-logs"
@@ -2134,6 +2311,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "generators",
         "tags": [
             "generators"
@@ -2151,10 +2329,24 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "text_diff_checker",
             "url_encode_decode"
         ],
-        "relatedWorkflows": [],
+        "relatedWorkflows": [
+            {
+                "toolKey": "jsonpath_playground",
+                "reasonKey": "test_extracted_json_paths"
+            },
+            {
+                "toolKey": "text_diff_checker",
+                "reasonKey": "compare_regex_matches"
+            },
+            {
+                "toolKey": "url_encode_decode",
+                "reasonKey": "decode_url_samples"
+            }
+        ],
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "text-strings",
         "tags": [
             "regex",
@@ -2179,6 +2371,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "text-strings",
         "tags": [
             "regex",
@@ -2201,6 +2394,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "devops-logs",
         "tags": [
             "devops-logs"
@@ -2225,6 +2419,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "network-http",
         "tags": [
             "network-http"
@@ -2246,6 +2441,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "devops-logs",
         "tags": [
             "devops-logs"
@@ -2270,6 +2466,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "network-http",
         "tags": [
             "http",
@@ -2293,6 +2490,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "devops-logs",
         "tags": [
             "devops-logs"
@@ -2317,6 +2515,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "network-http",
         "tags": [
             "network-http"
@@ -2339,6 +2538,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "network-http",
         "tags": [
             "network-http",
@@ -2362,6 +2562,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "security-tokens",
         "tags": [
             "security",
@@ -2382,10 +2583,24 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "url_encode_decode",
             "user_agent_parser"
         ],
-        "relatedWorkflows": [],
+        "relatedWorkflows": [
+            {
+                "toolKey": "url_parser",
+                "reasonKey": "inspect_request_url"
+            },
+            {
+                "toolKey": "http_status_codes",
+                "reasonKey": "check_expected_status"
+            },
+            {
+                "toolKey": "url_encode_decode",
+                "reasonKey": "encode_query_params"
+            }
+        ],
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "network-http",
         "tags": [
             "http",
@@ -2411,6 +2626,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "network-http",
         "tags": [
             "http",
@@ -2435,6 +2651,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "data-formats",
         "tags": [
             "data-formats",
@@ -2461,6 +2678,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "security-tokens",
         "tags": [
             "jwt",
@@ -2485,6 +2703,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "text-strings",
         "tags": [
             "text-strings"
@@ -2508,6 +2727,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "text-strings",
         "tags": [
             "logs",
@@ -2533,6 +2753,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "network-http",
         "tags": [
             "network-http"
@@ -2555,6 +2776,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "security-tokens",
         "tags": [
             "security",
@@ -2580,6 +2802,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "data-formats",
         "tags": [
             "csv",
@@ -2604,6 +2827,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "network-http",
         "tags": [
             "http",
@@ -2628,6 +2852,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "security-tokens",
         "tags": [
             "http",
@@ -2654,6 +2879,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "security-tokens",
         "tags": [
             "security",
@@ -2678,6 +2904,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "network-http",
         "tags": [
             "http",
@@ -2701,6 +2928,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "devops-logs",
         "tags": [
             "devops-logs",
@@ -2726,6 +2954,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "devops-logs",
         "tags": [
             "devops-logs",
@@ -2752,6 +2981,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "data-formats",
         "tags": [
             "data-formats",
@@ -2772,10 +3002,24 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "jwt_decoder",
             "text_diff_checker"
         ],
-        "relatedWorkflows": [],
+        "relatedWorkflows": [
+            {
+                "toolKey": "local_log_parser",
+                "reasonKey": "parse_after_redaction"
+            },
+            {
+                "toolKey": "jwt_decoder",
+                "reasonKey": "inspect_redacted_tokens"
+            },
+            {
+                "toolKey": "text_diff_checker",
+                "reasonKey": "compare_scrubbed_logs"
+            }
+        ],
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "devops-logs",
         "tags": [
             "devops-logs",
@@ -2803,6 +3047,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "encoders-decoders",
         "tags": [
             "encoders-decoders",
@@ -2826,6 +3071,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "data-formats",
         "tags": [
             "data-formats",
@@ -2851,6 +3097,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "data-formats",
         "tags": [
             "data-formats",
@@ -2875,6 +3122,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "data-formats",
         "tags": [
             "data-formats",
@@ -2897,10 +3145,24 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "http_status_codes",
             "security_header_analyzer"
         ],
-        "relatedWorkflows": [],
+        "relatedWorkflows": [
+            {
+                "toolKey": "log_scrubber",
+                "reasonKey": "scrub_followup_logs"
+            },
+            {
+                "toolKey": "http_status_codes",
+                "reasonKey": "explain_har_statuses"
+            },
+            {
+                "toolKey": "security_header_analyzer",
+                "reasonKey": "review_response_headers"
+            }
+        ],
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "network-http",
         "tags": [
             "http",
@@ -2926,6 +3188,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "workbench-pipeline",
         "tags": [
             "workbench-pipeline"
@@ -2949,6 +3212,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "security-tokens",
         "tags": [
             "http",
@@ -2975,6 +3239,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "security-tokens",
         "tags": [
             "security",
@@ -2999,6 +3264,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "encoders-decoders",
         "tags": [
             "encoders-decoders"
@@ -3021,6 +3287,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "family": "text-strings",
         "tags": [
             "text-strings"
@@ -3061,6 +3328,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "hardLimitBytes": 262144,
             "streamingSupported": false
         },
+        "compliance": null,
         "family": "security-tokens",
         "tags": [
             "security-tokens"

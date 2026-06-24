@@ -309,6 +309,26 @@ function parseInputSizePolicy(source, manifestPath) {
     return policy
 }
 
+function parseCompliance(source, manifestPath) {
+    const block = objectField(source, "compliance")
+    if (!block) return undefined
+
+    const compliance = {}
+    const platformName = stringField(block, "platformName", manifestPath)
+    const rightsGuidance = stringField(block, "rightsGuidance", manifestPath)
+    const affiliationDisclaimer = stringField(block, "affiliationDisclaimer", manifestPath)
+
+    if (platformName) compliance.platformName = platformName
+    if (rightsGuidance) compliance.rightsGuidance = rightsGuidance
+    if (affiliationDisclaimer) compliance.affiliationDisclaimer = affiliationDisclaimer
+
+    if (Object.keys(compliance).length === 0) {
+        throw manifestError(manifestPath, "compliance", "must define at least one compliance text field")
+    }
+
+    return compliance
+}
+
 function parsePrivacy(source, manifestPath) {
     const block = objectField(source, "privacy")
     if (!block) {
@@ -439,6 +459,7 @@ export function parseToolManifestFile(manifestPath) {
     const sampleInput = stringField(body, "sampleInput", manifestPath)
     const sampleMode = stringField(body, "sampleMode", manifestPath)
     const inputSizePolicy = parseInputSizePolicy(body, manifestPath)
+    const compliance = parseCompliance(body, manifestPath)
     const searchKeywords = arrayField(body, "searchKeywords", manifestPath)
     const updatedAt = stringField(body, "updatedAt", manifestPath)
     const explicitNetworkAccess = stringField(body, "networkAccess", manifestPath)
@@ -501,6 +522,7 @@ export function parseToolManifestFile(manifestPath) {
     if (sampleInput) manifest.sampleInput = sampleInput
     if (sampleMode) manifest.sampleMode = sampleMode
     if (inputSizePolicy) manifest.inputSizePolicy = inputSizePolicy
+    if (compliance) manifest.compliance = compliance
     if (relatedWorkflows.length > 0) manifest.relatedWorkflows = relatedWorkflows
     if (updatedAt) manifest.updatedAt = updatedAt
     if (searchKeywords.length > 0) manifest.searchKeywords = searchKeywords

@@ -14,6 +14,11 @@ export const toolManifest = {
             endpointType: "none",
         },
     },
+    relatedWorkflows: [
+        { toolKey: "log_scrubber", reasonKey: "scrub_followup_logs" },
+        { toolKey: "http_status_codes", reasonKey: "explain_har_statuses" },
+        { toolKey: "security_header_analyzer", reasonKey: "review_response_headers" },
+    ],
     keywords: ["har viewer", "har sanitizer", "http archive", "network log sanitizer", "har redaction"],
     persistInput: false,
 } satisfies ToolMeta

@@ -64,6 +64,27 @@ export default function AboutPage() {
                     {p.trust_center_title}
                 </Link>
                 <Link
+                    href={`/${lang}/roadmap`}
+                    className="inline-flex items-center gap-2 rounded-xl border border-border/75 bg-background/55 px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                    <ArrowUpRight className="h-4 w-4" />
+                    Roadmap
+                </Link>
+                <Link
+                    href={`/${lang}/changelog`}
+                    className="inline-flex items-center gap-2 rounded-xl border border-border/75 bg-background/55 px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                    <ArrowUpRight className="h-4 w-4" />
+                    Changelog
+                </Link>
+                <Link
+                    href={`/${lang}/self-hosting`}
+                    className="inline-flex items-center gap-2 rounded-xl border border-border/75 bg-background/55 px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                    <Shield className="h-4 w-4" />
+                    Self-hosting
+                </Link>
+                <Link
                     href={`/${lang}`}
                     className="inline-flex items-center gap-2 rounded-xl border border-border/75 bg-background/55 px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >

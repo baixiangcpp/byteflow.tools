@@ -138,7 +138,7 @@ export function InstallAppClient({
     )
 
     const scrollToGuide = () => {
-        guideRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+        guideRef.current?.scrollIntoView?.({ behavior: "smooth", block: "start" })
         setManualHintVisible(true)
     }
 
@@ -181,6 +181,7 @@ export function InstallAppClient({
     }
 
     const primaryLabel = installed ? copy.alreadyInstalled : deferredPrompt ? copy.installNow : copy.seeGuide
+    const installStatus = installed ? copy.alreadyInstalled : deferredPrompt ? copy.installNow : copy.manualHint
     const cacheClearMessage = cacheClearStatus === "success"
         ? copy.clearCachedAppSuccess
         : cacheClearStatus === "unavailable"
@@ -199,6 +200,9 @@ export function InstallAppClient({
                     </p>
                     <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{copy.title}</h1>
                     <p className="max-w-3xl text-sm leading-relaxed text-muted-foreground sm:text-base">{copy.subtitle}</p>
+                    <p className="text-sm font-medium text-foreground" role="status" aria-live="polite">
+                        {installStatus}
+                    </p>
                     <div className="flex flex-wrap gap-3 pt-1">
                         <Button onClick={() => void handleInstall()} disabled={installed}>
                             <Download className="mr-2 h-4 w-4" />

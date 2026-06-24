@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react"
+import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { InstallAppClient } from "@/features/install-app/components/install-app-client"
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
@@ -120,5 +120,38 @@ describe("install app page", () => {
         })
         expect(deleteCache).not.toHaveBeenCalledWith("third-party-cache")
         expect(await screen.findByText("Cached app files cleared.")).toBeInTheDocument()
+    })
+
+    it("surfaces install prompt availability and falls back to browser-specific guidance when dismissed", async () => {
+        const copy = getInstallPageCopy("en")
+        const prompt = vi.fn().mockResolvedValue(undefined)
+        const beforeInstallPromptEvent = Object.assign(new Event("beforeinstallprompt"), {
+            prompt,
+            userChoice: Promise.resolve({ outcome: "dismissed", platform: "web" }),
+        })
+
+        render(
+            <InstallAppClient
+                locale="en"
+                copy={copy}
+                allToolsLabel="All tools"
+                trustCenterLabel="Trust Center"
+                offlineMatrixTitle="Offline support matrix"
+                offlineMatrixDescription="Review which workflows keep running after cache warm-up."
+                offlineMatrixLink="Offline matrix"
+            />,
+        )
+
+        expect(screen.getAllByRole("button", { name: copy.seeGuide })[0]).toBeInTheDocument()
+        expect(screen.getByText(copy.manualHint)).toBeInTheDocument()
+
+        await act(async () => {
+            window.dispatchEvent(beforeInstallPromptEvent as Event)
+        })
+        expect((await screen.findAllByRole("button", { name: copy.installNow }))[0]).toBeInTheDocument()
+
+        fireEvent.click(screen.getAllByRole("button", { name: copy.installNow })[0])
+        await waitFor(() => expect(prompt).toHaveBeenCalledTimes(1))
+        await waitFor(() => expect(screen.getAllByText(copy.manualHint).length).toBeGreaterThan(0))
     })
 })
