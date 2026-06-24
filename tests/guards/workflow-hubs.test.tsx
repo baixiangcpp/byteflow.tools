@@ -2,7 +2,7 @@ import * as React from "react"
 import { render, screen } from "@testing-library/react"
 import { describe, expect, it, vi } from "vitest"
 import { LOCALES } from "@/core/i18n/i18n"
-import { MENU_GROUP_DEFS } from "@/core/registry/menu-groups"
+import { MENU_GROUP_DEFS, getMenuGroupByKey } from "@/core/registry/menu-groups"
 import { TOOL_REGISTRY } from "@/core/registry"
 import { MenuGroupHub } from "@/core/seo/components/menu-group-hub"
 import { WorkflowDetailPage, WorkflowIndexPage } from "@/core/seo/components/workflow-pages"
@@ -78,6 +78,7 @@ describe("BF-027 workflow hubs", () => {
         const index = render(<WorkflowIndexPage lang="en" />)
         expect(screen.getByRole("heading", { name: "Developer Workflow Hubs" })).toBeInTheDocument()
         expect(index.container.querySelector('a[href="/en/workflows/api-payload-cleanup"]')).not.toBeNull()
+        expect([...collectTypes(parseJsonLdScripts(index.container))]).toEqual(expect.arrayContaining(["CollectionPage", "ItemList", "ListItem", "BreadcrumbList"]))
         index.unmount()
 
         const detail = render(<WorkflowDetailPage lang="en" workflowSlug="api-payload-cleanup" />)
@@ -91,13 +92,19 @@ describe("BF-027 workflow hubs", () => {
 
     it("enriches all eight primary category hubs with tasks, workflows, tutorials, and FAQ", () => {
         for (const group of MENU_GROUP_DEFS) {
+            const menuGroup = getMenuGroupByKey(group.key)
+            expect(menuGroup).toBeTruthy()
             const { container, unmount } = render(<MenuGroupHub lang="en" groupKey={group.key} />)
+            const types = collectTypes(parseJsonLdScripts(container))
 
+            expect([...types]).toEqual(expect.arrayContaining(["CollectionPage", "ItemList", "ListItem"]))
+            expect(container.textContent).toContain("Topic cluster")
             expect(container.textContent).toContain("Common tasks")
             expect(container.textContent).toContain("Related workflows")
             expect(container.textContent).toContain("Tutorials and checklists")
             expect(container.textContent).toContain("Category FAQ")
             expect(container.querySelectorAll('a[href^="/en/workflows/"]').length).toBeGreaterThan(0)
+            expect(container.querySelectorAll('a[href^="/en/"]').length).toBeGreaterThan(menuGroup?.items.length ?? 0)
 
             unmount()
         }

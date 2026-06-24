@@ -130,7 +130,20 @@ export function WorkflowIndexPage({ lang }: { lang: Locale }) {
 
     return (
         <div className="mx-auto w-full max-w-6xl space-y-7">
-            <CollectionPageJsonLd lang={lang} slug="workflows" title={copy.title} description={copy.description} />
+            <CollectionPageJsonLd
+                lang={lang}
+                slug="workflows"
+                title={copy.title}
+                description={copy.description}
+                items={WORKFLOW_DEFINITIONS.map((workflow) => {
+                    const workflowCopy = getLocalizedWorkflowCopy(workflow, lang)
+                    return {
+                        name: workflowCopy.title,
+                        description: workflowCopy.description,
+                        url: buildCanonicalUrl(lang, `workflows/${workflow.slug}`),
+                    }
+                })}
+            />
             <WorkflowBreadcrumbJsonLd lang={lang} />
             <header className="rounded-2xl border border-border/70 bg-card/55 p-5 backdrop-blur-sm sm:p-6">
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">Workflows</p>

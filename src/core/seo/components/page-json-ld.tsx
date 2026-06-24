@@ -7,16 +7,22 @@ export function CollectionPageJsonLd({
     slug,
     title,
     description,
+    items,
 }: {
     lang: Locale
     slug: string
     title: string
     description: string
+    items?: Array<{
+        name: string
+        url: string
+        description?: string
+    }>
 }) {
     return (
         <JsonLdScript
             data-jsonld="collection-page"
-            jsonLd={buildCollectionPageJsonLd({ lang, slug, title, description })}
+            jsonLd={buildCollectionPageJsonLd({ lang, slug, title, description, items })}
         />
     )
 }

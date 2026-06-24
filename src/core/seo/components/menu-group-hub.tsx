@@ -2,8 +2,10 @@ import Link from "next/link"
 import { requireTranslationValue, type Locale } from "@/core/i18n/i18n"
 import { MENU_GROUP_DEFS, getMenuGroupByKey, type MenuGroupKey } from "@/core/registry/menu-groups"
 import { getToolByKey } from "@/core/registry"
+import { TOPIC_CLUSTERS, TOPIC_CLUSTER_UI_COPY } from "@/core/growth/topic-clusters"
 import { getTextContentHubCopy } from "@/core/seo/text-content-hub-copy"
 import { getTranslation } from "@/core/i18n/translations/catalog"
+import { buildCanonicalUrl } from "@/core/seo/urls"
 import { ArrowRight } from "lucide-react"
 import { CollectionPageJsonLd } from "./page-json-ld"
 import {
@@ -29,6 +31,10 @@ export function MenuGroupHub({ lang, groupKey }: MenuGroupHubProps) {
     const categoryWorkflowContent = group && PRIMARY_MENU_GROUP_KEYS.has(group.key as PrimaryMenuGroupKey)
         ? getCategoryHubContent(group.key as PrimaryMenuGroupKey)
         : null
+    const topicCluster = group && PRIMARY_MENU_GROUP_KEYS.has(group.key as PrimaryMenuGroupKey)
+        ? TOPIC_CLUSTERS.find((cluster) => cluster.pillarGroupKey === group.key)
+        : null
+    const topicClusterUi = TOPIC_CLUSTER_UI_COPY[lang]
 
     if (!group) return null
 
@@ -45,6 +51,14 @@ export function MenuGroupHub({ lang, groupKey }: MenuGroupHubProps) {
                 slug={group.slug}
                 title={title}
                 description={description}
+                items={group.items.map((tool) => {
+                    const toolT = toolTranslations[tool.key]
+                    return {
+                        name: requireTranslationValue(toolT?.title, `tools.${tool.key}.title`),
+                        description: requireTranslationValue(toolT?.description, `tools.${tool.key}.description`),
+                        url: buildCanonicalUrl(lang, tool.slug),
+                    }
+                })}
             />
             <header className="rounded-2xl border border-border/70 bg-card/55 p-5 backdrop-blur-sm">
                 <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">{title}</h1>
@@ -55,6 +69,54 @@ export function MenuGroupHub({ lang, groupKey }: MenuGroupHubProps) {
                     {group.items.length} {t.common.tools}
                 </p>
             </header>
+
+            {topicCluster ? (
+                <section className="grid gap-4 xl:grid-cols-[1.1fr_0.9fr]" aria-label={title}>
+                    <article className="rounded-2xl border border-border/70 bg-card/55 p-5 backdrop-blur-sm">
+                        <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary/80">{topicClusterUi.eyebrow}</p>
+                        <h2 className="mt-2 text-xl font-semibold tracking-tight">{title}</h2>
+                        <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">{description}</p>
+                        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                            {topicCluster.primaryToolKeys.slice(0, 4).map((toolKey) => {
+                                const tool = getToolByKey(toolKey)
+                                if (!tool) return null
+                                const toolT = toolTranslations[tool.key]
+                                return (
+									<Link
+										key={tool.key}
+										href={`/${lang}/${tool.slug}`}
+										className="rounded-xl border border-border/60 bg-background/50 p-3 transition-colors hover:border-primary/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
+									>
+                                        <h3 className="text-sm font-semibold">{requireTranslationValue(toolT?.title, `tools.${tool.key}.title`)}</h3>
+                                        <p className="mt-1 line-clamp-2 text-xs leading-relaxed text-muted-foreground">
+                                            {requireTranslationValue(toolT?.description, `tools.${tool.key}.description`)}
+                                        </p>
+                                    </Link>
+                                )
+                            })}
+                        </div>
+                    </article>
+
+                    <article className="rounded-2xl border border-border/70 bg-card/55 p-5 backdrop-blur-sm">
+                        <h2 className="text-xl font-semibold tracking-tight">{topicClusterUi.supportingGuides}</h2>
+                        <div className="mt-4 grid gap-3">
+                            {topicCluster.supportingArticleSlugs.slice(0, 4).map((tutorialSlug) => {
+                                const tutorial = getTutorialLink(tutorialSlug)
+                                return (
+									<Link
+										key={tutorialSlug}
+										href={`/${lang}/${tutorialSlug}`}
+										className="rounded-xl border border-border/60 bg-background/50 p-3 transition-colors hover:border-primary/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
+									>
+                                        <h3 className="text-sm font-semibold transition-colors hover:text-primary">{tutorial?.title ?? tutorialSlug}</h3>
+                                        {tutorial?.description ? <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{tutorial.description}</p> : null}
+                                    </Link>
+                                )
+                            })}
+                        </div>
+                    </article>
+                </section>
+            ) : null}
 
             {textContentCopy && (
                 <>

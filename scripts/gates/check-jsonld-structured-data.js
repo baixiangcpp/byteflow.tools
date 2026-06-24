@@ -150,7 +150,7 @@ function main() {
         scanDir,
         locale: "en",
         slug: "data-code-formats",
-        requiredTypes: ["CollectionPage"],
+        requiredTypes: ["CollectionPage", "ItemList", "ListItem"],
         label: "/en/data-code-formats",
         failures,
     })
@@ -158,8 +158,16 @@ function main() {
         scanDir,
         locale: "en",
         slug: "workflows",
-        requiredTypes: ["CollectionPage", "BreadcrumbList"],
+        requiredTypes: ["CollectionPage", "ItemList", "ListItem", "BreadcrumbList"],
         label: "/en/workflows",
+        failures,
+    })
+    assertTypes({
+        scanDir,
+        locale: "en",
+        slug: "compare",
+        requiredTypes: ["CollectionPage", "ItemList", "ListItem", "BreadcrumbList"],
+        label: "/en/compare",
         failures,
     })
     assertTypes({
