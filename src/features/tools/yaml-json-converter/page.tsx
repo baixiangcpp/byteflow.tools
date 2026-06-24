@@ -8,13 +8,12 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
-import { readStorageString, removeStorageKey, writeStorageString } from "@/core/storage/tool-persistence"
+import { readStorageString, writeStorageString } from "@/core/storage/tool-persistence"
 import { buildSensitiveToolHandoffLink } from "@/core/routing/tool-handoff"
 import { importTextFile, TEXT_FILE_IMPORT_ACCEPT } from "@/core/files/text-file-import"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { convertStructuredData, type StructuredDataFormat } from "./utils"
 
-const INPUT_STORAGE_KEY = "byteflow:yaml-json-converter:input"
 const MODE_STORAGE_KEY = "byteflow:yaml-json-converter:mode"
 const FROM_FORMAT_STORAGE_KEY = "byteflow:yaml-json-converter:from-format"
 const TO_FORMAT_STORAGE_KEY = "byteflow:yaml-json-converter:to-format"
@@ -40,11 +39,6 @@ export function YamlJsonConverterPage() {
     const { resolvedTheme } = useThemePreference()
     const monacoTheme = getByteflowMonacoThemeName(resolvedTheme)
     React.useEffect(() => {
-        const savedInput = readStorageString(INPUT_STORAGE_KEY)
-        if (savedInput) {
-            setInput(savedInput)
-        }
-
         const savedFromFormat = readStorageString(FROM_FORMAT_STORAGE_KEY)
         const savedToFormat = readStorageString(TO_FORMAT_STORAGE_KEY)
         if (savedFromFormat && FORMAT_OPTIONS.includes(savedFromFormat as StructuredDataFormat)) {
@@ -64,11 +58,6 @@ export function YamlJsonConverterPage() {
             setToFormat("yaml")
         }
     }, [])
-
-    React.useEffect(() => {
-        if (!input.trim()) return
-        writeStorageString(INPUT_STORAGE_KEY, input)
-    }, [input])
 
     React.useEffect(() => {
         writeStorageString(FROM_FORMAT_STORAGE_KEY, fromFormat)
@@ -133,7 +122,6 @@ export function YamlJsonConverterPage() {
         setOutput("")
         setError(null)
         setImportError(null)
-        removeStorageKey(INPUT_STORAGE_KEY)
     }
 
     React.useEffect(() => {
