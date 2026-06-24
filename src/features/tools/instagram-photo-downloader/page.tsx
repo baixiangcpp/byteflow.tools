@@ -7,6 +7,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { ExternalRequestConfirmation } from "@/features/tool-shell/external-request-confirmation"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { openExternalUrl } from "@/core/security/external-url"
@@ -17,6 +18,7 @@ import {
 } from "@/core/utils/instagram-tool-utils"
 
 const SAMPLE_URL = "https://www.instagram.com/p/C5M0YfJt5gX/"
+const EXTERNAL_HOSTS = ["instagram.com"] as const
 
 export function InstagramPhotoDownloaderPage() {
     const { t } = useLang()
@@ -27,6 +29,7 @@ export function InstagramPhotoDownloaderPage() {
     const [rightsConfirmed, setRightsConfirmed] = React.useState(false)
     const [statusNote, setStatusNote] = React.useState("")
     const [previewApproved, setPreviewApproved] = React.useState(false)
+    const [externalRequestConfirmed, setExternalRequestConfirmed] = React.useState(false)
 
     const statusReadyLine = text("status_ready_line")
     const statusPendingLine = text("status_pending_line")
@@ -127,6 +130,7 @@ export function InstagramPhotoDownloaderPage() {
         setInputUrl(SAMPLE_URL)
         setRightsConfirmed(false)
         setPreviewApproved(false)
+        setExternalRequestConfirmed(false)
     }
 
     const handleReset = () => {
@@ -134,11 +138,16 @@ export function InstagramPhotoDownloaderPage() {
         setRightsConfirmed(false)
         setStatusNote("")
         setPreviewApproved(false)
+        setExternalRequestConfirmed(false)
     }
 
     const handleLoadPreview = () => {
         if (!canDownload) {
             toast.error(t.common.download_blocked_until_checks_pass)
+            return
+        }
+        if (!externalRequestConfirmed) {
+            toast.error(t.common.external_network_notice.confirm_required)
             return
         }
         setPreviewApproved(true)
@@ -156,6 +165,10 @@ export function InstagramPhotoDownloaderPage() {
     const handleDownload = async () => {
         if (!parsed || !canDownload) {
             toast.error(t.common.download_blocked_until_checks_pass)
+            return
+        }
+        if (!externalRequestConfirmed) {
+            toast.error(t.common.external_network_notice.confirm_required)
             return
         }
 
@@ -184,9 +197,27 @@ export function InstagramPhotoDownloaderPage() {
     const actions: ToolAction[] = [
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: handleSample },
         { id: "reset", label: t.common.reset, icon: Eraser, onClick: handleReset },
-        { id: "preview", label: t.common.preview, icon: ImageDown, onClick: handleLoadPreview, disabled: !canDownload },
+        {
+            id: "preview",
+            label: t.common.preview,
+            icon: ImageDown,
+            onClick: handleLoadPreview,
+            disabled: !canDownload || !externalRequestConfirmed,
+            disabledReason: !canDownload
+                ? t.common.download_blocked_until_checks_pass
+                : t.common.external_network_notice.confirm_required,
+        },
         { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy() },
-        { id: "download", label: t.common.download, icon: Download, onClick: () => void handleDownload(), disabled: !canDownload },
+        {
+            id: "download",
+            label: t.common.download,
+            icon: Download,
+            onClick: () => void handleDownload(),
+            disabled: !canDownload || !externalRequestConfirmed,
+            disabledReason: !canDownload
+                ? t.common.download_blocked_until_checks_pass
+                : t.common.external_network_notice.confirm_required,
+        },
     ]
 
     return (
@@ -214,6 +245,7 @@ export function InstagramPhotoDownloaderPage() {
                                 onChange={(event) => {
                                     setInputUrl(event.target.value)
                                     setPreviewApproved(false)
+                                    setExternalRequestConfirmed(false)
                                 }}
                                 placeholder="https://…"
                                 spellCheck={false}
@@ -225,6 +257,7 @@ export function InstagramPhotoDownloaderPage() {
                                     onChange={(event) => {
                                         setRightsConfirmed(event.target.checked)
                                         setPreviewApproved(false)
+                                        setExternalRequestConfirmed(false)
                                     }}
                                     className="mt-0.5 h-4 w-4"
                                 />
@@ -238,6 +271,17 @@ export function InstagramPhotoDownloaderPage() {
                     <div className="rounded-lg border bg-background/60">
                         <div className="tool-pane-header">{t.common.compliance_guidance}</div>
                         <div className="space-y-2 border-t p-3 text-sm text-muted-foreground">
+                            <ExternalRequestConfirmation
+                                hosts={EXTERNAL_HOSTS}
+                                purposeKey="authorized_media_download"
+                                dataSent="user_provided_url"
+                                confirmed={externalRequestConfirmed}
+                                onConfirmedChange={(confirmed) => {
+                                    setExternalRequestConfirmed(confirmed)
+                                    if (!confirmed) setPreviewApproved(false)
+                                }}
+                                rightsGuidance={text("compliance_notice")}
+                            />
                             <div className="rounded-md border bg-background/80 p-3">
                                 {text("compliance_notice")}
                             </div>

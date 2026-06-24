@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest"
-import { assessRegexSafety, testRegexPattern } from "@/features/tools/regex-tester/utils"
+import { assessRegexSafety, getRegexPerformanceWarnings, testRegexPattern } from "@/features/tools/regex-tester/utils"
 
 describe("regex tester utils", () => {
     it("returns match summaries with captures", () => {
@@ -11,6 +11,7 @@ describe("regex tester utils", () => {
                 { match: "Ab1", index: 0, groupIndex: 0, groups: ["Ab", "1"] },
                 { match: "Cd2", index: 4, groupIndex: 1, groups: ["Cd", "2"] },
             ])
+            expect(result.elapsedMs).toBeGreaterThanOrEqual(0)
         }
     })
 
@@ -39,5 +40,10 @@ describe("regex tester utils", () => {
     it("enforces pattern and input safety limits", () => {
         expect(testRegexPattern("a".repeat(501), "g", "aaa").ok).toBe(false)
         expect(testRegexPattern("a", "g", "a".repeat(20_001)).ok).toBe(false)
+    })
+
+    it("reports ambiguous alternation and slow evaluation diagnostics", () => {
+        expect(getRegexPerformanceWarnings("(a|aa)+", "a".repeat(100))).toContain("Pattern contains repeated alternation that may backtrack on long input.")
+        expect(getRegexPerformanceWarnings("a", "abc", 75)).toContain("Evaluation took 75 ms. Consider simplifying the pattern or testing a smaller sample.")
     })
 })

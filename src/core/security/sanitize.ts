@@ -41,11 +41,24 @@ const ACTIVE_EVENT_ATTRIBUTES = [
 ] as const
 
 export function sanitizeHtml(html: string): string {
-    return DOMPurify.sanitize(html, {
+    const sanitized = DOMPurify.sanitize(html, {
         USE_PROFILES: { html: true },
         FORBID_TAGS: [...ACTIVE_HTML_TAGS, "svg", "math"],
         FORBID_ATTR: [...ACTIVE_EVENT_ATTRIBUTES, "style"],
-    }).trim()
+    })
+
+    if (typeof document === "undefined") return sanitized.trim()
+
+    const template = document.createElement("template")
+    template.innerHTML = sanitized
+    for (const image of Array.from(template.content.querySelectorAll("img"))) {
+        const src = image.getAttribute("src") ?? ""
+        if (!isSafeMarkdownImageSrc(src)) {
+            image.removeAttribute("src")
+        }
+    }
+
+    return template.innerHTML.trim()
 }
 
 export function sanitizeMarkdownHtml(html: string): string {

@@ -66,4 +66,14 @@ describe("tool action consistency guard", () => {
         expect(page).not.toMatch(/\bfetch\s*\(|\bXMLHttpRequest\b/)
         expect(template).toContain("Does this builder send the HTTP request?")
     })
+
+    it("keeps Log Scrubber manual review and category summary visible", () => {
+        const page = read("src/features/tools/log-scrubber/page.tsx")
+        const translations = read("src/core/i18n/translations/en.json")
+
+        expect(page).toContain("manual_review_note")
+        expect(page).toContain("summary_title")
+        expect(page).toContain("Object.entries(summary)")
+        expect(translations).toContain("Automated redaction is a safety layer, not a guarantee")
+    })
 })

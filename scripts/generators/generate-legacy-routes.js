@@ -9,6 +9,9 @@ const TOOL_ALIASES_PATH = path.join(ROOT, "src/core/registry/tool-aliases.json")
 const REDIRECTS_PATH = path.join(ROOT, "public/_redirects")
 const LOCALES = ["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr"]
 const REDIRECT_STATUSES = new Set([301, 302])
+const STATIC_REDIRECT_LINES = [
+    "/security.txt /.well-known/security.txt 301",
+]
 const CHECK_ONLY = process.argv.includes("--check")
 
 function readText(filePath) {
@@ -90,6 +93,7 @@ export function loadLegacyTaxonomyRedirects() {
 
 function buildRedirectLines(routes, taxonomyRedirects = loadLegacyTaxonomyRedirects()) {
     return [
+        ...STATIC_REDIRECT_LINES,
         ...routes.flatMap((route) => {
             if (!REDIRECT_STATUSES.has(route.status)) return []
             return LOCALES.map((locale) => `/${locale}/${route.sourceSlug} /${locale}/${route.targetSlug} ${route.status}`)

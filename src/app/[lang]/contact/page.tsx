@@ -3,12 +3,13 @@
 import { useLang } from "@/core/i18n/lang-provider"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
-import { Github, Mail, MessageSquare, ExternalLink } from "lucide-react"
+import { Github, Mail, MessageSquare, ExternalLink, ShieldCheck } from "lucide-react"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 
 const EMAIL_ADDRESS = "contact@byteflow.tools"
 const GITHUB_REPOSITORY_URL = "https://github.com/baixiangcpp/byteflow.tools"
 const GITHUB_ISSUES_URL = "https://github.com/baixiangcpp/byteflow.tools/issues"
+const SECURITY_ADVISORY_URL = "https://github.com/baixiangcpp/byteflow.tools/security/advisories/new"
 
 export default function ContactPage() {
     const { t } = useLang()
@@ -17,6 +18,7 @@ export default function ContactPage() {
     const links = [
         { icon: Github, title: "GitHub", desc: p.contact_github_desc, href: GITHUB_REPOSITORY_URL, external: true },
         { icon: MessageSquare, title: p.contact_issues_title, desc: p.contact_issues_desc, href: GITHUB_ISSUES_URL, external: true },
+        { icon: ShieldCheck, title: p.contact_security_title, desc: p.contact_security_desc, href: SECURITY_ADVISORY_URL, external: true },
     ]
 
     const handleCopyEmail = async () => {
@@ -37,7 +39,7 @@ export default function ContactPage() {
                 <p className="mt-3 text-base leading-relaxed text-muted-foreground">{p.contact_intro}</p>
             </section>
 
-            <section className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 {links.map((link) => (
                     <a
                         key={link.title}

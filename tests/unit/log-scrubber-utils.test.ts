@@ -1,16 +1,20 @@
 import { describe, expect, it } from "vitest"
 import { DEFAULT_SCRUB_OPTIONS, scrubLogs, summarizeFindings } from "../../src/lib/log-scrubber-utils"
 
+function joinTokenParts(parts: string[], separator = "") {
+    return parts.join(separator)
+}
+
 describe("scrubLogs", () => {
     it("redacts emails, IPs, bearer tokens, and key/value secrets", () => {
-        const input = "user=alice@example.com ip=192.168.1.10 Authorization: Bearer abcdefghijklmnop password=secret"
+        const input = "user=alice@example.com ip=192.168.1.10 ipv6=2001:0db8:0000:0000:0000:ff00:0042:8329 Authorization: Bearer abcdefghijklmnop password=secret"
         const result = scrubLogs(input)
 
         expect(result.output).toContain("[EMAIL_REDACTED]")
         expect(result.output).toContain("[IP_REDACTED]")
         expect(result.output).toContain("Bearer [TOKEN_REDACTED]")
         expect(result.output).toContain("password= [SECRET_REDACTED]")
-        expect(result.redactionCount).toBe(4)
+        expect(result.redactionCount).toBe(5)
     })
 
     it("reports positions from the original input when earlier replacements change length", () => {
@@ -53,13 +57,14 @@ describe("scrubLogs", () => {
     })
 
     it("does not retain full raw secrets in findings", () => {
-        const input = "email=alice@example.com Authorization: Bearer abcdefghijklmnop api_key=sk_live_secretvalue"
+        const fakeApiKey = joinTokenParts(["sk", "live", "secretvalue"], "_")
+        const input = `email=alice@example.com Authorization: Bearer abcdefghijklmnop api_key=${fakeApiKey}`
         const result = scrubLogs(input)
         const serializedFindings = JSON.stringify(result.findings)
 
         expect(serializedFindings).not.toContain("alice@example.com")
         expect(serializedFindings).not.toContain("abcdefghijklmnop")
-        expect(serializedFindings).not.toContain("sk_live_secretvalue")
+        expect(serializedFindings).not.toContain(fakeApiKey)
         expect(result.findings.every((finding) => finding.maskedPreview.length > 0)).toBe(true)
         expect(result.output).toContain("[EMAIL_REDACTED]")
         expect(result.output).toContain("Bearer [TOKEN_REDACTED]")
@@ -67,11 +72,48 @@ describe("scrubLogs", () => {
     })
 
     it("redacts JWT and AWS access keys", () => {
-        const input = "jwt=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjMifQ.signature key=AKIAIOSFODNN7EXAMPLE"
+        const input = "jwt=eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxMjMifQ.signature key=AKIAIOSFODNN7EXAMPLE AWS_SECRET_ACCESS_KEY=wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
         const result = scrubLogs(input)
 
         expect(result.output).toContain("[JWT_REDACTED]")
         expect(result.output).toContain("[AWS_ACCESS_KEY_REDACTED]")
+        expect(result.output).toContain("AWS_SECRET_ACCESS_KEY= [SECRET_REDACTED]")
+    })
+
+    it("redacts common cloud tokens, cookies, session IDs, and certificate blocks", () => {
+        const githubToken = joinTokenParts(["gh", "p_abcdefghijklmnopqrstuvwxyz1234567890"])
+        const stripeToken = joinTokenParts(["sk", "live", "1234567890abcdef1234567890abcdef"], "_")
+        const sendgridToken = joinTokenParts(["S", "G.abcdefghijklmnop.qrstuvwxyz123456"])
+        const googleToken = joinTokenParts(["AI", "zaSyDUMMYDUMMYDUMMYDUMMYDUMMYDUMMY123"])
+        const slackToken = joinTokenParts(["xo", "xb-123456789012-abcdefghijklmnopqrstuv"])
+        const input = [
+            `github=${githubToken}`,
+            `stripe=${stripeToken}`,
+            `sendgrid=${sendgridToken}`,
+            `google=${googleToken}`,
+            `slack=${slackToken}`,
+            "Cookie: sid=abc123; theme=dark",
+            "session_id=sess_1234567890abcdef request_id=req_1234567890",
+            "-----BEGIN CERTIFICATE-----\nMIIDdummy\n-----END CERTIFICATE-----",
+        ].join("\n")
+
+        const result = scrubLogs(input)
+
+        expect(result.output).not.toContain(githubToken)
+        expect(result.output).not.toContain(stripeToken)
+        expect(result.output).not.toContain("sid=abc123")
+        expect(result.output).not.toContain("sess_1234567890abcdef")
+        expect(result.output).not.toContain("MIIDdummy")
+        expect(result.output).toContain("[TOKEN_REDACTED]")
+        expect(result.output).toContain("Cookie: [COOKIE_REDACTED]")
+        expect(result.output).toContain("session_id= [SESSION_REDACTED]")
+        expect(result.output).toContain("[CERTIFICATE_REDACTED]")
+        expect(summarizeFindings(result.findings)).toMatchObject({
+            "cloud-token": 5,
+            cookie: 1,
+            "session-id": 2,
+            certificate: 1,
+        })
     })
 
     it("preserves URL host while redacting URL credentials", () => {

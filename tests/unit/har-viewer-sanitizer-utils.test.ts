@@ -81,9 +81,22 @@ describe("HAR viewer and sanitizer utilities", () => {
 
     it("redacts headers, cookies, query strings, bodies, and content", () => {
         const result = sanitizeHar(SAMPLE_HAR)
+        const sanitized = JSON.parse(result.output)
 
         expect(result.error).toBeUndefined()
         expect(result.redactionCount).toBeGreaterThanOrEqual(6)
+        expect(result.summary).toMatchObject({
+            header: 2,
+            cookie: 2,
+            query: 3,
+            postData: 1,
+            content: 1,
+        })
+        expect(sanitized.log._byteflowSanitizerSummary).toMatchObject({
+            generatedBy: "byteflow.tools HAR Viewer / Sanitizer",
+            redactionCount: result.redactionCount,
+            reviewRequired: true,
+        })
         expect(result.output).toContain("[REDACTED]")
         expect(result.output).toContain("token=[REDACTED]")
         expect(result.output).not.toContain("Bearer secret")
@@ -102,7 +115,22 @@ describe("HAR viewer and sanitizer utilities", () => {
         })
 
         expect(result.redactionCount).toBe(0)
+        expect(result.summary).toEqual({})
         expect(result.output).toContain("Bearer secret")
+        expect(result.output).toContain("_byteflowSanitizerSummary")
+    })
+
+    it("documents aggressive defaults in sanitized exports", () => {
+        const result = sanitizeHar(SAMPLE_HAR)
+        const sanitized = JSON.parse(result.output)
+
+        expect(sanitized.log._byteflowSanitizerSummary.defaults).toEqual({
+            headers: true,
+            cookies: true,
+            queryStrings: true,
+            postData: true,
+            responseContent: true,
+        })
     })
 
     it("returns parse errors without throwing", () => {
