@@ -47,6 +47,12 @@ const mocks = vi.hoisted(() => {
                 sent_data_label: "Sent data",
                 consent_label: "Consent message",
                 privacy_link: "Privacy policy",
+                compliance_label: "Platform and rights guidance",
+                platform_label: "Platform",
+                rights_label: "Rights",
+                rights_desc: "Use only authorized content.",
+                affiliation_label: "Affiliation",
+                affiliation_desc: "Not affiliated with the platform.",
             },
             install_guide: "Install guide",
             install_inline_description: "Install description",
@@ -114,7 +120,7 @@ describe("RoutePageChrome", () => {
         expect(screen.getByText("User URL sent")).toBeInTheDocument()
         expect(screen.getByText("Requests the Instagram URL you provide only after you confirm rights and click Download.")).toBeInTheDocument()
         expect(screen.getByText("Consent message")).toBeInTheDocument()
-        expect(screen.getAllByRole("link", { name: "Trust Center" })[0]).toHaveAttribute("href", "/en/trust-center")
+        expect(screen.getAllByRole("link", { name: "Trust Center" })[0]).toHaveAttribute("href", "/en/trust-center#verify-local-processing")
     })
 
     it("shows local trust status for local-only tools", () => {

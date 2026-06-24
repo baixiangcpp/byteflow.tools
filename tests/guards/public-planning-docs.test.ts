@@ -42,7 +42,7 @@ describe("public roadmap, changelog, self-hosting, and distribution docs", () =>
     it("documents self-hosting and distribution research without proposing cloud payload history", () => {
         const docs = [
             "docs/deployment/self-hosting.md",
-            "docs/roadmap/distribution-research.md",
+            "docs/growth/distribution-research.md",
             "README.md",
             ".github/ISSUE_TEMPLATE/feature_request.yml",
         ].map((file) => fs.readFileSync(path.join(process.cwd(), file), "utf8")).join("\n")
