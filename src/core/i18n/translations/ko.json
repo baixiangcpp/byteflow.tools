@@ -2918,7 +2918,7 @@
     "trust_center_offline_matrix_col_behavior": "오프라인 동작",
     "trust_center_offline_matrix_col_cache": "캐시 및 개인정보 경계",
     "trust_center_offline_matrix_local_type": "브라우저 로컬 도구",
-    "trust_center_offline_matrix_local_behavior": "JSON Formatter, Base64, Regex Tester, UUID 생성 같은 핵심 변환은 방문한 페이지와 도구 청크가 캐시된 뒤 오프라인으로 실행할 수 있습니다.",
+    "trust_center_offline_matrix_local_behavior": "JSON 서식화, Base64, 정규식 테스트, UUID 생성 같은 핵심 변환은 방문한 페이지와 도구 청크가 캐시된 뒤 오프라인으로 실행할 수 있습니다.",
     "trust_center_offline_matrix_local_cache": "Service worker는 앱 셸, 정적 자산, 코드 청크만 캐시하며 도구 입력이나 출력은 캐시하지 않습니다.",
     "trust_center_offline_matrix_file_type": "파일 기반 도구",
     "trust_center_offline_matrix_file_behavior": "이미지 도구와 HAR Sanitizer 같은 로컬 파일 워크플로는 코드가 캐시된 뒤 현재 기기에서 선택한 파일로 오프라인 실행할 수 있습니다.",

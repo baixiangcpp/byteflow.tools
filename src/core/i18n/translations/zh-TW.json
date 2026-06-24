@@ -2918,7 +2918,7 @@
     "trust_center_offline_matrix_col_behavior": "離線行為",
     "trust_center_offline_matrix_col_cache": "快取與隱私邊界",
     "trust_center_offline_matrix_local_type": "瀏覽器本地工具",
-    "trust_center_offline_matrix_local_behavior": "JSON 格式化、Base64、Regex Tester 和 UUID 產生等核心轉換，在頁面和工具程式碼區塊已快取後可離線執行。",
+    "trust_center_offline_matrix_local_behavior": "JSON 格式化、Base64、正則測試和 UUID 產生等核心轉換，在頁面和工具程式碼區塊已快取後可離線執行。",
     "trust_center_offline_matrix_local_cache": "Service worker 只快取應用外殼、靜態資源和程式碼區塊；不會快取工具輸入或輸出。",
     "trust_center_offline_matrix_file_type": "檔案型工具",
     "trust_center_offline_matrix_file_behavior": "圖片工具和 HAR Sanitizer 等本地檔案流程，在程式碼快取後可離線執行，並使用目前裝置選取的檔案。",

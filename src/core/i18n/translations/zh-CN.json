@@ -2918,7 +2918,7 @@
     "trust_center_offline_matrix_col_behavior": "离线行为",
     "trust_center_offline_matrix_col_cache": "缓存与隐私边界",
     "trust_center_offline_matrix_local_type": "浏览器本地工具",
-    "trust_center_offline_matrix_local_behavior": "JSON 格式化、Base64、Regex Tester 和 UUID 生成等核心转换，在访问过页面和工具代码块缓存后可离线运行。",
+    "trust_center_offline_matrix_local_behavior": "JSON 格式化、Base64、正则测试和 UUID 生成等核心转换，在访问过页面和工具代码块缓存后可离线运行。",
     "trust_center_offline_matrix_local_cache": "Service worker 只缓存应用外壳、静态资源和代码块；不会缓存工具输入或输出。",
     "trust_center_offline_matrix_file_type": "文件型工具",
     "trust_center_offline_matrix_file_behavior": "图片工具和 HAR Sanitizer 等本地文件流程，在代码缓存后可离线运行，并使用当前设备选择的文件。",

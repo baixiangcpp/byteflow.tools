@@ -2918,7 +2918,7 @@
     "trust_center_offline_matrix_col_behavior": "Comportement hors ligne",
     "trust_center_offline_matrix_col_cache": "Limite cache et confidentialité",
     "trust_center_offline_matrix_local_type": "Outils locaux au navigateur",
-    "trust_center_offline_matrix_local_behavior": "Les transformations principales comme JSON Formatter, Base64, Regex Tester et la génération UUID peuvent fonctionner hors ligne après mise en cache de la page et du module outil.",
+    "trust_center_offline_matrix_local_behavior": "Les transformations principales comme le formatage JSON, Base64, les tests regex et la génération UUID peuvent fonctionner hors ligne après mise en cache de la page et du module outil.",
     "trust_center_offline_matrix_local_cache": "Le service worker met en cache uniquement le shell, les assets statiques et les modules de code ; les entrées et sorties d'outil ne sont pas cachées.",
     "trust_center_offline_matrix_file_type": "Outils basés sur fichiers",
     "trust_center_offline_matrix_file_behavior": "Les workflows locaux sur fichiers comme les outils image et HAR Sanitizer peuvent fonctionner hors ligne après mise en cache du code, avec les fichiers choisis sur l'appareil.",

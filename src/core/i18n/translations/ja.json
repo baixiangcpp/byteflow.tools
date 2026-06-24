@@ -2918,7 +2918,7 @@
     "trust_center_offline_matrix_col_behavior": "オフライン動作",
     "trust_center_offline_matrix_col_cache": "キャッシュとプライバシー境界",
     "trust_center_offline_matrix_local_type": "ブラウザー内ツール",
-    "trust_center_offline_matrix_local_behavior": "JSON Formatter、Base64、Regex Tester、UUID 生成などの主要変換は、訪問済みページとツールチャンクがキャッシュされた後にオフラインで実行できます。",
+    "trust_center_offline_matrix_local_behavior": "JSON 整形、Base64、正規表現テスト、UUID 生成などの主要変換は、訪問済みページとツールチャンクがキャッシュされた後にオフラインで実行できます。",
     "trust_center_offline_matrix_local_cache": "Service worker はアプリシェル、静的アセット、コードチャンクだけをキャッシュし、ツール入力や出力はキャッシュしません。",
     "trust_center_offline_matrix_file_type": "ファイルベースのツール",
     "trust_center_offline_matrix_file_behavior": "画像ツールや HAR Sanitizer などのローカルファイル処理は、コードがキャッシュされた後、端末上で選択したファイルを使ってオフライン実行できます。",
