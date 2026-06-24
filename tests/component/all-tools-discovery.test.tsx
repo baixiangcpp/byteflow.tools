@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, within } from "@testing-library/react"
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { AllToolsDiscovery } from "@/features/tool-discovery/all-tools-discovery"
 
@@ -178,7 +178,7 @@ describe("AllToolsDiscovery", () => {
         expect(screen.getByRole("group", { name: "Input type" })).toBeInTheDocument()
         expect(screen.getByRole("group", { name: "Execution" })).toBeInTheDocument()
         expect(screen.getByRole("group", { name: "Use case" })).toBeInTheDocument()
-        expect(screen.getByText("4 tools")).toBeInTheDocument()
+        expect(screen.getByRole("status")).toHaveTextContent("4 tools")
 
         fireEvent.click(screen.getAllByRole("button", { name: "File" })[0])
         expect(screen.getByText("Active filters")).toBeInTheDocument()
@@ -192,7 +192,7 @@ describe("AllToolsDiscovery", () => {
         expect(screen.getByRole("link", { name: "API payload cleanup" })).toHaveAttribute("href", "/en/pipeline-builder")
 
         fireEvent.click(screen.getAllByRole("button", { name: "Clear filters" })[0])
-        expect(screen.getByText("4 tools")).toBeInTheDocument()
+        expect(screen.getByRole("status")).toHaveTextContent("4 tools")
         expect(window.location.search).toBe("")
     })
 
@@ -215,16 +215,21 @@ describe("AllToolsDiscovery", () => {
         renderDiscovery()
 
         const card = screen.getByRole("link", { name: /JSON Formatter/ })
+        expect(card.closest("article")).toContainElement(screen.getByRole("button", { name: "Add to favorites: JSON Formatter" }))
         const badges = within(card).getAllByText(/Data formats|Browser-local|File input|Offline capable|Pipeline ready/)
         expect(badges.length).toBeLessThanOrEqual(3)
     })
 
-    it("uses a mobile filter drawer with counts, close, and clear controls", () => {
+    it("uses a mobile filter drawer with counts, close, clear, and focus restoration", async () => {
         renderDiscovery()
 
-        fireEvent.click(screen.getByRole("button", { name: /Show filters/ }))
+        const trigger = screen.getByRole("button", { name: /Show filters/ })
+        trigger.focus()
+        fireEvent.click(trigger)
 
         const drawer = screen.getByRole("dialog", { name: "Show filters" })
+        await waitFor(() => expect(drawer).toContainElement(document.activeElement as HTMLElement))
+        expect(drawer).toHaveAccessibleDescription("4 tools - 0 Active filters")
         expect(within(drawer).getByText(/4 tools/)).toBeInTheDocument()
         fireEvent.click(within(drawer).getAllByRole("button", { name: "File" })[0])
         expect(within(drawer).getByText(/1 tools/)).toBeInTheDocument()
@@ -235,6 +240,28 @@ describe("AllToolsDiscovery", () => {
         const doneButtons = within(drawer).getAllByRole("button", { name: "Done" })
         fireEvent.click(doneButtons[doneButtons.length - 1])
         expect(screen.queryByRole("dialog", { name: "Show filters" })).not.toBeInTheDocument()
+        await waitFor(() => expect(trigger).toHaveFocus())
+    })
+
+    it("closes the mobile filter drawer with Escape and wraps Tab focus", async () => {
+        renderDiscovery()
+
+        const trigger = screen.getByRole("button", { name: /Show filters/ })
+        trigger.focus()
+        fireEvent.click(trigger)
+
+        const drawer = screen.getByRole("dialog", { name: "Show filters" })
+        const doneButtons = within(drawer).getAllByRole("button", { name: "Done" })
+        const firstButton = doneButtons[0]
+        const lastButton = doneButtons[doneButtons.length - 1]
+
+        await waitFor(() => expect(firstButton).toHaveFocus())
+        fireEvent.keyDown(document, { key: "Tab", shiftKey: true })
+        expect(lastButton).toHaveFocus()
+
+        fireEvent.keyDown(document, { key: "Escape" })
+        expect(screen.queryByRole("dialog", { name: "Show filters" })).not.toBeInTheDocument()
+        await waitFor(() => expect(trigger).toHaveFocus())
     })
 
     it("favorites and clears tools using only local tool IDs", () => {
@@ -243,7 +270,7 @@ describe("AllToolsDiscovery", () => {
         fireEvent.click(screen.getByRole("button", { name: "Add to favorites: JSON Formatter" }))
 
         expect(screen.getByRole("button", { name: "Remove from favorites: JSON Formatter" })).toBeInTheDocument()
-        expect(screen.getByRole("link", { name: "JSON Formatter" })).toHaveAttribute("href", "/en/json-formatter")
+        expect(screen.getAllByRole("link", { name: "JSON Formatter" }).some((link) => link.getAttribute("href") === "/en/json-formatter")).toBe(true)
 
         const raw = window.localStorage.getItem("byteflow:tools:favorites") ?? ""
         expect(JSON.parse(raw)).toEqual([

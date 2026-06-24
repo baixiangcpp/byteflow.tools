@@ -466,7 +466,7 @@ export function PipelineBuilderPage() {
                     <section className="rounded-lg border bg-card p-4">
                         <div className="mb-2 flex items-center justify-between gap-2">
                             <Label htmlFor="pipeline-input">{text("initial_input")}</Label>
-                            <span className="text-xs text-muted-foreground">{initialInput.length} chars</span>
+                            <span id="pipeline-input-count" className="text-xs text-muted-foreground">{initialInput.length} chars</span>
                         </div>
                         <Textarea
                             id="pipeline-input"
@@ -478,20 +478,23 @@ export function PipelineBuilderPage() {
                             placeholder={text("initial_input_placeholder")}
                             className="min-h-[220px] font-mono text-sm"
                             spellCheck={false}
+                            aria-describedby="pipeline-input-count"
                         />
                     </section>
 
                     <section className="rounded-lg border bg-card p-4">
                         <div className="mb-2 flex items-center justify-between gap-2">
-                            <Label>{text("final_output")}</Label>
-                            <span className="text-xs text-muted-foreground">{finalOutput.length} chars</span>
+                            <Label htmlFor="pipeline-output">{text("final_output")}</Label>
+                            <span id="pipeline-output-count" className="text-xs text-muted-foreground">{finalOutput.length} chars</span>
                         </div>
                         <Textarea
+                            id="pipeline-output"
                             value={finalOutput}
                             readOnly
                             placeholder={text("final_output_placeholder")}
                             className="min-h-[260px] bg-muted font-mono text-sm"
                             spellCheck={false}
+                            aria-describedby="pipeline-output-count pipeline-run-log-status"
                         />
                     </section>
 

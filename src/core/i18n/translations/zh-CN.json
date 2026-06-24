@@ -90,6 +90,7 @@
     "run": "运行",
     "apply": "应用",
     "minify": "压缩",
+    "tool_actions": "工具操作",
     "copied": "已复制到剪贴板",
     "copied_desc": "结果已复制。",
     "copy_failed": "复制失败，请手动复制。",

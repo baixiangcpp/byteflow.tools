@@ -6,12 +6,19 @@ type PipelineRunLogProps = {
 }
 
 export function PipelineRunLog({ result, text }: PipelineRunLogProps) {
+    const statusMessage = result
+        ? `${result.ok ? text("status_ok") : text("status_failed")}: ${result.steps.length} ${text("run_log")}`
+        : text("run_log_empty")
+
     return (
-        <section className="rounded-lg border bg-card p-4">
-            <h2 className="text-sm font-semibold">{text("run_log")}</h2>
+        <section className="rounded-lg border bg-card p-4" aria-labelledby="pipeline-run-log-title">
+            <h2 id="pipeline-run-log-title" className="text-sm font-semibold">{text("run_log")}</h2>
+            <p id="pipeline-run-log-status" className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+                {statusMessage}
+            </p>
             <div className="mt-3 overflow-hidden rounded-md border">
                 {result ? (
-                    <table className="w-full text-sm">
+                    <table className="w-full text-sm" aria-label={text("run_log")}>
                         <thead className="bg-muted text-xs text-muted-foreground">
                             <tr>
                                 <th className="px-3 py-2 text-left">{text("table_step")}</th>
@@ -38,7 +45,7 @@ export function PipelineRunLog({ result, text }: PipelineRunLogProps) {
                 )}
             </div>
             {result?.errors.length ? (
-                <div className="mt-3 rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
+                <div className="mt-3 rounded-md border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive" role="alert">
                     {result.errors.join("\n")}
                 </div>
             ) : null}

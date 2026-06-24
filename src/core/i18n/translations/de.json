@@ -90,6 +90,7 @@
     "run": "Ausführen",
     "apply": "Anwenden",
     "minify": "Minifizieren",
+    "tool_actions": "Tool-Aktionen",
     "copied": "In die Zwischenablage kopiert",
     "copied_desc": "Das Ergebnis wurde kopiert.",
     "copy_failed": "Kopieren fehlgeschlagen. Bitte manuell kopieren.",

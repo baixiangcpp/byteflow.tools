@@ -94,6 +94,7 @@
     "run": "Exécuter",
     "apply": "Appliquer",
     "minify": "Minifier",
+    "tool_actions": "Actions de l'outil",
     "copied": "Copié dans le presse-papiers",
     "copied_desc": "Le résultat a été copié.",
     "copy_failed": "Copie impossible. Veuillez copier manuellement.",

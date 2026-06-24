@@ -90,6 +90,7 @@
     "run": "Run",
     "apply": "Apply",
     "minify": "Minify",
+    "tool_actions": "Tool actions",
     "copied": "Copied to clipboard",
     "copied_desc": "The result has been copied.",
     "copy_failed": "Unable to copy. Please copy manually.",

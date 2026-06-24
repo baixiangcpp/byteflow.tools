@@ -90,6 +90,7 @@
     "run": "실행",
     "apply": "적용",
     "minify": "최소화",
+    "tool_actions": "도구 작업",
     "copied": "클립보드에 복사됨",
     "copied_desc": "결과가 복사되었습니다.",
     "copy_failed": "복사에 실패했습니다. 수동으로 복사해 주세요.",
