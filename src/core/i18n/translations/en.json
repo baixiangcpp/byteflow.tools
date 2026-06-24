@@ -2589,6 +2589,8 @@
       "recipe_name": "Recipe name",
       "recipe_description": "Description",
       "recipe_description_placeholder": "Optional note for this workflow",
+      "recipe_builder": "Recipe builder",
+      "recipe_inspector": "Recipe inspector",
       "recipe_settings": "Recipe settings",
       "stop_on_error": "Stop on error",
       "stop_on_error_hint": "When enabled, execution stops at the first failed step.",

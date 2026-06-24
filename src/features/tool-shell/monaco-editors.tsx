@@ -192,9 +192,19 @@ const DynamicMonacoDiffEditor = dynamic<DiffEditorProps>(
     },
 )
 
-export function MonacoEditor(props: EditorProps) {
+export type MonacoEditorProps = EditorProps & {
+    "aria-describedby"?: string
+    "aria-invalid"?: React.AriaAttributes["aria-invalid"]
+}
+
+export function MonacoEditor(props: MonacoEditorProps) {
     const { t } = useLang()
-    const { className, ...editorProps } = props
+    const {
+        className,
+        "aria-describedby": ariaDescribedBy,
+        "aria-invalid": ariaInvalid,
+        ...editorProps
+    } = props
     const { resolvedTheme } = useThemePreference()
     const monacoTheme = props.theme || getByteflowMonacoThemeName(resolvedTheme)
 
@@ -220,7 +230,11 @@ export function MonacoEditor(props: EditorProps) {
 
     if (shouldRenderDesktopMonaco) {
         return (
-            <div ref={hostRef} className={cn("h-full w-full", className)}>
+            <div
+                ref={hostRef}
+                className={cn("h-full w-full", className)}
+                aria-describedby={ariaDescribedBy}
+            >
                 <DynamicMonacoEditor {...editorProps} theme={monacoTheme} options={monacoOptions} height={resolvedHeight} />
             </div>
         )
@@ -235,6 +249,8 @@ export function MonacoEditor(props: EditorProps) {
             readOnly={readOnly}
             spellCheck={false}
             aria-label={monacoOptions.ariaLabel}
+            aria-describedby={ariaDescribedBy}
+            aria-invalid={ariaInvalid}
             onChange={(event) => props.onChange?.(event.target.value, undefined as never)}
             onFocus={() => {
                 setFallbackFocused(true)

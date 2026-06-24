@@ -137,8 +137,8 @@ export function PipelineStepList({
                         >
                             <div
                                 className="mt-0.5 flex h-8 w-6 shrink-0 items-center justify-center rounded text-muted-foreground"
-                                aria-label={text("drag_handle")}
                                 title={text("drag_handle")}
+                                aria-hidden="true"
                             >
                                 <GripVertical className="h-4 w-4" aria-hidden="true" />
                             </div>

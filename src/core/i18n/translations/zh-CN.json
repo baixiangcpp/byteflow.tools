@@ -2569,6 +2569,8 @@
       "recipe_name": "Recipe 名称",
       "recipe_description": "描述",
       "recipe_description_placeholder": "这个工作流的可选备注",
+      "recipe_builder": "Recipe 构建器",
+      "recipe_inspector": "Recipe 检查器",
       "recipe_settings": "Recipe 设置",
       "stop_on_error": "遇错停止",
       "stop_on_error_hint": "开启后，执行会在第一个失败步骤停止。",

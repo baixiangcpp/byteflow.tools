@@ -161,7 +161,8 @@ describe("phase 3 pipeline builder page", () => {
         expect(screen.getByLabelText("Step label")).toHaveValue("Minify JSON")
         expect(screen.getByText("Minify JSON moved to position 2 of 2.")).toBeInTheDocument()
         expect(container.querySelectorAll("[draggable='true']").length).toBeGreaterThan(0)
-        expect(screen.getAllByLabelText("Drag to reorder step").length).toBeGreaterThan(0)
+        expect(screen.getAllByRole("button", { name: "Move step up" }).length).toBeGreaterThan(0)
+        expect(screen.getAllByRole("button", { name: "Move step down" }).length).toBeGreaterThan(0)
 
         const removeButtons = screen.getAllByRole("button", { name: "Remove step" })
         fireEvent.click(removeButtons[0])
