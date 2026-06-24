@@ -765,7 +765,7 @@ export function AllToolsDiscovery({
                             aria-label={labels.filterSearch}
                         />
                     </div>
-                    <Button type="button" variant="outline" onClick={clearFilters} disabled={!hasFilters}>
+                    <Button type="button" variant="outline" className="hidden lg:inline-flex" onClick={clearFilters} disabled={!hasFilters}>
                         <X className="h-4 w-4" />
                         {labels.clearFilters}
                     </Button>
@@ -794,49 +794,6 @@ export function AllToolsDiscovery({
                 )}>
                     {filterPanel}
                 </div>
-
-                {showMobileFilters ? (
-                    <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label={labels.showFilters}>
-                        <button
-                            type="button"
-                            className="absolute inset-0 bg-background/80 backdrop-blur-sm"
-                            aria-label={labels.closeFilters}
-                            onClick={() => setShowMobileFilters(false)}
-                        />
-                        <div
-                            id="all-tools-filter-drawer"
-                            className="absolute inset-x-0 bottom-0 max-h-[86dvh] overflow-y-auto rounded-t-2xl border border-border/70 bg-background p-4 shadow-2xl"
-                        >
-                            <div className="mb-4 flex items-center justify-between gap-3">
-                                <div>
-                                    <h2 className="inline-flex items-center gap-2 text-base font-semibold">
-                                        <Filter className="h-4 w-4" />
-                                        {labels.showFilters}
-                                    </h2>
-                                    <p className="mt-1 text-xs text-muted-foreground">
-                                        {resultCount} {labels.toolsLabel} - {activeFilters.length} {labels.activeFilters}
-                                    </p>
-                                </div>
-                                <Button type="button" variant="ghost" size="icon" aria-label={labels.closeFilters} onClick={() => setShowMobileFilters(false)}>
-                                    <X className="h-4 w-4" />
-                                </Button>
-                            </div>
-                            <div className="space-y-4">
-                                {filterPanel}
-                                <div className="border-t border-border/70 pt-4">{tagFilterPanel}</div>
-                                <div className="flex gap-2 border-t border-border/70 pt-4">
-                                    <Button type="button" variant="outline" className="flex-1" onClick={clearFilters} disabled={!hasFilters}>
-                                        <X className="h-4 w-4" />
-                                        {labels.clearFilters}
-                                    </Button>
-                                    <Button type="button" className="flex-1" onClick={() => setShowMobileFilters(false)}>
-                                        {labels.closeFilters}
-                                    </Button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                ) : null}
 
                 <div className="mt-4 hidden lg:block">
                     {tagFilterPanel}
@@ -868,6 +825,49 @@ export function AllToolsDiscovery({
                     ) : null}
                 </div>
             </section>
+
+            {showMobileFilters ? (
+                <div className="fixed inset-0 z-[70] lg:hidden" role="dialog" aria-modal="true" aria-label={labels.showFilters}>
+                    <button
+                        type="button"
+                        className="absolute inset-0 bg-background/80 backdrop-blur-sm"
+                        aria-label={labels.closeFilters}
+                        onClick={() => setShowMobileFilters(false)}
+                    />
+                    <div
+                        id="all-tools-filter-drawer"
+                        className="absolute inset-x-0 bottom-0 max-h-[86dvh] overflow-y-auto rounded-t-2xl border border-border/70 bg-background p-4 shadow-2xl"
+                    >
+                        <div className="mb-4 flex items-center justify-between gap-3">
+                            <div>
+                                <h2 className="inline-flex items-center gap-2 text-base font-semibold">
+                                    <Filter className="h-4 w-4" />
+                                    {labels.showFilters}
+                                </h2>
+                                <p className="mt-1 text-xs text-muted-foreground">
+                                    {resultCount} {labels.toolsLabel} - {activeFilters.length} {labels.activeFilters}
+                                </p>
+                            </div>
+                            <Button type="button" variant="ghost" size="icon" aria-label={labels.closeFilters} onClick={() => setShowMobileFilters(false)}>
+                                <X className="h-4 w-4" />
+                            </Button>
+                        </div>
+                        <div className="space-y-4">
+                            {filterPanel}
+                            <div className="border-t border-border/70 pt-4">{tagFilterPanel}</div>
+                            <div className="flex gap-2 border-t border-border/70 pt-4">
+                                <Button type="button" variant="outline" className="flex-1" onClick={clearFilters} disabled={!hasFilters}>
+                                    <X className="h-4 w-4" />
+                                    {labels.clearFilters}
+                                </Button>
+                                <Button type="button" className="flex-1" onClick={() => setShowMobileFilters(false)}>
+                                    {labels.closeFilters}
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            ) : null}
 
             {localToolsPanel}
 
