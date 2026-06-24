@@ -69,6 +69,19 @@ describe("offline fallback page", () => {
         expect(source).toContain("if (isNetworkOnlyRequest(event.request, url)) return;")
     })
 
+    it("keeps PWA smoke covering representative offline tool flows", () => {
+        const source = fs.readFileSync(path.join(process.cwd(), "scripts/e2e/run-playwright-smoke.js"), "utf8")
+
+        expect(source).toContain("/en/json-formatter")
+        expect(source).toContain("offline JSON formatter output")
+        expect(source).toContain("/en/har-viewer-sanitizer")
+        expect(source).toContain("offline HAR sanitizer output")
+        expect(source).toContain("/en/pipeline-builder")
+        expect(source).toContain("\"message\": \"offline pipeline\"")
+        expect(source).toContain("/en/youtube-thumbnail-grabber")
+        expect(source).toContain("external-request action needs network access")
+    })
+
     it("lets users clear byteflow PWA caches without clearing tool payload storage", () => {
         const source = fs.readFileSync(path.join(process.cwd(), "public", "sw.js"), "utf8")
 

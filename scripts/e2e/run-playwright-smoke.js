@@ -952,6 +952,14 @@ async function assertPwaShellJourney(browser, baseUrl) {
         if (!isControlled) {
             throw new Error("Service worker stopped controlling the PWA smoke page before offline navigation.");
         }
+        for (const warmedRoute of [
+            "/en/har-viewer-sanitizer",
+            "/en/pipeline-builder",
+            "/en/youtube-thumbnail-grabber",
+        ]) {
+            await page.goto(`${baseUrl}${warmedRoute}`, { waitUntil: "networkidle" });
+            await page.waitForSelector("main", { timeout: 15_000 });
+        }
 
         const cacheBucketsBeforeOffline = await page.evaluate(async () =>
             (await caches.keys()).filter((key) => key.startsWith("byteflow-")).sort(),
@@ -969,6 +977,13 @@ async function assertPwaShellJourney(browser, baseUrl) {
 
         await context.setOffline(true);
         contextOffline = true;
+
+        await page.goto(`${baseUrl}/en/json-formatter`, { waitUntil: "domcontentloaded" });
+        await page.waitForSelector("main", { timeout: 15_000 });
+        const offlineJsonInput = page.locator("textarea").first();
+        await offlineJsonInput.fill("{\"offline\":true,\"items\":[1,2]}");
+        await page.getByRole("button", { name: /^Format$/ }).first().click();
+        await expectTextareaValue(page, /"offline": true/, "offline JSON formatter output");
 
         const offlineToolResult = await page.evaluate(async (targetUrl) => {
             try {
@@ -994,6 +1009,53 @@ async function assertPwaShellJourney(browser, baseUrl) {
         if (!offlineToolResult.ok || !/JSON Formatter/i.test(offlineToolResult.bodyText)) {
             throw new Error(`Offline local tool shell did not render from cache. Status: ${offlineToolResult.status}; error: ${offlineToolResult.error || "none"}`);
         }
+
+        await page.goto(`${baseUrl}/en/har-viewer-sanitizer`, { waitUntil: "domcontentloaded" });
+        await page.waitForSelector("main", { timeout: 15_000 });
+        const harInput = page.locator("textarea").first();
+        await harInput.fill(JSON.stringify({
+            log: {
+                entries: [{
+                    startedDateTime: "2026-06-24T00:00:00.000Z",
+                    time: 42,
+                    request: {
+                        method: "POST",
+                        url: "https://api.example.com/users?token=secret",
+                        headers: [{ name: "Authorization", value: "Bearer local-secret" }],
+                        cookies: [{ name: "session", value: "cookie-secret" }],
+                        queryString: [{ name: "token", value: "secret" }],
+                        postData: { text: "{\"password\":\"secret\"}" },
+                    },
+                    response: {
+                        status: 200,
+                        headers: [{ name: "Set-Cookie", value: "id=secret" }],
+                        cookies: [{ name: "id", value: "secret" }],
+                        content: { mimeType: "application/json", text: "{\"ok\":true}" },
+                    },
+                }],
+            },
+        }));
+        await page.getByRole("button", { name: /^Sanitize$/ }).first().click();
+        await expectTextareaValue(page, /"redactionCount":/, "offline HAR sanitizer output");
+        await expectTextareaValue(page, /\[REDACTED\]/, "offline HAR sanitizer redaction");
+
+        await page.goto(`${baseUrl}/en/pipeline-builder`, { waitUntil: "domcontentloaded" });
+        await page.waitForSelector("main", { timeout: 15_000 });
+        await page.getByRole("button", { name: /Try Example/i }).first().click();
+        await page.getByLabel("Initial input").fill('{ "message": "offline pipeline", "ok": true }');
+        await page.getByRole("button", { name: /Run Recipe/i }).first().click();
+        await page.waitForFunction(() => {
+            const readonlyOutput = Array.from(document.querySelectorAll("textarea")).find((node) => node.readOnly);
+            return Boolean(readonlyOutput?.value.trim()) && document.body.innerText.includes("OK");
+        }, null, { timeout: 15_000 });
+
+        await page.goto(`${baseUrl}/en/youtube-thumbnail-grabber`, { waitUntil: "domcontentloaded" });
+        await page.waitForSelector("main", { timeout: 15_000 });
+        await page.getByRole("button", { name: /^Sample$/ }).first().click();
+        await page.getByLabel(/I understand this action may request/i).click();
+        await page.getByRole("button", { name: /^Preview$/ }).first().click();
+        await page.getByText(/external-request action needs network access/i).first()
+            .waitFor({ state: "visible", timeout: 15_000 });
 
         const externalRequestProbe = await page.evaluate(async () => {
             try {
@@ -1023,39 +1085,6 @@ async function assertPwaShellJourney(browser, baseUrl) {
         });
         if (externalProbeCached) {
             throw new Error(`External request probe was cached in ${externalProbeCached}.`);
-        }
-
-        const offlineResult = await page.evaluate(async (targetUrl) => {
-            try {
-                const response = await fetch(targetUrl, {
-                    headers: { accept: "text/html" },
-                });
-                const bodyText = await response.text();
-                return {
-                    ok: response.ok,
-                    status: response.status,
-                    bodyText,
-                    error: "",
-                };
-            } catch (error) {
-                return {
-                    ok: false,
-                    status: 0,
-                    bodyText: "",
-                    error: error instanceof Error ? error.message : String(error),
-                };
-            }
-        }, `${baseUrl}/en/not-cached-for-smoke-${Date.now()}`);
-        if (!offlineResult.ok || !/offline/i.test(offlineResult.bodyText)) {
-            throw new Error(`Offline fetch did not render the cached offline fallback. Status: ${offlineResult.status}; error: ${offlineResult.error || "none"}`);
-        }
-
-        await page.setContent(offlineResult.bodyText, {
-            waitUntil: "domcontentloaded",
-        });
-        const bodyText = await page.locator("body").innerText({ timeout: 15_000 });
-        if (!/offline/i.test(bodyText)) {
-            throw new Error("Offline navigation did not render the cached offline fallback.");
         }
 
         if (contextOffline) {

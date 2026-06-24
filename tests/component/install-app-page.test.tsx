@@ -48,6 +48,9 @@ describe("install app page", () => {
                 copy={getInstallPageCopy("en")}
                 allToolsLabel="All tools"
                 trustCenterLabel="Trust Center"
+                offlineMatrixTitle="Offline support matrix"
+                offlineMatrixDescription="Review which workflows keep running after cache warm-up."
+                offlineMatrixLink="Offline matrix"
             />,
         )
 
@@ -55,6 +58,8 @@ describe("install app page", () => {
         expect(browseLink).toHaveAttribute("href", getAllToolsHref("en"))
         expect(browseLink).not.toHaveAttribute("href", "/en/format-validate")
         expect(screen.getByRole("link", { name: "Trust Center" })).toHaveAttribute("href", "/en/trust-center")
+        expect(screen.getByRole("heading", { name: "Offline support matrix" })).toBeInTheDocument()
+        expect(screen.getByRole("link", { name: "Offline matrix" })).toHaveAttribute("href", "/en/trust-center#offline-support-matrix")
         expect(screen.getByRole("button", { name: "Clear cached app files" })).toBeInTheDocument()
     })
 
@@ -66,6 +71,9 @@ describe("install app page", () => {
                 copy={copy}
                 allToolsLabel="所有工具"
                 trustCenterLabel="信任中心"
+                offlineMatrixTitle="离线支持矩阵"
+                offlineMatrixDescription="查看缓存预热后哪些流程可继续运行。"
+                offlineMatrixLink="离线矩阵"
             />,
         )
 
@@ -98,6 +106,9 @@ describe("install app page", () => {
                 copy={getInstallPageCopy("en")}
                 allToolsLabel="All tools"
                 trustCenterLabel="Trust Center"
+                offlineMatrixTitle="Offline support matrix"
+                offlineMatrixDescription="Review which workflows keep running after cache warm-up."
+                offlineMatrixLink="Offline matrix"
             />,
         )
 
