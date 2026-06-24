@@ -4,7 +4,7 @@ export const toolManifest = {
     key: "openapi_viewer",
     slug: "openapi-viewer",
     category: "formatters",
-    relatedTools: ["json_formatter", "yaml_json_converter", "jsonpath_playground"],
+    relatedTools: ["openapi_diff", "openapi_mock", "json_formatter", "yaml_json_converter"],
     privacy: {
         executionMode: "browser-local",
         offlineCapable: true,

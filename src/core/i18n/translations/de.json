@@ -2828,6 +2828,90 @@
       "key_ops": "Schlüsseloperationen",
       "key_id": "Schlüssel-ID",
       "thumbprint": "Fingerabdruck"
+    },
+    "json_schema_workbench": {
+      "title": "JSON-Schema-Workbench",
+      "description": "Erzeuge Starter-Schemas aus JSON und validiere Payloads gegen eingefügte Schemas lokal im Browser.",
+      "mode_label": "JSON-Schema-Modus",
+      "mode_generate": "Schema erzeugen",
+      "mode_validate": "Payload validieren",
+      "generate_action": "Schema erzeugen",
+      "validate_action": "Payload validieren",
+      "payload_label": "JSON-Payload",
+      "schema_label": "JSON-Schema-Definition"
+    },
+    "openapi_diff": {
+      "title": "OpenAPI-Diff",
+      "description": "Vergleiche zwei OpenAPI- oder Swagger-Spezifikationen lokal und markiere Endpunkt-, Parameter-, Response-, Security- und Breaking-Risk-Änderungen.",
+      "compare_action": "Specs vergleichen",
+      "before_label": "Vorher-Spec",
+      "after_label": "Nachher-Spec",
+      "report_label": "Diff-Bericht"
+    },
+    "graphql_workbench": {
+      "title": "GraphQL-Workbench",
+      "description": "Formatiere GraphQL-Abfragen, validiere Variables-JSON und prüfe eingefügte Introspection-Daten ohne Serverkontakt.",
+      "format_action": "Abfrage formatieren",
+      "query_label": "GraphQL-Abfrage",
+      "variables_label": "Variables-JSON",
+      "introspection_label": "Introspection-JSON",
+      "formatted_label": "Formatierte Abfrage",
+      "diagnostics_label": "Diagnosen",
+      "operation_label": "Operationstyp",
+      "schema_type_label": "Schema-Typ"
+    },
+    "messagepack_inspector": {
+      "title": "MessagePack-Inspektor",
+      "description": "Dekodiere MessagePack-Payloads aus Hex oder Base64 lokal in lesbares JSON mit klaren Eingabefehlern.",
+      "decode_action": "MessagePack dekodieren",
+      "mode_label": "MessagePack-Eingabemodus",
+      "mode_hex": "Hex-Eingabe",
+      "mode_base64": "Base64-Eingabe",
+      "bytes_label": "Bytes"
+    },
+    "seo_metadata_workbench": {
+      "title": "SEO-Metadaten-Workbench",
+      "description": "Prüfe SERP-Metadaten, hreflang, Sitemap-URLs und llms.txt-Entwürfe lokal und datenschutzfreundlich.",
+      "analyze_action": "Metadaten analysieren",
+      "config_label": "Metadaten-Konfiguration JSON",
+      "report_label": "SEO-Bericht"
+    },
+    "devops_yaml_validator": {
+      "title": "DevOps-YAML-Validator",
+      "description": "Validiere Docker Compose und Kubernetes YAML lokal mit pfadgenauen Fehlern, Warnungen und Korrekturhinweisen.",
+      "validate_action": "YAML validieren",
+      "yaml_label": "Compose oder Kubernetes YAML",
+      "report_label": "Validierungsbericht"
+    },
+    "oauth_jwks_workbench": {
+      "title": "OAuth-PKCE- und JWKS-Workbench",
+      "description": "Erzeuge PKCE verifier/challenge Paare und inspiziere oder verifiziere JWTs gegen eingefügte JWKS lokal.",
+      "mode_label": "OAuth- und JWKS-Modus",
+      "mode_pkce": "PKCE-Helfer",
+      "mode_jwks": "JWKS-Inspektor",
+      "generate_pkce_action": "PKCE erzeugen",
+      "inspect_jwks_action": "JWKS prüfen",
+      "jwks_label": "JWKS-JSON",
+      "jwt_label": "JWT zum Prüfen"
+    },
+    "image_privacy_workbench": {
+      "title": "Bild-Privacy-Workbench",
+      "description": "Entferne metadata aus unterstützten Bildern durch lokales Neucodieren und folge einem sicheren Screenshot-Redaktionsablauf.",
+      "choose_image_action": "Bild wählen",
+      "workflow_label": "Screenshot-Redaktionsablauf",
+      "upload_label": "Lokales Bild",
+      "no_file_label": "Kein Bild gewählt",
+      "preview_alt": "Bereinigte Bildvorschau",
+      "report_label": "Metadata-Scanbericht",
+      "dimensions_label": "Abmessungen",
+      "before_label": "Vor dem Neucodieren",
+      "after_label": "Nach dem Neucodieren",
+      "step_redact_title": "Sichtbare Geheimnisse zuerst schwärzen",
+      "step_redact_detail": "Verdecke Token, E-Mails, Kontonamen, URLs und Kundendaten vor Größenänderung oder Kompression.",
+      "step_strip_title": "Metadata durch Neucodieren entfernen",
+      "step_strip_detail": "Exportiere über canvas als PNG oder JPEG, um EXIF-, Kamera-, GPS- und Editor-metadata aus unterstützten Browser-Decodern zu entfernen.",
+      "step_inspect_title": "Exportierte Datei prüfen",
+      "step_inspect_detail": "Prüfe den Nachher-Scan auf EXIF-Marker und lade nur die bereinigte Ausgabe herunter."
     }
   },
   "categories": {

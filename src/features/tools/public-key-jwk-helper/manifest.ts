@@ -4,7 +4,7 @@ export const toolManifest = {
     key: "public_key_jwk_helper",
     slug: "public-key-jwk-helper",
     category: "network-web",
-    relatedTools: ["certificate_decoder", "jwt_verifier", "jwt_workbench", "base64_encode_decode", "asn1_der_inspector"],
+    relatedTools: ["oauth_jwks_workbench", "certificate_decoder", "jwt_verifier", "jwt_workbench", "asn1_der_inspector"],
     privacy: {
         executionMode: "browser-local",
         offlineCapable: true,

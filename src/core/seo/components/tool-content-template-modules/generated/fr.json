@@ -11154,5 +11154,677 @@
       "Retirer les noms d’environnements internes et domaines d’exemple avant partage externe."
     ],
     "operationalNote": "L’assistant clé publique JWK est utile comme contrôle rapide avant une intégration auth ou une rotation de clé, mais la publication de confiance en production reste un processus formel de changement et d’audit."
+  },
+  "json-schema-workbench": {
+    "content": {
+      "toolKey": "json_schema_workbench",
+      "intro": "Atelier JSON Schema génère un schema de départ et valide les payloads avec erreurs par chemin。",
+      "whatThisToolDoes": [
+        "Atelier JSON Schema se concentre sur revue de contrat JSON Schema et génère un schema de départ et valide les payloads avec erreurs par chemin.",
+        "Les exemples donnent de petits extraits reproductibles pour PR, runbook ou ticket.",
+        "Le rapport expose résumé, chemins ou points de contrôle afin de cibler les champs risqués.",
+        "Sans compte ni traitement serveur, le flux convient à une vérification locale avant partage."
+      ],
+      "useCases": [
+        "Vérifier revue de contrat JSON Schema localement avant merge ou publication.",
+        "Préparer une preuve reproductible pour une revue revue de contrat JSON Schema.",
+        "Réduire un échec revue de contrat JSON Schema aux champs minimaux nécessaires.",
+        "Confirmer avant partage qu’aucun token, compte ou hostname interne ne reste dans la sortie."
+      ],
+      "inputExamples": [
+        {
+          "label": "Payload de commande",
+          "value": "{\n  \"orderId\": 42,\n  \"status\": \"paid\",\n  \"items\": [{ \"sku\": \"sku_123\", \"qty\": 2 }]\n}"
+        },
+        {
+          "label": "Schema de validation",
+          "value": "{\n  \"type\": \"object\",\n  \"required\": [\"orderId\", \"status\"],\n  \"properties\": { \"orderId\": { \"type\": \"integer\" } }\n}"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Schema généré",
+          "value": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"required\": [\"orderId\", \"status\", \"items\"]\n}"
+        },
+        {
+          "label": "Erreur par chemin",
+          "value": "$.orderId: Expected integer, received string. Fix: Change the payload value or update the schema type."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Structure d’entrée incomplète pour revue de contrat JSON Schema",
+          "fix": "Commencer par un exemple minimal valide puis ajouter les champs requis."
+        },
+        {
+          "error": "Secrets de production dans un exemple",
+          "fix": "Remplacer par des placeholders avant de copier dans issue, PR ou chat."
+        },
+        {
+          "error": "Résumé lu sans vérifier les chemins",
+          "fix": "Relire chaque path, kid, URL ou marqueur de fichier avant partage."
+        }
+      ],
+      "privacyNotes": [
+        "Le traitement reste dans le navigateur; entrées et sorties ne sont pas persistées par défaut.",
+        "Ne placez pas tokens, clés privées, JWT, données client ou captures brutes dans un lien partagé.",
+        "Avant copie, anonymisez domaines d’exemple, noms de compte et identifiants d’environnement."
+      ],
+      "faqs": [
+        {
+          "q": "Atelier JSON Schema envoie-t-il les données à un serveur ?",
+          "a": "Non. Le poste de travail est prévu pour une exécution locale dans le navigateur, sans requête externe automatique."
+        },
+        {
+          "q": "Quand utiliser ce flux pour revue de contrat JSON Schema ?",
+          "a": "Avant commit, release ou passation, quand un exemple doit être validé vite et documenté de façon reproductible."
+        },
+        {
+          "q": "Le rapport suffit-il comme décision finale ?",
+          "a": "Non. Utilisez-le comme indice de revue, puis vérifiez avec le schema projet, la policy cluster ou le processus sécurité."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "Ouvrir Atelier JSON Schema, charger le sample et comprendre les champs.",
+      "Remplacer par un exemple minimal anonymisé qui garde seulement les champs utiles.",
+      "Lancer le contrôle puis lire chemins d’erreur, alertes ou résumé un par un.",
+      "Avant copier ou télécharger, vérifier qu’aucun payload sensible ne reste."
+    ],
+    "qualityChecklist": [
+      "Aucun token réel, clé, donnée client ou screenshot non masqué dans l’entrée.",
+      "Un cas nominal et au moins un cas d’échec ont été testés.",
+      "Paths, URLs, kid ou marqueurs fichier ont été relus manuellement.",
+      "Clipboard et downloads temporaires sont nettoyés avant partage externe."
+    ],
+    "operationalNote": "Atelier JSON Schema sert de précontrôle local; une mise en production demande toujours revue, CI et processus sécurité."
+  },
+  "openapi-diff": {
+    "content": {
+      "toolKey": "openapi_diff",
+      "intro": "Comparateur OpenAPI Diff compare deux spécifications JSON/YAML et signale endpoints, schemas, sécurité et risques bloquants。",
+      "whatThisToolDoes": [
+        "Comparateur OpenAPI Diff se concentre sur comparaison de contrats OpenAPI et compare deux spécifications JSON/YAML et signale endpoints, schemas, sécurité et risques bloquants.",
+        "Les exemples donnent de petits extraits reproductibles pour PR, runbook ou ticket.",
+        "Le rapport expose résumé, chemins ou points de contrôle afin de cibler les champs risqués.",
+        "Sans compte ni traitement serveur, le flux convient à une vérification locale avant partage."
+      ],
+      "useCases": [
+        "Vérifier comparaison de contrats OpenAPI localement avant merge ou publication.",
+        "Préparer une preuve reproductible pour une revue comparaison de contrats OpenAPI.",
+        "Réduire un échec comparaison de contrats OpenAPI aux champs minimaux nécessaires.",
+        "Confirmer avant partage qu’aucun token, compte ou hostname interne ne reste dans la sortie."
+      ],
+      "inputExamples": [
+        {
+          "label": "Ancienne spécification",
+          "value": "paths:\n  /orders/{id}:\n    get:\n      responses:\n        \"200\": { description: Order }\n        \"404\": { description: Missing }"
+        },
+        {
+          "label": "Nouvelle spécification",
+          "value": "paths:\n  /orders:\n    post:\n      responses:\n        \"201\": { description: Created }"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Résumé des risques",
+          "value": "Added: 1\nChanged: 0\nBreaking risks: 1"
+        },
+        {
+          "label": "Changement bloquant",
+          "value": "[breaking] GET /orders/{id} - Operation was removed."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Structure d’entrée incomplète pour comparaison de contrats OpenAPI",
+          "fix": "Commencer par un exemple minimal valide puis ajouter les champs requis."
+        },
+        {
+          "error": "Secrets de production dans un exemple",
+          "fix": "Remplacer par des placeholders avant de copier dans issue, PR ou chat."
+        },
+        {
+          "error": "Résumé lu sans vérifier les chemins",
+          "fix": "Relire chaque path, kid, URL ou marqueur de fichier avant partage."
+        }
+      ],
+      "privacyNotes": [
+        "Le traitement reste dans le navigateur; entrées et sorties ne sont pas persistées par défaut.",
+        "Ne placez pas tokens, clés privées, JWT, données client ou captures brutes dans un lien partagé.",
+        "Avant copie, anonymisez domaines d’exemple, noms de compte et identifiants d’environnement."
+      ],
+      "faqs": [
+        {
+          "q": "Comparateur OpenAPI Diff envoie-t-il les données à un serveur ?",
+          "a": "Non. Le poste de travail est prévu pour une exécution locale dans le navigateur, sans requête externe automatique."
+        },
+        {
+          "q": "Quand utiliser ce flux pour comparaison de contrats OpenAPI ?",
+          "a": "Avant commit, release ou passation, quand un exemple doit être validé vite et documenté de façon reproductible."
+        },
+        {
+          "q": "Le rapport suffit-il comme décision finale ?",
+          "a": "Non. Utilisez-le comme indice de revue, puis vérifiez avec le schema projet, la policy cluster ou le processus sécurité."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "Ouvrir Comparateur OpenAPI Diff, charger le sample et comprendre les champs.",
+      "Remplacer par un exemple minimal anonymisé qui garde seulement les champs utiles.",
+      "Lancer le contrôle puis lire chemins d’erreur, alertes ou résumé un par un.",
+      "Avant copier ou télécharger, vérifier qu’aucun payload sensible ne reste."
+    ],
+    "qualityChecklist": [
+      "Aucun token réel, clé, donnée client ou screenshot non masqué dans l’entrée.",
+      "Un cas nominal et au moins un cas d’échec ont été testés.",
+      "Paths, URLs, kid ou marqueurs fichier ont été relus manuellement.",
+      "Clipboard et downloads temporaires sont nettoyés avant partage externe."
+    ],
+    "operationalNote": "Comparateur OpenAPI Diff sert de précontrôle local; une mise en production demande toujours revue, CI et processus sécurité."
+  },
+  "graphql-workbench": {
+    "content": {
+      "toolKey": "graphql_workbench",
+      "intro": "Atelier GraphQL formate query/mutation, valide le JSON des variables et inspecte les types introspection collés。",
+      "whatThisToolDoes": [
+        "Atelier GraphQL se concentre sur mise au propre GraphQL et formate query/mutation, valide le JSON des variables et inspecte les types introspection collés.",
+        "Les exemples donnent de petits extraits reproductibles pour PR, runbook ou ticket.",
+        "Le rapport expose résumé, chemins ou points de contrôle afin de cibler les champs risqués.",
+        "Sans compte ni traitement serveur, le flux convient à une vérification locale avant partage."
+      ],
+      "useCases": [
+        "Vérifier mise au propre GraphQL localement avant merge ou publication.",
+        "Préparer une preuve reproductible pour une revue mise au propre GraphQL.",
+        "Réduire un échec mise au propre GraphQL aux champs minimaux nécessaires.",
+        "Confirmer avant partage qu’aucun token, compte ou hostname interne ne reste dans la sortie."
+      ],
+      "inputExamples": [
+        {
+          "label": "Extrait de requête",
+          "value": "query GetUser($id: ID!) { user(id: $id) { id name email } }"
+        },
+        {
+          "label": "JSON des variables",
+          "value": "{\n  \"id\": \"user_123\"\n}"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Query formatée",
+          "value": "query GetUser($id: ID!) {\n  user(id: $id) {\n    id\n    name\n    email\n  }\n}"
+        },
+        {
+          "label": "Diagnostic",
+          "value": "Operation: query GetUser\nVariables: valid JSON object\nSchema types: Query, User, Role"
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Structure d’entrée incomplète pour mise au propre GraphQL",
+          "fix": "Commencer par un exemple minimal valide puis ajouter les champs requis."
+        },
+        {
+          "error": "Secrets de production dans un exemple",
+          "fix": "Remplacer par des placeholders avant de copier dans issue, PR ou chat."
+        },
+        {
+          "error": "Résumé lu sans vérifier les chemins",
+          "fix": "Relire chaque path, kid, URL ou marqueur de fichier avant partage."
+        }
+      ],
+      "privacyNotes": [
+        "Le traitement reste dans le navigateur; entrées et sorties ne sont pas persistées par défaut.",
+        "Ne placez pas tokens, clés privées, JWT, données client ou captures brutes dans un lien partagé.",
+        "Avant copie, anonymisez domaines d’exemple, noms de compte et identifiants d’environnement."
+      ],
+      "faqs": [
+        {
+          "q": "Atelier GraphQL envoie-t-il les données à un serveur ?",
+          "a": "Non. Le poste de travail est prévu pour une exécution locale dans le navigateur, sans requête externe automatique."
+        },
+        {
+          "q": "Quand utiliser ce flux pour mise au propre GraphQL ?",
+          "a": "Avant commit, release ou passation, quand un exemple doit être validé vite et documenté de façon reproductible."
+        },
+        {
+          "q": "Le rapport suffit-il comme décision finale ?",
+          "a": "Non. Utilisez-le comme indice de revue, puis vérifiez avec le schema projet, la policy cluster ou le processus sécurité."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "Ouvrir Atelier GraphQL, charger le sample et comprendre les champs.",
+      "Remplacer par un exemple minimal anonymisé qui garde seulement les champs utiles.",
+      "Lancer le contrôle puis lire chemins d’erreur, alertes ou résumé un par un.",
+      "Avant copier ou télécharger, vérifier qu’aucun payload sensible ne reste."
+    ],
+    "qualityChecklist": [
+      "Aucun token réel, clé, donnée client ou screenshot non masqué dans l’entrée.",
+      "Un cas nominal et au moins un cas d’échec ont été testés.",
+      "Paths, URLs, kid ou marqueurs fichier ont été relus manuellement.",
+      "Clipboard et downloads temporaires sont nettoyés avant partage externe."
+    ],
+    "operationalNote": "Atelier GraphQL sert de précontrôle local; une mise en production demande toujours revue, CI et processus sécurité."
+  },
+  "messagepack-inspector": {
+    "content": {
+      "toolKey": "messagepack_inspector",
+      "intro": "Inspecteur MessagePack décode des octets hex/Base64 en JSON et précise les contraintes de schema et erreurs binaires。",
+      "whatThisToolDoes": [
+        "Inspecteur MessagePack se concentre sur inspection MessagePack et décode des octets hex/Base64 en JSON et précise les contraintes de schema et erreurs binaires.",
+        "Les exemples donnent de petits extraits reproductibles pour PR, runbook ou ticket.",
+        "Le rapport expose résumé, chemins ou points de contrôle afin de cibler les champs risqués.",
+        "Sans compte ni traitement serveur, le flux convient à une vérification locale avant partage."
+      ],
+      "useCases": [
+        "Vérifier inspection MessagePack localement avant merge ou publication.",
+        "Préparer une preuve reproductible pour une revue inspection MessagePack.",
+        "Réduire un échec inspection MessagePack aux champs minimaux nécessaires.",
+        "Confirmer avant partage qu’aucun token, compte ou hostname interne ne reste dans la sortie."
+      ],
+      "inputExamples": [
+        {
+          "label": "MessagePack hex",
+          "value": "82 a2 69 64 01 a4 6e 61 6d 65 a5 41 6c 69 63 65"
+        },
+        {
+          "label": "Octets invalides",
+          "value": "82 a2 69"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "JSON décodé",
+          "value": "{\n  \"id\": 1,\n  \"name\": \"Alice\"\n}"
+        },
+        {
+          "label": "Message d'erreur",
+          "value": "Unexpected end of MessagePack input while reading map value."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Structure d’entrée incomplète pour inspection MessagePack",
+          "fix": "Commencer par un exemple minimal valide puis ajouter les champs requis."
+        },
+        {
+          "error": "Secrets de production dans un exemple",
+          "fix": "Remplacer par des placeholders avant de copier dans issue, PR ou chat."
+        },
+        {
+          "error": "Résumé lu sans vérifier les chemins",
+          "fix": "Relire chaque path, kid, URL ou marqueur de fichier avant partage."
+        }
+      ],
+      "privacyNotes": [
+        "Le traitement reste dans le navigateur; entrées et sorties ne sont pas persistées par défaut.",
+        "Ne placez pas tokens, clés privées, JWT, données client ou captures brutes dans un lien partagé.",
+        "Avant copie, anonymisez domaines d’exemple, noms de compte et identifiants d’environnement."
+      ],
+      "faqs": [
+        {
+          "q": "Inspecteur MessagePack envoie-t-il les données à un serveur ?",
+          "a": "Non. Le poste de travail est prévu pour une exécution locale dans le navigateur, sans requête externe automatique."
+        },
+        {
+          "q": "Quand utiliser ce flux pour inspection MessagePack ?",
+          "a": "Avant commit, release ou passation, quand un exemple doit être validé vite et documenté de façon reproductible."
+        },
+        {
+          "q": "Le rapport suffit-il comme décision finale ?",
+          "a": "Non. Utilisez-le comme indice de revue, puis vérifiez avec le schema projet, la policy cluster ou le processus sécurité."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "Ouvrir Inspecteur MessagePack, charger le sample et comprendre les champs.",
+      "Remplacer par un exemple minimal anonymisé qui garde seulement les champs utiles.",
+      "Lancer le contrôle puis lire chemins d’erreur, alertes ou résumé un par un.",
+      "Avant copier ou télécharger, vérifier qu’aucun payload sensible ne reste."
+    ],
+    "qualityChecklist": [
+      "Aucun token réel, clé, donnée client ou screenshot non masqué dans l’entrée.",
+      "Un cas nominal et au moins un cas d’échec ont été testés.",
+      "Paths, URLs, kid ou marqueurs fichier ont été relus manuellement.",
+      "Clipboard et downloads temporaires sont nettoyés avant partage externe."
+    ],
+    "operationalNote": "Inspecteur MessagePack sert de précontrôle local; une mise en production demande toujours revue, CI et processus sécurité."
+  },
+  "seo-metadata-workbench": {
+    "content": {
+      "toolKey": "seo_metadata_workbench",
+      "intro": "Atelier métadonnées SEO vérifie localement title SERP, description, canonical, hreflang, URLs sitemap et llms.txt。",
+      "whatThisToolDoes": [
+        "Atelier métadonnées SEO se concentre sur audit technique des métadonnées SEO et vérifie localement title SERP, description, canonical, hreflang, URLs sitemap et llms.txt.",
+        "Les exemples donnent de petits extraits reproductibles pour PR, runbook ou ticket.",
+        "Le rapport expose résumé, chemins ou points de contrôle afin de cibler les champs risqués.",
+        "Sans compte ni traitement serveur, le flux convient à une vérification locale avant partage."
+      ],
+      "useCases": [
+        "Vérifier audit technique des métadonnées SEO localement avant merge ou publication.",
+        "Préparer une preuve reproductible pour une revue audit technique des métadonnées SEO.",
+        "Réduire un échec audit technique des métadonnées SEO aux champs minimaux nécessaires.",
+        "Confirmer avant partage qu’aucun token, compte ou hostname interne ne reste dans la sortie."
+      ],
+      "inputExamples": [
+        {
+          "label": "Métadonnées page",
+          "value": "{\n  \"title\": \"Local JSON Tools\",\n  \"description\": \"Format and validate JSON in the browser.\",\n  \"canonical\": \"https://example.com/en/json\"\n}"
+        },
+        {
+          "label": "Table hreflang",
+          "value": "[\n  { \"lang\": \"en\", \"url\": \"https://example.com/en/json\" },\n  { \"lang\": \"fr\", \"url\": \"https://example.com/fr/json\" }\n]"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Contrôle SERP",
+          "value": "Title length: 16 characters\nDescription length: 40 characters\nCanonical: valid absolute URL"
+        },
+        {
+          "label": "Alerte hreflang",
+          "value": "Missing reciprocal x-default entry for https://example.com/en/json."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Structure d’entrée incomplète pour audit technique des métadonnées SEO",
+          "fix": "Commencer par un exemple minimal valide puis ajouter les champs requis."
+        },
+        {
+          "error": "Secrets de production dans un exemple",
+          "fix": "Remplacer par des placeholders avant de copier dans issue, PR ou chat."
+        },
+        {
+          "error": "Résumé lu sans vérifier les chemins",
+          "fix": "Relire chaque path, kid, URL ou marqueur de fichier avant partage."
+        }
+      ],
+      "privacyNotes": [
+        "Le traitement reste dans le navigateur; entrées et sorties ne sont pas persistées par défaut.",
+        "Ne placez pas tokens, clés privées, JWT, données client ou captures brutes dans un lien partagé.",
+        "Avant copie, anonymisez domaines d’exemple, noms de compte et identifiants d’environnement."
+      ],
+      "faqs": [
+        {
+          "q": "Atelier métadonnées SEO envoie-t-il les données à un serveur ?",
+          "a": "Non. Le poste de travail est prévu pour une exécution locale dans le navigateur, sans requête externe automatique."
+        },
+        {
+          "q": "Quand utiliser ce flux pour audit technique des métadonnées SEO ?",
+          "a": "Avant commit, release ou passation, quand un exemple doit être validé vite et documenté de façon reproductible."
+        },
+        {
+          "q": "Le rapport suffit-il comme décision finale ?",
+          "a": "Non. Utilisez-le comme indice de revue, puis vérifiez avec le schema projet, la policy cluster ou le processus sécurité."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "Ouvrir Atelier métadonnées SEO, charger le sample et comprendre les champs.",
+      "Remplacer par un exemple minimal anonymisé qui garde seulement les champs utiles.",
+      "Lancer le contrôle puis lire chemins d’erreur, alertes ou résumé un par un.",
+      "Avant copier ou télécharger, vérifier qu’aucun payload sensible ne reste."
+    ],
+    "qualityChecklist": [
+      "Aucun token réel, clé, donnée client ou screenshot non masqué dans l’entrée.",
+      "Un cas nominal et au moins un cas d’échec ont été testés.",
+      "Paths, URLs, kid ou marqueurs fichier ont été relus manuellement.",
+      "Clipboard et downloads temporaires sont nettoyés avant partage externe."
+    ],
+    "operationalNote": "Atelier métadonnées SEO sert de précontrôle local; une mise en production demande toujours revue, CI et processus sécurité."
+  },
+  "devops-yaml-validator": {
+    "content": {
+      "toolKey": "devops_yaml_validator",
+      "intro": "Validateur YAML DevOps analyse le YAML multi-documents localement avec erreurs par chemin, alertes et corrections。",
+      "whatThisToolDoes": [
+        "Validateur YAML DevOps se concentre sur validation YAML Docker Compose et Kubernetes et analyse le YAML multi-documents localement avec erreurs par chemin, alertes et corrections.",
+        "Les exemples donnent de petits extraits reproductibles pour PR, runbook ou ticket.",
+        "Le rapport expose résumé, chemins ou points de contrôle afin de cibler les champs risqués.",
+        "Sans compte ni traitement serveur, le flux convient à une vérification locale avant partage."
+      ],
+      "useCases": [
+        "Vérifier validation YAML Docker Compose et Kubernetes localement avant merge ou publication.",
+        "Préparer une preuve reproductible pour une revue validation YAML Docker Compose et Kubernetes.",
+        "Réduire un échec validation YAML Docker Compose et Kubernetes aux champs minimaux nécessaires.",
+        "Confirmer avant partage qu’aucun token, compte ou hostname interne ne reste dans la sortie."
+      ],
+      "inputExamples": [
+        {
+          "label": "Service Compose",
+          "value": "services:\n  api:\n    image: node:20\n    ports:\n      - \"3000:3000\""
+        },
+        {
+          "label": "Deployment Kubernetes",
+          "value": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: api\nspec:\n  replicas: 2"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Alerte Compose",
+          "value": "$.services.api: service uses image without healthcheck. Fix: Add a healthcheck before handoff."
+        },
+        {
+          "label": "Erreur Kubernetes",
+          "value": "$.spec.template: Deployment requires pod template metadata and containers."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Structure d’entrée incomplète pour validation YAML Docker Compose et Kubernetes",
+          "fix": "Commencer par un exemple minimal valide puis ajouter les champs requis."
+        },
+        {
+          "error": "Secrets de production dans un exemple",
+          "fix": "Remplacer par des placeholders avant de copier dans issue, PR ou chat."
+        },
+        {
+          "error": "Résumé lu sans vérifier les chemins",
+          "fix": "Relire chaque path, kid, URL ou marqueur de fichier avant partage."
+        }
+      ],
+      "privacyNotes": [
+        "Le traitement reste dans le navigateur; entrées et sorties ne sont pas persistées par défaut.",
+        "Ne placez pas tokens, clés privées, JWT, données client ou captures brutes dans un lien partagé.",
+        "Avant copie, anonymisez domaines d’exemple, noms de compte et identifiants d’environnement."
+      ],
+      "faqs": [
+        {
+          "q": "Validateur YAML DevOps envoie-t-il les données à un serveur ?",
+          "a": "Non. Le poste de travail est prévu pour une exécution locale dans le navigateur, sans requête externe automatique."
+        },
+        {
+          "q": "Quand utiliser ce flux pour validation YAML Docker Compose et Kubernetes ?",
+          "a": "Avant commit, release ou passation, quand un exemple doit être validé vite et documenté de façon reproductible."
+        },
+        {
+          "q": "Le rapport suffit-il comme décision finale ?",
+          "a": "Non. Utilisez-le comme indice de revue, puis vérifiez avec le schema projet, la policy cluster ou le processus sécurité."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "Ouvrir Validateur YAML DevOps, charger le sample et comprendre les champs.",
+      "Remplacer par un exemple minimal anonymisé qui garde seulement les champs utiles.",
+      "Lancer le contrôle puis lire chemins d’erreur, alertes ou résumé un par un.",
+      "Avant copier ou télécharger, vérifier qu’aucun payload sensible ne reste."
+    ],
+    "qualityChecklist": [
+      "Aucun token réel, clé, donnée client ou screenshot non masqué dans l’entrée.",
+      "Un cas nominal et au moins un cas d’échec ont été testés.",
+      "Paths, URLs, kid ou marqueurs fichier ont été relus manuellement.",
+      "Clipboard et downloads temporaires sont nettoyés avant partage externe."
+    ],
+    "operationalNote": "Validateur YAML DevOps sert de précontrôle local; une mise en production demande toujours revue, CI et processus sécurité."
+  },
+  "oauth-jwks-workbench": {
+    "content": {
+      "toolKey": "oauth_jwks_workbench",
+      "intro": "Atelier OAuth PKCE et JWKS génère PKCE via Web Crypto et vérifie kid, alg et signature JWT avec un JWKS collé。",
+      "whatThisToolDoes": [
+        "Atelier OAuth PKCE et JWKS se concentre sur vérification OAuth PKCE et JWKS et génère PKCE via Web Crypto et vérifie kid, alg et signature JWT avec un JWKS collé.",
+        "Les exemples donnent de petits extraits reproductibles pour PR, runbook ou ticket.",
+        "Le rapport expose résumé, chemins ou points de contrôle afin de cibler les champs risqués.",
+        "Sans compte ni traitement serveur, le flux convient à une vérification locale avant partage."
+      ],
+      "useCases": [
+        "Vérifier vérification OAuth PKCE et JWKS localement avant merge ou publication.",
+        "Préparer une preuve reproductible pour une revue vérification OAuth PKCE et JWKS.",
+        "Réduire un échec vérification OAuth PKCE et JWKS aux champs minimaux nécessaires.",
+        "Confirmer avant partage qu’aucun token, compte ou hostname interne ne reste dans la sortie."
+      ],
+      "inputExamples": [
+        {
+          "label": "Extrait JWKS",
+          "value": "{\n  \"keys\": [{ \"kty\": \"RSA\", \"kid\": \"auth-prod-1\", \"alg\": \"RS256\", \"use\": \"sig\" }]\n}"
+        },
+        {
+          "label": "Header JWT",
+          "value": "{ \"alg\": \"RS256\", \"kid\": \"auth-prod-1\" }"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Sortie PKCE",
+          "value": "verifier: 64 URL-safe characters\nchallenge: SHA-256 base64url digest\nmethod: S256"
+        },
+        {
+          "label": "Résumé JWKS",
+          "value": "kid auth-prod-1: RSA signing key, alg RS256, compatible with JWT header."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Structure d’entrée incomplète pour vérification OAuth PKCE et JWKS",
+          "fix": "Commencer par un exemple minimal valide puis ajouter les champs requis."
+        },
+        {
+          "error": "Secrets de production dans un exemple",
+          "fix": "Remplacer par des placeholders avant de copier dans issue, PR ou chat."
+        },
+        {
+          "error": "Résumé lu sans vérifier les chemins",
+          "fix": "Relire chaque path, kid, URL ou marqueur de fichier avant partage."
+        }
+      ],
+      "privacyNotes": [
+        "Le traitement reste dans le navigateur; entrées et sorties ne sont pas persistées par défaut.",
+        "Ne placez pas tokens, clés privées, JWT, données client ou captures brutes dans un lien partagé.",
+        "Avant copie, anonymisez domaines d’exemple, noms de compte et identifiants d’environnement."
+      ],
+      "faqs": [
+        {
+          "q": "Atelier OAuth PKCE et JWKS envoie-t-il les données à un serveur ?",
+          "a": "Non. Le poste de travail est prévu pour une exécution locale dans le navigateur, sans requête externe automatique."
+        },
+        {
+          "q": "Quand utiliser ce flux pour vérification OAuth PKCE et JWKS ?",
+          "a": "Avant commit, release ou passation, quand un exemple doit être validé vite et documenté de façon reproductible."
+        },
+        {
+          "q": "Le rapport suffit-il comme décision finale ?",
+          "a": "Non. Utilisez-le comme indice de revue, puis vérifiez avec le schema projet, la policy cluster ou le processus sécurité."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "Ouvrir Atelier OAuth PKCE et JWKS, charger le sample et comprendre les champs.",
+      "Remplacer par un exemple minimal anonymisé qui garde seulement les champs utiles.",
+      "Lancer le contrôle puis lire chemins d’erreur, alertes ou résumé un par un.",
+      "Avant copier ou télécharger, vérifier qu’aucun payload sensible ne reste."
+    ],
+    "qualityChecklist": [
+      "Aucun token réel, clé, donnée client ou screenshot non masqué dans l’entrée.",
+      "Un cas nominal et au moins un cas d’échec ont été testés.",
+      "Paths, URLs, kid ou marqueurs fichier ont été relus manuellement.",
+      "Clipboard et downloads temporaires sont nettoyés avant partage externe."
+    ],
+    "operationalNote": "Atelier OAuth PKCE et JWKS sert de précontrôle local; une mise en production demande toujours revue, CI et processus sécurité."
+  },
+  "image-privacy-workbench": {
+    "content": {
+      "toolKey": "image_privacy_workbench",
+      "intro": "Atelier confidentialité image retire EXIF/XMP/GPS par réencodage canvas local et rappelle de masquer avant redimensionnement。",
+      "whatThisToolDoes": [
+        "Atelier confidentialité image se concentre sur suppression de métadonnées image et ordre de redaction screenshot et retire EXIF/XMP/GPS par réencodage canvas local et rappelle de masquer avant redimensionnement.",
+        "Les exemples donnent de petits extraits reproductibles pour PR, runbook ou ticket.",
+        "Le rapport expose résumé, chemins ou points de contrôle afin de cibler les champs risqués.",
+        "Sans compte ni traitement serveur, le flux convient à une vérification locale avant partage."
+      ],
+      "useCases": [
+        "Vérifier suppression de métadonnées image et ordre de redaction screenshot localement avant merge ou publication.",
+        "Préparer une preuve reproductible pour une revue suppression de métadonnées image et ordre de redaction screenshot.",
+        "Réduire un échec suppression de métadonnées image et ordre de redaction screenshot aux champs minimaux nécessaires.",
+        "Confirmer avant partage qu’aucun token, compte ou hostname interne ne reste dans la sortie."
+      ],
+      "inputExamples": [
+        {
+          "label": "Image prise en charge",
+          "value": "photo-with-gps.jpg (JPEG or PNG selected from the local device)"
+        },
+        {
+          "label": "Checklist screenshot",
+          "value": "visible token, email, account name, internal hostname, browser tab title"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Résultat réencodé",
+          "value": "Before: EXIF, GPS, camera marker detected\nAfter: no EXIF/XMP/GPS marker detected in exported PNG"
+        },
+        {
+          "label": "Ordre sûr",
+          "value": "1. Redact visible secrets\n2. Strip metadata by re-encoding\n3. Inspect export\n4. Download sanitized image"
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Structure d’entrée incomplète pour suppression de métadonnées image et ordre de redaction screenshot",
+          "fix": "Commencer par un exemple minimal valide puis ajouter les champs requis."
+        },
+        {
+          "error": "Secrets de production dans un exemple",
+          "fix": "Remplacer par des placeholders avant de copier dans issue, PR ou chat."
+        },
+        {
+          "error": "Résumé lu sans vérifier les chemins",
+          "fix": "Relire chaque path, kid, URL ou marqueur de fichier avant partage."
+        }
+      ],
+      "privacyNotes": [
+        "Le traitement reste dans le navigateur; entrées et sorties ne sont pas persistées par défaut.",
+        "Ne placez pas tokens, clés privées, JWT, données client ou captures brutes dans un lien partagé.",
+        "Avant copie, anonymisez domaines d’exemple, noms de compte et identifiants d’environnement."
+      ],
+      "faqs": [
+        {
+          "q": "Atelier confidentialité image envoie-t-il les données à un serveur ?",
+          "a": "Non. Le poste de travail est prévu pour une exécution locale dans le navigateur, sans requête externe automatique."
+        },
+        {
+          "q": "Quand utiliser ce flux pour suppression de métadonnées image et ordre de redaction screenshot ?",
+          "a": "Avant commit, release ou passation, quand un exemple doit être validé vite et documenté de façon reproductible."
+        },
+        {
+          "q": "Le rapport suffit-il comme décision finale ?",
+          "a": "Non. Utilisez-le comme indice de revue, puis vérifiez avec le schema projet, la policy cluster ou le processus sécurité."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "Ouvrir Atelier confidentialité image, charger le sample et comprendre les champs.",
+      "Remplacer par un exemple minimal anonymisé qui garde seulement les champs utiles.",
+      "Lancer le contrôle puis lire chemins d’erreur, alertes ou résumé un par un.",
+      "Avant copier ou télécharger, vérifier qu’aucun payload sensible ne reste."
+    ],
+    "qualityChecklist": [
+      "Aucun token réel, clé, donnée client ou screenshot non masqué dans l’entrée.",
+      "Un cas nominal et au moins un cas d’échec ont été testés.",
+      "Paths, URLs, kid ou marqueurs fichier ont été relus manuellement.",
+      "Clipboard et downloads temporaires sont nettoyés avant partage externe."
+    ],
+    "operationalNote": "Atelier confidentialité image sert de précontrôle local; une mise en production demande toujours revue, CI et processus sécurité."
   }
 }

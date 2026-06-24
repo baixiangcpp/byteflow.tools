@@ -4,7 +4,7 @@ export const toolManifest = {
     key: "http_request_builder",
     slug: "http-request-builder",
     category: "network-web",
-    relatedTools: ["url_parser", "http_status_codes", "url_encode_decode", "user_agent_parser"],
+    relatedTools: ["graphql_workbench", "url_parser", "http_status_codes", "url_encode_decode"],
     privacy: {
         executionMode: "browser-local",
         offlineCapable: true,

@@ -7,9 +7,13 @@ import { removeExtraWhitespace } from "@/core/utils/whitespace-utils"
 import { csvToJson, jsonToCsv } from "@/features/tools/csv-json-converter/logic"
 import { JSON_ARRAY_REQUIRED_ERROR } from "@/features/tools/csv-json-converter/constants"
 import { exportEnvVars, parseEnvFile, type EnvExportFormat } from "@/features/tools/env-parser/utils"
+import { formatDevopsYamlReport, validateDevopsYaml } from "@/features/tools/devops-yaml-validator/logic"
+import { inspectGraphql } from "@/features/tools/graphql-workbench/logic"
 import { convertHtmlToMarkdown } from "@/features/tools/html-to-markdown/utils"
+import { formatValidationReport, generateJsonSchema, validateJsonWithSchema } from "@/features/tools/json-schema-workbench/logic"
 import { decodeJwtParts } from "@/features/tools/jwt-decoder/utils"
 import { runNdjsonTransform, type NdjsonMessages, type NdjsonMode } from "@/features/tools/ndjson-formatter/utils"
+import { diffOpenApiSpecs, formatOpenApiDiffReport } from "@/features/tools/openapi-diff/logic"
 import { testRegexPattern } from "@/features/tools/regex-tester/utils"
 import { convertCase, type CaseStyle } from "@/features/tools/slugify-case-converter/utils"
 import { parseTimestampHeuristic } from "@/features/tools/unix-timestamp/utils"
@@ -635,6 +639,112 @@ const envParserAdapter: PipelineToolAdapter = {
     },
 }
 
+const jsonSchemaAdapter: PipelineToolAdapter = {
+    toolKey: "json_schema_workbench",
+    slug: "json-schema-workbench",
+    version: 1,
+    inputKind: "json",
+    outputKind: "json",
+    safeForSensitiveInput: true,
+    deterministic: true,
+    mayIncreaseSize: true,
+    warnings: ["Generated schemas are starter schemas; review required fields and constraints before using them as contracts."],
+    defaultOptions: {
+        mode: "generate",
+        schema: "",
+    },
+    publicOptionKeys: ["mode", "schema"],
+    validateOptions(options) {
+        const mode = stringOption(options, "mode", "generate")
+        if (!["generate", "validate"].includes(mode)) return fail("mode must be generate or validate.")
+        if (mode === "validate" && !stringOption(options, "schema", "").trim()) return fail("schema is required in validate mode.")
+        return ok()
+    },
+    run(input, options) {
+        const startedAt = performance.now()
+        try {
+            if (stringOption(options, "mode", "generate") === "validate") {
+                return success(formatValidationReport(validateJsonWithSchema(input, stringOption(options, "schema", ""))), startedAt, input)
+            }
+            return success(generateJsonSchema(input), startedAt, input)
+        } catch (error) {
+            return failure("json_schema_error", error instanceof Error ? error.message : "Invalid JSON.", startedAt, input)
+        }
+    },
+}
+
+const openApiDiffAdapter: PipelineToolAdapter = {
+    toolKey: "openapi_diff",
+    slug: "openapi-diff",
+    version: 1,
+    inputKind: "json",
+    outputKind: "text",
+    safeForSensitiveInput: true,
+    deterministic: true,
+    mayIncreaseSize: true,
+    warnings: ["Input must be JSON with before and after OpenAPI specs. Breaking-change detection is conservative and should be reviewed."],
+    defaultOptions: {},
+    publicOptionKeys: [],
+    validateOptions() {
+        return ok()
+    },
+    run(input) {
+        const startedAt = performance.now()
+        try {
+            const parsed = JSON.parse(input) as { before?: unknown; after?: unknown }
+            if (!parsed.before || !parsed.after) return failure("openapi_diff_shape_error", "Input must include before and after spec objects.", startedAt, input)
+            const report = diffOpenApiSpecs(JSON.stringify(parsed.before), JSON.stringify(parsed.after))
+            return success(formatOpenApiDiffReport(report), startedAt, input, report.summary.breaking > 0 ? [`${report.summary.breaking} breaking risk(s) detected.`] : [])
+        } catch (error) {
+            return failure("openapi_diff_error", error instanceof Error ? error.message : "Unable to compare specs.", startedAt, input)
+        }
+    },
+}
+
+const graphqlAdapter: PipelineToolAdapter = {
+    toolKey: "graphql_workbench",
+    slug: "graphql-workbench",
+    version: 1,
+    inputKind: "text",
+    outputKind: "text",
+    safeForSensitiveInput: true,
+    deterministic: true,
+    mayIncreaseSize: true,
+    warnings: [],
+    defaultOptions: {},
+    publicOptionKeys: [],
+    validateOptions() {
+        return ok()
+    },
+    run(input) {
+        const startedAt = performance.now()
+        const result = inspectGraphql(input)
+        return success(result.formattedQuery, startedAt, input, result.diagnostics.map((diagnostic) => diagnostic.message))
+    },
+}
+
+const devopsYamlValidatorAdapter: PipelineToolAdapter = {
+    toolKey: "devops_yaml_validator",
+    slug: "devops-yaml-validator",
+    version: 1,
+    inputKind: "yaml",
+    outputKind: "text",
+    safeForSensitiveInput: true,
+    deterministic: true,
+    mayIncreaseSize: true,
+    warnings: ["Kubernetes checks do not cover cluster-specific admission policies."],
+    defaultOptions: {},
+    publicOptionKeys: [],
+    validateOptions() {
+        return ok()
+    },
+    run(input) {
+        const startedAt = performance.now()
+        const report = validateDevopsYaml(input)
+        return success(formatDevopsYamlReport(report), startedAt, input, report.issues.filter((entry) => entry.severity === "warning").map((entry) => entry.message))
+    },
+}
+
 export const PIPELINE_TOOL_ADAPTERS = [
     jsonFormatterAdapter,
     base64Adapter,
@@ -652,6 +762,10 @@ export const PIPELINE_TOOL_ADAPTERS = [
     htmlToMarkdownAdapter,
     regexTesterAdapter,
     envParserAdapter,
+    jsonSchemaAdapter,
+    openApiDiffAdapter,
+    graphqlAdapter,
+    devopsYamlValidatorAdapter,
 ] as const satisfies readonly PipelineToolAdapter[]
 
 export function getPipelineAdapter(toolKey: string): PipelineToolAdapter | undefined {

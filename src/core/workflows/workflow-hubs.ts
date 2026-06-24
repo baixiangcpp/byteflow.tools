@@ -60,7 +60,16 @@ export const WORKFLOW_DEFINITIONS: readonly WorkflowDefinition[] = [
         scenario: "Use this path when an API request body has been copied from logs, staging traffic, or a teammate's example and needs to be normalized before review.",
         outcome: "A formatted payload, a clear schema or type shape, and a short diff that explains exactly what changed.",
         primaryGroupKeys: ["data_code_formats", "web_api_network", "devops_logs"],
-        relatedToolKeys: ["json_formatter", "yaml_json_converter", "json_to_typescript", "json_diff_viewer", "http_request_builder"],
+        relatedToolKeys: [
+            "json_formatter",
+            "yaml_json_converter",
+            "json_to_typescript",
+            "json_schema_workbench",
+            "json_diff_viewer",
+            "openapi_diff",
+            "graphql_workbench",
+            "http_request_builder",
+        ],
         tutorialSlugs: ["validate-json-before-api-requests", "json-schema-validation-checklist", "convert-curl-to-fetch-python"],
         steps: [
             {
@@ -124,7 +133,7 @@ export const WORKFLOW_DEFINITIONS: readonly WorkflowDefinition[] = [
         scenario: "Use this path before debugging JWT claims, certificates, JWKs, or hash evidence copied from an auth incident or staging integration.",
         outcome: "A separated view of decoded fields, verification status, weak algorithms, expiry timestamps, and supporting certificate material.",
         primaryGroupKeys: ["encoding_crypto", "web_api_network"],
-        relatedToolKeys: ["jwt_decoder", "jwt_workbench", "jwt_verifier", "public_key_jwk_helper", "certificate_decoder", "hash_generator"],
+        relatedToolKeys: ["jwt_decoder", "jwt_workbench", "jwt_verifier", "oauth_jwks_workbench", "public_key_jwk_helper", "certificate_decoder", "hash_generator"],
         tutorialSlugs: ["jwt-security-best-practices-for-token-handling", "certificate-chain-basics-for-developers", "hash-functions-compared-md5-vs-sha256-vs-sha512"],
         steps: [
             {
@@ -242,9 +251,14 @@ export const WORKFLOW_DEFINITIONS: readonly WorkflowDefinition[] = [
         scenario: "Use this path when a product image, screenshot, or social preview needs consistent dimensions before publishing.",
         outcome: "A resized image asset, optional crop variants, extracted colors, and social metadata ready for inspection.",
         primaryGroupKeys: ["images_svg_css", "social_metadata"],
-        relatedToolKeys: ["image_resizer", "image_cropper", "image_color_extractor", "open_graph_meta_generator", "code_to_image_converter"],
+        relatedToolKeys: ["image_privacy_workbench", "image_resizer", "image_cropper", "image_color_extractor", "open_graph_meta_generator", "seo_metadata_workbench", "code_to_image_converter"],
         tutorialSlugs: ["image-optimization-for-web-complete-workflow", "image-privacy-how-to-censor-and-protect-images", "color-extraction-from-images-use-cases-and-tools"],
         steps: [
+            {
+                title: "Remove private details first",
+                body: "Strip metadata and review screenshots for visible secrets before resizing, cropping, or preparing share assets.",
+                toolKey: "image_privacy_workbench",
+            },
             {
                 title: "Resize to the target surface",
                 body: "Start with the final placement, such as Open Graph, app icon, blog header, or documentation screenshot.",
@@ -301,7 +315,7 @@ export const WORKFLOW_DEFINITIONS: readonly WorkflowDefinition[] = [
         scenario: "Use this path when a backend response, webhook sample, or configuration payload is about to become a frontend or SDK contract.",
         outcome: "A typed model, queried edge cases, and a small change review that separates schema drift from implementation work.",
         primaryGroupKeys: ["data_code_formats", "generators_calculators"],
-        relatedToolKeys: ["json_formatter", "json_to_typescript", "jsonpath_playground", "structured_data_visualizer", "json_diff_viewer"],
+        relatedToolKeys: ["json_formatter", "json_schema_workbench", "json_to_typescript", "jsonpath_playground", "structured_data_visualizer", "json_diff_viewer", "openapi_diff", "graphql_workbench"],
         tutorialSlugs: ["json-schema-validation-checklist", "json-vs-json5-differences", "validate-json-before-api-requests"],
         steps: [
             {

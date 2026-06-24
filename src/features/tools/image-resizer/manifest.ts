@@ -4,7 +4,7 @@ export const toolManifest = {
     key: "image_resizer",
     slug: "image-resizer",
     category: "generators",
-    relatedTools: ["image_cropper", "image_filters", "image_base64", "code_to_image_converter"],
+    relatedTools: ["image_privacy_workbench", "image_cropper", "image_filters", "image_base64"],
     privacy: {
         executionMode: "browser-local",
         offlineCapable: true,

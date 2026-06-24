@@ -2828,6 +2828,90 @@
       "key_ops": "密钥操作",
       "key_id": "密钥 ID",
       "thumbprint": "指纹"
+    },
+    "json_schema_workbench": {
+      "title": "JSON Schema 工作台",
+      "description": "在浏览器本地从 JSON 生成起始 Schema，并用粘贴的 Schema 校验 payload。",
+      "mode_label": "JSON Schema 模式",
+      "mode_generate": "生成 Schema",
+      "mode_validate": "校验 payload",
+      "generate_action": "生成 Schema",
+      "validate_action": "校验 payload",
+      "payload_label": "JSON payload 输入",
+      "schema_label": "JSON Schema 定义"
+    },
+    "openapi_diff": {
+      "title": "OpenAPI Diff 比较器",
+      "description": "本地比较两个 OpenAPI 或 Swagger 规格，标记端点、参数、响应、安全和破坏性风险变化。",
+      "compare_action": "比较规格",
+      "before_label": "变更前规格",
+      "after_label": "变更后规格",
+      "report_label": "Diff 报告"
+    },
+    "graphql_workbench": {
+      "title": "GraphQL 工作台",
+      "description": "格式化 GraphQL 查询、校验变量 JSON，并检查粘贴的 introspection 数据，无需连接服务器。",
+      "format_action": "格式化查询",
+      "query_label": "GraphQL 查询",
+      "variables_label": "变量 JSON",
+      "introspection_label": "Introspection JSON 输入",
+      "formatted_label": "格式化查询",
+      "diagnostics_label": "诊断",
+      "operation_label": "操作",
+      "schema_type_label": "Schema 类型"
+    },
+    "messagepack_inspector": {
+      "title": "MessagePack 检查器",
+      "description": "在本地把十六进制或 Base64 MessagePack payload 解码成可读 JSON，并提供清晰错误。",
+      "decode_action": "解码 MessagePack",
+      "mode_label": "MessagePack 输入模式",
+      "mode_hex": "十六进制",
+      "mode_base64": "Base64 文本",
+      "bytes_label": "字节"
+    },
+    "seo_metadata_workbench": {
+      "title": "SEO 元数据工作台",
+      "description": "本地预览 SERP 元数据、校验 hreflang 与 sitemap URL，并起草隐私安全的 llms.txt 片段。",
+      "analyze_action": "分析元数据",
+      "config_label": "元数据配置 JSON",
+      "report_label": "SEO 报告"
+    },
+    "devops_yaml_validator": {
+      "title": "DevOps YAML 校验器",
+      "description": "本地校验 Docker Compose 与 Kubernetes YAML，提供路径级错误、警告和修复建议。",
+      "validate_action": "校验 YAML",
+      "yaml_label": "Compose 或 Kubernetes YAML",
+      "report_label": "校验报告"
+    },
+    "oauth_jwks_workbench": {
+      "title": "OAuth PKCE 与 JWKS 工作台",
+      "description": "本地生成 PKCE verifier/challenge，并检查粘贴的 JWKS 或用它验证 JWT。",
+      "mode_label": "OAuth 与 JWKS 模式",
+      "mode_pkce": "PKCE 助手",
+      "mode_jwks": "JWKS 检查器",
+      "generate_pkce_action": "生成 PKCE",
+      "inspect_jwks_action": "检查 JWKS",
+      "jwks_label": "JWKS JSON 输入",
+      "jwt_label": "待验证 JWT"
+    },
+    "image_privacy_workbench": {
+      "title": "图片隐私工作台",
+      "description": "通过本地重新编码移除支持图片的 metadata，并按安全顺序引导截图打码后再分享。",
+      "choose_image_action": "选择图片",
+      "workflow_label": "截图打码流程",
+      "upload_label": "本地图片",
+      "no_file_label": "未选择图片",
+      "preview_alt": "已清理图片预览",
+      "report_label": "Metadata 扫描报告",
+      "dimensions_label": "尺寸",
+      "before_label": "重新编码前",
+      "after_label": "重新编码后",
+      "step_redact_title": "先遮盖可见秘密",
+      "step_redact_detail": "在调整尺寸或压缩之前，遮盖 token、邮箱、账号名、URL 和客户数据。",
+      "step_strip_title": "通过重新编码移除 metadata",
+      "step_strip_detail": "通过 canvas 导出 PNG 或 JPEG，丢弃支持格式中的 EXIF、相机、GPS 和编辑器 metadata。",
+      "step_inspect_title": "检查导出文件",
+      "step_inspect_detail": "查看重新编码后的扫描结果是否还有 EXIF 标记，只下载已清理输出。"
     }
   },
   "categories": {

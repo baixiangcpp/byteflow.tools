@@ -2828,6 +2828,90 @@
       "key_ops": "鍵操作",
       "key_id": "鍵 ID",
       "thumbprint": "サムプリント"
+    },
+    "json_schema_workbench": {
+      "title": "JSON Schema ワークベンチ",
+      "description": "ブラウザ内で JSON から初期 Schema を生成し、貼り付けた Schema で payload を検証します。",
+      "mode_label": "JSON Schema モード",
+      "mode_generate": "Schema を生成",
+      "mode_validate": "payload を検証",
+      "generate_action": "Schema を生成",
+      "validate_action": "payload を検証",
+      "payload_label": "JSON payload 入力",
+      "schema_label": "JSON Schema 定義"
+    },
+    "openapi_diff": {
+      "title": "OpenAPI Diff 比較ツール",
+      "description": "2 つの OpenAPI または Swagger 仕様をローカルで比較し、エンドポイント、パラメータ、レスポンス、セキュリティ、破壊的変更リスクを示します。",
+      "compare_action": "仕様を比較",
+      "before_label": "変更前の仕様",
+      "after_label": "変更後の仕様",
+      "report_label": "Diff レポート"
+    },
+    "graphql_workbench": {
+      "title": "GraphQL ワークベンチ",
+      "description": "サーバーへ接続せずに GraphQL クエリを整形し、変数 JSON と introspection データを確認します。",
+      "format_action": "クエリを整形",
+      "query_label": "GraphQL クエリ",
+      "variables_label": "変数 JSON",
+      "introspection_label": "Introspection JSON 入力",
+      "formatted_label": "整形済みクエリ",
+      "diagnostics_label": "診断",
+      "operation_label": "操作",
+      "schema_type_label": "Schema 型"
+    },
+    "messagepack_inspector": {
+      "title": "MessagePack インスペクター",
+      "description": "Hex または Base64 の MessagePack payload をローカルで読みやすい JSON にデコードします。",
+      "decode_action": "MessagePack をデコード",
+      "mode_label": "MessagePack 入力モード",
+      "mode_hex": "Hex 入力",
+      "mode_base64": "Base64 入力",
+      "bytes_label": "バイト"
+    },
+    "seo_metadata_workbench": {
+      "title": "SEO メタデータワークベンチ",
+      "description": "SERP メタデータ、hreflang、sitemap URL、llms.txt 下書きをローカルで確認します。",
+      "analyze_action": "メタデータを分析",
+      "config_label": "メタデータ設定 JSON",
+      "report_label": "SEO レポート"
+    },
+    "devops_yaml_validator": {
+      "title": "DevOps YAML バリデーター",
+      "description": "Docker Compose と Kubernetes YAML をローカルで検証し、パス付きのエラーと修正案を表示します。",
+      "validate_action": "YAML を検証",
+      "yaml_label": "Compose または Kubernetes YAML",
+      "report_label": "検証レポート"
+    },
+    "oauth_jwks_workbench": {
+      "title": "OAuth PKCE と JWKS ワークベンチ",
+      "description": "PKCE verifier/challenge を生成し、貼り付けた JWKS の確認や JWT 検証をローカルで行います。",
+      "mode_label": "OAuth と JWKS モード",
+      "mode_pkce": "PKCE ヘルパー",
+      "mode_jwks": "JWKS インスペクター",
+      "generate_pkce_action": "PKCE を生成",
+      "inspect_jwks_action": "JWKS を検査",
+      "jwks_label": "JWKS JSON 入力",
+      "jwt_label": "検証する JWT"
+    },
+    "image_privacy_workbench": {
+      "title": "画像プライバシーワークベンチ",
+      "description": "対応画像をローカルで再エンコードして metadata を除去し、安全なスクリーンショット編集手順を案内します。",
+      "choose_image_action": "画像を選択",
+      "workflow_label": "スクリーンショット編集手順",
+      "upload_label": "ローカル画像",
+      "no_file_label": "画像未選択",
+      "preview_alt": "サニタイズ済み画像プレビュー",
+      "report_label": "Metadata スキャンレポート",
+      "dimensions_label": "サイズ",
+      "before_label": "再エンコード前",
+      "after_label": "再エンコード後",
+      "step_redact_title": "見える秘密を先に隠す",
+      "step_redact_detail": "リサイズや圧縮の前に token、メール、アカウント名、URL、顧客データを隠します。",
+      "step_strip_title": "再エンコードで metadata を除去",
+      "step_strip_detail": "canvas から PNG または JPEG として書き出し、対応デコーダーの EXIF、カメラ、GPS、編集 metadata を落とします。",
+      "step_inspect_title": "書き出しファイルを確認",
+      "step_inspect_detail": "再エンコード後のスキャンで EXIF マーカーを確認し、サニタイズ済み出力だけをダウンロードします。"
     }
   },
   "categories": {

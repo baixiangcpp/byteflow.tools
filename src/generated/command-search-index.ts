@@ -2921,6 +2921,229 @@ const COMMAND_SEARCH_INDEX: Record<string, CommandSearchIndexEntry> = {
             "offline-capable",
             "sensitive-input"
         ]
+    },
+    "json_schema_workbench": {
+        "key": "json_schema_workbench",
+        "slug": "json-schema-workbench",
+        "keywords": [
+            "json schema generator",
+            "json schema validator",
+            "json schema workbench",
+            "validate json schema"
+        ],
+        "aliases": [],
+        "searchKeywords": [
+            "schema",
+            "json schema",
+            "validator",
+            "draft 7",
+            "contract"
+        ],
+        "family": "formatters-validators",
+        "tags": [
+            "formatters-validators",
+            "json"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ]
+    },
+    "openapi_diff": {
+        "key": "openapi_diff",
+        "slug": "openapi-diff",
+        "keywords": [
+            "openapi diff",
+            "swagger diff",
+            "api contract diff",
+            "openapi compare"
+        ],
+        "aliases": [],
+        "searchKeywords": [
+            "swagger",
+            "contract",
+            "breaking change",
+            "api diff"
+        ],
+        "family": "formatters-validators",
+        "tags": [
+            "formatters-validators",
+            "http"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ]
+    },
+    "graphql_workbench": {
+        "key": "graphql_workbench",
+        "slug": "graphql-workbench",
+        "keywords": [
+            "graphql formatter",
+            "graphql explorer",
+            "graphql query formatter",
+            "graphql variables validator"
+        ],
+        "aliases": [],
+        "searchKeywords": [
+            "graphql",
+            "query",
+            "mutation",
+            "fragment",
+            "introspection"
+        ],
+        "family": "network-http",
+        "tags": [
+            "network-http"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ]
+    },
+    "messagepack_inspector": {
+        "key": "messagepack_inspector",
+        "slug": "messagepack-inspector",
+        "keywords": [
+            "messagepack inspector",
+            "msgpack to json",
+            "messagepack decoder",
+            "binary json converter"
+        ],
+        "aliases": [],
+        "searchKeywords": [
+            "msgpack",
+            "binary",
+            "event payload",
+            "base64"
+        ],
+        "family": "formatters-validators",
+        "tags": [
+            "base64",
+            "formatters-validators",
+            "json"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ]
+    },
+    "seo_metadata_workbench": {
+        "key": "seo_metadata_workbench",
+        "slug": "seo-metadata-workbench",
+        "keywords": [
+            "serp preview",
+            "hreflang checker",
+            "sitemap validator",
+            "llms txt generator"
+        ],
+        "aliases": [],
+        "searchKeywords": [
+            "seo",
+            "serp",
+            "hreflang",
+            "sitemap",
+            "llms.txt",
+            "canonical"
+        ],
+        "family": "network-http",
+        "tags": [
+            "network-http"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ]
+    },
+    "devops_yaml_validator": {
+        "key": "devops_yaml_validator",
+        "slug": "devops-yaml-validator",
+        "keywords": [
+            "docker compose validator",
+            "kubernetes yaml validator",
+            "k8s yaml checker",
+            "devops yaml validator"
+        ],
+        "aliases": [],
+        "searchKeywords": [
+            "kubernetes",
+            "k8s",
+            "docker compose",
+            "yaml",
+            "devops"
+        ],
+        "family": "network-http",
+        "tags": [
+            "network-http",
+            "yaml"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ]
+    },
+    "oauth_jwks_workbench": {
+        "key": "oauth_jwks_workbench",
+        "slug": "oauth-jwks-workbench",
+        "keywords": [
+            "oauth pkce generator",
+            "jwks verifier",
+            "jwks inspector",
+            "jwt jwks verification"
+        ],
+        "aliases": [],
+        "searchKeywords": [
+            "oauth",
+            "pkce",
+            "jwks",
+            "jwk",
+            "kid",
+            "jwt verify"
+        ],
+        "family": "text-strings",
+        "tags": [
+            "jwt",
+            "text-strings"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ]
+    },
+    "image_privacy_workbench": {
+        "key": "image_privacy_workbench",
+        "slug": "image-privacy-workbench",
+        "keywords": [
+            "exif remover",
+            "screenshot redaction",
+            "image metadata remover",
+            "privacy image tool"
+        ],
+        "aliases": [],
+        "searchKeywords": [
+            "exif",
+            "metadata",
+            "redact",
+            "screenshot",
+            "privacy"
+        ],
+        "family": "generators",
+        "tags": [
+            "generators",
+            "image"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ]
     }
 }
 

@@ -121,5 +121,13 @@
   "asn1-der-inspector",
   "hex-bytes-workbench",
   "unicode-inspector",
-  "public-key-jwk-helper"
+  "public-key-jwk-helper",
+  "json-schema-workbench",
+  "openapi-diff",
+  "graphql-workbench",
+  "messagepack-inspector",
+  "seo-metadata-workbench",
+  "devops-yaml-validator",
+  "oauth-jwks-workbench",
+  "image-privacy-workbench"
 ]

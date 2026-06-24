@@ -4,7 +4,7 @@ export const toolManifest = {
     key: "yaml_json_converter",
     slug: "yaml-json-converter",
     category: "formatters",
-    relatedTools: ["json_formatter", "json_to_typescript", "structured_data_visualizer", "xml_formatter"],
+    relatedTools: ["json_formatter", "devops_yaml_validator", "json_to_typescript", "structured_data_visualizer"],
     privacy: {
         executionMode: "browser-local",
         offlineCapable: true,

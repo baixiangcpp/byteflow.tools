@@ -4,7 +4,7 @@ export const toolManifest = {
     key: "structured_data_visualizer",
     slug: "structured-data-visualizer",
     category: "formatters",
-    relatedTools: ["json_formatter", "yaml_json_converter", "xml_formatter", "jsonpath_playground"],
+    relatedTools: ["seo_metadata_workbench", "json_formatter", "yaml_json_converter", "xml_formatter"],
     privacy: {
         executionMode: "browser-local",
         offlineCapable: true,

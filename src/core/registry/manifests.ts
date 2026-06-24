@@ -121,6 +121,14 @@ import { toolManifest as asn1DerInspectorManifest } from "@/features/tools/asn1-
 import { toolManifest as hexBytesWorkbenchManifest } from "@/features/tools/hex-bytes-workbench/manifest"
 import { toolManifest as unicodeInspectorManifest } from "@/features/tools/unicode-inspector/manifest"
 import { toolManifest as publicKeyJwkHelperManifest } from "@/features/tools/public-key-jwk-helper/manifest"
+import { toolManifest as jsonSchemaWorkbenchManifest } from "@/features/tools/json-schema-workbench/manifest"
+import { toolManifest as openapiDiffManifest } from "@/features/tools/openapi-diff/manifest"
+import { toolManifest as graphqlWorkbenchManifest } from "@/features/tools/graphql-workbench/manifest"
+import { toolManifest as messagepackInspectorManifest } from "@/features/tools/messagepack-inspector/manifest"
+import { toolManifest as seoMetadataWorkbenchManifest } from "@/features/tools/seo-metadata-workbench/manifest"
+import { toolManifest as devopsYamlValidatorManifest } from "@/features/tools/devops-yaml-validator/manifest"
+import { toolManifest as oauthJwksWorkbenchManifest } from "@/features/tools/oauth-jwks-workbench/manifest"
+import { toolManifest as imagePrivacyWorkbenchManifest } from "@/features/tools/image-privacy-workbench/manifest"
 import type { ToolMeta } from "./types"
 
 export const TOOL_MANIFESTS = [
@@ -247,4 +255,12 @@ export const TOOL_MANIFESTS = [
     hexBytesWorkbenchManifest,
     unicodeInspectorManifest,
     publicKeyJwkHelperManifest,
+    jsonSchemaWorkbenchManifest,
+    openapiDiffManifest,
+    graphqlWorkbenchManifest,
+    messagepackInspectorManifest,
+    seoMetadataWorkbenchManifest,
+    devopsYamlValidatorManifest,
+    oauthJwksWorkbenchManifest,
+    imagePrivacyWorkbenchManifest,
 ] satisfies ToolMeta[]

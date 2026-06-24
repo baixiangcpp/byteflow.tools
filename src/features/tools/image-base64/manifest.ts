@@ -4,7 +4,7 @@ export const toolManifest = {
     key: "image_base64",
     slug: "image-base64",
     category: "text-string",
-    relatedTools: ["base64_encode_decode", "svg_optimizer", "qr_code_generator"],
+    relatedTools: ["image_privacy_workbench", "base64_encode_decode", "svg_optimizer", "qr_code_generator"],
     privacy: {
         executionMode: "browser-local",
         offlineCapable: true,
