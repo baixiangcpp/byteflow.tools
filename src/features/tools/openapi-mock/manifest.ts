@@ -4,7 +4,7 @@ export const toolManifest = {
     key: "openapi_mock",
     slug: "openapi-mock",
     category: "network-web",
-    relatedTools: ["openapi_viewer", "http_request_builder", "json_formatter", "curl_to_code"],
+    relatedTools: ["openapi_viewer", "openapi_diff", "http_request_builder", "json_formatter"],
     privacy: {
         executionMode: "browser-local",
         offlineCapable: true,

@@ -4,7 +4,7 @@ export const toolManifest = {
     key: "json_formatter",
     slug: "json-formatter",
     category: "formatters",
-    relatedTools: ["jsonpath_playground", "json_diff_viewer", "json_to_typescript", "yaml_json_converter"],
+    relatedTools: ["jsonpath_playground", "json_diff_viewer", "json_to_typescript", "yaml_json_converter", "json_schema_workbench"],
     privacy: {
         executionMode: "browser-local",
         offlineCapable: true,

@@ -32,7 +32,8 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
             "jsonpath_playground",
             "json_diff_viewer",
             "json_to_typescript",
-            "yaml_json_converter"
+            "yaml_json_converter",
+            "json_schema_workbench"
         ],
         "relatedWorkflows": [
             {
@@ -267,9 +268,9 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "slug": "yaml-json-converter",
         "relatedToolKeys": [
             "json_formatter",
+            "devops_yaml_validator",
             "json_to_typescript",
-            "structured_data_visualizer",
-            "xml_formatter"
+            "structured_data_visualizer"
         ],
         "relatedWorkflows": [
             {
@@ -367,6 +368,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "slug": "json-to-typescript",
         "relatedToolKeys": [
             "json_formatter",
+            "json_schema_workbench",
             "yaml_json_converter",
             "jsonpath_playground"
         ],
@@ -462,9 +464,10 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "key": "openapi_viewer",
         "slug": "openapi-viewer",
         "relatedToolKeys": [
+            "openapi_diff",
+            "openapi_mock",
             "json_formatter",
-            "yaml_json_converter",
-            "jsonpath_playground"
+            "yaml_json_converter"
         ],
         "relatedWorkflows": [],
         "sampleInput": null,
@@ -486,6 +489,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "slug": "json-diff-viewer",
         "relatedToolKeys": [
             "json_formatter",
+            "openapi_diff",
             "text_diff_checker",
             "jsonpath_playground"
         ],
@@ -656,9 +660,9 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "slug": "jwt-decoder",
         "relatedToolKeys": [
             "jwt_workbench",
+            "oauth_jwks_workbench",
             "base64_encode_decode",
-            "hash_generator",
-            "url_encode_decode"
+            "hash_generator"
         ],
         "relatedWorkflows": [
             {
@@ -701,8 +705,8 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "relatedToolKeys": [
             "jwt_decoder",
             "jwt_verifier",
-            "base64_encode_decode",
-            "hash_generator"
+            "oauth_jwks_workbench",
+            "public_key_jwk_helper"
         ],
         "relatedWorkflows": [],
         "sampleInput": null,
@@ -949,6 +953,7 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "key": "image_base64",
         "slug": "image-base64",
         "relatedToolKeys": [
+            "image_privacy_workbench",
             "base64_encode_decode",
             "svg_optimizer",
             "qr_code_generator"
@@ -1656,10 +1661,10 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "key": "image_resizer",
         "slug": "image-resizer",
         "relatedToolKeys": [
+            "image_privacy_workbench",
             "image_cropper",
             "image_filters",
-            "image_base64",
-            "code_to_image_converter"
+            "image_base64"
         ],
         "relatedWorkflows": [
             {
@@ -1700,10 +1705,10 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "key": "photo_censor",
         "slug": "photo-censor",
         "relatedToolKeys": [
+            "image_privacy_workbench",
             "image_filters",
             "image_cropper",
-            "image_resizer",
-            "scanned_pdf_converter"
+            "image_resizer"
         ],
         "relatedWorkflows": [],
         "sampleInput": null,
@@ -2578,10 +2583,10 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "key": "http_request_builder",
         "slug": "http-request-builder",
         "relatedToolKeys": [
+            "graphql_workbench",
             "url_parser",
             "http_status_codes",
-            "url_encode_decode",
-            "user_agent_parser"
+            "url_encode_decode"
         ],
         "relatedWorkflows": [
             {
@@ -2669,9 +2674,9 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "slug": "jwt-verifier",
         "relatedToolKeys": [
             "jwt_workbench",
+            "oauth_jwks_workbench",
             "jwt_decoder",
-            "hash_generator",
-            "base64_encode_decode",
+            "public_key_jwk_helper",
             "certificate_decoder"
         ],
         "relatedWorkflows": [],
@@ -2896,9 +2901,9 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "slug": "openapi-mock",
         "relatedToolKeys": [
             "openapi_viewer",
+            "openapi_diff",
             "http_request_builder",
-            "json_formatter",
-            "curl_to_code"
+            "json_formatter"
         ],
         "relatedWorkflows": [],
         "sampleInput": null,
@@ -2919,10 +2924,10 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "key": "docker_run_to_compose",
         "slug": "docker-run-to-compose",
         "relatedToolKeys": [
+            "devops_yaml_validator",
             "env_parser",
             "yaml_json_converter",
-            "chmod_calculator",
-            "curl_to_code"
+            "chmod_calculator"
         ],
         "relatedWorkflows": [],
         "sampleInput": null,
@@ -3113,10 +3118,10 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "key": "structured_data_visualizer",
         "slug": "structured-data-visualizer",
         "relatedToolKeys": [
+            "seo_metadata_workbench",
             "json_formatter",
             "yaml_json_converter",
-            "xml_formatter",
-            "jsonpath_playground"
+            "xml_formatter"
         ],
         "relatedWorkflows": [],
         "sampleInput": null,
@@ -3301,10 +3306,10 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "key": "public_key_jwk_helper",
         "slug": "public-key-jwk-helper",
         "relatedToolKeys": [
+            "oauth_jwks_workbench",
             "certificate_decoder",
             "jwt_verifier",
             "jwt_workbench",
-            "base64_encode_decode",
             "asn1_der_inspector"
         ],
         "relatedWorkflows": [
@@ -3332,6 +3337,205 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "family": "security-tokens",
         "tags": [
             "security-tokens"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ]
+    },
+    "json_schema_workbench": {
+        "key": "json_schema_workbench",
+        "slug": "json-schema-workbench",
+        "relatedToolKeys": [
+            "json_formatter",
+            "jsonpath_playground",
+            "json_diff_viewer",
+            "json_to_typescript"
+        ],
+        "relatedWorkflows": [],
+        "sampleInput": "{\"user\":{\"id\":1001,\"email\":\"alice@example.com\",\"active\":true}}",
+        "sampleMode": "generate-schema",
+        "inputSizePolicy": null,
+        "compliance": null,
+        "family": "formatters-validators",
+        "tags": [
+            "formatters-validators",
+            "json"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ]
+    },
+    "openapi_diff": {
+        "key": "openapi_diff",
+        "slug": "openapi-diff",
+        "relatedToolKeys": [
+            "openapi_viewer",
+            "openapi_mock",
+            "yaml_json_converter",
+            "json_diff_viewer"
+        ],
+        "relatedWorkflows": [],
+        "sampleInput": "{\"before\":{\"openapi\":\"3.0.3\",\"paths\":{\"/pets\":{\"get\":{\"responses\":{\"200\":{}}}}}},\"after\":{\"openapi\":\"3.0.3\",\"paths\":{\"/pets\":{\"post\":{\"responses\":{\"201\":{}}}}}}}",
+        "sampleMode": "compare-specs",
+        "inputSizePolicy": null,
+        "compliance": null,
+        "family": "formatters-validators",
+        "tags": [
+            "formatters-validators",
+            "http"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ]
+    },
+    "graphql_workbench": {
+        "key": "graphql_workbench",
+        "slug": "graphql-workbench",
+        "relatedToolKeys": [
+            "http_request_builder",
+            "openapi_viewer",
+            "json_formatter",
+            "jsonpath_playground"
+        ],
+        "relatedWorkflows": [],
+        "sampleInput": "query GetUser($id: ID!) { user(id: $id) { id name email } }",
+        "sampleMode": "format-query",
+        "inputSizePolicy": null,
+        "compliance": null,
+        "family": "network-http",
+        "tags": [
+            "network-http"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ]
+    },
+    "messagepack_inspector": {
+        "key": "messagepack_inspector",
+        "slug": "messagepack-inspector",
+        "relatedToolKeys": [
+            "json_formatter",
+            "hex_bytes_workbench",
+            "base64_encode_decode",
+            "yaml_json_converter"
+        ],
+        "relatedWorkflows": [],
+        "sampleInput": "82a2696401a46e616d65a5416c696365",
+        "sampleMode": "hex-to-json",
+        "inputSizePolicy": null,
+        "compliance": null,
+        "family": "formatters-validators",
+        "tags": [
+            "base64",
+            "formatters-validators",
+            "json"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ]
+    },
+    "seo_metadata_workbench": {
+        "key": "seo_metadata_workbench",
+        "slug": "seo-metadata-workbench",
+        "relatedToolKeys": [
+            "open_graph_meta_generator",
+            "robots_txt_tester",
+            "structured_data_visualizer",
+            "csp_parser"
+        ],
+        "relatedWorkflows": [],
+        "sampleInput": "{\"title\":\"Privacy-first Local Developer Tools\",\"url\":\"https://byteflow.tools/\"}",
+        "sampleMode": "seo-audit",
+        "inputSizePolicy": null,
+        "compliance": null,
+        "family": "network-http",
+        "tags": [
+            "network-http"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ]
+    },
+    "devops_yaml_validator": {
+        "key": "devops_yaml_validator",
+        "slug": "devops-yaml-validator",
+        "relatedToolKeys": [
+            "docker_run_to_compose",
+            "yaml_json_converter",
+            "yq_playground",
+            "env_parser"
+        ],
+        "relatedWorkflows": [],
+        "sampleInput": "services:\n  api:\n    image: node:20\n---\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: api",
+        "sampleMode": "validate-devops-yaml",
+        "inputSizePolicy": null,
+        "compliance": null,
+        "family": "network-http",
+        "tags": [
+            "network-http",
+            "yaml"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ]
+    },
+    "oauth_jwks_workbench": {
+        "key": "oauth_jwks_workbench",
+        "slug": "oauth-jwks-workbench",
+        "relatedToolKeys": [
+            "jwt_decoder",
+            "jwt_workbench",
+            "jwt_verifier",
+            "public_key_jwk_helper"
+        ],
+        "relatedWorkflows": [],
+        "sampleInput": "{\"keys\":[{\"kty\":\"RSA\",\"kid\":\"sample\",\"alg\":\"RS256\",\"use\":\"sig\"}]}",
+        "sampleMode": "inspect-jwks",
+        "inputSizePolicy": null,
+        "compliance": null,
+        "family": "text-strings",
+        "tags": [
+            "jwt",
+            "text-strings"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ]
+    },
+    "image_privacy_workbench": {
+        "key": "image_privacy_workbench",
+        "slug": "image-privacy-workbench",
+        "relatedToolKeys": [
+            "photo_censor",
+            "image_resizer",
+            "image_base64",
+            "svg_optimizer"
+        ],
+        "relatedWorkflows": [],
+        "sampleInput": "PNG or JPEG image file",
+        "sampleMode": "strip-metadata",
+        "inputSizePolicy": null,
+        "compliance": null,
+        "family": "generators",
+        "tags": [
+            "generators",
+            "image"
         ],
         "capabilities": [
             "browser-local",
@@ -3426,6 +3630,18 @@ export const DISCOVERY_MENU_GROUPS: ReadonlyArray<DiscoveryMenuGroup> = [
             {
                 "key": "structured_data_visualizer",
                 "slug": "structured-data-visualizer"
+            },
+            {
+                "key": "json_schema_workbench",
+                "slug": "json-schema-workbench"
+            },
+            {
+                "key": "openapi_diff",
+                "slug": "openapi-diff"
+            },
+            {
+                "key": "messagepack_inspector",
+                "slug": "messagepack-inspector"
             }
         ]
     },
@@ -3560,6 +3776,18 @@ export const DISCOVERY_MENU_GROUPS: ReadonlyArray<DiscoveryMenuGroup> = [
             {
                 "key": "har_viewer_sanitizer",
                 "slug": "har-viewer-sanitizer"
+            },
+            {
+                "key": "graphql_workbench",
+                "slug": "graphql-workbench"
+            },
+            {
+                "key": "seo_metadata_workbench",
+                "slug": "seo-metadata-workbench"
+            },
+            {
+                "key": "devops_yaml_validator",
+                "slug": "devops-yaml-validator"
             }
         ]
     },
@@ -3650,6 +3878,10 @@ export const DISCOVERY_MENU_GROUPS: ReadonlyArray<DiscoveryMenuGroup> = [
             {
                 "key": "unicode_inspector",
                 "slug": "unicode-inspector"
+            },
+            {
+                "key": "oauth_jwks_workbench",
+                "slug": "oauth-jwks-workbench"
             }
         ]
     },
@@ -3840,6 +4072,10 @@ export const DISCOVERY_MENU_GROUPS: ReadonlyArray<DiscoveryMenuGroup> = [
             {
                 "key": "id_generator",
                 "slug": "id-generator"
+            },
+            {
+                "key": "image_privacy_workbench",
+                "slug": "image-privacy-workbench"
             }
         ]
     },

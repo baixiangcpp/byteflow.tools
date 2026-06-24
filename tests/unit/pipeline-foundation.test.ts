@@ -60,6 +60,10 @@ describe("pipeline foundation", () => {
             "html_to_markdown",
             "regex_tester",
             "env_parser",
+            "json_schema_workbench",
+            "openapi_diff",
+            "graphql_workbench",
+            "devops_yaml_validator",
         ])
         expect(getPipelineAdapter("json_formatter")?.version).toBe(1)
     })

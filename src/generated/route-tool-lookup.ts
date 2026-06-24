@@ -2440,6 +2440,158 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "requiresExplicitUserAction": null,
         "externalDataSent": null,
         "compliance": null
+    },
+    "json_schema_workbench": {
+        "key": "json_schema_workbench",
+        "slug": "json-schema-workbench",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
+        "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
+        "compliance": null
+    },
+    "openapi_diff": {
+        "key": "openapi_diff",
+        "slug": "openapi-diff",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
+        "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
+        "compliance": null
+    },
+    "graphql_workbench": {
+        "key": "graphql_workbench",
+        "slug": "graphql-workbench",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
+        "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
+        "compliance": null
+    },
+    "messagepack_inspector": {
+        "key": "messagepack_inspector",
+        "slug": "messagepack-inspector",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
+        "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
+        "compliance": null
+    },
+    "seo_metadata_workbench": {
+        "key": "seo_metadata_workbench",
+        "slug": "seo-metadata-workbench",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
+        "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
+        "compliance": null
+    },
+    "devops_yaml_validator": {
+        "key": "devops_yaml_validator",
+        "slug": "devops-yaml-validator",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
+        "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
+        "compliance": null
+    },
+    "oauth_jwks_workbench": {
+        "key": "oauth_jwks_workbench",
+        "slug": "oauth-jwks-workbench",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
+        "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
+        "compliance": null
+    },
+    "image_privacy_workbench": {
+        "key": "image_privacy_workbench",
+        "slug": "image-privacy-workbench",
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
+        "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
+        "compliance": null
     }
 }
 
@@ -2566,7 +2718,15 @@ const ROUTE_TOOL_KEY_BY_SLUG: Record<string, string> = {
     "asn1-der-inspector": "asn1_der_inspector",
     "hex-bytes-workbench": "hex_bytes_workbench",
     "unicode-inspector": "unicode_inspector",
-    "public-key-jwk-helper": "public_key_jwk_helper"
+    "public-key-jwk-helper": "public_key_jwk_helper",
+    "json-schema-workbench": "json_schema_workbench",
+    "openapi-diff": "openapi_diff",
+    "graphql-workbench": "graphql_workbench",
+    "messagepack-inspector": "messagepack_inspector",
+    "seo-metadata-workbench": "seo_metadata_workbench",
+    "devops-yaml-validator": "devops_yaml_validator",
+    "oauth-jwks-workbench": "oauth_jwks_workbench",
+    "image-privacy-workbench": "image_privacy_workbench"
 }
 
 export const ROUTE_MENU_GROUP_HUB_SLUGS: readonly string[] = [

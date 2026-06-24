@@ -11154,5 +11154,677 @@
       "외부 공유 전에 내부 환경 이름과 예시 도메인을 제거합니다."
     ],
     "operationalNote": "공개 키 JWK 도우미는 인증 통합과 키 교체 전 빠른 점검에 적합하지만, 운영 신뢰 게시에는 정식 변경 관리와 감사 절차가 필요합니다."
+  },
+  "json-schema-workbench": {
+    "content": {
+      "toolKey": "json_schema_workbench",
+      "intro": "JSON Schema 워크벤치 샘플에서 시작 schema를 만들고 경로별 오류로 payload를 검증합니다。",
+      "whatThisToolDoes": [
+        "JSON Schema 워크벤치는 JSON Schema 계약 검토에 맞춰 샘플에서 시작 schema를 만들고 경로별 오류로 payload를 검증합니다.",
+        "예시 영역에는 PR, runbook, 이슈에 붙일 수 있는 최소 재현 조각을 둡니다.",
+        "결과는 요약, 경로, 점검 항목으로 나오므로 위험한 필드 검토에 집중할 수 있습니다.",
+        "계정이나 서버 처리가 필요 없어 민감 데이터를 공유하기 전 로컬 점검에 적합합니다."
+      ],
+      "useCases": [
+        "JSON Schema 계약 검토 변경을 제출하기 전에 로컬에서 확인합니다.",
+        "JSON Schema 계약 검토 리뷰 증거를 재현 가능한 형태로 남깁니다.",
+        "JSON Schema 계약 검토 실패 예시를 최소 필드로 줄여 원인을 좁힙니다.",
+        "공유 전에 token, account, internal host가 출력에 남지 않았는지 확인합니다."
+      ],
+      "inputExamples": [
+        {
+          "label": "주문 payload",
+          "value": "{\n  \"orderId\": 42,\n  \"status\": \"paid\",\n  \"items\": [{ \"sku\": \"sku_123\", \"qty\": 2 }]\n}"
+        },
+        {
+          "label": "검증 schema",
+          "value": "{\n  \"type\": \"object\",\n  \"required\": [\"orderId\", \"status\"],\n  \"properties\": { \"orderId\": { \"type\": \"integer\" } }\n}"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "생성된 schema",
+          "value": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"required\": [\"orderId\", \"status\", \"items\"]\n}"
+        },
+        {
+          "label": "경로별 오류",
+          "value": "$.orderId: Expected integer, received string. Fix: Change the payload value or update the schema type."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "JSON Schema 계약 검토 입력 구조가 부족함",
+          "fix": "최소 유효 예시에서 필수 필드를 채운 뒤 전체 데이터로 확장합니다."
+        },
+        {
+          "error": "프로덕션 secret을 예시에 직접 넣음",
+          "fix": "placeholder로 바꾼 뒤 issue, PR, chat에 복사합니다."
+        },
+        {
+          "error": "요약만 보고 경로나 점검 항목을 놓침",
+          "fix": "path, kid, URL, file marker를 하나씩 확인한 뒤 공유합니다."
+        }
+      ],
+      "privacyNotes": [
+        "처리는 브라우저 안에서 이뤄지며 입력과 출력은 기본 저장되지 않습니다.",
+        "token, private key, JWT, customer record, 원본 screenshot을 공유 링크에 넣지 마세요.",
+        "보고서를 복사하기 전에 example domain, account name, environment identifier를 가렸는지 확인하세요."
+      ],
+      "faqs": [
+        {
+          "q": "JSON Schema 워크벤치가 데이터를 서버로 보내나요?",
+          "a": "보내지 않습니다. 이 워크벤치는 브라우저 로컬 실행이며 자동 외부 요청이 없습니다."
+        },
+        {
+          "q": "JSON Schema 계약 검토 흐름은 언제 쓰나요?",
+          "a": "제출, 릴리스, 인수인계 전에 샘플을 빠르게 검증하고 재현 가능한 근거를 남길 때 사용합니다."
+        },
+        {
+          "q": "출력을 최종 결론으로 써도 되나요?",
+          "a": "권장하지 않습니다. 보고서는 검토 단서로 사용하고 project schema, cluster policy, security process와 함께 다시 확인하세요."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "JSON Schema 워크벤치를 열고 sample을 불러와 필드 의미를 확인합니다.",
+      "민감 정보를 제거한 최소 예시로 바꾸고 재현에 필요한 필드만 남깁니다.",
+      "검사를 실행하고 error path, warning, summary를 순서대로 읽습니다.",
+      "복사하거나 다운로드하기 전에 sensitive payload가 없는지 다시 확인합니다."
+    ],
+    "qualityChecklist": [
+      "입력에 실제 token, key, customer record, 원본 screenshot이 없습니다.",
+      "정상 예시와 최소 하나의 실패 예시를 확인했습니다.",
+      "path, URL, kid, file marker를 사람이 다시 검토했습니다.",
+      "공유 전에 clipboard와 download folder의 임시 민감 자료를 정리합니다."
+    ],
+    "operationalNote": "JSON Schema 워크벤치는 로컬 사전 점검 단계에 적합합니다. 프로덕션 배포에는 code review, CI, team security process도 함께 적용하세요."
+  },
+  "openapi-diff": {
+    "content": {
+      "toolKey": "openapi_diff",
+      "intro": "OpenAPI Diff 비교기 두 JSON/YAML 명세를 비교해 endpoint, schema, security, breaking risk를 표시합니다。",
+      "whatThisToolDoes": [
+        "OpenAPI Diff 비교기는 OpenAPI 계약 차이 검토에 맞춰 두 JSON/YAML 명세를 비교해 endpoint, schema, security, breaking risk를 표시합니다.",
+        "예시 영역에는 PR, runbook, 이슈에 붙일 수 있는 최소 재현 조각을 둡니다.",
+        "결과는 요약, 경로, 점검 항목으로 나오므로 위험한 필드 검토에 집중할 수 있습니다.",
+        "계정이나 서버 처리가 필요 없어 민감 데이터를 공유하기 전 로컬 점검에 적합합니다."
+      ],
+      "useCases": [
+        "OpenAPI 계약 차이 검토 변경을 제출하기 전에 로컬에서 확인합니다.",
+        "OpenAPI 계약 차이 검토 리뷰 증거를 재현 가능한 형태로 남깁니다.",
+        "OpenAPI 계약 차이 검토 실패 예시를 최소 필드로 줄여 원인을 좁힙니다.",
+        "공유 전에 token, account, internal host가 출력에 남지 않았는지 확인합니다."
+      ],
+      "inputExamples": [
+        {
+          "label": "이전 명세 조각",
+          "value": "paths:\n  /orders/{id}:\n    get:\n      responses:\n        \"200\": { description: Order }\n        \"404\": { description: Missing }"
+        },
+        {
+          "label": "새 명세 조각",
+          "value": "paths:\n  /orders:\n    post:\n      responses:\n        \"201\": { description: Created }"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "위험 요약",
+          "value": "Added: 1\nChanged: 0\nBreaking risks: 1"
+        },
+        {
+          "label": "Breaking change",
+          "value": "[breaking] GET /orders/{id} - Operation was removed."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "OpenAPI 계약 차이 검토 입력 구조가 부족함",
+          "fix": "최소 유효 예시에서 필수 필드를 채운 뒤 전체 데이터로 확장합니다."
+        },
+        {
+          "error": "프로덕션 secret을 예시에 직접 넣음",
+          "fix": "placeholder로 바꾼 뒤 issue, PR, chat에 복사합니다."
+        },
+        {
+          "error": "요약만 보고 경로나 점검 항목을 놓침",
+          "fix": "path, kid, URL, file marker를 하나씩 확인한 뒤 공유합니다."
+        }
+      ],
+      "privacyNotes": [
+        "처리는 브라우저 안에서 이뤄지며 입력과 출력은 기본 저장되지 않습니다.",
+        "token, private key, JWT, customer record, 원본 screenshot을 공유 링크에 넣지 마세요.",
+        "보고서를 복사하기 전에 example domain, account name, environment identifier를 가렸는지 확인하세요."
+      ],
+      "faqs": [
+        {
+          "q": "OpenAPI Diff 비교기가 데이터를 서버로 보내나요?",
+          "a": "보내지 않습니다. 이 워크벤치는 브라우저 로컬 실행이며 자동 외부 요청이 없습니다."
+        },
+        {
+          "q": "OpenAPI 계약 차이 검토 흐름은 언제 쓰나요?",
+          "a": "제출, 릴리스, 인수인계 전에 샘플을 빠르게 검증하고 재현 가능한 근거를 남길 때 사용합니다."
+        },
+        {
+          "q": "출력을 최종 결론으로 써도 되나요?",
+          "a": "권장하지 않습니다. 보고서는 검토 단서로 사용하고 project schema, cluster policy, security process와 함께 다시 확인하세요."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "OpenAPI Diff 비교기를 열고 sample을 불러와 필드 의미를 확인합니다.",
+      "민감 정보를 제거한 최소 예시로 바꾸고 재현에 필요한 필드만 남깁니다.",
+      "검사를 실행하고 error path, warning, summary를 순서대로 읽습니다.",
+      "복사하거나 다운로드하기 전에 sensitive payload가 없는지 다시 확인합니다."
+    ],
+    "qualityChecklist": [
+      "입력에 실제 token, key, customer record, 원본 screenshot이 없습니다.",
+      "정상 예시와 최소 하나의 실패 예시를 확인했습니다.",
+      "path, URL, kid, file marker를 사람이 다시 검토했습니다.",
+      "공유 전에 clipboard와 download folder의 임시 민감 자료를 정리합니다."
+    ],
+    "operationalNote": "OpenAPI Diff 비교기는 로컬 사전 점검 단계에 적합합니다. 프로덕션 배포에는 code review, CI, team security process도 함께 적용하세요."
+  },
+  "graphql-workbench": {
+    "content": {
+      "toolKey": "graphql_workbench",
+      "intro": "GraphQL 워크벤치 query/mutation을 포맷하고 variables JSON과 붙여 넣은 introspection type을 확인합니다。",
+      "whatThisToolDoes": [
+        "GraphQL 워크벤치는 GraphQL 쿼리 정리에 맞춰 query/mutation을 포맷하고 variables JSON과 붙여 넣은 introspection type을 확인합니다.",
+        "예시 영역에는 PR, runbook, 이슈에 붙일 수 있는 최소 재현 조각을 둡니다.",
+        "결과는 요약, 경로, 점검 항목으로 나오므로 위험한 필드 검토에 집중할 수 있습니다.",
+        "계정이나 서버 처리가 필요 없어 민감 데이터를 공유하기 전 로컬 점검에 적합합니다."
+      ],
+      "useCases": [
+        "GraphQL 쿼리 정리 변경을 제출하기 전에 로컬에서 확인합니다.",
+        "GraphQL 쿼리 정리 리뷰 증거를 재현 가능한 형태로 남깁니다.",
+        "GraphQL 쿼리 정리 실패 예시를 최소 필드로 줄여 원인을 좁힙니다.",
+        "공유 전에 token, account, internal host가 출력에 남지 않았는지 확인합니다."
+      ],
+      "inputExamples": [
+        {
+          "label": "쿼리 조각",
+          "value": "query GetUser($id: ID!) { user(id: $id) { id name email } }"
+        },
+        {
+          "label": "변수 JSON",
+          "value": "{\n  \"id\": \"user_123\"\n}"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "포맷된 query",
+          "value": "query GetUser($id: ID!) {\n  user(id: $id) {\n    id\n    name\n    email\n  }\n}"
+        },
+        {
+          "label": "진단 요약",
+          "value": "Operation: query GetUser\nVariables: valid JSON object\nSchema types: Query, User, Role"
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "GraphQL 쿼리 정리 입력 구조가 부족함",
+          "fix": "최소 유효 예시에서 필수 필드를 채운 뒤 전체 데이터로 확장합니다."
+        },
+        {
+          "error": "프로덕션 secret을 예시에 직접 넣음",
+          "fix": "placeholder로 바꾼 뒤 issue, PR, chat에 복사합니다."
+        },
+        {
+          "error": "요약만 보고 경로나 점검 항목을 놓침",
+          "fix": "path, kid, URL, file marker를 하나씩 확인한 뒤 공유합니다."
+        }
+      ],
+      "privacyNotes": [
+        "처리는 브라우저 안에서 이뤄지며 입력과 출력은 기본 저장되지 않습니다.",
+        "token, private key, JWT, customer record, 원본 screenshot을 공유 링크에 넣지 마세요.",
+        "보고서를 복사하기 전에 example domain, account name, environment identifier를 가렸는지 확인하세요."
+      ],
+      "faqs": [
+        {
+          "q": "GraphQL 워크벤치가 데이터를 서버로 보내나요?",
+          "a": "보내지 않습니다. 이 워크벤치는 브라우저 로컬 실행이며 자동 외부 요청이 없습니다."
+        },
+        {
+          "q": "GraphQL 쿼리 정리 흐름은 언제 쓰나요?",
+          "a": "제출, 릴리스, 인수인계 전에 샘플을 빠르게 검증하고 재현 가능한 근거를 남길 때 사용합니다."
+        },
+        {
+          "q": "출력을 최종 결론으로 써도 되나요?",
+          "a": "권장하지 않습니다. 보고서는 검토 단서로 사용하고 project schema, cluster policy, security process와 함께 다시 확인하세요."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "GraphQL 워크벤치를 열고 sample을 불러와 필드 의미를 확인합니다.",
+      "민감 정보를 제거한 최소 예시로 바꾸고 재현에 필요한 필드만 남깁니다.",
+      "검사를 실행하고 error path, warning, summary를 순서대로 읽습니다.",
+      "복사하거나 다운로드하기 전에 sensitive payload가 없는지 다시 확인합니다."
+    ],
+    "qualityChecklist": [
+      "입력에 실제 token, key, customer record, 원본 screenshot이 없습니다.",
+      "정상 예시와 최소 하나의 실패 예시를 확인했습니다.",
+      "path, URL, kid, file marker를 사람이 다시 검토했습니다.",
+      "공유 전에 clipboard와 download folder의 임시 민감 자료를 정리합니다."
+    ],
+    "operationalNote": "GraphQL 워크벤치는 로컬 사전 점검 단계에 적합합니다. 프로덕션 배포에는 code review, CI, team security process도 함께 적용하세요."
+  },
+  "messagepack-inspector": {
+    "content": {
+      "toolKey": "messagepack_inspector",
+      "intro": "MessagePack 검사기 hex/Base64 바이트를 JSON으로 디코드하고 schema 요구와 바이너리 오류를 설명합니다。",
+      "whatThisToolDoes": [
+        "MessagePack 검사기는 MessagePack 이벤트 payload 검사에 맞춰 hex/Base64 바이트를 JSON으로 디코드하고 schema 요구와 바이너리 오류를 설명합니다.",
+        "예시 영역에는 PR, runbook, 이슈에 붙일 수 있는 최소 재현 조각을 둡니다.",
+        "결과는 요약, 경로, 점검 항목으로 나오므로 위험한 필드 검토에 집중할 수 있습니다.",
+        "계정이나 서버 처리가 필요 없어 민감 데이터를 공유하기 전 로컬 점검에 적합합니다."
+      ],
+      "useCases": [
+        "MessagePack 이벤트 payload 검사 변경을 제출하기 전에 로컬에서 확인합니다.",
+        "MessagePack 이벤트 payload 검사 리뷰 증거를 재현 가능한 형태로 남깁니다.",
+        "MessagePack 이벤트 payload 검사 실패 예시를 최소 필드로 줄여 원인을 좁힙니다.",
+        "공유 전에 token, account, internal host가 출력에 남지 않았는지 확인합니다."
+      ],
+      "inputExamples": [
+        {
+          "label": "hex MessagePack",
+          "value": "82 a2 69 64 01 a4 6e 61 6d 65 a5 41 6c 69 63 65"
+        },
+        {
+          "label": "잘못된 바이트",
+          "value": "82 a2 69"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "디코드 JSON",
+          "value": "{\n  \"id\": 1,\n  \"name\": \"Alice\"\n}"
+        },
+        {
+          "label": "오류 메시지",
+          "value": "Unexpected end of MessagePack input while reading map value."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "MessagePack 이벤트 payload 검사 입력 구조가 부족함",
+          "fix": "최소 유효 예시에서 필수 필드를 채운 뒤 전체 데이터로 확장합니다."
+        },
+        {
+          "error": "프로덕션 secret을 예시에 직접 넣음",
+          "fix": "placeholder로 바꾼 뒤 issue, PR, chat에 복사합니다."
+        },
+        {
+          "error": "요약만 보고 경로나 점검 항목을 놓침",
+          "fix": "path, kid, URL, file marker를 하나씩 확인한 뒤 공유합니다."
+        }
+      ],
+      "privacyNotes": [
+        "처리는 브라우저 안에서 이뤄지며 입력과 출력은 기본 저장되지 않습니다.",
+        "token, private key, JWT, customer record, 원본 screenshot을 공유 링크에 넣지 마세요.",
+        "보고서를 복사하기 전에 example domain, account name, environment identifier를 가렸는지 확인하세요."
+      ],
+      "faqs": [
+        {
+          "q": "MessagePack 검사기가 데이터를 서버로 보내나요?",
+          "a": "보내지 않습니다. 이 워크벤치는 브라우저 로컬 실행이며 자동 외부 요청이 없습니다."
+        },
+        {
+          "q": "MessagePack 이벤트 payload 검사 흐름은 언제 쓰나요?",
+          "a": "제출, 릴리스, 인수인계 전에 샘플을 빠르게 검증하고 재현 가능한 근거를 남길 때 사용합니다."
+        },
+        {
+          "q": "출력을 최종 결론으로 써도 되나요?",
+          "a": "권장하지 않습니다. 보고서는 검토 단서로 사용하고 project schema, cluster policy, security process와 함께 다시 확인하세요."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "MessagePack 검사기를 열고 sample을 불러와 필드 의미를 확인합니다.",
+      "민감 정보를 제거한 최소 예시로 바꾸고 재현에 필요한 필드만 남깁니다.",
+      "검사를 실행하고 error path, warning, summary를 순서대로 읽습니다.",
+      "복사하거나 다운로드하기 전에 sensitive payload가 없는지 다시 확인합니다."
+    ],
+    "qualityChecklist": [
+      "입력에 실제 token, key, customer record, 원본 screenshot이 없습니다.",
+      "정상 예시와 최소 하나의 실패 예시를 확인했습니다.",
+      "path, URL, kid, file marker를 사람이 다시 검토했습니다.",
+      "공유 전에 clipboard와 download folder의 임시 민감 자료를 정리합니다."
+    ],
+    "operationalNote": "MessagePack 검사기는 로컬 사전 점검 단계에 적합합니다. 프로덕션 배포에는 code review, CI, team security process도 함께 적용하세요."
+  },
+  "seo-metadata-workbench": {
+    "content": {
+      "toolKey": "seo_metadata_workbench",
+      "intro": "SEO 메타데이터 워크벤치 SERP title, description, canonical, hreflang, sitemap URL, llms.txt 조각을 로컬에서 검사합니다。",
+      "whatThisToolDoes": [
+        "SEO 메타데이터 워크벤치는 기술 SEO 메타데이터 검토에 맞춰 SERP title, description, canonical, hreflang, sitemap URL, llms.txt 조각을 로컬에서 검사합니다.",
+        "예시 영역에는 PR, runbook, 이슈에 붙일 수 있는 최소 재현 조각을 둡니다.",
+        "결과는 요약, 경로, 점검 항목으로 나오므로 위험한 필드 검토에 집중할 수 있습니다.",
+        "계정이나 서버 처리가 필요 없어 민감 데이터를 공유하기 전 로컬 점검에 적합합니다."
+      ],
+      "useCases": [
+        "기술 SEO 메타데이터 검토 변경을 제출하기 전에 로컬에서 확인합니다.",
+        "기술 SEO 메타데이터 검토 리뷰 증거를 재현 가능한 형태로 남깁니다.",
+        "기술 SEO 메타데이터 검토 실패 예시를 최소 필드로 줄여 원인을 좁힙니다.",
+        "공유 전에 token, account, internal host가 출력에 남지 않았는지 확인합니다."
+      ],
+      "inputExamples": [
+        {
+          "label": "페이지 메타데이터",
+          "value": "{\n  \"title\": \"Local JSON Tools\",\n  \"description\": \"Format and validate JSON in the browser.\",\n  \"canonical\": \"https://example.com/en/json\"\n}"
+        },
+        {
+          "label": "hreflang 표",
+          "value": "[\n  { \"lang\": \"en\", \"url\": \"https://example.com/en/json\" },\n  { \"lang\": \"fr\", \"url\": \"https://example.com/fr/json\" }\n]"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "SERP 검사",
+          "value": "Title length: 16 characters\nDescription length: 40 characters\nCanonical: valid absolute URL"
+        },
+        {
+          "label": "hreflang 알림",
+          "value": "Missing reciprocal x-default entry for https://example.com/en/json."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "기술 SEO 메타데이터 검토 입력 구조가 부족함",
+          "fix": "최소 유효 예시에서 필수 필드를 채운 뒤 전체 데이터로 확장합니다."
+        },
+        {
+          "error": "프로덕션 secret을 예시에 직접 넣음",
+          "fix": "placeholder로 바꾼 뒤 issue, PR, chat에 복사합니다."
+        },
+        {
+          "error": "요약만 보고 경로나 점검 항목을 놓침",
+          "fix": "path, kid, URL, file marker를 하나씩 확인한 뒤 공유합니다."
+        }
+      ],
+      "privacyNotes": [
+        "처리는 브라우저 안에서 이뤄지며 입력과 출력은 기본 저장되지 않습니다.",
+        "token, private key, JWT, customer record, 원본 screenshot을 공유 링크에 넣지 마세요.",
+        "보고서를 복사하기 전에 example domain, account name, environment identifier를 가렸는지 확인하세요."
+      ],
+      "faqs": [
+        {
+          "q": "SEO 메타데이터 워크벤치가 데이터를 서버로 보내나요?",
+          "a": "보내지 않습니다. 이 워크벤치는 브라우저 로컬 실행이며 자동 외부 요청이 없습니다."
+        },
+        {
+          "q": "기술 SEO 메타데이터 검토 흐름은 언제 쓰나요?",
+          "a": "제출, 릴리스, 인수인계 전에 샘플을 빠르게 검증하고 재현 가능한 근거를 남길 때 사용합니다."
+        },
+        {
+          "q": "출력을 최종 결론으로 써도 되나요?",
+          "a": "권장하지 않습니다. 보고서는 검토 단서로 사용하고 project schema, cluster policy, security process와 함께 다시 확인하세요."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "SEO 메타데이터 워크벤치를 열고 sample을 불러와 필드 의미를 확인합니다.",
+      "민감 정보를 제거한 최소 예시로 바꾸고 재현에 필요한 필드만 남깁니다.",
+      "검사를 실행하고 error path, warning, summary를 순서대로 읽습니다.",
+      "복사하거나 다운로드하기 전에 sensitive payload가 없는지 다시 확인합니다."
+    ],
+    "qualityChecklist": [
+      "입력에 실제 token, key, customer record, 원본 screenshot이 없습니다.",
+      "정상 예시와 최소 하나의 실패 예시를 확인했습니다.",
+      "path, URL, kid, file marker를 사람이 다시 검토했습니다.",
+      "공유 전에 clipboard와 download folder의 임시 민감 자료를 정리합니다."
+    ],
+    "operationalNote": "SEO 메타데이터 워크벤치는 로컬 사전 점검 단계에 적합합니다. 프로덕션 배포에는 code review, CI, team security process도 함께 적용하세요."
+  },
+  "devops-yaml-validator": {
+    "content": {
+      "toolKey": "devops_yaml_validator",
+      "intro": "DevOps YAML 검증기 여러 문서 YAML을 로컬에서 파싱하고 경로별 오류, 경고, 수정 제안을 출력합니다。",
+      "whatThisToolDoes": [
+        "DevOps YAML 검증기는 Docker Compose 및 Kubernetes YAML 검사에 맞춰 여러 문서 YAML을 로컬에서 파싱하고 경로별 오류, 경고, 수정 제안을 출력합니다.",
+        "예시 영역에는 PR, runbook, 이슈에 붙일 수 있는 최소 재현 조각을 둡니다.",
+        "결과는 요약, 경로, 점검 항목으로 나오므로 위험한 필드 검토에 집중할 수 있습니다.",
+        "계정이나 서버 처리가 필요 없어 민감 데이터를 공유하기 전 로컬 점검에 적합합니다."
+      ],
+      "useCases": [
+        "Docker Compose 및 Kubernetes YAML 검사 변경을 제출하기 전에 로컬에서 확인합니다.",
+        "Docker Compose 및 Kubernetes YAML 검사 리뷰 증거를 재현 가능한 형태로 남깁니다.",
+        "Docker Compose 및 Kubernetes YAML 검사 실패 예시를 최소 필드로 줄여 원인을 좁힙니다.",
+        "공유 전에 token, account, internal host가 출력에 남지 않았는지 확인합니다."
+      ],
+      "inputExamples": [
+        {
+          "label": "Compose service",
+          "value": "services:\n  api:\n    image: node:20\n    ports:\n      - \"3000:3000\""
+        },
+        {
+          "label": "Kubernetes Deployment",
+          "value": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: api\nspec:\n  replicas: 2"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Compose 알림",
+          "value": "$.services.api: service uses image without healthcheck. Fix: Add a healthcheck before handoff."
+        },
+        {
+          "label": "Kubernetes 오류",
+          "value": "$.spec.template: Deployment requires pod template metadata and containers."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Docker Compose 및 Kubernetes YAML 검사 입력 구조가 부족함",
+          "fix": "최소 유효 예시에서 필수 필드를 채운 뒤 전체 데이터로 확장합니다."
+        },
+        {
+          "error": "프로덕션 secret을 예시에 직접 넣음",
+          "fix": "placeholder로 바꾼 뒤 issue, PR, chat에 복사합니다."
+        },
+        {
+          "error": "요약만 보고 경로나 점검 항목을 놓침",
+          "fix": "path, kid, URL, file marker를 하나씩 확인한 뒤 공유합니다."
+        }
+      ],
+      "privacyNotes": [
+        "처리는 브라우저 안에서 이뤄지며 입력과 출력은 기본 저장되지 않습니다.",
+        "token, private key, JWT, customer record, 원본 screenshot을 공유 링크에 넣지 마세요.",
+        "보고서를 복사하기 전에 example domain, account name, environment identifier를 가렸는지 확인하세요."
+      ],
+      "faqs": [
+        {
+          "q": "DevOps YAML 검증기가 데이터를 서버로 보내나요?",
+          "a": "보내지 않습니다. 이 워크벤치는 브라우저 로컬 실행이며 자동 외부 요청이 없습니다."
+        },
+        {
+          "q": "Docker Compose 및 Kubernetes YAML 검사 흐름은 언제 쓰나요?",
+          "a": "제출, 릴리스, 인수인계 전에 샘플을 빠르게 검증하고 재현 가능한 근거를 남길 때 사용합니다."
+        },
+        {
+          "q": "출력을 최종 결론으로 써도 되나요?",
+          "a": "권장하지 않습니다. 보고서는 검토 단서로 사용하고 project schema, cluster policy, security process와 함께 다시 확인하세요."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "DevOps YAML 검증기를 열고 sample을 불러와 필드 의미를 확인합니다.",
+      "민감 정보를 제거한 최소 예시로 바꾸고 재현에 필요한 필드만 남깁니다.",
+      "검사를 실행하고 error path, warning, summary를 순서대로 읽습니다.",
+      "복사하거나 다운로드하기 전에 sensitive payload가 없는지 다시 확인합니다."
+    ],
+    "qualityChecklist": [
+      "입력에 실제 token, key, customer record, 원본 screenshot이 없습니다.",
+      "정상 예시와 최소 하나의 실패 예시를 확인했습니다.",
+      "path, URL, kid, file marker를 사람이 다시 검토했습니다.",
+      "공유 전에 clipboard와 download folder의 임시 민감 자료를 정리합니다."
+    ],
+    "operationalNote": "DevOps YAML 검증기는 로컬 사전 점검 단계에 적합합니다. 프로덕션 배포에는 code review, CI, team security process도 함께 적용하세요."
+  },
+  "oauth-jwks-workbench": {
+    "content": {
+      "toolKey": "oauth_jwks_workbench",
+      "intro": "OAuth PKCE 및 JWKS 워크벤치 Web Crypto로 PKCE를 만들고 붙여 넣은 JWKS의 kid, alg, JWT 서명 매칭을 확인합니다。",
+      "whatThisToolDoes": [
+        "OAuth PKCE 및 JWKS 워크벤치는 OAuth PKCE 및 JWKS 검증에 맞춰 Web Crypto로 PKCE를 만들고 붙여 넣은 JWKS의 kid, alg, JWT 서명 매칭을 확인합니다.",
+        "예시 영역에는 PR, runbook, 이슈에 붙일 수 있는 최소 재현 조각을 둡니다.",
+        "결과는 요약, 경로, 점검 항목으로 나오므로 위험한 필드 검토에 집중할 수 있습니다.",
+        "계정이나 서버 처리가 필요 없어 민감 데이터를 공유하기 전 로컬 점검에 적합합니다."
+      ],
+      "useCases": [
+        "OAuth PKCE 및 JWKS 검증 변경을 제출하기 전에 로컬에서 확인합니다.",
+        "OAuth PKCE 및 JWKS 검증 리뷰 증거를 재현 가능한 형태로 남깁니다.",
+        "OAuth PKCE 및 JWKS 검증 실패 예시를 최소 필드로 줄여 원인을 좁힙니다.",
+        "공유 전에 token, account, internal host가 출력에 남지 않았는지 확인합니다."
+      ],
+      "inputExamples": [
+        {
+          "label": "JWKS 조각",
+          "value": "{\n  \"keys\": [{ \"kty\": \"RSA\", \"kid\": \"auth-prod-1\", \"alg\": \"RS256\", \"use\": \"sig\" }]\n}"
+        },
+        {
+          "label": "JWT header",
+          "value": "{ \"alg\": \"RS256\", \"kid\": \"auth-prod-1\" }"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "PKCE 출력",
+          "value": "verifier: 64 URL-safe characters\nchallenge: SHA-256 base64url digest\nmethod: S256"
+        },
+        {
+          "label": "JWKS 요약",
+          "value": "kid auth-prod-1: RSA signing key, alg RS256, compatible with JWT header."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "OAuth PKCE 및 JWKS 검증 입력 구조가 부족함",
+          "fix": "최소 유효 예시에서 필수 필드를 채운 뒤 전체 데이터로 확장합니다."
+        },
+        {
+          "error": "프로덕션 secret을 예시에 직접 넣음",
+          "fix": "placeholder로 바꾼 뒤 issue, PR, chat에 복사합니다."
+        },
+        {
+          "error": "요약만 보고 경로나 점검 항목을 놓침",
+          "fix": "path, kid, URL, file marker를 하나씩 확인한 뒤 공유합니다."
+        }
+      ],
+      "privacyNotes": [
+        "처리는 브라우저 안에서 이뤄지며 입력과 출력은 기본 저장되지 않습니다.",
+        "token, private key, JWT, customer record, 원본 screenshot을 공유 링크에 넣지 마세요.",
+        "보고서를 복사하기 전에 example domain, account name, environment identifier를 가렸는지 확인하세요."
+      ],
+      "faqs": [
+        {
+          "q": "OAuth PKCE 및 JWKS 워크벤치가 데이터를 서버로 보내나요?",
+          "a": "보내지 않습니다. 이 워크벤치는 브라우저 로컬 실행이며 자동 외부 요청이 없습니다."
+        },
+        {
+          "q": "OAuth PKCE 및 JWKS 검증 흐름은 언제 쓰나요?",
+          "a": "제출, 릴리스, 인수인계 전에 샘플을 빠르게 검증하고 재현 가능한 근거를 남길 때 사용합니다."
+        },
+        {
+          "q": "출력을 최종 결론으로 써도 되나요?",
+          "a": "권장하지 않습니다. 보고서는 검토 단서로 사용하고 project schema, cluster policy, security process와 함께 다시 확인하세요."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "OAuth PKCE 및 JWKS 워크벤치를 열고 sample을 불러와 필드 의미를 확인합니다.",
+      "민감 정보를 제거한 최소 예시로 바꾸고 재현에 필요한 필드만 남깁니다.",
+      "검사를 실행하고 error path, warning, summary를 순서대로 읽습니다.",
+      "복사하거나 다운로드하기 전에 sensitive payload가 없는지 다시 확인합니다."
+    ],
+    "qualityChecklist": [
+      "입력에 실제 token, key, customer record, 원본 screenshot이 없습니다.",
+      "정상 예시와 최소 하나의 실패 예시를 확인했습니다.",
+      "path, URL, kid, file marker를 사람이 다시 검토했습니다.",
+      "공유 전에 clipboard와 download folder의 임시 민감 자료를 정리합니다."
+    ],
+    "operationalNote": "OAuth PKCE 및 JWKS 워크벤치는 로컬 사전 점검 단계에 적합합니다. 프로덕션 배포에는 code review, CI, team security process도 함께 적용하세요."
+  },
+  "image-privacy-workbench": {
+    "content": {
+      "toolKey": "image_privacy_workbench",
+      "intro": "이미지 개인정보 워크벤치 로컬 canvas 재인코딩으로 EXIF/XMP/GPS 흔적을 제거하고 크기 조정 전 가림을 안내합니다。",
+      "whatThisToolDoes": [
+        "이미지 개인정보 워크벤치는 이미지 metadata 제거 및 스크린샷 가림 순서 점검에 맞춰 로컬 canvas 재인코딩으로 EXIF/XMP/GPS 흔적을 제거하고 크기 조정 전 가림을 안내합니다.",
+        "예시 영역에는 PR, runbook, 이슈에 붙일 수 있는 최소 재현 조각을 둡니다.",
+        "결과는 요약, 경로, 점검 항목으로 나오므로 위험한 필드 검토에 집중할 수 있습니다.",
+        "계정이나 서버 처리가 필요 없어 민감 데이터를 공유하기 전 로컬 점검에 적합합니다."
+      ],
+      "useCases": [
+        "이미지 metadata 제거 및 스크린샷 가림 순서 점검 변경을 제출하기 전에 로컬에서 확인합니다.",
+        "이미지 metadata 제거 및 스크린샷 가림 순서 점검 리뷰 증거를 재현 가능한 형태로 남깁니다.",
+        "이미지 metadata 제거 및 스크린샷 가림 순서 점검 실패 예시를 최소 필드로 줄여 원인을 좁힙니다.",
+        "공유 전에 token, account, internal host가 출력에 남지 않았는지 확인합니다."
+      ],
+      "inputExamples": [
+        {
+          "label": "지원 이미지",
+          "value": "photo-with-gps.jpg (JPEG or PNG selected from the local device)"
+        },
+        {
+          "label": "스크린샷 점검 항목",
+          "value": "visible token, email, account name, internal hostname, browser tab title"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "재인코딩 결과",
+          "value": "Before: EXIF, GPS, camera marker detected\nAfter: no EXIF/XMP/GPS marker detected in exported PNG"
+        },
+        {
+          "label": "안전 순서",
+          "value": "1. Redact visible secrets\n2. Strip metadata by re-encoding\n3. Inspect export\n4. Download sanitized image"
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "이미지 metadata 제거 및 스크린샷 가림 순서 점검 입력 구조가 부족함",
+          "fix": "최소 유효 예시에서 필수 필드를 채운 뒤 전체 데이터로 확장합니다."
+        },
+        {
+          "error": "프로덕션 secret을 예시에 직접 넣음",
+          "fix": "placeholder로 바꾼 뒤 issue, PR, chat에 복사합니다."
+        },
+        {
+          "error": "요약만 보고 경로나 점검 항목을 놓침",
+          "fix": "path, kid, URL, file marker를 하나씩 확인한 뒤 공유합니다."
+        }
+      ],
+      "privacyNotes": [
+        "처리는 브라우저 안에서 이뤄지며 입력과 출력은 기본 저장되지 않습니다.",
+        "token, private key, JWT, customer record, 원본 screenshot을 공유 링크에 넣지 마세요.",
+        "보고서를 복사하기 전에 example domain, account name, environment identifier를 가렸는지 확인하세요."
+      ],
+      "faqs": [
+        {
+          "q": "이미지 개인정보 워크벤치가 데이터를 서버로 보내나요?",
+          "a": "보내지 않습니다. 이 워크벤치는 브라우저 로컬 실행이며 자동 외부 요청이 없습니다."
+        },
+        {
+          "q": "이미지 metadata 제거 및 스크린샷 가림 순서 점검 흐름은 언제 쓰나요?",
+          "a": "제출, 릴리스, 인수인계 전에 샘플을 빠르게 검증하고 재현 가능한 근거를 남길 때 사용합니다."
+        },
+        {
+          "q": "출력을 최종 결론으로 써도 되나요?",
+          "a": "권장하지 않습니다. 보고서는 검토 단서로 사용하고 project schema, cluster policy, security process와 함께 다시 확인하세요."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "이미지 개인정보 워크벤치를 열고 sample을 불러와 필드 의미를 확인합니다.",
+      "민감 정보를 제거한 최소 예시로 바꾸고 재현에 필요한 필드만 남깁니다.",
+      "검사를 실행하고 error path, warning, summary를 순서대로 읽습니다.",
+      "복사하거나 다운로드하기 전에 sensitive payload가 없는지 다시 확인합니다."
+    ],
+    "qualityChecklist": [
+      "입력에 실제 token, key, customer record, 원본 screenshot이 없습니다.",
+      "정상 예시와 최소 하나의 실패 예시를 확인했습니다.",
+      "path, URL, kid, file marker를 사람이 다시 검토했습니다.",
+      "공유 전에 clipboard와 download folder의 임시 민감 자료를 정리합니다."
+    ],
+    "operationalNote": "이미지 개인정보 워크벤치는 로컬 사전 점검 단계에 적합합니다. 프로덕션 배포에는 code review, CI, team security process도 함께 적용하세요."
   }
 }

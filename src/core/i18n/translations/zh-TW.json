@@ -2828,6 +2828,90 @@
       "key_ops": "金鑰操作",
       "key_id": "金鑰 ID",
       "thumbprint": "指紋"
+    },
+    "json_schema_workbench": {
+      "title": "JSON Schema 工作台",
+      "description": "在瀏覽器本機從 JSON 產生起始 Schema，並用貼上的 Schema 驗證 payload。",
+      "mode_label": "JSON Schema 模式",
+      "mode_generate": "產生 Schema",
+      "mode_validate": "驗證 payload",
+      "generate_action": "產生 Schema",
+      "validate_action": "驗證 payload",
+      "payload_label": "JSON payload 輸入",
+      "schema_label": "JSON Schema 定義"
+    },
+    "openapi_diff": {
+      "title": "OpenAPI Diff 比較器",
+      "description": "本機比較兩份 OpenAPI 或 Swagger 規格，標記端點、參數、回應、安全與破壞性風險變更。",
+      "compare_action": "比較規格",
+      "before_label": "變更前規格",
+      "after_label": "變更後規格",
+      "report_label": "Diff 報告"
+    },
+    "graphql_workbench": {
+      "title": "GraphQL 工作台",
+      "description": "格式化 GraphQL 查詢、驗證變數 JSON，並檢查貼上的 introspection 資料，無需連線伺服器。",
+      "format_action": "格式化查詢",
+      "query_label": "GraphQL 查詢",
+      "variables_label": "變數 JSON",
+      "introspection_label": "Introspection JSON 輸入",
+      "formatted_label": "格式化查詢",
+      "diagnostics_label": "診斷",
+      "operation_label": "操作",
+      "schema_type_label": "Schema 類型"
+    },
+    "messagepack_inspector": {
+      "title": "MessagePack 檢查器",
+      "description": "在本機把十六進位或 Base64 MessagePack payload 解碼為可讀 JSON，並提供清楚錯誤。",
+      "decode_action": "解碼 MessagePack",
+      "mode_label": "MessagePack 輸入模式",
+      "mode_hex": "十六進位",
+      "mode_base64": "Base64 文字",
+      "bytes_label": "位元組"
+    },
+    "seo_metadata_workbench": {
+      "title": "SEO 中繼資料工作台",
+      "description": "本機預覽 SERP 中繼資料、驗證 hreflang 與 sitemap URL，並起草隱私安全的 llms.txt 片段。",
+      "analyze_action": "分析中繼資料",
+      "config_label": "中繼資料設定 JSON",
+      "report_label": "SEO 報告"
+    },
+    "devops_yaml_validator": {
+      "title": "DevOps YAML 驗證器",
+      "description": "本機驗證 Docker Compose 與 Kubernetes YAML，提供路徑級錯誤、警告與修復建議。",
+      "validate_action": "驗證 YAML",
+      "yaml_label": "Compose 或 Kubernetes YAML",
+      "report_label": "驗證報告"
+    },
+    "oauth_jwks_workbench": {
+      "title": "OAuth PKCE 與 JWKS 工作台",
+      "description": "本機產生 PKCE verifier/challenge，並檢查貼上的 JWKS 或用它驗證 JWT。",
+      "mode_label": "OAuth 與 JWKS 模式",
+      "mode_pkce": "PKCE 助手",
+      "mode_jwks": "JWKS 檢查器",
+      "generate_pkce_action": "產生 PKCE",
+      "inspect_jwks_action": "檢查 JWKS",
+      "jwks_label": "JWKS JSON 輸入",
+      "jwt_label": "待驗證 JWT"
+    },
+    "image_privacy_workbench": {
+      "title": "圖片隱私工作台",
+      "description": "透過本機重新編碼移除支援圖片的 metadata，並依安全順序引導截圖遮蔽後再分享。",
+      "choose_image_action": "選擇圖片",
+      "workflow_label": "截圖遮蔽流程",
+      "upload_label": "本機圖片",
+      "no_file_label": "未選擇圖片",
+      "preview_alt": "已清理圖片預覽",
+      "report_label": "Metadata 掃描報告",
+      "dimensions_label": "尺寸",
+      "before_label": "重新編碼前",
+      "after_label": "重新編碼後",
+      "step_redact_title": "先遮蔽可見秘密",
+      "step_redact_detail": "在調整尺寸或壓縮之前，遮蔽 token、電子郵件、帳號名稱、URL 與客戶資料。",
+      "step_strip_title": "透過重新編碼移除 metadata",
+      "step_strip_detail": "透過 canvas 匯出 PNG 或 JPEG，丟棄支援格式中的 EXIF、相機、GPS 與編輯器 metadata。",
+      "step_inspect_title": "檢查匯出檔案",
+      "step_inspect_detail": "查看重新編碼後的掃描結果是否仍有 EXIF 標記，只下載已清理輸出。"
     }
   },
   "categories": {

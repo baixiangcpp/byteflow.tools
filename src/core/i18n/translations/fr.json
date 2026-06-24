@@ -2828,6 +2828,90 @@
       "key_ops": "Opérations de clé",
       "key_id": "ID de clé",
       "thumbprint": "Empreinte"
+    },
+    "json_schema_workbench": {
+      "title": "Atelier JSON Schema",
+      "description": "Générez des schemas de départ depuis du JSON et validez des payloads avec des schemas collés localement dans le navigateur.",
+      "mode_label": "Mode JSON Schema",
+      "mode_generate": "Générer le schema",
+      "mode_validate": "Valider le payload",
+      "generate_action": "Générer le schema",
+      "validate_action": "Valider le payload",
+      "payload_label": "Payload JSON",
+      "schema_label": "Définition JSON Schema"
+    },
+    "openapi_diff": {
+      "title": "Comparateur OpenAPI Diff",
+      "description": "Comparez deux specs OpenAPI ou Swagger localement et signalez les changements d’endpoint, paramètres, réponses, sécurité et risques bloquants.",
+      "compare_action": "Comparer les specs",
+      "before_label": "Spec avant",
+      "after_label": "Spec après",
+      "report_label": "Rapport diff"
+    },
+    "graphql_workbench": {
+      "title": "Atelier GraphQL",
+      "description": "Formatez des requêtes GraphQL, validez les variables JSON et inspectez des données introspection collées sans contacter de serveur.",
+      "format_action": "Formater la requête",
+      "query_label": "Requête GraphQL",
+      "variables_label": "Variables au format JSON",
+      "introspection_label": "Introspection au format JSON",
+      "formatted_label": "Requête formatée",
+      "diagnostics_label": "Diagnostics GraphQL",
+      "operation_label": "Opération",
+      "schema_type_label": "Type de schema"
+    },
+    "messagepack_inspector": {
+      "title": "Inspecteur MessagePack",
+      "description": "Décodez localement des payloads MessagePack en hex ou Base64 vers du JSON lisible avec des erreurs claires.",
+      "decode_action": "Décoder MessagePack",
+      "mode_label": "Mode d’entrée MessagePack",
+      "mode_hex": "Entrée hex",
+      "mode_base64": "Entrée Base64",
+      "bytes_label": "octets"
+    },
+    "seo_metadata_workbench": {
+      "title": "Atelier métadonnées SEO",
+      "description": "Prévisualisez les métadonnées SERP, validez hreflang et sitemap, puis rédigez des extraits llms.txt localement.",
+      "analyze_action": "Analyser les métadonnées",
+      "config_label": "Configuration métadonnées JSON",
+      "report_label": "Rapport SEO"
+    },
+    "devops_yaml_validator": {
+      "title": "Validateur YAML DevOps",
+      "description": "Validez Docker Compose et Kubernetes YAML localement avec erreurs par chemin, avertissements et corrections.",
+      "validate_action": "Valider YAML",
+      "yaml_label": "YAML Compose ou Kubernetes",
+      "report_label": "Rapport de validation"
+    },
+    "oauth_jwks_workbench": {
+      "title": "Atelier OAuth PKCE et JWKS",
+      "description": "Générez des paires PKCE verifier/challenge et inspectez ou vérifiez des JWT avec des JWKS collés localement.",
+      "mode_label": "Mode OAuth et JWKS",
+      "mode_pkce": "Assistant PKCE",
+      "mode_jwks": "Inspecteur JWKS",
+      "generate_pkce_action": "Générer PKCE",
+      "inspect_jwks_action": "Inspecter JWKS",
+      "jwks_label": "JWKS au format JSON",
+      "jwt_label": "JWT à vérifier"
+    },
+    "image_privacy_workbench": {
+      "title": "Atelier confidentialité image",
+      "description": "Supprimez les metadata d’images prises en charge par réencodage local et suivez un flux sûr de redaction de capture.",
+      "choose_image_action": "Choisir une image",
+      "workflow_label": "Flux de redaction de capture",
+      "upload_label": "Image locale",
+      "no_file_label": "Aucune image choisie",
+      "preview_alt": "Aperçu image nettoyée",
+      "report_label": "Rapport de scan metadata",
+      "dimensions_label": "Dimensions image",
+      "before_label": "Avant réencodage",
+      "after_label": "Après réencodage",
+      "step_redact_title": "Masquer d’abord les secrets visibles",
+      "step_redact_detail": "Couvrez tokens, e-mails, noms de compte, URL et données client avant redimensionnement ou compression.",
+      "step_strip_title": "Supprimer les metadata par réencodage",
+      "step_strip_detail": "Exportez via canvas en PNG ou JPEG pour retirer EXIF, appareil, GPS et metadata d’éditeur des décodeurs pris en charge.",
+      "step_inspect_title": "Inspecter le fichier exporté",
+      "step_inspect_detail": "Vérifiez le scan après export pour les marqueurs EXIF et téléchargez seulement la sortie nettoyée."
     }
   },
   "categories": {

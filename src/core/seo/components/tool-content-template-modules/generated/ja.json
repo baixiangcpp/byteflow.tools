@@ -12567,5 +12567,677 @@
       "外部共有前に内部環境名とサンプルドメインを削除します。"
     ],
     "operationalNote": "公開鍵 JWK ヘルパーは認証連携や鍵ローテーション前の確認に適していますが、本番の信頼公開は正式な変更管理と監査手順で扱ってください。"
+  },
+  "json-schema-workbench": {
+    "content": {
+      "toolKey": "json_schema_workbench",
+      "intro": "JSON Schema ワークベンチ サンプルから初期 schema を生成し、パス付きエラーで payload を検証します。",
+      "whatThisToolDoes": [
+        "JSON Schema ワークベンチ は JSON Schema 契約確認 に集中し、サンプルから初期 schema を生成し、パス付きエラーで payload を検証します。",
+        "例には再現用の最小スニペットを置き、PR、runbook、障害メモにそのまま転記しやすくします。",
+        "結果は要約、パス、確認項目として出るため、危険なフィールドの確認に集中できます。",
+        "アカウントやサーバー処理は不要で、機密データを共有する前のローカル確認に向いています。"
+      ],
+      "useCases": [
+        "JSON Schema 契約確認 の変更を提出する前にローカル確認する。",
+        "JSON Schema 契約確認 のレビュー証拠を再現可能な形で残す。",
+        "JSON Schema 契約確認 の失敗例を最小フィールドまで削って原因を調べる。",
+        "共有前に token、account、internal host が出力へ残っていないか確認する。"
+      ],
+      "inputExamples": [
+        {
+          "label": "注文 payload",
+          "value": "{\n  \"orderId\": 42,\n  \"status\": \"paid\",\n  \"items\": [{ \"sku\": \"sku_123\", \"qty\": 2 }]\n}"
+        },
+        {
+          "label": "検証 schema",
+          "value": "{\n  \"type\": \"object\",\n  \"required\": [\"orderId\", \"status\"],\n  \"properties\": { \"orderId\": { \"type\": \"integer\" } }\n}"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "生成 schema",
+          "value": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"required\": [\"orderId\", \"status\", \"items\"]\n}"
+        },
+        {
+          "label": "パス付きエラー",
+          "value": "$.orderId: Expected integer, received string. Fix: Change the payload value or update the schema type."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "JSON Schema 契約確認 の入力構造が不足している",
+          "fix": "最小の有効例から必須フィールドを足し、最後に完全データへ広げます。"
+        },
+        {
+          "error": "本番の秘密をサンプルへ直接入れている",
+          "fix": "placeholder に置き換えてから issue、PR、chat に貼ります。"
+        },
+        {
+          "error": "要約だけ見てパスや確認項目を見落とす",
+          "fix": "path、kid、URL、file marker を一つずつ確認してから共有します。"
+        }
+      ],
+      "privacyNotes": [
+        "処理はブラウザ内で行われ、入力や出力は既定で保存されません。",
+        "token、private key、JWT、customer record、未加工 screenshot を共有リンクへ入れないでください。",
+        "レポートをコピーする前に、example domain、account name、environment identifier を伏せてください。"
+      ],
+      "faqs": [
+        {
+          "q": "JSON Schema ワークベンチ はデータをサーバーへ送りますか？",
+          "a": "送りません。このワークベンチはブラウザ内実行で、自動の外部リクエストはありません。"
+        },
+        {
+          "q": "JSON Schema 契約確認 の流れはいつ使いますか？",
+          "a": "submit、release、handoff 前にサンプルを素早く検証し、再現可能な証拠を残したいときです。"
+        },
+        {
+          "q": "出力を最終判断として使えますか？",
+          "a": "推奨しません。レポートは確認の手掛かりとして使い、project schema、cluster policy、security process と合わせて見直してください。"
+        }
+      ]
+    },
+    "workflowSteps": [
+      "JSON Schema ワークベンチ を開いたら sample を読み込み、フィールドの意味を確認します。",
+      "機密情報を伏せた最小例に置き換え、再現に必要なフィールドだけ残します。",
+      "チェックを実行し、error path、warning、summary を順に確認します。",
+      "copy または download の前に sensitive payload がないことを再確認します。"
+    ],
+    "qualityChecklist": [
+      "入力に実 token、key、customer record、未加工 screenshot がない。",
+      "正常例と少なくとも 1 つの失敗例を確認している。",
+      "path、URL、kid、file marker を手で確認している。",
+      "共有前に clipboard と download folder の一時ファイルを片付ける。"
+    ],
+    "operationalNote": "JSON Schema ワークベンチ はローカル事前確認に向いています。本番公開では code review、CI、team security process も併用してください。"
+  },
+  "openapi-diff": {
+    "content": {
+      "toolKey": "openapi_diff",
+      "intro": "OpenAPI Diff 比較ツール 2 つの JSON/YAML 仕様を比較し、エンドポイント、schema、security、破壊的リスクを示します。",
+      "whatThisToolDoes": [
+        "OpenAPI Diff 比較ツール は OpenAPI 契約差分レビュー に集中し、2 つの JSON/YAML 仕様を比較し、エンドポイント、schema、security、破壊的リスクを示します。",
+        "例には再現用の最小スニペットを置き、PR、runbook、障害メモにそのまま転記しやすくします。",
+        "結果は要約、パス、確認項目として出るため、危険なフィールドの確認に集中できます。",
+        "アカウントやサーバー処理は不要で、機密データを共有する前のローカル確認に向いています。"
+      ],
+      "useCases": [
+        "OpenAPI 契約差分レビュー の変更を提出する前にローカル確認する。",
+        "OpenAPI 契約差分レビュー のレビュー証拠を再現可能な形で残す。",
+        "OpenAPI 契約差分レビュー の失敗例を最小フィールドまで削って原因を調べる。",
+        "共有前に token、account、internal host が出力へ残っていないか確認する。"
+      ],
+      "inputExamples": [
+        {
+          "label": "旧仕様の抜粋",
+          "value": "paths:\n  /orders/{id}:\n    get:\n      responses:\n        \"200\": { description: Order }\n        \"404\": { description: Missing }"
+        },
+        {
+          "label": "新仕様の抜粋",
+          "value": "paths:\n  /orders:\n    post:\n      responses:\n        \"201\": { description: Created }"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "リスク概要",
+          "value": "Added: 1\nChanged: 0\nBreaking risks: 1"
+        },
+        {
+          "label": "破壊的変更",
+          "value": "[breaking] GET /orders/{id} - Operation was removed."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "OpenAPI 契約差分レビュー の入力構造が不足している",
+          "fix": "最小の有効例から必須フィールドを足し、最後に完全データへ広げます。"
+        },
+        {
+          "error": "本番の秘密をサンプルへ直接入れている",
+          "fix": "placeholder に置き換えてから issue、PR、chat に貼ります。"
+        },
+        {
+          "error": "要約だけ見てパスや確認項目を見落とす",
+          "fix": "path、kid、URL、file marker を一つずつ確認してから共有します。"
+        }
+      ],
+      "privacyNotes": [
+        "処理はブラウザ内で行われ、入力や出力は既定で保存されません。",
+        "token、private key、JWT、customer record、未加工 screenshot を共有リンクへ入れないでください。",
+        "レポートをコピーする前に、example domain、account name、environment identifier を伏せてください。"
+      ],
+      "faqs": [
+        {
+          "q": "OpenAPI Diff 比較ツール はデータをサーバーへ送りますか？",
+          "a": "送りません。このワークベンチはブラウザ内実行で、自動の外部リクエストはありません。"
+        },
+        {
+          "q": "OpenAPI 契約差分レビュー の流れはいつ使いますか？",
+          "a": "submit、release、handoff 前にサンプルを素早く検証し、再現可能な証拠を残したいときです。"
+        },
+        {
+          "q": "出力を最終判断として使えますか？",
+          "a": "推奨しません。レポートは確認の手掛かりとして使い、project schema、cluster policy、security process と合わせて見直してください。"
+        }
+      ]
+    },
+    "workflowSteps": [
+      "OpenAPI Diff 比較ツール を開いたら sample を読み込み、フィールドの意味を確認します。",
+      "機密情報を伏せた最小例に置き換え、再現に必要なフィールドだけ残します。",
+      "チェックを実行し、error path、warning、summary を順に確認します。",
+      "copy または download の前に sensitive payload がないことを再確認します。"
+    ],
+    "qualityChecklist": [
+      "入力に実 token、key、customer record、未加工 screenshot がない。",
+      "正常例と少なくとも 1 つの失敗例を確認している。",
+      "path、URL、kid、file marker を手で確認している。",
+      "共有前に clipboard と download folder の一時ファイルを片付ける。"
+    ],
+    "operationalNote": "OpenAPI Diff 比較ツール はローカル事前確認に向いています。本番公開では code review、CI、team security process も併用してください。"
+  },
+  "graphql-workbench": {
+    "content": {
+      "toolKey": "graphql_workbench",
+      "intro": "GraphQL ワークベンチ query/mutation を整形し、variables JSON と貼り付けた introspection 型を確認します。",
+      "whatThisToolDoes": [
+        "GraphQL ワークベンチ は GraphQL クエリ整理 に集中し、query/mutation を整形し、variables JSON と貼り付けた introspection 型を確認します。",
+        "例には再現用の最小スニペットを置き、PR、runbook、障害メモにそのまま転記しやすくします。",
+        "結果は要約、パス、確認項目として出るため、危険なフィールドの確認に集中できます。",
+        "アカウントやサーバー処理は不要で、機密データを共有する前のローカル確認に向いています。"
+      ],
+      "useCases": [
+        "GraphQL クエリ整理 の変更を提出する前にローカル確認する。",
+        "GraphQL クエリ整理 のレビュー証拠を再現可能な形で残す。",
+        "GraphQL クエリ整理 の失敗例を最小フィールドまで削って原因を調べる。",
+        "共有前に token、account、internal host が出力へ残っていないか確認する。"
+      ],
+      "inputExamples": [
+        {
+          "label": "クエリ断片",
+          "value": "query GetUser($id: ID!) { user(id: $id) { id name email } }"
+        },
+        {
+          "label": "変数 JSON",
+          "value": "{\n  \"id\": \"user_123\"\n}"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "整形済み query",
+          "value": "query GetUser($id: ID!) {\n  user(id: $id) {\n    id\n    name\n    email\n  }\n}"
+        },
+        {
+          "label": "診断サマリー",
+          "value": "Operation: query GetUser\nVariables: valid JSON object\nSchema types: Query, User, Role"
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "GraphQL クエリ整理 の入力構造が不足している",
+          "fix": "最小の有効例から必須フィールドを足し、最後に完全データへ広げます。"
+        },
+        {
+          "error": "本番の秘密をサンプルへ直接入れている",
+          "fix": "placeholder に置き換えてから issue、PR、chat に貼ります。"
+        },
+        {
+          "error": "要約だけ見てパスや確認項目を見落とす",
+          "fix": "path、kid、URL、file marker を一つずつ確認してから共有します。"
+        }
+      ],
+      "privacyNotes": [
+        "処理はブラウザ内で行われ、入力や出力は既定で保存されません。",
+        "token、private key、JWT、customer record、未加工 screenshot を共有リンクへ入れないでください。",
+        "レポートをコピーする前に、example domain、account name、environment identifier を伏せてください。"
+      ],
+      "faqs": [
+        {
+          "q": "GraphQL ワークベンチ はデータをサーバーへ送りますか？",
+          "a": "送りません。このワークベンチはブラウザ内実行で、自動の外部リクエストはありません。"
+        },
+        {
+          "q": "GraphQL クエリ整理 の流れはいつ使いますか？",
+          "a": "submit、release、handoff 前にサンプルを素早く検証し、再現可能な証拠を残したいときです。"
+        },
+        {
+          "q": "出力を最終判断として使えますか？",
+          "a": "推奨しません。レポートは確認の手掛かりとして使い、project schema、cluster policy、security process と合わせて見直してください。"
+        }
+      ]
+    },
+    "workflowSteps": [
+      "GraphQL ワークベンチ を開いたら sample を読み込み、フィールドの意味を確認します。",
+      "機密情報を伏せた最小例に置き換え、再現に必要なフィールドだけ残します。",
+      "チェックを実行し、error path、warning、summary を順に確認します。",
+      "copy または download の前に sensitive payload がないことを再確認します。"
+    ],
+    "qualityChecklist": [
+      "入力に実 token、key、customer record、未加工 screenshot がない。",
+      "正常例と少なくとも 1 つの失敗例を確認している。",
+      "path、URL、kid、file marker を手で確認している。",
+      "共有前に clipboard と download folder の一時ファイルを片付ける。"
+    ],
+    "operationalNote": "GraphQL ワークベンチ はローカル事前確認に向いています。本番公開では code review、CI、team security process も併用してください。"
+  },
+  "messagepack-inspector": {
+    "content": {
+      "toolKey": "messagepack_inspector",
+      "intro": "MessagePack インスペクター hex/Base64 バイトを JSON にデコードし、schema 要件とバイナリエラーを示します。",
+      "whatThisToolDoes": [
+        "MessagePack インスペクター は MessagePack イベント payload 検査 に集中し、hex/Base64 バイトを JSON にデコードし、schema 要件とバイナリエラーを示します。",
+        "例には再現用の最小スニペットを置き、PR、runbook、障害メモにそのまま転記しやすくします。",
+        "結果は要約、パス、確認項目として出るため、危険なフィールドの確認に集中できます。",
+        "アカウントやサーバー処理は不要で、機密データを共有する前のローカル確認に向いています。"
+      ],
+      "useCases": [
+        "MessagePack イベント payload 検査 の変更を提出する前にローカル確認する。",
+        "MessagePack イベント payload 検査 のレビュー証拠を再現可能な形で残す。",
+        "MessagePack イベント payload 検査 の失敗例を最小フィールドまで削って原因を調べる。",
+        "共有前に token、account、internal host が出力へ残っていないか確認する。"
+      ],
+      "inputExamples": [
+        {
+          "label": "hex MessagePack",
+          "value": "82 a2 69 64 01 a4 6e 61 6d 65 a5 41 6c 69 63 65"
+        },
+        {
+          "label": "不正なバイト",
+          "value": "82 a2 69"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "デコード JSON",
+          "value": "{\n  \"id\": 1,\n  \"name\": \"Alice\"\n}"
+        },
+        {
+          "label": "エラー表示",
+          "value": "Unexpected end of MessagePack input while reading map value."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "MessagePack イベント payload 検査 の入力構造が不足している",
+          "fix": "最小の有効例から必須フィールドを足し、最後に完全データへ広げます。"
+        },
+        {
+          "error": "本番の秘密をサンプルへ直接入れている",
+          "fix": "placeholder に置き換えてから issue、PR、chat に貼ります。"
+        },
+        {
+          "error": "要約だけ見てパスや確認項目を見落とす",
+          "fix": "path、kid、URL、file marker を一つずつ確認してから共有します。"
+        }
+      ],
+      "privacyNotes": [
+        "処理はブラウザ内で行われ、入力や出力は既定で保存されません。",
+        "token、private key、JWT、customer record、未加工 screenshot を共有リンクへ入れないでください。",
+        "レポートをコピーする前に、example domain、account name、environment identifier を伏せてください。"
+      ],
+      "faqs": [
+        {
+          "q": "MessagePack インスペクター はデータをサーバーへ送りますか？",
+          "a": "送りません。このワークベンチはブラウザ内実行で、自動の外部リクエストはありません。"
+        },
+        {
+          "q": "MessagePack イベント payload 検査 の流れはいつ使いますか？",
+          "a": "submit、release、handoff 前にサンプルを素早く検証し、再現可能な証拠を残したいときです。"
+        },
+        {
+          "q": "出力を最終判断として使えますか？",
+          "a": "推奨しません。レポートは確認の手掛かりとして使い、project schema、cluster policy、security process と合わせて見直してください。"
+        }
+      ]
+    },
+    "workflowSteps": [
+      "MessagePack インスペクター を開いたら sample を読み込み、フィールドの意味を確認します。",
+      "機密情報を伏せた最小例に置き換え、再現に必要なフィールドだけ残します。",
+      "チェックを実行し、error path、warning、summary を順に確認します。",
+      "copy または download の前に sensitive payload がないことを再確認します。"
+    ],
+    "qualityChecklist": [
+      "入力に実 token、key、customer record、未加工 screenshot がない。",
+      "正常例と少なくとも 1 つの失敗例を確認している。",
+      "path、URL、kid、file marker を手で確認している。",
+      "共有前に clipboard と download folder の一時ファイルを片付ける。"
+    ],
+    "operationalNote": "MessagePack インスペクター はローカル事前確認に向いています。本番公開では code review、CI、team security process も併用してください。"
+  },
+  "seo-metadata-workbench": {
+    "content": {
+      "toolKey": "seo_metadata_workbench",
+      "intro": "SEO メタデータワークベンチ SERP title、description、canonical、hreflang、sitemap URL、llms.txt をローカルで確認します。",
+      "whatThisToolDoes": [
+        "SEO メタデータワークベンチ は 技術 SEO メタデータ確認 に集中し、SERP title、description、canonical、hreflang、sitemap URL、llms.txt をローカルで確認します。",
+        "例には再現用の最小スニペットを置き、PR、runbook、障害メモにそのまま転記しやすくします。",
+        "結果は要約、パス、確認項目として出るため、危険なフィールドの確認に集中できます。",
+        "アカウントやサーバー処理は不要で、機密データを共有する前のローカル確認に向いています。"
+      ],
+      "useCases": [
+        "技術 SEO メタデータ確認 の変更を提出する前にローカル確認する。",
+        "技術 SEO メタデータ確認 のレビュー証拠を再現可能な形で残す。",
+        "技術 SEO メタデータ確認 の失敗例を最小フィールドまで削って原因を調べる。",
+        "共有前に token、account、internal host が出力へ残っていないか確認する。"
+      ],
+      "inputExamples": [
+        {
+          "label": "ページメタデータ",
+          "value": "{\n  \"title\": \"Local JSON Tools\",\n  \"description\": \"Format and validate JSON in the browser.\",\n  \"canonical\": \"https://example.com/en/json\"\n}"
+        },
+        {
+          "label": "hreflang 表",
+          "value": "[\n  { \"lang\": \"en\", \"url\": \"https://example.com/en/json\" },\n  { \"lang\": \"fr\", \"url\": \"https://example.com/fr/json\" }\n]"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "SERP チェック",
+          "value": "Title length: 16 characters\nDescription length: 40 characters\nCanonical: valid absolute URL"
+        },
+        {
+          "label": "hreflang 注意",
+          "value": "Missing reciprocal x-default entry for https://example.com/en/json."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "技術 SEO メタデータ確認 の入力構造が不足している",
+          "fix": "最小の有効例から必須フィールドを足し、最後に完全データへ広げます。"
+        },
+        {
+          "error": "本番の秘密をサンプルへ直接入れている",
+          "fix": "placeholder に置き換えてから issue、PR、chat に貼ります。"
+        },
+        {
+          "error": "要約だけ見てパスや確認項目を見落とす",
+          "fix": "path、kid、URL、file marker を一つずつ確認してから共有します。"
+        }
+      ],
+      "privacyNotes": [
+        "処理はブラウザ内で行われ、入力や出力は既定で保存されません。",
+        "token、private key、JWT、customer record、未加工 screenshot を共有リンクへ入れないでください。",
+        "レポートをコピーする前に、example domain、account name、environment identifier を伏せてください。"
+      ],
+      "faqs": [
+        {
+          "q": "SEO メタデータワークベンチ はデータをサーバーへ送りますか？",
+          "a": "送りません。このワークベンチはブラウザ内実行で、自動の外部リクエストはありません。"
+        },
+        {
+          "q": "技術 SEO メタデータ確認 の流れはいつ使いますか？",
+          "a": "submit、release、handoff 前にサンプルを素早く検証し、再現可能な証拠を残したいときです。"
+        },
+        {
+          "q": "出力を最終判断として使えますか？",
+          "a": "推奨しません。レポートは確認の手掛かりとして使い、project schema、cluster policy、security process と合わせて見直してください。"
+        }
+      ]
+    },
+    "workflowSteps": [
+      "SEO メタデータワークベンチ を開いたら sample を読み込み、フィールドの意味を確認します。",
+      "機密情報を伏せた最小例に置き換え、再現に必要なフィールドだけ残します。",
+      "チェックを実行し、error path、warning、summary を順に確認します。",
+      "copy または download の前に sensitive payload がないことを再確認します。"
+    ],
+    "qualityChecklist": [
+      "入力に実 token、key、customer record、未加工 screenshot がない。",
+      "正常例と少なくとも 1 つの失敗例を確認している。",
+      "path、URL、kid、file marker を手で確認している。",
+      "共有前に clipboard と download folder の一時ファイルを片付ける。"
+    ],
+    "operationalNote": "SEO メタデータワークベンチ はローカル事前確認に向いています。本番公開では code review、CI、team security process も併用してください。"
+  },
+  "devops-yaml-validator": {
+    "content": {
+      "toolKey": "devops_yaml_validator",
+      "intro": "DevOps YAML バリデーター 複数ドキュメント YAML をローカルで解析し、パス付きエラー、警告、修正案を出します。",
+      "whatThisToolDoes": [
+        "DevOps YAML バリデーター は Docker Compose と Kubernetes YAML 確認 に集中し、複数ドキュメント YAML をローカルで解析し、パス付きエラー、警告、修正案を出します。",
+        "例には再現用の最小スニペットを置き、PR、runbook、障害メモにそのまま転記しやすくします。",
+        "結果は要約、パス、確認項目として出るため、危険なフィールドの確認に集中できます。",
+        "アカウントやサーバー処理は不要で、機密データを共有する前のローカル確認に向いています。"
+      ],
+      "useCases": [
+        "Docker Compose と Kubernetes YAML 確認 の変更を提出する前にローカル確認する。",
+        "Docker Compose と Kubernetes YAML 確認 のレビュー証拠を再現可能な形で残す。",
+        "Docker Compose と Kubernetes YAML 確認 の失敗例を最小フィールドまで削って原因を調べる。",
+        "共有前に token、account、internal host が出力へ残っていないか確認する。"
+      ],
+      "inputExamples": [
+        {
+          "label": "Compose service",
+          "value": "services:\n  api:\n    image: node:20\n    ports:\n      - \"3000:3000\""
+        },
+        {
+          "label": "Kubernetes Deployment",
+          "value": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: api\nspec:\n  replicas: 2"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Compose 注意",
+          "value": "$.services.api: service uses image without healthcheck. Fix: Add a healthcheck before handoff."
+        },
+        {
+          "label": "Kubernetes エラー",
+          "value": "$.spec.template: Deployment requires pod template metadata and containers."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Docker Compose と Kubernetes YAML 確認 の入力構造が不足している",
+          "fix": "最小の有効例から必須フィールドを足し、最後に完全データへ広げます。"
+        },
+        {
+          "error": "本番の秘密をサンプルへ直接入れている",
+          "fix": "placeholder に置き換えてから issue、PR、chat に貼ります。"
+        },
+        {
+          "error": "要約だけ見てパスや確認項目を見落とす",
+          "fix": "path、kid、URL、file marker を一つずつ確認してから共有します。"
+        }
+      ],
+      "privacyNotes": [
+        "処理はブラウザ内で行われ、入力や出力は既定で保存されません。",
+        "token、private key、JWT、customer record、未加工 screenshot を共有リンクへ入れないでください。",
+        "レポートをコピーする前に、example domain、account name、environment identifier を伏せてください。"
+      ],
+      "faqs": [
+        {
+          "q": "DevOps YAML バリデーター はデータをサーバーへ送りますか？",
+          "a": "送りません。このワークベンチはブラウザ内実行で、自動の外部リクエストはありません。"
+        },
+        {
+          "q": "Docker Compose と Kubernetes YAML 確認 の流れはいつ使いますか？",
+          "a": "submit、release、handoff 前にサンプルを素早く検証し、再現可能な証拠を残したいときです。"
+        },
+        {
+          "q": "出力を最終判断として使えますか？",
+          "a": "推奨しません。レポートは確認の手掛かりとして使い、project schema、cluster policy、security process と合わせて見直してください。"
+        }
+      ]
+    },
+    "workflowSteps": [
+      "DevOps YAML バリデーター を開いたら sample を読み込み、フィールドの意味を確認します。",
+      "機密情報を伏せた最小例に置き換え、再現に必要なフィールドだけ残します。",
+      "チェックを実行し、error path、warning、summary を順に確認します。",
+      "copy または download の前に sensitive payload がないことを再確認します。"
+    ],
+    "qualityChecklist": [
+      "入力に実 token、key、customer record、未加工 screenshot がない。",
+      "正常例と少なくとも 1 つの失敗例を確認している。",
+      "path、URL、kid、file marker を手で確認している。",
+      "共有前に clipboard と download folder の一時ファイルを片付ける。"
+    ],
+    "operationalNote": "DevOps YAML バリデーター はローカル事前確認に向いています。本番公開では code review、CI、team security process も併用してください。"
+  },
+  "oauth-jwks-workbench": {
+    "content": {
+      "toolKey": "oauth_jwks_workbench",
+      "intro": "OAuth PKCE と JWKS ワークベンチ Web Crypto で PKCE を生成し、貼り付けた JWKS の kid、alg、JWT 署名一致を確認します。",
+      "whatThisToolDoes": [
+        "OAuth PKCE と JWKS ワークベンチ は OAuth PKCE と JWKS 検証 に集中し、Web Crypto で PKCE を生成し、貼り付けた JWKS の kid、alg、JWT 署名一致を確認します。",
+        "例には再現用の最小スニペットを置き、PR、runbook、障害メモにそのまま転記しやすくします。",
+        "結果は要約、パス、確認項目として出るため、危険なフィールドの確認に集中できます。",
+        "アカウントやサーバー処理は不要で、機密データを共有する前のローカル確認に向いています。"
+      ],
+      "useCases": [
+        "OAuth PKCE と JWKS 検証 の変更を提出する前にローカル確認する。",
+        "OAuth PKCE と JWKS 検証 のレビュー証拠を再現可能な形で残す。",
+        "OAuth PKCE と JWKS 検証 の失敗例を最小フィールドまで削って原因を調べる。",
+        "共有前に token、account、internal host が出力へ残っていないか確認する。"
+      ],
+      "inputExamples": [
+        {
+          "label": "JWKS 抜粋",
+          "value": "{\n  \"keys\": [{ \"kty\": \"RSA\", \"kid\": \"auth-prod-1\", \"alg\": \"RS256\", \"use\": \"sig\" }]\n}"
+        },
+        {
+          "label": "JWT header",
+          "value": "{ \"alg\": \"RS256\", \"kid\": \"auth-prod-1\" }"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "PKCE 出力",
+          "value": "verifier: 64 URL-safe characters\nchallenge: SHA-256 base64url digest\nmethod: S256"
+        },
+        {
+          "label": "JWKS サマリー",
+          "value": "kid auth-prod-1: RSA signing key, alg RS256, compatible with JWT header."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "OAuth PKCE と JWKS 検証 の入力構造が不足している",
+          "fix": "最小の有効例から必須フィールドを足し、最後に完全データへ広げます。"
+        },
+        {
+          "error": "本番の秘密をサンプルへ直接入れている",
+          "fix": "placeholder に置き換えてから issue、PR、chat に貼ります。"
+        },
+        {
+          "error": "要約だけ見てパスや確認項目を見落とす",
+          "fix": "path、kid、URL、file marker を一つずつ確認してから共有します。"
+        }
+      ],
+      "privacyNotes": [
+        "処理はブラウザ内で行われ、入力や出力は既定で保存されません。",
+        "token、private key、JWT、customer record、未加工 screenshot を共有リンクへ入れないでください。",
+        "レポートをコピーする前に、example domain、account name、environment identifier を伏せてください。"
+      ],
+      "faqs": [
+        {
+          "q": "OAuth PKCE と JWKS ワークベンチ はデータをサーバーへ送りますか？",
+          "a": "送りません。このワークベンチはブラウザ内実行で、自動の外部リクエストはありません。"
+        },
+        {
+          "q": "OAuth PKCE と JWKS 検証 の流れはいつ使いますか？",
+          "a": "submit、release、handoff 前にサンプルを素早く検証し、再現可能な証拠を残したいときです。"
+        },
+        {
+          "q": "出力を最終判断として使えますか？",
+          "a": "推奨しません。レポートは確認の手掛かりとして使い、project schema、cluster policy、security process と合わせて見直してください。"
+        }
+      ]
+    },
+    "workflowSteps": [
+      "OAuth PKCE と JWKS ワークベンチ を開いたら sample を読み込み、フィールドの意味を確認します。",
+      "機密情報を伏せた最小例に置き換え、再現に必要なフィールドだけ残します。",
+      "チェックを実行し、error path、warning、summary を順に確認します。",
+      "copy または download の前に sensitive payload がないことを再確認します。"
+    ],
+    "qualityChecklist": [
+      "入力に実 token、key、customer record、未加工 screenshot がない。",
+      "正常例と少なくとも 1 つの失敗例を確認している。",
+      "path、URL、kid、file marker を手で確認している。",
+      "共有前に clipboard と download folder の一時ファイルを片付ける。"
+    ],
+    "operationalNote": "OAuth PKCE と JWKS ワークベンチ はローカル事前確認に向いています。本番公開では code review、CI、team security process も併用してください。"
+  },
+  "image-privacy-workbench": {
+    "content": {
+      "toolKey": "image_privacy_workbench",
+      "intro": "画像プライバシーワークベンチ ローカル canvas 再エンコードで EXIF/XMP/GPS の痕跡を落とし、リサイズ前の墨消しを促します。",
+      "whatThisToolDoes": [
+        "画像プライバシーワークベンチ は 画像 metadata 削除とスクリーンショット墨消し手順 に集中し、ローカル canvas 再エンコードで EXIF/XMP/GPS の痕跡を落とし、リサイズ前の墨消しを促します。",
+        "例には再現用の最小スニペットを置き、PR、runbook、障害メモにそのまま転記しやすくします。",
+        "結果は要約、パス、確認項目として出るため、危険なフィールドの確認に集中できます。",
+        "アカウントやサーバー処理は不要で、機密データを共有する前のローカル確認に向いています。"
+      ],
+      "useCases": [
+        "画像 metadata 削除とスクリーンショット墨消し手順 の変更を提出する前にローカル確認する。",
+        "画像 metadata 削除とスクリーンショット墨消し手順 のレビュー証拠を再現可能な形で残す。",
+        "画像 metadata 削除とスクリーンショット墨消し手順 の失敗例を最小フィールドまで削って原因を調べる。",
+        "共有前に token、account、internal host が出力へ残っていないか確認する。"
+      ],
+      "inputExamples": [
+        {
+          "label": "対応画像",
+          "value": "photo-with-gps.jpg (JPEG or PNG selected from the local device)"
+        },
+        {
+          "label": "スクリーンショット確認項目",
+          "value": "visible token, email, account name, internal hostname, browser tab title"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "再エンコード結果",
+          "value": "Before: EXIF, GPS, camera marker detected\nAfter: no EXIF/XMP/GPS marker detected in exported PNG"
+        },
+        {
+          "label": "安全な順序",
+          "value": "1. Redact visible secrets\n2. Strip metadata by re-encoding\n3. Inspect export\n4. Download sanitized image"
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "画像 metadata 削除とスクリーンショット墨消し手順 の入力構造が不足している",
+          "fix": "最小の有効例から必須フィールドを足し、最後に完全データへ広げます。"
+        },
+        {
+          "error": "本番の秘密をサンプルへ直接入れている",
+          "fix": "placeholder に置き換えてから issue、PR、chat に貼ります。"
+        },
+        {
+          "error": "要約だけ見てパスや確認項目を見落とす",
+          "fix": "path、kid、URL、file marker を一つずつ確認してから共有します。"
+        }
+      ],
+      "privacyNotes": [
+        "処理はブラウザ内で行われ、入力や出力は既定で保存されません。",
+        "token、private key、JWT、customer record、未加工 screenshot を共有リンクへ入れないでください。",
+        "レポートをコピーする前に、example domain、account name、environment identifier を伏せてください。"
+      ],
+      "faqs": [
+        {
+          "q": "画像プライバシーワークベンチ はデータをサーバーへ送りますか？",
+          "a": "送りません。このワークベンチはブラウザ内実行で、自動の外部リクエストはありません。"
+        },
+        {
+          "q": "画像 metadata 削除とスクリーンショット墨消し手順 の流れはいつ使いますか？",
+          "a": "submit、release、handoff 前にサンプルを素早く検証し、再現可能な証拠を残したいときです。"
+        },
+        {
+          "q": "出力を最終判断として使えますか？",
+          "a": "推奨しません。レポートは確認の手掛かりとして使い、project schema、cluster policy、security process と合わせて見直してください。"
+        }
+      ]
+    },
+    "workflowSteps": [
+      "画像プライバシーワークベンチ を開いたら sample を読み込み、フィールドの意味を確認します。",
+      "機密情報を伏せた最小例に置き換え、再現に必要なフィールドだけ残します。",
+      "チェックを実行し、error path、warning、summary を順に確認します。",
+      "copy または download の前に sensitive payload がないことを再確認します。"
+    ],
+    "qualityChecklist": [
+      "入力に実 token、key、customer record、未加工 screenshot がない。",
+      "正常例と少なくとも 1 つの失敗例を確認している。",
+      "path、URL、kid、file marker を手で確認している。",
+      "共有前に clipboard と download folder の一時ファイルを片付ける。"
+    ],
+    "operationalNote": "画像プライバシーワークベンチ はローカル事前確認に向いています。本番公開では code review、CI、team security process も併用してください。"
   }
 }

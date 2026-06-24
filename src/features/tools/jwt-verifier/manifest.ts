@@ -4,7 +4,7 @@ export const toolManifest = {
     key: "jwt_verifier",
     slug: "jwt-verifier",
     category: "text-string",
-    relatedTools: ["jwt_workbench", "jwt_decoder", "hash_generator", "base64_encode_decode", "certificate_decoder"],
+    relatedTools: ["jwt_workbench", "oauth_jwks_workbench", "jwt_decoder", "public_key_jwk_helper", "certificate_decoder"],
     privacy: {
         executionMode: "browser-local",
         offlineCapable: true,

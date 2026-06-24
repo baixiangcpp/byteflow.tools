@@ -65,7 +65,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jsonpath_playground",
             "json_diff_viewer",
             "json_to_typescript",
-            "yaml_json_converter"
+            "yaml_json_converter",
+            "json_schema_workbench"
         ],
         "relatedWorkflows": [
             {
@@ -556,9 +557,9 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "aliases": [],
         "relatedToolKeys": [
             "json_formatter",
+            "devops_yaml_validator",
             "json_to_typescript",
-            "structured_data_visualizer",
-            "xml_formatter"
+            "structured_data_visualizer"
         ],
         "relatedWorkflows": [
             {
@@ -747,6 +748,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "aliases": [],
         "relatedToolKeys": [
             "json_formatter",
+            "json_schema_workbench",
             "yaml_json_converter",
             "jsonpath_playground"
         ],
@@ -943,9 +945,10 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "aliases": [],
         "relatedToolKeys": [
+            "openapi_diff",
+            "openapi_mock",
             "json_formatter",
-            "yaml_json_converter",
-            "jsonpath_playground"
+            "yaml_json_converter"
         ],
         "relatedWorkflows": [],
         "sampleInput": null,
@@ -990,6 +993,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "aliases": [],
         "relatedToolKeys": [
             "json_formatter",
+            "openapi_diff",
             "text_diff_checker",
             "jsonpath_playground"
         ],
@@ -1313,9 +1317,9 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "aliases": [],
         "relatedToolKeys": [
             "jwt_workbench",
+            "oauth_jwks_workbench",
             "base64_encode_decode",
-            "hash_generator",
-            "url_encode_decode"
+            "hash_generator"
         ],
         "relatedWorkflows": [
             {
@@ -1391,8 +1395,8 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "relatedToolKeys": [
             "jwt_decoder",
             "jwt_verifier",
-            "base64_encode_decode",
-            "hash_generator"
+            "oauth_jwks_workbench",
+            "public_key_jwk_helper"
         ],
         "relatedWorkflows": [],
         "sampleInput": null,
@@ -1878,6 +1882,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "aliases": [],
         "relatedToolKeys": [
+            "image_privacy_workbench",
             "base64_encode_decode",
             "svg_optimizer",
             "qr_code_generator"
@@ -3228,10 +3233,10 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "aliases": [],
         "relatedToolKeys": [
+            "image_privacy_workbench",
             "image_cropper",
             "image_filters",
-            "image_base64",
-            "code_to_image_converter"
+            "image_base64"
         ],
         "relatedWorkflows": [
             {
@@ -3295,10 +3300,10 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "aliases": [],
         "relatedToolKeys": [
+            "image_privacy_workbench",
             "image_filters",
             "image_cropper",
-            "image_resizer",
-            "scanned_pdf_converter"
+            "image_resizer"
         ],
         "relatedWorkflows": [],
         "sampleInput": null,
@@ -4999,10 +5004,10 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "aliases": [],
         "relatedToolKeys": [
+            "graphql_workbench",
             "url_parser",
             "http_status_codes",
-            "url_encode_decode",
-            "user_agent_parser"
+            "url_encode_decode"
         ],
         "relatedWorkflows": [
             {
@@ -5159,9 +5164,9 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "aliases": [],
         "relatedToolKeys": [
             "jwt_workbench",
+            "oauth_jwks_workbench",
             "jwt_decoder",
-            "hash_generator",
-            "base64_encode_decode",
+            "public_key_jwk_helper",
             "certificate_decoder"
         ],
         "relatedWorkflows": [],
@@ -5605,9 +5610,9 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "aliases": [],
         "relatedToolKeys": [
             "openapi_viewer",
+            "openapi_diff",
             "http_request_builder",
-            "json_formatter",
-            "curl_to_code"
+            "json_formatter"
         ],
         "relatedWorkflows": [],
         "sampleInput": null,
@@ -5651,10 +5656,10 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "aliases": [],
         "relatedToolKeys": [
+            "devops_yaml_validator",
             "env_parser",
             "yaml_json_converter",
-            "chmod_calculator",
-            "curl_to_code"
+            "chmod_calculator"
         ],
         "relatedWorkflows": [],
         "sampleInput": null,
@@ -6039,10 +6044,10 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "aliases": [],
         "relatedToolKeys": [
+            "seo_metadata_workbench",
             "json_formatter",
             "yaml_json_converter",
-            "xml_formatter",
-            "jsonpath_playground"
+            "xml_formatter"
         ],
         "relatedWorkflows": [],
         "sampleInput": null,
@@ -6399,10 +6404,10 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         ],
         "aliases": [],
         "relatedToolKeys": [
+            "oauth_jwks_workbench",
             "certificate_decoder",
             "jwt_verifier",
             "jwt_workbench",
-            "base64_encode_decode",
             "asn1_der_inspector"
         ],
         "relatedWorkflows": [
@@ -6460,6 +6465,445 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "rsa public key",
             "ec public key",
             "key thumbprint"
+        ]
+    },
+    "json_schema_workbench": {
+        "key": "json_schema_workbench",
+        "slug": "json-schema-workbench",
+        "keywords": [
+            "json schema generator",
+            "json schema validator",
+            "json schema workbench",
+            "validate json schema"
+        ],
+        "aliases": [],
+        "relatedToolKeys": [
+            "json_formatter",
+            "jsonpath_playground",
+            "json_diff_viewer",
+            "json_to_typescript"
+        ],
+        "relatedWorkflows": [],
+        "sampleInput": "{\"user\":{\"id\":1001,\"email\":\"alice@example.com\",\"active\":true}}",
+        "sampleMode": "generate-schema",
+        "inputSizePolicy": null,
+        "compliance": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
+        "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
+        "persistInput": false,
+        "family": "formatters-validators",
+        "tags": [
+            "formatters-validators",
+            "json"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ],
+        "searchKeywords": [
+            "schema",
+            "json schema",
+            "validator",
+            "draft 7",
+            "contract"
+        ]
+    },
+    "openapi_diff": {
+        "key": "openapi_diff",
+        "slug": "openapi-diff",
+        "keywords": [
+            "openapi diff",
+            "swagger diff",
+            "api contract diff",
+            "openapi compare"
+        ],
+        "aliases": [],
+        "relatedToolKeys": [
+            "openapi_viewer",
+            "openapi_mock",
+            "yaml_json_converter",
+            "json_diff_viewer"
+        ],
+        "relatedWorkflows": [],
+        "sampleInput": "{\"before\":{\"openapi\":\"3.0.3\",\"paths\":{\"/pets\":{\"get\":{\"responses\":{\"200\":{}}}}}},\"after\":{\"openapi\":\"3.0.3\",\"paths\":{\"/pets\":{\"post\":{\"responses\":{\"201\":{}}}}}}}",
+        "sampleMode": "compare-specs",
+        "inputSizePolicy": null,
+        "compliance": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
+        "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
+        "persistInput": false,
+        "family": "formatters-validators",
+        "tags": [
+            "formatters-validators",
+            "http"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ],
+        "searchKeywords": [
+            "swagger",
+            "contract",
+            "breaking change",
+            "api diff"
+        ]
+    },
+    "graphql_workbench": {
+        "key": "graphql_workbench",
+        "slug": "graphql-workbench",
+        "keywords": [
+            "graphql formatter",
+            "graphql explorer",
+            "graphql query formatter",
+            "graphql variables validator"
+        ],
+        "aliases": [],
+        "relatedToolKeys": [
+            "http_request_builder",
+            "openapi_viewer",
+            "json_formatter",
+            "jsonpath_playground"
+        ],
+        "relatedWorkflows": [],
+        "sampleInput": "query GetUser($id: ID!) { user(id: $id) { id name email } }",
+        "sampleMode": "format-query",
+        "inputSizePolicy": null,
+        "compliance": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
+        "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
+        "persistInput": false,
+        "family": "network-http",
+        "tags": [
+            "network-http"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ],
+        "searchKeywords": [
+            "graphql",
+            "query",
+            "mutation",
+            "fragment",
+            "introspection"
+        ]
+    },
+    "messagepack_inspector": {
+        "key": "messagepack_inspector",
+        "slug": "messagepack-inspector",
+        "keywords": [
+            "messagepack inspector",
+            "msgpack to json",
+            "messagepack decoder",
+            "binary json converter"
+        ],
+        "aliases": [],
+        "relatedToolKeys": [
+            "json_formatter",
+            "hex_bytes_workbench",
+            "base64_encode_decode",
+            "yaml_json_converter"
+        ],
+        "relatedWorkflows": [],
+        "sampleInput": "82a2696401a46e616d65a5416c696365",
+        "sampleMode": "hex-to-json",
+        "inputSizePolicy": null,
+        "compliance": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
+        "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
+        "persistInput": false,
+        "family": "formatters-validators",
+        "tags": [
+            "base64",
+            "formatters-validators",
+            "json"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ],
+        "searchKeywords": [
+            "msgpack",
+            "binary",
+            "event payload",
+            "base64"
+        ]
+    },
+    "seo_metadata_workbench": {
+        "key": "seo_metadata_workbench",
+        "slug": "seo-metadata-workbench",
+        "keywords": [
+            "serp preview",
+            "hreflang checker",
+            "sitemap validator",
+            "llms txt generator"
+        ],
+        "aliases": [],
+        "relatedToolKeys": [
+            "open_graph_meta_generator",
+            "robots_txt_tester",
+            "structured_data_visualizer",
+            "csp_parser"
+        ],
+        "relatedWorkflows": [],
+        "sampleInput": "{\"title\":\"Privacy-first Local Developer Tools\",\"url\":\"https://byteflow.tools/\"}",
+        "sampleMode": "seo-audit",
+        "inputSizePolicy": null,
+        "compliance": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
+        "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
+        "persistInput": false,
+        "family": "network-http",
+        "tags": [
+            "network-http"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ],
+        "searchKeywords": [
+            "seo",
+            "serp",
+            "hreflang",
+            "sitemap",
+            "llms.txt",
+            "canonical"
+        ]
+    },
+    "devops_yaml_validator": {
+        "key": "devops_yaml_validator",
+        "slug": "devops-yaml-validator",
+        "keywords": [
+            "docker compose validator",
+            "kubernetes yaml validator",
+            "k8s yaml checker",
+            "devops yaml validator"
+        ],
+        "aliases": [],
+        "relatedToolKeys": [
+            "docker_run_to_compose",
+            "yaml_json_converter",
+            "yq_playground",
+            "env_parser"
+        ],
+        "relatedWorkflows": [],
+        "sampleInput": "services:\n  api:\n    image: node:20\n---\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: api",
+        "sampleMode": "validate-devops-yaml",
+        "inputSizePolicy": null,
+        "compliance": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
+        "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
+        "persistInput": false,
+        "family": "network-http",
+        "tags": [
+            "network-http",
+            "yaml"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ],
+        "searchKeywords": [
+            "kubernetes",
+            "k8s",
+            "docker compose",
+            "yaml",
+            "devops"
+        ]
+    },
+    "oauth_jwks_workbench": {
+        "key": "oauth_jwks_workbench",
+        "slug": "oauth-jwks-workbench",
+        "keywords": [
+            "oauth pkce generator",
+            "jwks verifier",
+            "jwks inspector",
+            "jwt jwks verification"
+        ],
+        "aliases": [],
+        "relatedToolKeys": [
+            "jwt_decoder",
+            "jwt_workbench",
+            "jwt_verifier",
+            "public_key_jwk_helper"
+        ],
+        "relatedWorkflows": [],
+        "sampleInput": "{\"keys\":[{\"kty\":\"RSA\",\"kid\":\"sample\",\"alg\":\"RS256\",\"use\":\"sig\"}]}",
+        "sampleMode": "inspect-jwks",
+        "inputSizePolicy": null,
+        "compliance": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
+        "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
+        "persistInput": false,
+        "family": "text-strings",
+        "tags": [
+            "jwt",
+            "text-strings"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ],
+        "searchKeywords": [
+            "oauth",
+            "pkce",
+            "jwks",
+            "jwk",
+            "kid",
+            "jwt verify"
+        ]
+    },
+    "image_privacy_workbench": {
+        "key": "image_privacy_workbench",
+        "slug": "image-privacy-workbench",
+        "keywords": [
+            "exif remover",
+            "screenshot redaction",
+            "image metadata remover",
+            "privacy image tool"
+        ],
+        "aliases": [],
+        "relatedToolKeys": [
+            "photo_censor",
+            "image_resizer",
+            "image_base64",
+            "svg_optimizer"
+        ],
+        "relatedWorkflows": [],
+        "sampleInput": "PNG or JPEG image file",
+        "sampleMode": "strip-metadata",
+        "inputSizePolicy": null,
+        "compliance": null,
+        "privacy": {
+            "executionMode": "browser-local",
+            "offlineCapable": true,
+            "sensitiveInput": true,
+            "externalRequest": {
+                "required": false,
+                "endpointType": "none"
+            }
+        },
+        "networkAccess": "none",
+        "networkHosts": [],
+        "networkPurposeKey": null,
+        "allowUserProvidedUrl": null,
+        "requiresExplicitUserAction": null,
+        "externalDataSent": null,
+        "persistInput": false,
+        "family": "generators",
+        "tags": [
+            "generators",
+            "image"
+        ],
+        "capabilities": [
+            "browser-local",
+            "offline-capable",
+            "sensitive-input"
+        ],
+        "searchKeywords": [
+            "exif",
+            "metadata",
+            "redact",
+            "screenshot",
+            "privacy"
         ]
     }
 }
@@ -6587,7 +7031,15 @@ const CLIENT_TOOL_KEY_BY_SLUG: Record<string, string> = {
     "asn1-der-inspector": "asn1_der_inspector",
     "hex-bytes-workbench": "hex_bytes_workbench",
     "unicode-inspector": "unicode_inspector",
-    "public-key-jwk-helper": "public_key_jwk_helper"
+    "public-key-jwk-helper": "public_key_jwk_helper",
+    "json-schema-workbench": "json_schema_workbench",
+    "openapi-diff": "openapi_diff",
+    "graphql-workbench": "graphql_workbench",
+    "messagepack-inspector": "messagepack_inspector",
+    "seo-metadata-workbench": "seo_metadata_workbench",
+    "devops-yaml-validator": "devops_yaml_validator",
+    "oauth-jwks-workbench": "oauth_jwks_workbench",
+    "image-privacy-workbench": "image_privacy_workbench"
 }
 
 export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
@@ -6675,6 +7127,18 @@ export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
             {
                 "key": "structured_data_visualizer",
                 "slug": "structured-data-visualizer"
+            },
+            {
+                "key": "json_schema_workbench",
+                "slug": "json-schema-workbench"
+            },
+            {
+                "key": "openapi_diff",
+                "slug": "openapi-diff"
+            },
+            {
+                "key": "messagepack_inspector",
+                "slug": "messagepack-inspector"
             }
         ]
     },
@@ -6809,6 +7273,18 @@ export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
             {
                 "key": "har_viewer_sanitizer",
                 "slug": "har-viewer-sanitizer"
+            },
+            {
+                "key": "graphql_workbench",
+                "slug": "graphql-workbench"
+            },
+            {
+                "key": "seo_metadata_workbench",
+                "slug": "seo-metadata-workbench"
+            },
+            {
+                "key": "devops_yaml_validator",
+                "slug": "devops-yaml-validator"
             }
         ]
     },
@@ -6899,6 +7375,10 @@ export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
             {
                 "key": "unicode_inspector",
                 "slug": "unicode-inspector"
+            },
+            {
+                "key": "oauth_jwks_workbench",
+                "slug": "oauth-jwks-workbench"
             }
         ]
     },
@@ -7089,6 +7569,10 @@ export const CLIENT_MENU_GROUPS: ReadonlyArray<ClientMenuGroup> = [
             {
                 "key": "id_generator",
                 "slug": "id-generator"
+            },
+            {
+                "key": "image_privacy_workbench",
+                "slug": "image-privacy-workbench"
             }
         ]
     },

@@ -4,7 +4,7 @@ export const toolManifest = {
     key: "photo_censor",
     slug: "photo-censor",
     category: "generators",
-    relatedTools: ["image_filters", "image_cropper", "image_resizer", "scanned_pdf_converter"],
+    relatedTools: ["image_privacy_workbench", "image_filters", "image_cropper", "image_resizer"],
     privacy: {
         executionMode: "browser-local",
         offlineCapable: true,

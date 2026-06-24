@@ -4,7 +4,7 @@ export const toolManifest = {
     key: "json_diff_viewer",
     slug: "json-diff-viewer",
     category: "formatters",
-    relatedTools: ["json_formatter", "text_diff_checker", "jsonpath_playground"],
+    relatedTools: ["json_formatter", "openapi_diff", "text_diff_checker", "jsonpath_playground"],
     privacy: {
         executionMode: "browser-local",
         offlineCapable: true,

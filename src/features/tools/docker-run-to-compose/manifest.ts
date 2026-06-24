@@ -4,7 +4,7 @@ export const toolManifest = {
     key: "docker_run_to_compose",
     slug: "docker-run-to-compose",
     category: "network-web",
-    relatedTools: ["env_parser", "yaml_json_converter", "chmod_calculator", "curl_to_code"],
+    relatedTools: ["devops_yaml_validator", "env_parser", "yaml_json_converter", "chmod_calculator"],
     privacy: {
         executionMode: "browser-local",
         offlineCapable: true,

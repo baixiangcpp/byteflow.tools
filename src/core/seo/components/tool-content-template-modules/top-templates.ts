@@ -5104,4 +5104,324 @@ export const TOP_TOOL_CONTENT_TEMPLATES: Record<string, ToolContentTemplateData>
             { q: "Can it help with localization bugs?", a: "Yes. Exact code points make it easier to reproduce rendering, sorting, and parser issues." },
         ],
     },
+    "json-schema-workbench": {
+        toolKey: "json_schema_workbench",
+        intro: "Generate starter JSON Schema documents from representative payloads and validate JSON against pasted schemas locally, with path-level errors that make API contract drift easier to review.",
+        whatThisToolDoes: [
+            "It infers a practical Draft 2020-12 starter schema from objects, arrays, primitives, and nested payload samples.",
+            "It validates pasted JSON against a schema and reports each problem with a concrete JSON-style path and fix hint.",
+            "It supports both direct tool usage and Pipeline Builder steps for schema generation and validation handoffs.",
+            "It keeps payloads and schemas in the browser, which is useful when contract samples include staging fields or private identifiers.",
+        ],
+        useCases: [
+            "Create a first JSON Schema from a webhook, API response, or configuration sample.",
+            "Check whether a payload still satisfies required fields and primitive types before sharing it.",
+            "Prepare contract review notes for backend, frontend, SDK, and QA teams.",
+            "Run a pipeline step that turns a cleaned JSON sample into a schema artifact.",
+            "Capture actionable validation paths for PR comments and incident follow-up.",
+        ],
+        inputExamples: [
+            { label: "Order payload", value: "{\n  \"orderId\": 42,\n  \"status\": \"paid\",\n  \"items\": [{ \"sku\": \"sku_123\", \"qty\": 2 }]\n}" },
+            { label: "Validation schema", value: "{\n  \"type\": \"object\",\n  \"required\": [\"orderId\", \"status\"],\n  \"properties\": { \"orderId\": { \"type\": \"integer\" } }\n}" },
+        ],
+        outputExamples: [
+            { label: "Generated schema", value: "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"required\": [\"orderId\", \"status\", \"items\"]\n}" },
+            { label: "Validation error", value: "$.orderId: Expected integer, received string. Fix: Change the payload value or update the schema type." },
+        ],
+        commonErrors: [
+            { error: "Using one happy-path sample as the whole contract", fix: "Generate from the sample, then review required fields, nullable values, enums, and additionalProperties manually." },
+            { error: "Validating against a schema that omits nested objects", fix: "Add properties and required arrays for the nested fields you expect consumers to rely on." },
+            { error: "Sharing production payloads in review comments", fix: "Replace identifiers, emails, tokens, and customer records before copying validation output." },
+        ],
+        privacyNotes: [
+            "Schema generation and validation run locally in the browser.",
+            "Saved recipes should store schema options only, not runtime payloads.",
+            "Treat payload samples as sensitive until identifiers and secrets have been removed.",
+        ],
+        faqs: [
+            { q: "Can generated schemas be used as final production contracts?", a: "They are starter schemas. Review constraints, formats, enums, and compatibility before publishing them." },
+            { q: "Does validation show where a payload failed?", a: "Yes. Errors include JSON-style paths such as $.user.id and remediation guidance." },
+            { q: "Can Pipeline Builder use this tool?", a: "Yes. The adapter supports schema generation and schema validation modes." },
+        ],
+    },
+    "openapi-diff": {
+        toolKey: "openapi_diff",
+        intro: "Compare two OpenAPI or Swagger specifications locally and turn endpoint, response, schema, and security changes into a reviewable contract-change report.",
+        whatThisToolDoes: [
+            "It parses JSON or YAML OpenAPI specs and snapshots operations, parameters, responses, schemas, and security schemes.",
+            "It groups added operations, changed fields, removed responses, removed schemas, and likely breaking risks.",
+            "It produces a copyable and downloadable text report for PRs, release notes, and API migration reviews.",
+            "It runs without fetching URLs or sending specs to a server, keeping private API contracts local.",
+        ],
+        useCases: [
+            "Review whether a proposed API spec removes endpoints or response codes.",
+            "Compare generated OpenAPI files before merging backend contract changes.",
+            "Prepare migration notes for SDK, frontend, and partner API consumers.",
+            "Spot security scheme changes before deployment or documentation updates.",
+            "Create a Pipeline Builder diff report from two scrubbed spec objects.",
+        ],
+        inputExamples: [
+            { label: "Before spec", value: "paths:\n  /orders/{id}:\n    get:\n      responses:\n        \"200\": { description: Order }\n        \"404\": { description: Missing }" },
+            { label: "After spec", value: "paths:\n  /orders:\n    post:\n      responses:\n        \"201\": { description: Created }" },
+        ],
+        outputExamples: [
+            { label: "Summary", value: "Added: 1\nChanged: 0\nBreaking risks: 1" },
+            { label: "Breaking item", value: "[breaking] GET /orders/{id} - Operation was removed." },
+        ],
+        commonErrors: [
+            { error: "Comparing rendered docs instead of raw OpenAPI", fix: "Paste JSON or YAML spec files, not documentation HTML." },
+            { error: "Ignoring removed response codes", fix: "Treat removed 2xx, 4xx, and 5xx responses as compatibility risks until reviewed." },
+            { error: "Assuming security changes are harmless", fix: "Review removed or renamed security schemes with the auth owner before release." },
+        ],
+        privacyNotes: [
+            "Spec comparison runs locally and does not proxy API definitions.",
+            "Remove internal hosts, example tokens, and private server URLs before sharing reports.",
+            "External fetching is not automatic; paste reviewed specs intentionally.",
+        ],
+        faqs: [
+            { q: "Does it support YAML specs?", a: "Yes. Paste either JSON or YAML for before and after specs." },
+            { q: "Which changes are flagged as breaking?", a: "Removed operations, removed responses, removed schemas, and removed security schemes are treated as breaking risks." },
+            { q: "Can I export the report?", a: "Yes. The page offers copy and download actions for the generated text report." },
+        ],
+    },
+    "graphql-workbench": {
+        toolKey: "graphql_workbench",
+        intro: "Format GraphQL queries, validate variables JSON, and inspect pasted introspection data locally before sharing API debugging notes or wiring a request into code.",
+        whatThisToolDoes: [
+            "It formats compact query, mutation, and fragment text into readable GraphQL structure.",
+            "It validates the variables pane as a JSON object and reports actionable parse or shape errors.",
+            "It extracts operation type, operation name, and type names from optional pasted introspection JSON.",
+            "It does not send GraphQL operations to an endpoint, so private queries and variables stay in the browser.",
+        ],
+        useCases: [
+            "Clean a copied GraphQL operation before placing it in documentation or tests.",
+            "Check variables JSON before pasting it into HTTP Request Builder or a client fixture.",
+            "Inspect an introspection result that was already exported from a safe environment.",
+            "Prepare API debugging evidence without contacting a production GraphQL endpoint.",
+            "Normalize query formatting before comparing revisions in a pull request.",
+        ],
+        inputExamples: [
+            { label: "Query", value: "query GetUser($id: ID!) { user(id: $id) { id name email } }" },
+            { label: "Variables", value: "{\n  \"id\": \"user_123\"\n}" },
+        ],
+        outputExamples: [
+            { label: "Formatted query", value: "query GetUser($id: ID!) {\n  user(id: $id) {\n    id\n    name\n    email\n  }\n}" },
+            { label: "Diagnostics", value: "Operation: query GetUser\nVariables: valid JSON object\nSchema types: Query, User, Role" },
+        ],
+        commonErrors: [
+            { error: "Variables are valid JSON but not an object", fix: "Use a top-level object such as { \"id\": \"user_123\" }." },
+            { error: "Mismatched braces or parentheses", fix: "Use the diagnostics and reduce the query to the smallest failing selection set." },
+            { error: "Pasting live tokens into variables", fix: "Replace auth values and customer identifiers before formatting or sharing." },
+        ],
+        privacyNotes: [
+            "Formatting and diagnostics run locally without sending a GraphQL request.",
+            "Pasted introspection JSON can reveal private schema names and should be treated as sensitive.",
+            "Do not store production variables in saved notes or exported examples.",
+        ],
+        faqs: [
+            { q: "Does this tool execute GraphQL requests?", a: "No. It formats and inspects pasted text only." },
+            { q: "Can it browse schema types?", a: "It can summarize type names from pasted introspection JSON." },
+            { q: "Does it validate against a live schema?", a: "No. It performs local syntax and variables checks; live schema validation is intentionally not automatic." },
+        ],
+    },
+    "messagepack-inspector": {
+        toolKey: "messagepack_inspector",
+        intro: "Decode MessagePack bytes from hex or Base64 into readable JSON locally, with clear errors for truncated binary payloads and explicit limits around schema-free inspection.",
+        whatThisToolDoes: [
+            "It accepts hex dumps or Base64 text and decodes common MessagePack primitives, arrays, maps, binary blobs, and strings.",
+            "It converts decoded values into formatted JSON so event payloads can be reviewed next to JSON tooling.",
+            "It reports byte-level parse errors when a MessagePack payload is malformed or truncated.",
+            "It keeps event samples local, which is important for backend queues, streams, and service-to-service payloads.",
+        ],
+        useCases: [
+            "Inspect a MessagePack event captured from a test queue or fixture.",
+            "Convert a small binary payload into JSON for a debugging note.",
+            "Verify whether a Base64 blob is valid MessagePack before handing it to another tool.",
+            "Document malformed payload errors with a minimal byte sample.",
+            "Bridge binary event samples into JSON Formatter or JSON Diff workflows.",
+        ],
+        inputExamples: [
+            { label: "Hex MessagePack", value: "82 a2 69 64 01 a4 6e 61 6d 65 a5 41 6c 69 63 65" },
+            { label: "Truncated bytes", value: "82 a2 69" },
+        ],
+        outputExamples: [
+            { label: "Decoded JSON", value: "{\n  \"id\": 1,\n  \"name\": \"Alice\"\n}" },
+            { label: "Parse error", value: "Unexpected end of MessagePack input while reading map value." },
+        ],
+        commonErrors: [
+            { error: "Odd-length hex input", fix: "Remove separators carefully and ensure every byte has two hex digits." },
+            { error: "Input is Base64 but hex mode is selected", fix: "Switch to Base64 mode before decoding." },
+            { error: "Expecting Protobuf or Avro support from MessagePack", fix: "MessagePack can be decoded without a schema; schema-based formats need separate tooling." },
+        ],
+        privacyNotes: [
+            "Decoding runs in the browser and does not upload event payloads.",
+            "Binary payloads can contain tokens, emails, and private identifiers after decoding.",
+            "Copy only scrubbed JSON excerpts into shared tickets or docs.",
+        ],
+        faqs: [
+            { q: "Does MessagePack need a schema?", a: "No. MessagePack is self-describing enough for this inspector, unlike Protobuf or many Avro workflows." },
+            { q: "Can I download the decoded output?", a: "The page supports copying the formatted JSON; use the browser copy action for reviewed excerpts." },
+            { q: "What happens on invalid binary input?", a: "The decoder returns an actionable parse error instead of showing stale output." },
+        ],
+    },
+    "seo-metadata-workbench": {
+        toolKey: "seo_metadata_workbench",
+        intro: "Audit technical SEO metadata locally by checking SERP text length, canonical URLs, hreflang rows, sitemap URLs, and llms.txt snippets without fetching or storing page content.",
+        whatThisToolDoes: [
+            "It reviews title and description text for search result readability and length risk.",
+            "It validates canonical and sitemap URLs as absolute URLs and flags malformed entries.",
+            "It checks hreflang rows for common reciprocal and x-default mistakes.",
+            "It can draft an llms.txt style snippet from reviewed metadata without contacting a crawler or external preview service.",
+        ],
+        useCases: [
+            "Preflight a new localized tool page before adding it to the sitemap.",
+            "Review hreflang data copied from a routing manifest or spreadsheet.",
+            "Draft privacy-safe llms.txt snippets from curated public metadata.",
+            "Check whether a title and description are concise enough for SERP display.",
+            "Compare metadata decisions before publishing a content cluster page.",
+        ],
+        inputExamples: [
+            { label: "Metadata JSON", value: "{\n  \"title\": \"Local JSON Tools\",\n  \"description\": \"Format and validate JSON in the browser.\",\n  \"canonical\": \"https://example.com/en/json\"\n}" },
+            { label: "Hreflang rows", value: "[\n  { \"lang\": \"en\", \"url\": \"https://example.com/en/json\" },\n  { \"lang\": \"fr\", \"url\": \"https://example.com/fr/json\" }\n]" },
+        ],
+        outputExamples: [
+            { label: "SERP check", value: "Title length: 16 characters\nDescription length: 40 characters\nCanonical: valid absolute URL" },
+            { label: "Hreflang warning", value: "Missing reciprocal x-default entry for https://example.com/en/json." },
+        ],
+        commonErrors: [
+            { error: "Using relative canonical URLs", fix: "Provide absolute HTTPS URLs for canonical, sitemap, and hreflang entries." },
+            { error: "Putting private drafts into llms.txt text", fix: "Use only public, reviewed page summaries and remove internal notes." },
+            { error: "Assuming the tool fetches external pages", fix: "Paste metadata explicitly; no automatic external request runs." },
+        ],
+        privacyNotes: [
+            "The workbench analyzes pasted metadata locally and does not fetch URLs.",
+            "Avoid pasting private URLs, staging hostnames, or unpublished content into shared reports.",
+            "Generated llms.txt snippets should describe public pages only.",
+        ],
+        faqs: [
+            { q: "Does this tool crawl my URL?", a: "No. It only analyzes the JSON configuration you paste." },
+            { q: "Which SEO utilities are included?", a: "SERP preview checks, hreflang validation, sitemap URL review, and llms.txt drafting are covered in one local workbench." },
+            { q: "Can I export the report?", a: "Yes. Use the download action to save the local text report." },
+        ],
+    },
+    "devops-yaml-validator": {
+        toolKey: "devops_yaml_validator",
+        intro: "Validate Docker Compose and Kubernetes YAML locally with path-level errors, common warnings, and remediation notes before sharing operational configuration.",
+        whatThisToolDoes: [
+            "It parses single or multi-document YAML and classifies Docker Compose services and Kubernetes resources.",
+            "It checks Compose services for basic service shape, image or build configuration, ports, and healthcheck guidance.",
+            "It checks Kubernetes manifests for apiVersion, kind, metadata, Deployment selectors, pod templates, and containers.",
+            "It documents limitations around cluster-specific admission policies that cannot be known from static YAML alone.",
+        ],
+        useCases: [
+            "Review a Compose file produced by Docker Run to Compose before committing it.",
+            "Catch missing Kubernetes Deployment template fields before handing YAML to an ops teammate.",
+            "Prepare a sanitized config snippet for PR discussion or incident notes.",
+            "Run a Pipeline Builder validation step after YAML conversion or cleanup.",
+            "Explain which checks are static and which still need cluster policy validation.",
+        ],
+        inputExamples: [
+            { label: "Compose service", value: "services:\n  api:\n    image: node:20\n    ports:\n      - \"3000:3000\"" },
+            { label: "Kubernetes Deployment", value: "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: api\nspec:\n  replicas: 2" },
+        ],
+        outputExamples: [
+            { label: "Compose warning", value: "$.services.api: service uses image without healthcheck. Fix: Add a healthcheck before handoff." },
+            { label: "Kubernetes error", value: "$.spec.template: Deployment requires pod template metadata and containers." },
+        ],
+        commonErrors: [
+            { error: "Forgetting metadata.name", fix: "Add metadata.name to every Kubernetes resource before validation handoff." },
+            { error: "Deployment selector does not match pod labels", fix: "Align spec.selector.matchLabels with spec.template.metadata.labels." },
+            { error: "Assuming static checks include cluster policy", fix: "Run admission, RBAC, and policy checks in the target cluster pipeline." },
+        ],
+        privacyNotes: [
+            "YAML validation runs locally and does not contact a cluster or registry.",
+            "Remove private image registries, secret names, and internal hostnames before sharing reports.",
+            "Do not paste Kubernetes Secret values into examples; use placeholders instead.",
+        ],
+        faqs: [
+            { q: "Does it validate against a live cluster?", a: "No. It performs local structure and common-warning checks only." },
+            { q: "Can it parse multiple YAML documents?", a: "Yes. Compose and Kubernetes resources can be separated with ---." },
+            { q: "Does Pipeline Builder support it?", a: "Yes. The validator is available as a local deterministic pipeline adapter." },
+        ],
+    },
+    "oauth-jwks-workbench": {
+        toolKey: "oauth_jwks_workbench",
+        intro: "Generate OAuth PKCE verifier/challenge pairs and inspect pasted JWKS documents locally, including key IDs, algorithms, and JWT verification compatibility.",
+        whatThisToolDoes: [
+            "It creates PKCE code verifier and S256 challenge pairs with browser cryptography.",
+            "It summarizes pasted JWKS keys by kid, kty, alg, use, curve, and modulus hints.",
+            "It can verify supported JWT signatures against pasted public JWK sets when a compatible key is available.",
+            "It keeps tokens and public key material local unless a future optional JWKS URL fetch is explicitly added and labeled.",
+        ],
+        useCases: [
+            "Generate PKCE values for a local OAuth authorization-code test.",
+            "Check whether a JWT header kid matches a key in a pasted JWKS.",
+            "Review algorithm compatibility before debugging signature failures.",
+            "Summarize public signing keys for an incident note without uploading the key set.",
+            "Link JWT Decoder, JWT Workbench, and JWT Verifier into one auth review path.",
+        ],
+        inputExamples: [
+            { label: "JWKS snippet", value: "{\n  \"keys\": [{ \"kty\": \"RSA\", \"kid\": \"auth-prod-1\", \"alg\": \"RS256\", \"use\": \"sig\" }]\n}" },
+            { label: "JWT header", value: "{ \"alg\": \"RS256\", \"kid\": \"auth-prod-1\" }" },
+        ],
+        outputExamples: [
+            { label: "PKCE output", value: "verifier: 64 URL-safe characters\nchallenge: SHA-256 base64url digest\nmethod: S256" },
+            { label: "JWKS summary", value: "kid auth-prod-1: RSA signing key, alg RS256, compatible with JWT header." },
+        ],
+        commonErrors: [
+            { error: "JWT kid does not exist in the JWKS", fix: "Confirm environment, issuer, and key rotation timing before retrying verification." },
+            { error: "Algorithm mismatch", fix: "Use a public key whose alg and kty are compatible with the JWT header." },
+            { error: "Treating decoded claims as verified", fix: "Run signature verification before trusting claims or expiry fields." },
+        ],
+        privacyNotes: [
+            "PKCE generation and JWKS inspection run locally.",
+            "Do not paste private keys, client secrets, refresh tokens, or production bearer tokens.",
+            "Public key IDs can reveal environment naming; redact them before external sharing.",
+        ],
+        faqs: [
+            { q: "Does PKCE generation require a server?", a: "No. Verifier and challenge generation use browser crypto locally." },
+            { q: "Can it verify every JWT algorithm?", a: "It supports common RSA and ECDSA public-key JWT algorithms where browser crypto can import the JWK." },
+            { q: "Does it fetch JWKS URLs?", a: "No automatic fetch is included. Paste reviewed JWKS JSON into the tool." },
+        ],
+    },
+    "image-privacy-workbench": {
+        toolKey: "image_privacy_workbench",
+        intro: "Strip supported image metadata by re-encoding files locally and guide screenshot redaction in the safest order: hide visible secrets first, then remove metadata, inspect, and export.",
+        whatThisToolDoes: [
+            "It scans selected image bytes for EXIF, XMP, GPS, camera, and editor metadata markers.",
+            "It re-encodes supported images through browser canvas to produce a fresh PNG or JPEG without original metadata chunks.",
+            "It compares before and after scans so users can confirm whether obvious metadata markers remain.",
+            "It presents a screenshot sharing workflow that prioritizes visible redaction before resizing or compression.",
+        ],
+        useCases: [
+            "Remove metadata from a screenshot or photo before sending it to an issue tracker.",
+            "Check whether a camera image contains GPS, device, or editor traces.",
+            "Prepare sanitized visual evidence after using Photo Censor for visible secrets.",
+            "Export a cleaned image locally without uploading private content.",
+            "Teach teammates the safe order for screenshot redaction workflows.",
+        ],
+        inputExamples: [
+            { label: "Supported image", value: "photo-with-gps.jpg (JPEG or PNG selected from the local device)" },
+            { label: "Screenshot review list", value: "visible token, email, account name, internal hostname, browser tab title" },
+        ],
+        outputExamples: [
+            { label: "Re-encode result", value: "Before: EXIF, GPS, camera marker detected\nAfter: no EXIF/XMP/GPS marker detected in exported PNG" },
+            { label: "Safe order", value: "1. Redact visible secrets\n2. Strip metadata by re-encoding\n3. Inspect export\n4. Download sanitized image" },
+        ],
+        commonErrors: [
+            { error: "Removing metadata before covering visible secrets", fix: "Redact visible tokens, emails, and hostnames first, then strip metadata." },
+            { error: "Assuming all metadata formats are detectable", fix: "Use the scan as a safety check, then manually inspect the exported file before sharing." },
+            { error: "Persisting original uploads", fix: "Do not save original images in recipes, URLs, cache, or shared notes." },
+        ],
+        privacyNotes: [
+            "Selected images are processed locally with browser APIs.",
+            "Uploaded files and sanitized outputs are not persisted by default.",
+            "Download only the reviewed sanitized export, not the original file, when preparing public evidence.",
+        ],
+        faqs: [
+            { q: "Does it upload my image?", a: "No. The file is read and re-encoded in the browser." },
+            { q: "Does re-encoding remove visible secrets?", a: "No. Use Photo Censor or another redaction step for visible areas before metadata removal." },
+            { q: "How is metadata removal verified?", a: "The tool scans before and after byte markers and reports whether EXIF/XMP/GPS-style markers remain." },
+        ],
+    },
 }

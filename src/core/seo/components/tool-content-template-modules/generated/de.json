@@ -11154,5 +11154,677 @@
       "Interne Umgebungsnamen und Beispieldomains vor externer Weitergabe entfernen."
     ],
     "operationalNote": "Der Public-Key-JWK-Helfer eignet sich als schneller Prüfschritt vor Auth-Integrationen und Schlüsselrotationen; produktive Trust-Veröffentlichung bleibt ein formaler Change- und Audit-Prozess."
+  },
+  "json-schema-workbench": {
+    "content": {
+      "toolKey": "json_schema_workbench",
+      "intro": "JSON-Schema-Workbench erstellt ein Startschema aus Beispielen und validiert Payloads mit Pfadfehlern。",
+      "whatThisToolDoes": [
+        "JSON-Schema-Workbench konzentriert sich auf JSON-Schema-Vertragsprüfung und erstellt ein Startschema aus Beispielen und validiert Payloads mit Pfadfehlern.",
+        "Die Beispiele liefern kleine reproduzierbare Ausschnitte für PRs, Runbooks und Fehlertickets.",
+        "Der Bericht zeigt Zusammenfassung, Pfade oder Prüfpunkte, damit riskante Felder gezielt geprüft werden.",
+        "Ohne Konto und ohne Serververarbeitung eignet sich der Ablauf für lokale Vorprüfung sensibler Daten."
+      ],
+      "useCases": [
+        "JSON-Schema-Vertragsprüfung vor einem Merge lokal prüfen.",
+        "Reproduzierbare Nachweise für Reviews zu JSON-Schema-Vertragsprüfung vorbereiten.",
+        "Fehlerfälle zu JSON-Schema-Vertragsprüfung auf minimale Felder reduzieren.",
+        "Vor dem Teilen prüfen, dass keine Tokens, Konten oder internen Hosts im Ergebnis stehen."
+      ],
+      "inputExamples": [
+        {
+          "label": "Order-Payload",
+          "value": "{\n  \"orderId\": 42,\n  \"status\": \"paid\",\n  \"items\": [{ \"sku\": \"sku_123\", \"qty\": 2 }]\n}"
+        },
+        {
+          "label": "Validierungsschema",
+          "value": "{\n  \"type\": \"object\",\n  \"required\": [\"orderId\", \"status\"],\n  \"properties\": { \"orderId\": { \"type\": \"integer\" } }\n}"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Generiertes Schema",
+          "value": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"required\": [\"orderId\", \"status\", \"items\"]\n}"
+        },
+        {
+          "label": "Pfadfehler",
+          "value": "$.orderId: Expected integer, received string. Fix: Change the payload value or update the schema type."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Unvollständige Eingabestruktur für JSON-Schema-Vertragsprüfung",
+          "fix": "Mit einem minimal gültigen Beispiel beginnen und Pflichtfelder schrittweise ergänzen."
+        },
+        {
+          "error": "Produktionsgeheimnisse im Beispiel",
+          "fix": "Durch Platzhalter ersetzen, bevor Ergebnisse in Issue, PR oder Chat kopiert werden."
+        },
+        {
+          "error": "Nur die Zusammenfassung gelesen",
+          "fix": "Pfade, kid, URLs oder Dateimarker einzeln prüfen, bevor etwas geteilt wird."
+        }
+      ],
+      "privacyNotes": [
+        "Die Verarbeitung läuft im Browser; Eingaben und Ausgaben werden standardmäßig nicht gespeichert.",
+        "Tokens, private keys, JWTs, Kundendaten und rohe Screenshots gehören nicht in Share-Links.",
+        "Vor dem Kopieren Domainbeispiele, Accountnamen und Environment-Kennungen anonymisieren."
+      ],
+      "faqs": [
+        {
+          "q": "Sendet JSON-Schema-Workbench Daten an einen Server?",
+          "a": "Nein. Der Arbeitsbereich ist für lokale Browserausführung ohne automatische externe Requests ausgelegt."
+        },
+        {
+          "q": "Wann passt dieser Ablauf für JSON-Schema-Vertragsprüfung?",
+          "a": "Wenn vor Commit, Release oder Handoff ein Beispiel schnell geprüft und reproduzierbar dokumentiert werden soll."
+        },
+        {
+          "q": "Ist der Bericht eine endgültige Freigabe?",
+          "a": "Nein. Er ist ein Review-Hinweis und sollte mit Projektschema, Cluster-Policy oder Security-Prozess abgeglichen werden."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "In JSON-Schema-Workbench zuerst das Sample laden und die Felder verstehen.",
+      "Durch ein anonymisiertes Minimalbeispiel ersetzen, das nur die nötigen Felder enthält.",
+      "Prüfung ausführen und Fehlerpfade, Warnungen oder Zusammenfassung einzeln lesen.",
+      "Vor Copy oder Download nochmals auf sensible Payloads prüfen."
+    ],
+    "qualityChecklist": [
+      "Keine echten Tokens, Schlüssel, Kundendaten oder unredigierten Screenshots im Input.",
+      "Ein Normalfall und mindestens ein Fehlerfall wurden getestet.",
+      "Pfade, URLs, kid oder Dateimarker wurden manuell geprüft.",
+      "Clipboard und Downloads werden vor externer Weitergabe bereinigt."
+    ],
+    "operationalNote": "JSON-Schema-Workbench ist ein lokaler Vorprüfschritt; produktive Freigaben brauchen weiterhin Review, CI und Security-Prozess."
+  },
+  "openapi-diff": {
+    "content": {
+      "toolKey": "openapi_diff",
+      "intro": "OpenAPI-Diff vergleicht zwei JSON/YAML-Spezifikationen und markiert Endpunkte, Schemas, Security und Breaking Risks。",
+      "whatThisToolDoes": [
+        "OpenAPI-Diff konzentriert sich auf OpenAPI-Vertragsvergleich und vergleicht zwei JSON/YAML-Spezifikationen und markiert Endpunkte, Schemas, Security und Breaking Risks.",
+        "Die Beispiele liefern kleine reproduzierbare Ausschnitte für PRs, Runbooks und Fehlertickets.",
+        "Der Bericht zeigt Zusammenfassung, Pfade oder Prüfpunkte, damit riskante Felder gezielt geprüft werden.",
+        "Ohne Konto und ohne Serververarbeitung eignet sich der Ablauf für lokale Vorprüfung sensibler Daten."
+      ],
+      "useCases": [
+        "OpenAPI-Vertragsvergleich vor einem Merge lokal prüfen.",
+        "Reproduzierbare Nachweise für Reviews zu OpenAPI-Vertragsvergleich vorbereiten.",
+        "Fehlerfälle zu OpenAPI-Vertragsvergleich auf minimale Felder reduzieren.",
+        "Vor dem Teilen prüfen, dass keine Tokens, Konten oder internen Hosts im Ergebnis stehen."
+      ],
+      "inputExamples": [
+        {
+          "label": "Alte Spezifikation",
+          "value": "paths:\n  /orders/{id}:\n    get:\n      responses:\n        \"200\": { description: Order }\n        \"404\": { description: Missing }"
+        },
+        {
+          "label": "Neue Spezifikation",
+          "value": "paths:\n  /orders:\n    post:\n      responses:\n        \"201\": { description: Created }"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Risikozusammenfassung",
+          "value": "Added: 1\nChanged: 0\nBreaking risks: 1"
+        },
+        {
+          "label": "Breaking Change",
+          "value": "[breaking] GET /orders/{id} - Operation was removed."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Unvollständige Eingabestruktur für OpenAPI-Vertragsvergleich",
+          "fix": "Mit einem minimal gültigen Beispiel beginnen und Pflichtfelder schrittweise ergänzen."
+        },
+        {
+          "error": "Produktionsgeheimnisse im Beispiel",
+          "fix": "Durch Platzhalter ersetzen, bevor Ergebnisse in Issue, PR oder Chat kopiert werden."
+        },
+        {
+          "error": "Nur die Zusammenfassung gelesen",
+          "fix": "Pfade, kid, URLs oder Dateimarker einzeln prüfen, bevor etwas geteilt wird."
+        }
+      ],
+      "privacyNotes": [
+        "Die Verarbeitung läuft im Browser; Eingaben und Ausgaben werden standardmäßig nicht gespeichert.",
+        "Tokens, private keys, JWTs, Kundendaten und rohe Screenshots gehören nicht in Share-Links.",
+        "Vor dem Kopieren Domainbeispiele, Accountnamen und Environment-Kennungen anonymisieren."
+      ],
+      "faqs": [
+        {
+          "q": "Sendet OpenAPI-Diff Daten an einen Server?",
+          "a": "Nein. Der Arbeitsbereich ist für lokale Browserausführung ohne automatische externe Requests ausgelegt."
+        },
+        {
+          "q": "Wann passt dieser Ablauf für OpenAPI-Vertragsvergleich?",
+          "a": "Wenn vor Commit, Release oder Handoff ein Beispiel schnell geprüft und reproduzierbar dokumentiert werden soll."
+        },
+        {
+          "q": "Ist der Bericht eine endgültige Freigabe?",
+          "a": "Nein. Er ist ein Review-Hinweis und sollte mit Projektschema, Cluster-Policy oder Security-Prozess abgeglichen werden."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "In OpenAPI-Diff zuerst das Sample laden und die Felder verstehen.",
+      "Durch ein anonymisiertes Minimalbeispiel ersetzen, das nur die nötigen Felder enthält.",
+      "Prüfung ausführen und Fehlerpfade, Warnungen oder Zusammenfassung einzeln lesen.",
+      "Vor Copy oder Download nochmals auf sensible Payloads prüfen."
+    ],
+    "qualityChecklist": [
+      "Keine echten Tokens, Schlüssel, Kundendaten oder unredigierten Screenshots im Input.",
+      "Ein Normalfall und mindestens ein Fehlerfall wurden getestet.",
+      "Pfade, URLs, kid oder Dateimarker wurden manuell geprüft.",
+      "Clipboard und Downloads werden vor externer Weitergabe bereinigt."
+    ],
+    "operationalNote": "OpenAPI-Diff ist ein lokaler Vorprüfschritt; produktive Freigaben brauchen weiterhin Review, CI und Security-Prozess."
+  },
+  "graphql-workbench": {
+    "content": {
+      "toolKey": "graphql_workbench",
+      "intro": "GraphQL-Workbench formatiert query/mutation, validiert Variables-JSON und prüft eingefügte Introspection-Typen。",
+      "whatThisToolDoes": [
+        "GraphQL-Workbench konzentriert sich auf GraphQL-Abfrageprüfung und formatiert query/mutation, validiert Variables-JSON und prüft eingefügte Introspection-Typen.",
+        "Die Beispiele liefern kleine reproduzierbare Ausschnitte für PRs, Runbooks und Fehlertickets.",
+        "Der Bericht zeigt Zusammenfassung, Pfade oder Prüfpunkte, damit riskante Felder gezielt geprüft werden.",
+        "Ohne Konto und ohne Serververarbeitung eignet sich der Ablauf für lokale Vorprüfung sensibler Daten."
+      ],
+      "useCases": [
+        "GraphQL-Abfrageprüfung vor einem Merge lokal prüfen.",
+        "Reproduzierbare Nachweise für Reviews zu GraphQL-Abfrageprüfung vorbereiten.",
+        "Fehlerfälle zu GraphQL-Abfrageprüfung auf minimale Felder reduzieren.",
+        "Vor dem Teilen prüfen, dass keine Tokens, Konten oder internen Hosts im Ergebnis stehen."
+      ],
+      "inputExamples": [
+        {
+          "label": "Query-Auszug",
+          "value": "query GetUser($id: ID!) { user(id: $id) { id name email } }"
+        },
+        {
+          "label": "Variables-JSON",
+          "value": "{\n  \"id\": \"user_123\"\n}"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Formatierte Query",
+          "value": "query GetUser($id: ID!) {\n  user(id: $id) {\n    id\n    name\n    email\n  }\n}"
+        },
+        {
+          "label": "Diagnose",
+          "value": "Operation: query GetUser\nVariables: valid JSON object\nSchema types: Query, User, Role"
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Unvollständige Eingabestruktur für GraphQL-Abfrageprüfung",
+          "fix": "Mit einem minimal gültigen Beispiel beginnen und Pflichtfelder schrittweise ergänzen."
+        },
+        {
+          "error": "Produktionsgeheimnisse im Beispiel",
+          "fix": "Durch Platzhalter ersetzen, bevor Ergebnisse in Issue, PR oder Chat kopiert werden."
+        },
+        {
+          "error": "Nur die Zusammenfassung gelesen",
+          "fix": "Pfade, kid, URLs oder Dateimarker einzeln prüfen, bevor etwas geteilt wird."
+        }
+      ],
+      "privacyNotes": [
+        "Die Verarbeitung läuft im Browser; Eingaben und Ausgaben werden standardmäßig nicht gespeichert.",
+        "Tokens, private keys, JWTs, Kundendaten und rohe Screenshots gehören nicht in Share-Links.",
+        "Vor dem Kopieren Domainbeispiele, Accountnamen und Environment-Kennungen anonymisieren."
+      ],
+      "faqs": [
+        {
+          "q": "Sendet GraphQL-Workbench Daten an einen Server?",
+          "a": "Nein. Der Arbeitsbereich ist für lokale Browserausführung ohne automatische externe Requests ausgelegt."
+        },
+        {
+          "q": "Wann passt dieser Ablauf für GraphQL-Abfrageprüfung?",
+          "a": "Wenn vor Commit, Release oder Handoff ein Beispiel schnell geprüft und reproduzierbar dokumentiert werden soll."
+        },
+        {
+          "q": "Ist der Bericht eine endgültige Freigabe?",
+          "a": "Nein. Er ist ein Review-Hinweis und sollte mit Projektschema, Cluster-Policy oder Security-Prozess abgeglichen werden."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "In GraphQL-Workbench zuerst das Sample laden und die Felder verstehen.",
+      "Durch ein anonymisiertes Minimalbeispiel ersetzen, das nur die nötigen Felder enthält.",
+      "Prüfung ausführen und Fehlerpfade, Warnungen oder Zusammenfassung einzeln lesen.",
+      "Vor Copy oder Download nochmals auf sensible Payloads prüfen."
+    ],
+    "qualityChecklist": [
+      "Keine echten Tokens, Schlüssel, Kundendaten oder unredigierten Screenshots im Input.",
+      "Ein Normalfall und mindestens ein Fehlerfall wurden getestet.",
+      "Pfade, URLs, kid oder Dateimarker wurden manuell geprüft.",
+      "Clipboard und Downloads werden vor externer Weitergabe bereinigt."
+    ],
+    "operationalNote": "GraphQL-Workbench ist ein lokaler Vorprüfschritt; produktive Freigaben brauchen weiterhin Review, CI und Security-Prozess."
+  },
+  "messagepack-inspector": {
+    "content": {
+      "toolKey": "messagepack_inspector",
+      "intro": "MessagePack-Inspektor dekodiert Hex- oder Base64-Bytes zu JSON und erklärt Schema-Anforderungen sowie Binärfehler。",
+      "whatThisToolDoes": [
+        "MessagePack-Inspektor konzentriert sich auf MessagePack-Eventprüfung und dekodiert Hex- oder Base64-Bytes zu JSON und erklärt Schema-Anforderungen sowie Binärfehler.",
+        "Die Beispiele liefern kleine reproduzierbare Ausschnitte für PRs, Runbooks und Fehlertickets.",
+        "Der Bericht zeigt Zusammenfassung, Pfade oder Prüfpunkte, damit riskante Felder gezielt geprüft werden.",
+        "Ohne Konto und ohne Serververarbeitung eignet sich der Ablauf für lokale Vorprüfung sensibler Daten."
+      ],
+      "useCases": [
+        "MessagePack-Eventprüfung vor einem Merge lokal prüfen.",
+        "Reproduzierbare Nachweise für Reviews zu MessagePack-Eventprüfung vorbereiten.",
+        "Fehlerfälle zu MessagePack-Eventprüfung auf minimale Felder reduzieren.",
+        "Vor dem Teilen prüfen, dass keine Tokens, Konten oder internen Hosts im Ergebnis stehen."
+      ],
+      "inputExamples": [
+        {
+          "label": "Hex MessagePack",
+          "value": "82 a2 69 64 01 a4 6e 61 6d 65 a5 41 6c 69 63 65"
+        },
+        {
+          "label": "Ungültige Bytes",
+          "value": "82 a2 69"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Dekodiertes JSON",
+          "value": "{\n  \"id\": 1,\n  \"name\": \"Alice\"\n}"
+        },
+        {
+          "label": "Fehlermeldung",
+          "value": "Unexpected end of MessagePack input while reading map value."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Unvollständige Eingabestruktur für MessagePack-Eventprüfung",
+          "fix": "Mit einem minimal gültigen Beispiel beginnen und Pflichtfelder schrittweise ergänzen."
+        },
+        {
+          "error": "Produktionsgeheimnisse im Beispiel",
+          "fix": "Durch Platzhalter ersetzen, bevor Ergebnisse in Issue, PR oder Chat kopiert werden."
+        },
+        {
+          "error": "Nur die Zusammenfassung gelesen",
+          "fix": "Pfade, kid, URLs oder Dateimarker einzeln prüfen, bevor etwas geteilt wird."
+        }
+      ],
+      "privacyNotes": [
+        "Die Verarbeitung läuft im Browser; Eingaben und Ausgaben werden standardmäßig nicht gespeichert.",
+        "Tokens, private keys, JWTs, Kundendaten und rohe Screenshots gehören nicht in Share-Links.",
+        "Vor dem Kopieren Domainbeispiele, Accountnamen und Environment-Kennungen anonymisieren."
+      ],
+      "faqs": [
+        {
+          "q": "Sendet MessagePack-Inspektor Daten an einen Server?",
+          "a": "Nein. Der Arbeitsbereich ist für lokale Browserausführung ohne automatische externe Requests ausgelegt."
+        },
+        {
+          "q": "Wann passt dieser Ablauf für MessagePack-Eventprüfung?",
+          "a": "Wenn vor Commit, Release oder Handoff ein Beispiel schnell geprüft und reproduzierbar dokumentiert werden soll."
+        },
+        {
+          "q": "Ist der Bericht eine endgültige Freigabe?",
+          "a": "Nein. Er ist ein Review-Hinweis und sollte mit Projektschema, Cluster-Policy oder Security-Prozess abgeglichen werden."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "In MessagePack-Inspektor zuerst das Sample laden und die Felder verstehen.",
+      "Durch ein anonymisiertes Minimalbeispiel ersetzen, das nur die nötigen Felder enthält.",
+      "Prüfung ausführen und Fehlerpfade, Warnungen oder Zusammenfassung einzeln lesen.",
+      "Vor Copy oder Download nochmals auf sensible Payloads prüfen."
+    ],
+    "qualityChecklist": [
+      "Keine echten Tokens, Schlüssel, Kundendaten oder unredigierten Screenshots im Input.",
+      "Ein Normalfall und mindestens ein Fehlerfall wurden getestet.",
+      "Pfade, URLs, kid oder Dateimarker wurden manuell geprüft.",
+      "Clipboard und Downloads werden vor externer Weitergabe bereinigt."
+    ],
+    "operationalNote": "MessagePack-Inspektor ist ein lokaler Vorprüfschritt; produktive Freigaben brauchen weiterhin Review, CI und Security-Prozess."
+  },
+  "seo-metadata-workbench": {
+    "content": {
+      "toolKey": "seo_metadata_workbench",
+      "intro": "SEO-Metadaten-Workbench prüft SERP-Title, Description, Canonical, Hreflang, Sitemap-URLs und llms.txt lokal。",
+      "whatThisToolDoes": [
+        "SEO-Metadaten-Workbench konzentriert sich auf technische SEO-Metadatenprüfung und prüft SERP-Title, Description, Canonical, Hreflang, Sitemap-URLs und llms.txt lokal.",
+        "Die Beispiele liefern kleine reproduzierbare Ausschnitte für PRs, Runbooks und Fehlertickets.",
+        "Der Bericht zeigt Zusammenfassung, Pfade oder Prüfpunkte, damit riskante Felder gezielt geprüft werden.",
+        "Ohne Konto und ohne Serververarbeitung eignet sich der Ablauf für lokale Vorprüfung sensibler Daten."
+      ],
+      "useCases": [
+        "technische SEO-Metadatenprüfung vor einem Merge lokal prüfen.",
+        "Reproduzierbare Nachweise für Reviews zu technische SEO-Metadatenprüfung vorbereiten.",
+        "Fehlerfälle zu technische SEO-Metadatenprüfung auf minimale Felder reduzieren.",
+        "Vor dem Teilen prüfen, dass keine Tokens, Konten oder internen Hosts im Ergebnis stehen."
+      ],
+      "inputExamples": [
+        {
+          "label": "Seitenmetadaten",
+          "value": "{\n  \"title\": \"Local JSON Tools\",\n  \"description\": \"Format and validate JSON in the browser.\",\n  \"canonical\": \"https://example.com/en/json\"\n}"
+        },
+        {
+          "label": "Hreflang-Tabelle",
+          "value": "[\n  { \"lang\": \"en\", \"url\": \"https://example.com/en/json\" },\n  { \"lang\": \"fr\", \"url\": \"https://example.com/fr/json\" }\n]"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "SERP-Prüfung",
+          "value": "Title length: 16 characters\nDescription length: 40 characters\nCanonical: valid absolute URL"
+        },
+        {
+          "label": "Hreflang-Hinweis",
+          "value": "Missing reciprocal x-default entry for https://example.com/en/json."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Unvollständige Eingabestruktur für technische SEO-Metadatenprüfung",
+          "fix": "Mit einem minimal gültigen Beispiel beginnen und Pflichtfelder schrittweise ergänzen."
+        },
+        {
+          "error": "Produktionsgeheimnisse im Beispiel",
+          "fix": "Durch Platzhalter ersetzen, bevor Ergebnisse in Issue, PR oder Chat kopiert werden."
+        },
+        {
+          "error": "Nur die Zusammenfassung gelesen",
+          "fix": "Pfade, kid, URLs oder Dateimarker einzeln prüfen, bevor etwas geteilt wird."
+        }
+      ],
+      "privacyNotes": [
+        "Die Verarbeitung läuft im Browser; Eingaben und Ausgaben werden standardmäßig nicht gespeichert.",
+        "Tokens, private keys, JWTs, Kundendaten und rohe Screenshots gehören nicht in Share-Links.",
+        "Vor dem Kopieren Domainbeispiele, Accountnamen und Environment-Kennungen anonymisieren."
+      ],
+      "faqs": [
+        {
+          "q": "Sendet SEO-Metadaten-Workbench Daten an einen Server?",
+          "a": "Nein. Der Arbeitsbereich ist für lokale Browserausführung ohne automatische externe Requests ausgelegt."
+        },
+        {
+          "q": "Wann passt dieser Ablauf für technische SEO-Metadatenprüfung?",
+          "a": "Wenn vor Commit, Release oder Handoff ein Beispiel schnell geprüft und reproduzierbar dokumentiert werden soll."
+        },
+        {
+          "q": "Ist der Bericht eine endgültige Freigabe?",
+          "a": "Nein. Er ist ein Review-Hinweis und sollte mit Projektschema, Cluster-Policy oder Security-Prozess abgeglichen werden."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "In SEO-Metadaten-Workbench zuerst das Sample laden und die Felder verstehen.",
+      "Durch ein anonymisiertes Minimalbeispiel ersetzen, das nur die nötigen Felder enthält.",
+      "Prüfung ausführen und Fehlerpfade, Warnungen oder Zusammenfassung einzeln lesen.",
+      "Vor Copy oder Download nochmals auf sensible Payloads prüfen."
+    ],
+    "qualityChecklist": [
+      "Keine echten Tokens, Schlüssel, Kundendaten oder unredigierten Screenshots im Input.",
+      "Ein Normalfall und mindestens ein Fehlerfall wurden getestet.",
+      "Pfade, URLs, kid oder Dateimarker wurden manuell geprüft.",
+      "Clipboard und Downloads werden vor externer Weitergabe bereinigt."
+    ],
+    "operationalNote": "SEO-Metadaten-Workbench ist ein lokaler Vorprüfschritt; produktive Freigaben brauchen weiterhin Review, CI und Security-Prozess."
+  },
+  "devops-yaml-validator": {
+    "content": {
+      "toolKey": "devops_yaml_validator",
+      "intro": "DevOps-YAML-Validator analysiert mehrteilige YAML lokal und liefert Pfadfehler, Warnungen und Korrekturhinweise。",
+      "whatThisToolDoes": [
+        "DevOps-YAML-Validator konzentriert sich auf Docker-Compose- und Kubernetes-YAML-Prüfung und analysiert mehrteilige YAML lokal und liefert Pfadfehler, Warnungen und Korrekturhinweise.",
+        "Die Beispiele liefern kleine reproduzierbare Ausschnitte für PRs, Runbooks und Fehlertickets.",
+        "Der Bericht zeigt Zusammenfassung, Pfade oder Prüfpunkte, damit riskante Felder gezielt geprüft werden.",
+        "Ohne Konto und ohne Serververarbeitung eignet sich der Ablauf für lokale Vorprüfung sensibler Daten."
+      ],
+      "useCases": [
+        "Docker-Compose- und Kubernetes-YAML-Prüfung vor einem Merge lokal prüfen.",
+        "Reproduzierbare Nachweise für Reviews zu Docker-Compose- und Kubernetes-YAML-Prüfung vorbereiten.",
+        "Fehlerfälle zu Docker-Compose- und Kubernetes-YAML-Prüfung auf minimale Felder reduzieren.",
+        "Vor dem Teilen prüfen, dass keine Tokens, Konten oder internen Hosts im Ergebnis stehen."
+      ],
+      "inputExamples": [
+        {
+          "label": "Compose-Service",
+          "value": "services:\n  api:\n    image: node:20\n    ports:\n      - \"3000:3000\""
+        },
+        {
+          "label": "Kubernetes Deployment",
+          "value": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: api\nspec:\n  replicas: 2"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Compose-Hinweis",
+          "value": "$.services.api: service uses image without healthcheck. Fix: Add a healthcheck before handoff."
+        },
+        {
+          "label": "Kubernetes-Fehler",
+          "value": "$.spec.template: Deployment requires pod template metadata and containers."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Unvollständige Eingabestruktur für Docker-Compose- und Kubernetes-YAML-Prüfung",
+          "fix": "Mit einem minimal gültigen Beispiel beginnen und Pflichtfelder schrittweise ergänzen."
+        },
+        {
+          "error": "Produktionsgeheimnisse im Beispiel",
+          "fix": "Durch Platzhalter ersetzen, bevor Ergebnisse in Issue, PR oder Chat kopiert werden."
+        },
+        {
+          "error": "Nur die Zusammenfassung gelesen",
+          "fix": "Pfade, kid, URLs oder Dateimarker einzeln prüfen, bevor etwas geteilt wird."
+        }
+      ],
+      "privacyNotes": [
+        "Die Verarbeitung läuft im Browser; Eingaben und Ausgaben werden standardmäßig nicht gespeichert.",
+        "Tokens, private keys, JWTs, Kundendaten und rohe Screenshots gehören nicht in Share-Links.",
+        "Vor dem Kopieren Domainbeispiele, Accountnamen und Environment-Kennungen anonymisieren."
+      ],
+      "faqs": [
+        {
+          "q": "Sendet DevOps-YAML-Validator Daten an einen Server?",
+          "a": "Nein. Der Arbeitsbereich ist für lokale Browserausführung ohne automatische externe Requests ausgelegt."
+        },
+        {
+          "q": "Wann passt dieser Ablauf für Docker-Compose- und Kubernetes-YAML-Prüfung?",
+          "a": "Wenn vor Commit, Release oder Handoff ein Beispiel schnell geprüft und reproduzierbar dokumentiert werden soll."
+        },
+        {
+          "q": "Ist der Bericht eine endgültige Freigabe?",
+          "a": "Nein. Er ist ein Review-Hinweis und sollte mit Projektschema, Cluster-Policy oder Security-Prozess abgeglichen werden."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "In DevOps-YAML-Validator zuerst das Sample laden und die Felder verstehen.",
+      "Durch ein anonymisiertes Minimalbeispiel ersetzen, das nur die nötigen Felder enthält.",
+      "Prüfung ausführen und Fehlerpfade, Warnungen oder Zusammenfassung einzeln lesen.",
+      "Vor Copy oder Download nochmals auf sensible Payloads prüfen."
+    ],
+    "qualityChecklist": [
+      "Keine echten Tokens, Schlüssel, Kundendaten oder unredigierten Screenshots im Input.",
+      "Ein Normalfall und mindestens ein Fehlerfall wurden getestet.",
+      "Pfade, URLs, kid oder Dateimarker wurden manuell geprüft.",
+      "Clipboard und Downloads werden vor externer Weitergabe bereinigt."
+    ],
+    "operationalNote": "DevOps-YAML-Validator ist ein lokaler Vorprüfschritt; produktive Freigaben brauchen weiterhin Review, CI und Security-Prozess."
+  },
+  "oauth-jwks-workbench": {
+    "content": {
+      "toolKey": "oauth_jwks_workbench",
+      "intro": "OAuth-PKCE- und JWKS-Workbench erzeugt PKCE lokal mit Web Crypto und prüft kid, alg sowie JWT-Signaturen gegen eingefügte JWKS。",
+      "whatThisToolDoes": [
+        "OAuth-PKCE- und JWKS-Workbench konzentriert sich auf OAuth-PKCE- und JWKS-Prüfung und erzeugt PKCE lokal mit Web Crypto und prüft kid, alg sowie JWT-Signaturen gegen eingefügte JWKS.",
+        "Die Beispiele liefern kleine reproduzierbare Ausschnitte für PRs, Runbooks und Fehlertickets.",
+        "Der Bericht zeigt Zusammenfassung, Pfade oder Prüfpunkte, damit riskante Felder gezielt geprüft werden.",
+        "Ohne Konto und ohne Serververarbeitung eignet sich der Ablauf für lokale Vorprüfung sensibler Daten."
+      ],
+      "useCases": [
+        "OAuth-PKCE- und JWKS-Prüfung vor einem Merge lokal prüfen.",
+        "Reproduzierbare Nachweise für Reviews zu OAuth-PKCE- und JWKS-Prüfung vorbereiten.",
+        "Fehlerfälle zu OAuth-PKCE- und JWKS-Prüfung auf minimale Felder reduzieren.",
+        "Vor dem Teilen prüfen, dass keine Tokens, Konten oder internen Hosts im Ergebnis stehen."
+      ],
+      "inputExamples": [
+        {
+          "label": "JWKS-Auszug",
+          "value": "{\n  \"keys\": [{ \"kty\": \"RSA\", \"kid\": \"auth-prod-1\", \"alg\": \"RS256\", \"use\": \"sig\" }]\n}"
+        },
+        {
+          "label": "JWT-Header",
+          "value": "{ \"alg\": \"RS256\", \"kid\": \"auth-prod-1\" }"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "PKCE-Ausgabe",
+          "value": "verifier: 64 URL-safe characters\nchallenge: SHA-256 base64url digest\nmethod: S256"
+        },
+        {
+          "label": "JWKS-Zusammenfassung",
+          "value": "kid auth-prod-1: RSA signing key, alg RS256, compatible with JWT header."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Unvollständige Eingabestruktur für OAuth-PKCE- und JWKS-Prüfung",
+          "fix": "Mit einem minimal gültigen Beispiel beginnen und Pflichtfelder schrittweise ergänzen."
+        },
+        {
+          "error": "Produktionsgeheimnisse im Beispiel",
+          "fix": "Durch Platzhalter ersetzen, bevor Ergebnisse in Issue, PR oder Chat kopiert werden."
+        },
+        {
+          "error": "Nur die Zusammenfassung gelesen",
+          "fix": "Pfade, kid, URLs oder Dateimarker einzeln prüfen, bevor etwas geteilt wird."
+        }
+      ],
+      "privacyNotes": [
+        "Die Verarbeitung läuft im Browser; Eingaben und Ausgaben werden standardmäßig nicht gespeichert.",
+        "Tokens, private keys, JWTs, Kundendaten und rohe Screenshots gehören nicht in Share-Links.",
+        "Vor dem Kopieren Domainbeispiele, Accountnamen und Environment-Kennungen anonymisieren."
+      ],
+      "faqs": [
+        {
+          "q": "Sendet OAuth-PKCE- und JWKS-Workbench Daten an einen Server?",
+          "a": "Nein. Der Arbeitsbereich ist für lokale Browserausführung ohne automatische externe Requests ausgelegt."
+        },
+        {
+          "q": "Wann passt dieser Ablauf für OAuth-PKCE- und JWKS-Prüfung?",
+          "a": "Wenn vor Commit, Release oder Handoff ein Beispiel schnell geprüft und reproduzierbar dokumentiert werden soll."
+        },
+        {
+          "q": "Ist der Bericht eine endgültige Freigabe?",
+          "a": "Nein. Er ist ein Review-Hinweis und sollte mit Projektschema, Cluster-Policy oder Security-Prozess abgeglichen werden."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "In OAuth-PKCE- und JWKS-Workbench zuerst das Sample laden und die Felder verstehen.",
+      "Durch ein anonymisiertes Minimalbeispiel ersetzen, das nur die nötigen Felder enthält.",
+      "Prüfung ausführen und Fehlerpfade, Warnungen oder Zusammenfassung einzeln lesen.",
+      "Vor Copy oder Download nochmals auf sensible Payloads prüfen."
+    ],
+    "qualityChecklist": [
+      "Keine echten Tokens, Schlüssel, Kundendaten oder unredigierten Screenshots im Input.",
+      "Ein Normalfall und mindestens ein Fehlerfall wurden getestet.",
+      "Pfade, URLs, kid oder Dateimarker wurden manuell geprüft.",
+      "Clipboard und Downloads werden vor externer Weitergabe bereinigt."
+    ],
+    "operationalNote": "OAuth-PKCE- und JWKS-Workbench ist ein lokaler Vorprüfschritt; produktive Freigaben brauchen weiterhin Review, CI und Security-Prozess."
+  },
+  "image-privacy-workbench": {
+    "content": {
+      "toolKey": "image_privacy_workbench",
+      "intro": "Bild-Privacy-Workbench entfernt EXIF/XMP/GPS-Hinweise per lokaler Canvas-Neukodierung und priorisiert Redaction vor Resize。",
+      "whatThisToolDoes": [
+        "Bild-Privacy-Workbench konzentriert sich auf Bildmetadaten-Entfernung und Screenshot-Redaktionsablauf und entfernt EXIF/XMP/GPS-Hinweise per lokaler Canvas-Neukodierung und priorisiert Redaction vor Resize.",
+        "Die Beispiele liefern kleine reproduzierbare Ausschnitte für PRs, Runbooks und Fehlertickets.",
+        "Der Bericht zeigt Zusammenfassung, Pfade oder Prüfpunkte, damit riskante Felder gezielt geprüft werden.",
+        "Ohne Konto und ohne Serververarbeitung eignet sich der Ablauf für lokale Vorprüfung sensibler Daten."
+      ],
+      "useCases": [
+        "Bildmetadaten-Entfernung und Screenshot-Redaktionsablauf vor einem Merge lokal prüfen.",
+        "Reproduzierbare Nachweise für Reviews zu Bildmetadaten-Entfernung und Screenshot-Redaktionsablauf vorbereiten.",
+        "Fehlerfälle zu Bildmetadaten-Entfernung und Screenshot-Redaktionsablauf auf minimale Felder reduzieren.",
+        "Vor dem Teilen prüfen, dass keine Tokens, Konten oder internen Hosts im Ergebnis stehen."
+      ],
+      "inputExamples": [
+        {
+          "label": "Unterstütztes Bild",
+          "value": "photo-with-gps.jpg (JPEG or PNG selected from the local device)"
+        },
+        {
+          "label": "Screenshot-Checkliste",
+          "value": "visible token, email, account name, internal hostname, browser tab title"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Neukodiertes Ergebnis",
+          "value": "Before: EXIF, GPS, camera marker detected\nAfter: no EXIF/XMP/GPS marker detected in exported PNG"
+        },
+        {
+          "label": "Sichere Reihenfolge",
+          "value": "1. Redact visible secrets\n2. Strip metadata by re-encoding\n3. Inspect export\n4. Download sanitized image"
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Unvollständige Eingabestruktur für Bildmetadaten-Entfernung und Screenshot-Redaktionsablauf",
+          "fix": "Mit einem minimal gültigen Beispiel beginnen und Pflichtfelder schrittweise ergänzen."
+        },
+        {
+          "error": "Produktionsgeheimnisse im Beispiel",
+          "fix": "Durch Platzhalter ersetzen, bevor Ergebnisse in Issue, PR oder Chat kopiert werden."
+        },
+        {
+          "error": "Nur die Zusammenfassung gelesen",
+          "fix": "Pfade, kid, URLs oder Dateimarker einzeln prüfen, bevor etwas geteilt wird."
+        }
+      ],
+      "privacyNotes": [
+        "Die Verarbeitung läuft im Browser; Eingaben und Ausgaben werden standardmäßig nicht gespeichert.",
+        "Tokens, private keys, JWTs, Kundendaten und rohe Screenshots gehören nicht in Share-Links.",
+        "Vor dem Kopieren Domainbeispiele, Accountnamen und Environment-Kennungen anonymisieren."
+      ],
+      "faqs": [
+        {
+          "q": "Sendet Bild-Privacy-Workbench Daten an einen Server?",
+          "a": "Nein. Der Arbeitsbereich ist für lokale Browserausführung ohne automatische externe Requests ausgelegt."
+        },
+        {
+          "q": "Wann passt dieser Ablauf für Bildmetadaten-Entfernung und Screenshot-Redaktionsablauf?",
+          "a": "Wenn vor Commit, Release oder Handoff ein Beispiel schnell geprüft und reproduzierbar dokumentiert werden soll."
+        },
+        {
+          "q": "Ist der Bericht eine endgültige Freigabe?",
+          "a": "Nein. Er ist ein Review-Hinweis und sollte mit Projektschema, Cluster-Policy oder Security-Prozess abgeglichen werden."
+        }
+      ]
+    },
+    "workflowSteps": [
+      "In Bild-Privacy-Workbench zuerst das Sample laden und die Felder verstehen.",
+      "Durch ein anonymisiertes Minimalbeispiel ersetzen, das nur die nötigen Felder enthält.",
+      "Prüfung ausführen und Fehlerpfade, Warnungen oder Zusammenfassung einzeln lesen.",
+      "Vor Copy oder Download nochmals auf sensible Payloads prüfen."
+    ],
+    "qualityChecklist": [
+      "Keine echten Tokens, Schlüssel, Kundendaten oder unredigierten Screenshots im Input.",
+      "Ein Normalfall und mindestens ein Fehlerfall wurden getestet.",
+      "Pfade, URLs, kid oder Dateimarker wurden manuell geprüft.",
+      "Clipboard und Downloads werden vor externer Weitergabe bereinigt."
+    ],
+    "operationalNote": "Bild-Privacy-Workbench ist ein lokaler Vorprüfschritt; produktive Freigaben brauchen weiterhin Review, CI und Security-Prozess."
   }
 }

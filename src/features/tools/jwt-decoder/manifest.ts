@@ -4,7 +4,7 @@ export const toolManifest = {
     key: "jwt_decoder",
     slug: "jwt-decoder",
     category: "text-string",
-    relatedTools: ["jwt_workbench", "base64_encode_decode", "hash_generator", "url_encode_decode"],
+    relatedTools: ["jwt_workbench", "oauth_jwks_workbench", "base64_encode_decode", "hash_generator"],
     privacy: {
         executionMode: "browser-local",
         offlineCapable: true,

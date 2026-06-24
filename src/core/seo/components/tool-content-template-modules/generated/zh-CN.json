@@ -12551,5 +12551,677 @@
       "对外分享前移除内部环境名称和示例域名。"
     ],
     "operationalNote": "公钥 JWK 助手适合作为认证集成和密钥轮换前的快速检查步骤，但生产信任发布仍应通过正式变更和审计流程。"
+  },
+  "json-schema-workbench": {
+    "content": {
+      "toolKey": "json_schema_workbench",
+      "intro": "JSON Schema 工作台 从样例生成起始 schema，并用路径级错误校验 payload。",
+      "whatThisToolDoes": [
+        "JSON Schema 工作台聚焦JSON Schema 契约检查，从样例生成起始 schema，并用路径级错误校验 payload。",
+        "示例区展示可复制的最小片段，方便在 PR、runbook 或缺陷报告中复现。",
+        "结果区给出摘要、路径或检查项，帮助把人工审查集中在真正有风险的字段上。",
+        "工具不需要账号或服务端处理，适合先在本地完成敏感内容筛查。"
+      ],
+      "useCases": [
+        "在提交JSON Schema 契约检查变更前做本地检查。",
+        "为代码评审准备可复现的JSON Schema 契约检查证据。",
+        "把失败样例缩小到最少字段后再排查规则。",
+        "共享前确认输出中没有 token、账号或内部主机名。"
+      ],
+      "inputExamples": [
+        {
+          "label": "订单 payload",
+          "value": "{\n  \"orderId\": 42,\n  \"status\": \"paid\",\n  \"items\": [{ \"sku\": \"sku_123\", \"qty\": 2 }]\n}"
+        },
+        {
+          "label": "校验 schema",
+          "value": "{\n  \"type\": \"object\",\n  \"required\": [\"orderId\", \"status\"],\n  \"properties\": { \"orderId\": { \"type\": \"integer\" } }\n}"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "生成的 schema",
+          "value": "{\n  \"$schema\": \"https://json-schema.org/draft/2020-12/schema\",\n  \"type\": \"object\",\n  \"required\": [\"orderId\", \"status\", \"items\"]\n}"
+        },
+        {
+          "label": "路径级错误",
+          "value": "$.orderId: Expected integer, received string. Fix: Change the payload value or update the schema type."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "JSON Schema 契约检查输入结构不完整",
+          "fix": "从最小有效样例开始补齐必需字段，再扩大到完整数据。"
+        },
+        {
+          "error": "把生产秘密直接放进演示样例",
+          "fix": "先替换为占位值，再复制输出到 issue、PR 或聊天工具。"
+        },
+        {
+          "error": "只看摘要而忽略路径或检查项",
+          "fix": "逐条检查报告中的路径、kid、URL 或文件标记，再决定是否共享。"
+        }
+      ],
+      "privacyNotes": [
+        "处理在浏览器本地完成，默认不持久化输入或输出。",
+        "不要把 token、私钥、JWT、客户记录或原始截图写进共享链接。",
+        "复制报告前先确认示例域名、账号名和内部环境标识已经脱敏。"
+      ],
+      "faqs": [
+        {
+          "q": "JSON Schema 工作台会把数据发送到服务器吗？",
+          "a": "不会。该工作台按浏览器本地执行设计，没有自动外部请求。"
+        },
+        {
+          "q": "什么时候适合使用JSON Schema 契约检查流程？",
+          "a": "当你需要在提交、发布或交接前快速验证样例并保留可复现证据时。"
+        },
+        {
+          "q": "输出可以直接作为最终结论吗？",
+          "a": "不建议。请把报告作为审查线索，并结合项目 schema、集群策略或安全流程复核。"
+        }
+      ]
+    },
+    "workflowSteps": [
+      "打开JSON Schema 工作台后先加载示例，确认字段含义。",
+      "替换为已脱敏的最小样例，只保留复现问题需要的字段。",
+      "运行检查并逐条阅读错误路径、警告或摘要。",
+      "复制或下载报告前再次确认没有敏感 payload。"
+    ],
+    "qualityChecklist": [
+      "输入中没有真实 token、密钥、客户记录或未打码截图。",
+      "示例覆盖正常路径和至少一个失败路径。",
+      "报告中的路径、URL、kid 或文件标记已经人工复核。",
+      "分享前清理剪贴板和下载目录中的临时敏感材料。"
+    ],
+    "operationalNote": "JSON Schema 工作台适合作为本地预检步骤；生产发布仍应结合代码评审、CI 校验和团队安全流程。"
+  },
+  "openapi-diff": {
+    "content": {
+      "toolKey": "openapi_diff",
+      "intro": "OpenAPI Diff 比较器 比较两个 JSON/YAML 规格并标记端点、schema、安全配置和破坏性风险。",
+      "whatThisToolDoes": [
+        "OpenAPI Diff 比较器聚焦OpenAPI 合约差异审查，比较两个 JSON/YAML 规格并标记端点、schema、安全配置和破坏性风险。",
+        "示例区展示可复制的最小片段，方便在 PR、runbook 或缺陷报告中复现。",
+        "结果区给出摘要、路径或检查项，帮助把人工审查集中在真正有风险的字段上。",
+        "工具不需要账号或服务端处理，适合先在本地完成敏感内容筛查。"
+      ],
+      "useCases": [
+        "在提交OpenAPI 合约差异审查变更前做本地检查。",
+        "为代码评审准备可复现的OpenAPI 合约差异审查证据。",
+        "把失败样例缩小到最少字段后再排查规则。",
+        "共享前确认输出中没有 token、账号或内部主机名。"
+      ],
+      "inputExamples": [
+        {
+          "label": "旧规格片段",
+          "value": "paths:\n  /orders/{id}:\n    get:\n      responses:\n        \"200\": { description: Order }\n        \"404\": { description: Missing }"
+        },
+        {
+          "label": "新规格片段",
+          "value": "paths:\n  /orders:\n    post:\n      responses:\n        \"201\": { description: Created }"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "风险摘要",
+          "value": "Added: 1\nChanged: 0\nBreaking risks: 1"
+        },
+        {
+          "label": "破坏性变化",
+          "value": "[breaking] GET /orders/{id} - Operation was removed."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "OpenAPI 合约差异审查输入结构不完整",
+          "fix": "从最小有效样例开始补齐必需字段，再扩大到完整数据。"
+        },
+        {
+          "error": "把生产秘密直接放进演示样例",
+          "fix": "先替换为占位值，再复制输出到 issue、PR 或聊天工具。"
+        },
+        {
+          "error": "只看摘要而忽略路径或检查项",
+          "fix": "逐条检查报告中的路径、kid、URL 或文件标记，再决定是否共享。"
+        }
+      ],
+      "privacyNotes": [
+        "处理在浏览器本地完成，默认不持久化输入或输出。",
+        "不要把 token、私钥、JWT、客户记录或原始截图写进共享链接。",
+        "复制报告前先确认示例域名、账号名和内部环境标识已经脱敏。"
+      ],
+      "faqs": [
+        {
+          "q": "OpenAPI Diff 比较器会把数据发送到服务器吗？",
+          "a": "不会。该工作台按浏览器本地执行设计，没有自动外部请求。"
+        },
+        {
+          "q": "什么时候适合使用OpenAPI 合约差异审查流程？",
+          "a": "当你需要在提交、发布或交接前快速验证样例并保留可复现证据时。"
+        },
+        {
+          "q": "输出可以直接作为最终结论吗？",
+          "a": "不建议。请把报告作为审查线索，并结合项目 schema、集群策略或安全流程复核。"
+        }
+      ]
+    },
+    "workflowSteps": [
+      "打开OpenAPI Diff 比较器后先加载示例，确认字段含义。",
+      "替换为已脱敏的最小样例，只保留复现问题需要的字段。",
+      "运行检查并逐条阅读错误路径、警告或摘要。",
+      "复制或下载报告前再次确认没有敏感 payload。"
+    ],
+    "qualityChecklist": [
+      "输入中没有真实 token、密钥、客户记录或未打码截图。",
+      "示例覆盖正常路径和至少一个失败路径。",
+      "报告中的路径、URL、kid 或文件标记已经人工复核。",
+      "分享前清理剪贴板和下载目录中的临时敏感材料。"
+    ],
+    "operationalNote": "OpenAPI Diff 比较器适合作为本地预检步骤；生产发布仍应结合代码评审、CI 校验和团队安全流程。"
+  },
+  "graphql-workbench": {
+    "content": {
+      "toolKey": "graphql_workbench",
+      "intro": "GraphQL 工作台 格式化 query/mutation，校验 variables JSON，并检查粘贴的 introspection 类型。",
+      "whatThisToolDoes": [
+        "GraphQL 工作台聚焦GraphQL 查询整理，格式化 query/mutation，校验 variables JSON，并检查粘贴的 introspection 类型。",
+        "示例区展示可复制的最小片段，方便在 PR、runbook 或缺陷报告中复现。",
+        "结果区给出摘要、路径或检查项，帮助把人工审查集中在真正有风险的字段上。",
+        "工具不需要账号或服务端处理，适合先在本地完成敏感内容筛查。"
+      ],
+      "useCases": [
+        "在提交GraphQL 查询整理变更前做本地检查。",
+        "为代码评审准备可复现的GraphQL 查询整理证据。",
+        "把失败样例缩小到最少字段后再排查规则。",
+        "共享前确认输出中没有 token、账号或内部主机名。"
+      ],
+      "inputExamples": [
+        {
+          "label": "查询片段",
+          "value": "query GetUser($id: ID!) { user(id: $id) { id name email } }"
+        },
+        {
+          "label": "变量 JSON",
+          "value": "{\n  \"id\": \"user_123\"\n}"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "格式化 query",
+          "value": "query GetUser($id: ID!) {\n  user(id: $id) {\n    id\n    name\n    email\n  }\n}"
+        },
+        {
+          "label": "诊断摘要",
+          "value": "Operation: query GetUser\nVariables: valid JSON object\nSchema types: Query, User, Role"
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "GraphQL 查询整理输入结构不完整",
+          "fix": "从最小有效样例开始补齐必需字段，再扩大到完整数据。"
+        },
+        {
+          "error": "把生产秘密直接放进演示样例",
+          "fix": "先替换为占位值，再复制输出到 issue、PR 或聊天工具。"
+        },
+        {
+          "error": "只看摘要而忽略路径或检查项",
+          "fix": "逐条检查报告中的路径、kid、URL 或文件标记，再决定是否共享。"
+        }
+      ],
+      "privacyNotes": [
+        "处理在浏览器本地完成，默认不持久化输入或输出。",
+        "不要把 token、私钥、JWT、客户记录或原始截图写进共享链接。",
+        "复制报告前先确认示例域名、账号名和内部环境标识已经脱敏。"
+      ],
+      "faqs": [
+        {
+          "q": "GraphQL 工作台会把数据发送到服务器吗？",
+          "a": "不会。该工作台按浏览器本地执行设计，没有自动外部请求。"
+        },
+        {
+          "q": "什么时候适合使用GraphQL 查询整理流程？",
+          "a": "当你需要在提交、发布或交接前快速验证样例并保留可复现证据时。"
+        },
+        {
+          "q": "输出可以直接作为最终结论吗？",
+          "a": "不建议。请把报告作为审查线索，并结合项目 schema、集群策略或安全流程复核。"
+        }
+      ]
+    },
+    "workflowSteps": [
+      "打开GraphQL 工作台后先加载示例，确认字段含义。",
+      "替换为已脱敏的最小样例，只保留复现问题需要的字段。",
+      "运行检查并逐条阅读错误路径、警告或摘要。",
+      "复制或下载报告前再次确认没有敏感 payload。"
+    ],
+    "qualityChecklist": [
+      "输入中没有真实 token、密钥、客户记录或未打码截图。",
+      "示例覆盖正常路径和至少一个失败路径。",
+      "报告中的路径、URL、kid 或文件标记已经人工复核。",
+      "分享前清理剪贴板和下载目录中的临时敏感材料。"
+    ],
+    "operationalNote": "GraphQL 工作台适合作为本地预检步骤；生产发布仍应结合代码评审、CI 校验和团队安全流程。"
+  },
+  "messagepack-inspector": {
+    "content": {
+      "toolKey": "messagepack_inspector",
+      "intro": "MessagePack 检查器 把十六进制或 Base64 字节解码为 JSON，并明确说明 schema 要求和二进制错误。",
+      "whatThisToolDoes": [
+        "MessagePack 检查器聚焦MessagePack 事件 payload 检查，把十六进制或 Base64 字节解码为 JSON，并明确说明 schema 要求和二进制错误。",
+        "示例区展示可复制的最小片段，方便在 PR、runbook 或缺陷报告中复现。",
+        "结果区给出摘要、路径或检查项，帮助把人工审查集中在真正有风险的字段上。",
+        "工具不需要账号或服务端处理，适合先在本地完成敏感内容筛查。"
+      ],
+      "useCases": [
+        "在提交MessagePack 事件 payload 检查变更前做本地检查。",
+        "为代码评审准备可复现的MessagePack 事件 payload 检查证据。",
+        "把失败样例缩小到最少字段后再排查规则。",
+        "共享前确认输出中没有 token、账号或内部主机名。"
+      ],
+      "inputExamples": [
+        {
+          "label": "十六进制 MessagePack",
+          "value": "82 a2 69 64 01 a4 6e 61 6d 65 a5 41 6c 69 63 65"
+        },
+        {
+          "label": "无效字节",
+          "value": "82 a2 69"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "解码 JSON",
+          "value": "{\n  \"id\": 1,\n  \"name\": \"Alice\"\n}"
+        },
+        {
+          "label": "错误提示",
+          "value": "Unexpected end of MessagePack input while reading map value."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "MessagePack 事件 payload 检查输入结构不完整",
+          "fix": "从最小有效样例开始补齐必需字段，再扩大到完整数据。"
+        },
+        {
+          "error": "把生产秘密直接放进演示样例",
+          "fix": "先替换为占位值，再复制输出到 issue、PR 或聊天工具。"
+        },
+        {
+          "error": "只看摘要而忽略路径或检查项",
+          "fix": "逐条检查报告中的路径、kid、URL 或文件标记，再决定是否共享。"
+        }
+      ],
+      "privacyNotes": [
+        "处理在浏览器本地完成，默认不持久化输入或输出。",
+        "不要把 token、私钥、JWT、客户记录或原始截图写进共享链接。",
+        "复制报告前先确认示例域名、账号名和内部环境标识已经脱敏。"
+      ],
+      "faqs": [
+        {
+          "q": "MessagePack 检查器会把数据发送到服务器吗？",
+          "a": "不会。该工作台按浏览器本地执行设计，没有自动外部请求。"
+        },
+        {
+          "q": "什么时候适合使用MessagePack 事件 payload 检查流程？",
+          "a": "当你需要在提交、发布或交接前快速验证样例并保留可复现证据时。"
+        },
+        {
+          "q": "输出可以直接作为最终结论吗？",
+          "a": "不建议。请把报告作为审查线索，并结合项目 schema、集群策略或安全流程复核。"
+        }
+      ]
+    },
+    "workflowSteps": [
+      "打开MessagePack 检查器后先加载示例，确认字段含义。",
+      "替换为已脱敏的最小样例，只保留复现问题需要的字段。",
+      "运行检查并逐条阅读错误路径、警告或摘要。",
+      "复制或下载报告前再次确认没有敏感 payload。"
+    ],
+    "qualityChecklist": [
+      "输入中没有真实 token、密钥、客户记录或未打码截图。",
+      "示例覆盖正常路径和至少一个失败路径。",
+      "报告中的路径、URL、kid 或文件标记已经人工复核。",
+      "分享前清理剪贴板和下载目录中的临时敏感材料。"
+    ],
+    "operationalNote": "MessagePack 检查器适合作为本地预检步骤；生产发布仍应结合代码评审、CI 校验和团队安全流程。"
+  },
+  "seo-metadata-workbench": {
+    "content": {
+      "toolKey": "seo_metadata_workbench",
+      "intro": "SEO 元数据工作台 本地检查 SERP 标题、description、canonical、hreflang、sitemap URL 和 llms.txt 片段。",
+      "whatThisToolDoes": [
+        "SEO 元数据工作台聚焦技术 SEO 元数据审查，本地检查 SERP 标题、description、canonical、hreflang、sitemap URL 和 llms.txt 片段。",
+        "示例区展示可复制的最小片段，方便在 PR、runbook 或缺陷报告中复现。",
+        "结果区给出摘要、路径或检查项，帮助把人工审查集中在真正有风险的字段上。",
+        "工具不需要账号或服务端处理，适合先在本地完成敏感内容筛查。"
+      ],
+      "useCases": [
+        "在提交技术 SEO 元数据审查变更前做本地检查。",
+        "为代码评审准备可复现的技术 SEO 元数据审查证据。",
+        "把失败样例缩小到最少字段后再排查规则。",
+        "共享前确认输出中没有 token、账号或内部主机名。"
+      ],
+      "inputExamples": [
+        {
+          "label": "页面元数据",
+          "value": "{\n  \"title\": \"Local JSON Tools\",\n  \"description\": \"Format and validate JSON in the browser.\",\n  \"canonical\": \"https://example.com/en/json\"\n}"
+        },
+        {
+          "label": "hreflang 表",
+          "value": "[\n  { \"lang\": \"en\", \"url\": \"https://example.com/en/json\" },\n  { \"lang\": \"fr\", \"url\": \"https://example.com/fr/json\" }\n]"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "SERP 检查",
+          "value": "Title length: 16 characters\nDescription length: 40 characters\nCanonical: valid absolute URL"
+        },
+        {
+          "label": "hreflang 提醒",
+          "value": "Missing reciprocal x-default entry for https://example.com/en/json."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "技术 SEO 元数据审查输入结构不完整",
+          "fix": "从最小有效样例开始补齐必需字段，再扩大到完整数据。"
+        },
+        {
+          "error": "把生产秘密直接放进演示样例",
+          "fix": "先替换为占位值，再复制输出到 issue、PR 或聊天工具。"
+        },
+        {
+          "error": "只看摘要而忽略路径或检查项",
+          "fix": "逐条检查报告中的路径、kid、URL 或文件标记，再决定是否共享。"
+        }
+      ],
+      "privacyNotes": [
+        "处理在浏览器本地完成，默认不持久化输入或输出。",
+        "不要把 token、私钥、JWT、客户记录或原始截图写进共享链接。",
+        "复制报告前先确认示例域名、账号名和内部环境标识已经脱敏。"
+      ],
+      "faqs": [
+        {
+          "q": "SEO 元数据工作台会把数据发送到服务器吗？",
+          "a": "不会。该工作台按浏览器本地执行设计，没有自动外部请求。"
+        },
+        {
+          "q": "什么时候适合使用技术 SEO 元数据审查流程？",
+          "a": "当你需要在提交、发布或交接前快速验证样例并保留可复现证据时。"
+        },
+        {
+          "q": "输出可以直接作为最终结论吗？",
+          "a": "不建议。请把报告作为审查线索，并结合项目 schema、集群策略或安全流程复核。"
+        }
+      ]
+    },
+    "workflowSteps": [
+      "打开SEO 元数据工作台后先加载示例，确认字段含义。",
+      "替换为已脱敏的最小样例，只保留复现问题需要的字段。",
+      "运行检查并逐条阅读错误路径、警告或摘要。",
+      "复制或下载报告前再次确认没有敏感 payload。"
+    ],
+    "qualityChecklist": [
+      "输入中没有真实 token、密钥、客户记录或未打码截图。",
+      "示例覆盖正常路径和至少一个失败路径。",
+      "报告中的路径、URL、kid 或文件标记已经人工复核。",
+      "分享前清理剪贴板和下载目录中的临时敏感材料。"
+    ],
+    "operationalNote": "SEO 元数据工作台适合作为本地预检步骤；生产发布仍应结合代码评审、CI 校验和团队安全流程。"
+  },
+  "devops-yaml-validator": {
+    "content": {
+      "toolKey": "devops_yaml_validator",
+      "intro": "DevOps YAML 校验器 在本地解析多文档 YAML，输出路径级错误、警告和修复建议。",
+      "whatThisToolDoes": [
+        "DevOps YAML 校验器聚焦Docker Compose 与 Kubernetes YAML 检查，在本地解析多文档 YAML，输出路径级错误、警告和修复建议。",
+        "示例区展示可复制的最小片段，方便在 PR、runbook 或缺陷报告中复现。",
+        "结果区给出摘要、路径或检查项，帮助把人工审查集中在真正有风险的字段上。",
+        "工具不需要账号或服务端处理，适合先在本地完成敏感内容筛查。"
+      ],
+      "useCases": [
+        "在提交Docker Compose 与 Kubernetes YAML 检查变更前做本地检查。",
+        "为代码评审准备可复现的Docker Compose 与 Kubernetes YAML 检查证据。",
+        "把失败样例缩小到最少字段后再排查规则。",
+        "共享前确认输出中没有 token、账号或内部主机名。"
+      ],
+      "inputExamples": [
+        {
+          "label": "Compose 服务",
+          "value": "services:\n  api:\n    image: node:20\n    ports:\n      - \"3000:3000\""
+        },
+        {
+          "label": "Kubernetes Deployment",
+          "value": "apiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: api\nspec:\n  replicas: 2"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "Compose 提醒",
+          "value": "$.services.api: service uses image without healthcheck. Fix: Add a healthcheck before handoff."
+        },
+        {
+          "label": "Kubernetes 错误",
+          "value": "$.spec.template: Deployment requires pod template metadata and containers."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "Docker Compose 与 Kubernetes YAML 检查输入结构不完整",
+          "fix": "从最小有效样例开始补齐必需字段，再扩大到完整数据。"
+        },
+        {
+          "error": "把生产秘密直接放进演示样例",
+          "fix": "先替换为占位值，再复制输出到 issue、PR 或聊天工具。"
+        },
+        {
+          "error": "只看摘要而忽略路径或检查项",
+          "fix": "逐条检查报告中的路径、kid、URL 或文件标记，再决定是否共享。"
+        }
+      ],
+      "privacyNotes": [
+        "处理在浏览器本地完成，默认不持久化输入或输出。",
+        "不要把 token、私钥、JWT、客户记录或原始截图写进共享链接。",
+        "复制报告前先确认示例域名、账号名和内部环境标识已经脱敏。"
+      ],
+      "faqs": [
+        {
+          "q": "DevOps YAML 校验器会把数据发送到服务器吗？",
+          "a": "不会。该工作台按浏览器本地执行设计，没有自动外部请求。"
+        },
+        {
+          "q": "什么时候适合使用Docker Compose 与 Kubernetes YAML 检查流程？",
+          "a": "当你需要在提交、发布或交接前快速验证样例并保留可复现证据时。"
+        },
+        {
+          "q": "输出可以直接作为最终结论吗？",
+          "a": "不建议。请把报告作为审查线索，并结合项目 schema、集群策略或安全流程复核。"
+        }
+      ]
+    },
+    "workflowSteps": [
+      "打开DevOps YAML 校验器后先加载示例，确认字段含义。",
+      "替换为已脱敏的最小样例，只保留复现问题需要的字段。",
+      "运行检查并逐条阅读错误路径、警告或摘要。",
+      "复制或下载报告前再次确认没有敏感 payload。"
+    ],
+    "qualityChecklist": [
+      "输入中没有真实 token、密钥、客户记录或未打码截图。",
+      "示例覆盖正常路径和至少一个失败路径。",
+      "报告中的路径、URL、kid 或文件标记已经人工复核。",
+      "分享前清理剪贴板和下载目录中的临时敏感材料。"
+    ],
+    "operationalNote": "DevOps YAML 校验器适合作为本地预检步骤；生产发布仍应结合代码评审、CI 校验和团队安全流程。"
+  },
+  "oauth-jwks-workbench": {
+    "content": {
+      "toolKey": "oauth_jwks_workbench",
+      "intro": "OAuth PKCE 与 JWKS 工作台 用 Web Crypto 本地生成 PKCE，并检查 pasted JWKS 的 kid、alg 与 JWT 签名匹配。",
+      "whatThisToolDoes": [
+        "OAuth PKCE 与 JWKS 工作台聚焦OAuth PKCE 与 JWKS 验证，用 Web Crypto 本地生成 PKCE，并检查 pasted JWKS 的 kid、alg 与 JWT 签名匹配。",
+        "示例区展示可复制的最小片段，方便在 PR、runbook 或缺陷报告中复现。",
+        "结果区给出摘要、路径或检查项，帮助把人工审查集中在真正有风险的字段上。",
+        "工具不需要账号或服务端处理，适合先在本地完成敏感内容筛查。"
+      ],
+      "useCases": [
+        "在提交OAuth PKCE 与 JWKS 验证变更前做本地检查。",
+        "为代码评审准备可复现的OAuth PKCE 与 JWKS 验证证据。",
+        "把失败样例缩小到最少字段后再排查规则。",
+        "共享前确认输出中没有 token、账号或内部主机名。"
+      ],
+      "inputExamples": [
+        {
+          "label": "JWKS 片段",
+          "value": "{\n  \"keys\": [{ \"kty\": \"RSA\", \"kid\": \"auth-prod-1\", \"alg\": \"RS256\", \"use\": \"sig\" }]\n}"
+        },
+        {
+          "label": "JWT header",
+          "value": "{ \"alg\": \"RS256\", \"kid\": \"auth-prod-1\" }"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "PKCE 输出",
+          "value": "verifier: 64 URL-safe characters\nchallenge: SHA-256 base64url digest\nmethod: S256"
+        },
+        {
+          "label": "JWKS 摘要",
+          "value": "kid auth-prod-1: RSA signing key, alg RS256, compatible with JWT header."
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "OAuth PKCE 与 JWKS 验证输入结构不完整",
+          "fix": "从最小有效样例开始补齐必需字段，再扩大到完整数据。"
+        },
+        {
+          "error": "把生产秘密直接放进演示样例",
+          "fix": "先替换为占位值，再复制输出到 issue、PR 或聊天工具。"
+        },
+        {
+          "error": "只看摘要而忽略路径或检查项",
+          "fix": "逐条检查报告中的路径、kid、URL 或文件标记，再决定是否共享。"
+        }
+      ],
+      "privacyNotes": [
+        "处理在浏览器本地完成，默认不持久化输入或输出。",
+        "不要把 token、私钥、JWT、客户记录或原始截图写进共享链接。",
+        "复制报告前先确认示例域名、账号名和内部环境标识已经脱敏。"
+      ],
+      "faqs": [
+        {
+          "q": "OAuth PKCE 与 JWKS 工作台会把数据发送到服务器吗？",
+          "a": "不会。该工作台按浏览器本地执行设计，没有自动外部请求。"
+        },
+        {
+          "q": "什么时候适合使用OAuth PKCE 与 JWKS 验证流程？",
+          "a": "当你需要在提交、发布或交接前快速验证样例并保留可复现证据时。"
+        },
+        {
+          "q": "输出可以直接作为最终结论吗？",
+          "a": "不建议。请把报告作为审查线索，并结合项目 schema、集群策略或安全流程复核。"
+        }
+      ]
+    },
+    "workflowSteps": [
+      "打开OAuth PKCE 与 JWKS 工作台后先加载示例，确认字段含义。",
+      "替换为已脱敏的最小样例，只保留复现问题需要的字段。",
+      "运行检查并逐条阅读错误路径、警告或摘要。",
+      "复制或下载报告前再次确认没有敏感 payload。"
+    ],
+    "qualityChecklist": [
+      "输入中没有真实 token、密钥、客户记录或未打码截图。",
+      "示例覆盖正常路径和至少一个失败路径。",
+      "报告中的路径、URL、kid 或文件标记已经人工复核。",
+      "分享前清理剪贴板和下载目录中的临时敏感材料。"
+    ],
+    "operationalNote": "OAuth PKCE 与 JWKS 工作台适合作为本地预检步骤；生产发布仍应结合代码评审、CI 校验和团队安全流程。"
+  },
+  "image-privacy-workbench": {
+    "content": {
+      "toolKey": "image_privacy_workbench",
+      "intro": "图片隐私工作台 通过本地 canvas 重新编码移除 EXIF/XMP/GPS 线索，并提示先打码后缩放。",
+      "whatThisToolDoes": [
+        "图片隐私工作台聚焦图片 metadata 移除与截图打码顺序检查，通过本地 canvas 重新编码移除 EXIF/XMP/GPS 线索，并提示先打码后缩放。",
+        "示例区展示可复制的最小片段，方便在 PR、runbook 或缺陷报告中复现。",
+        "结果区给出摘要、路径或检查项，帮助把人工审查集中在真正有风险的字段上。",
+        "工具不需要账号或服务端处理，适合先在本地完成敏感内容筛查。"
+      ],
+      "useCases": [
+        "在提交图片 metadata 移除与截图打码顺序检查变更前做本地检查。",
+        "为代码评审准备可复现的图片 metadata 移除与截图打码顺序检查证据。",
+        "把失败样例缩小到最少字段后再排查规则。",
+        "共享前确认输出中没有 token、账号或内部主机名。"
+      ],
+      "inputExamples": [
+        {
+          "label": "支持图片",
+          "value": "photo-with-gps.jpg (JPEG or PNG selected from the local device)"
+        },
+        {
+          "label": "截图检查项",
+          "value": "visible token, email, account name, internal hostname, browser tab title"
+        }
+      ],
+      "outputExamples": [
+        {
+          "label": "重新编码结果",
+          "value": "Before: EXIF, GPS, camera marker detected\nAfter: no EXIF/XMP/GPS marker detected in exported PNG"
+        },
+        {
+          "label": "安全顺序",
+          "value": "1. Redact visible secrets\n2. Strip metadata by re-encoding\n3. Inspect export\n4. Download sanitized image"
+        }
+      ],
+      "commonErrors": [
+        {
+          "error": "图片 metadata 移除与截图打码顺序检查输入结构不完整",
+          "fix": "从最小有效样例开始补齐必需字段，再扩大到完整数据。"
+        },
+        {
+          "error": "把生产秘密直接放进演示样例",
+          "fix": "先替换为占位值，再复制输出到 issue、PR 或聊天工具。"
+        },
+        {
+          "error": "只看摘要而忽略路径或检查项",
+          "fix": "逐条检查报告中的路径、kid、URL 或文件标记，再决定是否共享。"
+        }
+      ],
+      "privacyNotes": [
+        "处理在浏览器本地完成，默认不持久化输入或输出。",
+        "不要把 token、私钥、JWT、客户记录或原始截图写进共享链接。",
+        "复制报告前先确认示例域名、账号名和内部环境标识已经脱敏。"
+      ],
+      "faqs": [
+        {
+          "q": "图片隐私工作台会把数据发送到服务器吗？",
+          "a": "不会。该工作台按浏览器本地执行设计，没有自动外部请求。"
+        },
+        {
+          "q": "什么时候适合使用图片 metadata 移除与截图打码顺序检查流程？",
+          "a": "当你需要在提交、发布或交接前快速验证样例并保留可复现证据时。"
+        },
+        {
+          "q": "输出可以直接作为最终结论吗？",
+          "a": "不建议。请把报告作为审查线索，并结合项目 schema、集群策略或安全流程复核。"
+        }
+      ]
+    },
+    "workflowSteps": [
+      "打开图片隐私工作台后先加载示例，确认字段含义。",
+      "替换为已脱敏的最小样例，只保留复现问题需要的字段。",
+      "运行检查并逐条阅读错误路径、警告或摘要。",
+      "复制或下载报告前再次确认没有敏感 payload。"
+    ],
+    "qualityChecklist": [
+      "输入中没有真实 token、密钥、客户记录或未打码截图。",
+      "示例覆盖正常路径和至少一个失败路径。",
+      "报告中的路径、URL、kid 或文件标记已经人工复核。",
+      "分享前清理剪贴板和下载目录中的临时敏感材料。"
+    ],
+    "operationalNote": "图片隐私工作台适合作为本地预检步骤；生产发布仍应结合代码评审、CI 校验和团队安全流程。"
   }
 }

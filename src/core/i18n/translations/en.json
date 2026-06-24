@@ -2848,6 +2848,90 @@
       "key_ops": "Key operations",
       "key_id": "Key ID",
       "thumbprint": "Thumbprint"
+    },
+    "json_schema_workbench": {
+      "title": "JSON Schema Workbench",
+      "description": "Generate starter schemas from JSON and validate payloads against pasted schemas locally in your browser.",
+      "mode_label": "JSON Schema mode",
+      "mode_generate": "Generate schema",
+      "mode_validate": "Validate payload",
+      "generate_action": "Generate schema",
+      "validate_action": "Validate payload",
+      "payload_label": "JSON payload",
+      "schema_label": "JSON Schema"
+    },
+    "openapi_diff": {
+      "title": "OpenAPI Diff",
+      "description": "Compare two OpenAPI or Swagger specs locally and flag endpoint, parameter, response, security, and breaking-risk changes.",
+      "compare_action": "Compare specs",
+      "before_label": "Before spec",
+      "after_label": "After spec",
+      "report_label": "Diff report"
+    },
+    "graphql_workbench": {
+      "title": "GraphQL Workbench",
+      "description": "Format GraphQL queries, validate variables JSON, and inspect pasted introspection data without contacting a server.",
+      "format_action": "Format query",
+      "query_label": "GraphQL query",
+      "variables_label": "Variables JSON",
+      "introspection_label": "Introspection JSON",
+      "formatted_label": "Formatted query",
+      "diagnostics_label": "Diagnostics",
+      "operation_label": "Operation",
+      "schema_type_label": "Schema type"
+    },
+    "messagepack_inspector": {
+      "title": "MessagePack Inspector",
+      "description": "Decode MessagePack payloads from hex or Base64 into readable JSON locally, with clear binary input errors.",
+      "decode_action": "Decode MessagePack",
+      "mode_label": "MessagePack input mode",
+      "mode_hex": "Hex",
+      "mode_base64": "Base64",
+      "bytes_label": "bytes"
+    },
+    "seo_metadata_workbench": {
+      "title": "SEO Metadata Workbench",
+      "description": "Preview local SERP metadata, validate hreflang and sitemap URL lists, and draft privacy-safe llms.txt snippets.",
+      "analyze_action": "Analyze metadata",
+      "config_label": "Metadata configuration JSON",
+      "report_label": "SEO report"
+    },
+    "devops_yaml_validator": {
+      "title": "DevOps YAML Validator",
+      "description": "Validate Docker Compose and Kubernetes YAML locally with path-specific errors, warnings, and remediation guidance.",
+      "validate_action": "Validate YAML",
+      "yaml_label": "Compose or Kubernetes YAML",
+      "report_label": "Validation report"
+    },
+    "oauth_jwks_workbench": {
+      "title": "OAuth PKCE and JWKS Workbench",
+      "description": "Generate PKCE verifier/challenge pairs and inspect or verify JWTs against pasted JWKS key sets locally.",
+      "mode_label": "OAuth and JWKS mode",
+      "mode_pkce": "PKCE helper",
+      "mode_jwks": "JWKS inspector",
+      "generate_pkce_action": "Generate PKCE",
+      "inspect_jwks_action": "Inspect JWKS",
+      "jwks_label": "JWKS JSON",
+      "jwt_label": "JWT to verify"
+    },
+    "image_privacy_workbench": {
+      "title": "Image Privacy Workbench",
+      "description": "Strip metadata from supported images by local re-encoding and follow a safe screenshot redaction workflow before sharing.",
+      "choose_image_action": "Choose image",
+      "workflow_label": "Screenshot redaction workflow",
+      "upload_label": "Local image",
+      "no_file_label": "No image selected",
+      "preview_alt": "Sanitized image preview",
+      "report_label": "Metadata scan report",
+      "dimensions_label": "Dimensions",
+      "before_label": "Before re-encode",
+      "after_label": "After re-encode",
+      "step_redact_title": "Redact visible secrets first",
+      "step_redact_detail": "Cover tokens, email addresses, account names, URLs, and customer data before resizing or compressing.",
+      "step_strip_title": "Remove metadata by re-encoding",
+      "step_strip_detail": "Export through canvas as PNG or JPEG to drop EXIF, camera, GPS, and editor metadata from supported browser decoders.",
+      "step_inspect_title": "Inspect the exported file",
+      "step_inspect_detail": "Check the after scan for EXIF markers and download only the sanitized output."
     }
   },
   "pages": {
