@@ -22,6 +22,9 @@ export function ServerFooter({
         { key: "about", slug: "about", label: requireTranslationValue(translations.pages.about_title, "pages.about_title") },
         { key: "privacy", slug: "privacy", label: requireTranslationValue(translations.pages.privacy_title, "pages.privacy_title") },
         { key: "trust-center", slug: "trust-center", label: requireTranslationValue(translations.pages.trust_center_title, "pages.trust_center_title") },
+        { key: "roadmap", slug: "roadmap", label: requireTranslationValue(translations.pages.roadmap_title, "pages.roadmap_title") },
+        { key: "changelog", slug: "changelog", label: requireTranslationValue(translations.pages.changelog_title, "pages.changelog_title") },
+        { key: "self-hosting", slug: "self-hosting", label: requireTranslationValue(translations.pages.self_hosting_title, "pages.self_hosting_title") },
         { key: "terms", slug: "terms", label: requireTranslationValue(translations.pages.terms_title, "pages.terms_title") },
         { key: "contact", slug: "contact", label: requireTranslationValue(translations.pages.contact_title, "pages.contact_title") },
     ].map((page) => ({

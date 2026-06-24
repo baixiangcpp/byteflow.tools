@@ -43,7 +43,7 @@ export function SensitiveInputWarning({
                         </p>
                     </div>
                     <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs font-medium">
-                        <Link className="inline-flex items-center gap-1 underline-offset-4 hover:underline" href={`/${lang}/privacy`}>
+                        <Link className="inline-flex items-center gap-1 underline-offset-4 hover:underline" href={`/${lang}/trust-center#verify-local-processing`}>
                             <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
                             {t.common.sensitive_warning_privacy_policy}
                         </Link>

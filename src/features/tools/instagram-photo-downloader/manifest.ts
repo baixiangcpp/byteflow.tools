@@ -19,6 +19,11 @@ export const toolManifest = {
             consentRequired: true,
         },
     },
+    compliance: {
+        platformName: "Instagram",
+        rightsGuidance: "Download only media you own or have explicit permission to use; the provided URL leaves your browser only after confirmation.",
+        affiliationDisclaimer: "byteflow.tools is not affiliated with, endorsed by, or sponsored by Instagram or Meta.",
+    },
     keywords: ["instagram photo downloader", "download instagram image", "instagram media saver", "authorized ig image download"],
     persistInput: false,
     deprecated: {

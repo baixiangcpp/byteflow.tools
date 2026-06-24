@@ -200,6 +200,7 @@ function buildGeneratedLookupData() {
             sampleInput: tool.sampleInput || null,
             sampleMode: tool.sampleMode || null,
             inputSizePolicy: tool.inputSizePolicy || null,
+            compliance: tool.compliance || null,
             privacy: tool.privacy,
             networkAccess: privacyNetwork.networkAccess,
             networkHosts: privacyNetwork.networkHosts,
@@ -248,6 +249,7 @@ function buildRouteLookupSource(data = buildGeneratedLookupData()) {
             networkPurposeKey: tool.networkPurposeKey,
             requiresExplicitUserAction: tool.requiresExplicitUserAction,
             externalDataSent: tool.externalDataSent,
+            compliance: tool.compliance,
         }]),
     )
     const hubSlugs = data.menuGroups.map((group) => group.hubSlug)
@@ -266,6 +268,7 @@ export type RouteToolLookupEntry = {
     networkPurposeKey: string | null
     requiresExplicitUserAction: boolean | null
     externalDataSent: "none" | "user_provided_url" | "derived_url" | null
+    compliance: Readonly<{ platformName?: string; rightsGuidance?: string; affiliationDisclaimer?: string }> | null
 }
 
 export type ToolPrivacyManifest = {
@@ -348,6 +351,7 @@ function buildDiscoveryToolIndexSource(data = buildGeneratedLookupData()) {
             sampleInput: tool.sampleInput,
             sampleMode: tool.sampleMode,
             inputSizePolicy: tool.inputSizePolicy,
+            compliance: tool.compliance,
             family: tool.family,
             tags: tool.tags,
             capabilities: tool.capabilities,
@@ -367,6 +371,7 @@ export type DiscoveryToolIndexEntry = {
     sampleInput: string | null
     sampleMode: string | null
     inputSizePolicy: Readonly<{ warnAtBytes?: number; workerAtBytes?: number; hardLimitBytes?: number; streamingSupported?: boolean }> | null
+    compliance: Readonly<{ platformName?: string; rightsGuidance?: string; affiliationDisclaimer?: string }> | null
     family: string
     tags: readonly string[]
     capabilities: readonly string[]
@@ -418,6 +423,7 @@ export type ClientToolLookupEntry = {
     sampleInput: string | null
     sampleMode: string | null
     inputSizePolicy: Readonly<{ warnAtBytes?: number; workerAtBytes?: number; hardLimitBytes?: number; streamingSupported?: boolean }> | null
+    compliance: Readonly<{ platformName?: string; rightsGuidance?: string; affiliationDisclaimer?: string }> | null
     privacy: ToolPrivacyManifest
     networkAccess: "none" | "user_requested" | "third_party_api"
     networkHosts: readonly string[]

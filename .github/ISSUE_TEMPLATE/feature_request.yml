@@ -4,6 +4,10 @@ title: "feat: "
 labels:
   - enhancement
 body:
+  - type: markdown
+    attributes:
+      value: |
+        Do not post production secrets, private payloads, customer data, tokens, logs, HAR files, private URLs, request bodies, response bodies, prompts, generated output, or screenshots containing sensitive content. Use sanitized examples only.
   - type: textarea
     id: problem
     attributes:

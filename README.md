@@ -19,6 +19,9 @@
     <a href="#quick-start">Quick Start</a> ·
     <a href="#development">Development</a> ·
     <a href="#privacy-and-security">Privacy</a> ·
+    <a href="https://byteflow.tools/en/roadmap">Roadmap</a> ·
+    <a href="https://byteflow.tools/en/changelog">Changelog</a> ·
+    <a href="https://byteflow.tools/en/self-hosting">Self-hosting</a> ·
     <a href="#contributing">Contributing</a> ·
     <a href="#license">License</a> ·
     <a href="#support">Support</a>
@@ -100,6 +103,8 @@ npm run generate:tool-index
 npm run check:tool-index
 npm run generate:client-tool-lookup
 npm run check:client-tool-lookup
+npm run generate:llms-txt
+npm run check:llms-txt
 ```
 
 Do not edit files under `src/generated/` by hand.
@@ -129,6 +134,8 @@ Use `npm run create:tool` when possible, then follow [CONTRIBUTING.md](CONTRIBUT
 Byteflow's core tools are designed to process payloads in the browser. Tools marked External request disclose when a network lookup is needed. Avoid sharing real secrets, production tokens, private customer data, or sensitive payloads in public issues, screenshots, logs, or reproduction cases.
 
 Report vulnerabilities through the process in [SECURITY.md](SECURITY.md).
+
+Self-hosting guidance is available in [docs/deployment/self-hosting.md](docs/deployment/self-hosting.md). Future team deployment or commercial support must preserve local-first processing, no forced accounts, no cloud history, and no default payload storage.
 
 ## Contributing
 

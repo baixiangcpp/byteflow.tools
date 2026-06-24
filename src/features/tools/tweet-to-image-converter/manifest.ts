@@ -14,6 +14,11 @@ export const toolManifest = {
             endpointType: "none",
         },
     },
+    compliance: {
+        platformName: "X (Twitter)",
+        rightsGuidance: "Export images only from text and profile details you have rights to use.",
+        affiliationDisclaimer: "byteflow.tools is not affiliated with, endorsed by, or sponsored by X Corp. or Twitter.",
+    },
     keywords: ["tweet to image converter", "convert tweet to png", "tweet image converter", "x post image maker"],
     deprecated: {
         alternatives: ["code_to_image_converter"],

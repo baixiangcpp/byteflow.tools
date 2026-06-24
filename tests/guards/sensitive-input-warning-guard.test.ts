@@ -27,7 +27,7 @@ describe("sensitive input warning guard", () => {
 
         expect(source).toContain("sensitive_warning_title")
         expect(source).toContain("sensitive_warning_verify_devtools")
-        expect(source).toContain('href={`/${lang}/privacy`}')
+        expect(source).toContain('href={`/${lang}/trust-center#verify-local-processing`}')
         expect(source).toContain('href={`/${lang}/about#privacy`}')
         expect(source).not.toMatch(/localStorage|sessionStorage|indexedDB|fetch\(/)
     })

@@ -199,7 +199,7 @@ export default async function TrustCenterPage({
                 />
             </section>
 
-            <section className="rounded-lg border border-border/70 bg-background/55 p-5 sm:p-6">
+            <section id="external-request-tools" className="rounded-lg border border-border/70 bg-background/55 p-5 sm:p-6">
                 <h2 className="text-xl font-semibold tracking-tight">{p.trust_center_labels_title}</h2>
                 <div className="mt-4 grid gap-4 md:grid-cols-2">
                     <TrustPill

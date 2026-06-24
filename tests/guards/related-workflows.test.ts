@@ -1,6 +1,22 @@
 import { describe, expect, it } from "vitest"
+import fs from "node:fs"
 import { TOOL_MANIFESTS } from "@/core/registry"
 import type { ToolMeta } from "@/core/registry/types"
+
+const RELATED_TOOLS_SOURCE = fs.readFileSync("src/core/seo/components/related-tools.tsx", "utf8")
+
+const HIGH_VALUE_RELATED_TOOL_KEYS = [
+    "json_formatter",
+    "jwt_decoder",
+    "base64_encode_decode",
+    "regex_tester",
+    "image_resizer",
+    "uuid_generator",
+    "log_scrubber",
+    "har_viewer_sanitizer",
+    "http_request_builder",
+    "open_graph_meta_generator",
+]
 
 describe("related workflow metadata", () => {
     it("keeps structured workflow references valid and aligned with relatedTools", () => {
@@ -51,5 +67,27 @@ describe("related workflow metadata", () => {
             "jwt_verifier",
             "asn1_der_inspector",
         ])
+    })
+
+    it("gives high-value related tools contextual reasons without empty or duplicate recommendations", () => {
+        const toolsByKey = new Map((TOOL_MANIFESTS as readonly ToolMeta[]).map((tool) => [tool.key, tool]))
+
+        for (const toolKey of HIGH_VALUE_RELATED_TOOL_KEYS) {
+            const tool = toolsByKey.get(toolKey)
+            expect(tool, toolKey).toBeTruthy()
+            expect(tool?.relatedTools.length, `${toolKey} relatedTools`).toBeGreaterThanOrEqual(3)
+            expect(tool?.relatedTools.length, `${toolKey} relatedTools`).toBeLessThanOrEqual(5)
+            expect(new Set(tool?.relatedTools).size, `${toolKey} duplicate relatedTools`).toBe(tool?.relatedTools.length)
+
+            const workflows = tool?.relatedWorkflows ?? []
+            expect(workflows.length, `${toolKey} relatedWorkflows`).toBeGreaterThanOrEqual(3)
+            expect(workflows.length, `${toolKey} relatedWorkflows`).toBeLessThanOrEqual(5)
+            expect(new Set(workflows.map((workflow) => workflow.toolKey)).size, `${toolKey} duplicate workflow toolKey`).toBe(workflows.length)
+
+            for (const workflow of workflows) {
+                expect(tool?.relatedTools.includes(workflow.toolKey), `${toolKey} ${workflow.toolKey}`).toBe(true)
+                expect(RELATED_TOOLS_SOURCE, `${toolKey} ${workflow.reasonKey}`).toContain(`${workflow.reasonKey}:`)
+            }
+        }
     })
 })

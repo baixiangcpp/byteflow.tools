@@ -57,6 +57,16 @@ describe("seo surface i18n guards", () => {
         )
     })
 
+    it("uses localized generic related-tool reasons outside English", () => {
+        mocks.langValue = { lang: "zh-CN", t: TRANSLATIONS["zh-CN"] }
+
+        const { container } = render(<RelatedTools toolKey="json_formatter" />)
+
+        expect(container.textContent).toContain("此工具的建议下一步工作流。")
+        expect(container.textContent).not.toContain("Run JSONPath queries")
+        expect(container.textContent).not.toContain("Continue from json formatter")
+    })
+
     it("fails fast when a category hub tool description is missing", () => {
         const broken = cloneEnglishTranslations()
         broken.tools.json_formatter.description = ""

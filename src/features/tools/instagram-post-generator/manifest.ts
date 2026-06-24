@@ -14,6 +14,11 @@ export const toolManifest = {
             endpointType: "none",
         },
     },
+    compliance: {
+        platformName: "Instagram",
+        rightsGuidance: "Use generated mockups only with media, captions, and profile details you own or can reuse.",
+        affiliationDisclaimer: "byteflow.tools is not affiliated with, endorsed by, or sponsored by Instagram or Meta.",
+    },
     keywords: ["instagram post generator", "instagram mockup maker", "social post generator", "instagram post template"],
     deprecated: {
         alternatives: ["code_to_image_converter", "open_graph_meta_generator"],

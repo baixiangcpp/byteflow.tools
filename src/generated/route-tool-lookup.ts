@@ -12,6 +12,7 @@ export type RouteToolLookupEntry = {
     networkPurposeKey: string | null
     requiresExplicitUserAction: boolean | null
     externalDataSent: "none" | "user_provided_url" | "derived_url" | null
+    compliance: Readonly<{ platformName?: string; rightsGuidance?: string; affiliationDisclaimer?: string }> | null
 }
 
 export type ToolPrivacyManifest = {
@@ -46,7 +47,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "xml_formatter": {
         "key": "xml_formatter",
@@ -64,7 +66,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "sql_formatter": {
         "key": "sql_formatter",
@@ -82,7 +85,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "javascript_formatter": {
         "key": "javascript_formatter",
@@ -100,7 +104,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "javascript_minifier": {
         "key": "javascript_minifier",
@@ -118,7 +123,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "html_minifier": {
         "key": "html_minifier",
@@ -136,7 +142,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "html_encoder_decoder": {
         "key": "html_encoder_decoder",
@@ -154,7 +161,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "html_css_beautifier": {
         "key": "html_css_beautifier",
@@ -172,7 +180,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "html_formatter": {
         "key": "html_formatter",
@@ -190,7 +199,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "yaml_json_converter": {
         "key": "yaml_json_converter",
@@ -208,7 +218,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "markdown_preview": {
         "key": "markdown_preview",
@@ -226,7 +237,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "html_to_markdown": {
         "key": "html_to_markdown",
@@ -244,7 +256,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "json_to_typescript": {
         "key": "json_to_typescript",
@@ -262,7 +275,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "css_minifier": {
         "key": "css_minifier",
@@ -280,7 +294,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "svg_optimizer": {
         "key": "svg_optimizer",
@@ -298,7 +313,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "jsonpath_playground": {
         "key": "jsonpath_playground",
@@ -316,7 +332,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "openapi_viewer": {
         "key": "openapi_viewer",
@@ -334,7 +351,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "json_diff_viewer": {
         "key": "json_diff_viewer",
@@ -352,7 +370,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "csv_json_converter": {
         "key": "csv_json_converter",
@@ -370,7 +389,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "base64_encode_decode": {
         "key": "base64_encode_decode",
@@ -388,7 +408,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "base_encoding_converter": {
         "key": "base_encoding_converter",
@@ -406,7 +427,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "url_encode_decode": {
         "key": "url_encode_decode",
@@ -424,7 +446,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "jwt_decoder": {
         "key": "jwt_decoder",
@@ -442,7 +465,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "jwt_workbench": {
         "key": "jwt_workbench",
@@ -460,7 +484,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "hash_generator": {
         "key": "hash_generator",
@@ -478,7 +503,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "md5_generator": {
         "key": "md5_generator",
@@ -496,7 +522,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "text_diff_checker": {
         "key": "text_diff_checker",
@@ -514,7 +541,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "multiple_whitespace_remover": {
         "key": "multiple_whitespace_remover",
@@ -532,7 +560,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "letter_counter": {
         "key": "letter_counter",
@@ -550,7 +579,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "bionic_reading_converter": {
         "key": "bionic_reading_converter",
@@ -568,7 +598,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "google_fonts_pair_finder": {
         "key": "google_fonts_pair_finder",
@@ -586,7 +617,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "text_to_handwriting_converter": {
         "key": "text_to_handwriting_converter",
@@ -604,7 +636,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "code_to_image_converter": {
         "key": "code_to_image_converter",
@@ -622,7 +655,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "image_base64": {
         "key": "image_base64",
@@ -640,7 +674,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "unix_timestamp": {
         "key": "unix_timestamp",
@@ -658,7 +693,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "uuid_generator": {
         "key": "uuid_generator",
@@ -676,7 +712,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "lorem_ipsum": {
         "key": "lorem_ipsum",
@@ -694,7 +731,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "password_generator": {
         "key": "password_generator",
@@ -712,7 +750,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "color_converter": {
         "key": "color_converter",
@@ -730,7 +769,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "react_native_shadow_generator": {
         "key": "react_native_shadow_generator",
@@ -748,7 +788,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "ai_color_palette_generator": {
         "key": "ai_color_palette_generator",
@@ -766,7 +807,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "color_mixer": {
         "key": "color_mixer",
@@ -784,7 +826,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "color_shades_generator": {
         "key": "color_shades_generator",
@@ -802,7 +845,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "image_average_color_finder": {
         "key": "image_average_color_finder",
@@ -820,7 +864,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "image_caption_generator": {
         "key": "image_caption_generator",
@@ -838,7 +883,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "image_color_extractor": {
         "key": "image_color_extractor",
@@ -856,7 +902,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "image_color_picker": {
         "key": "image_color_picker",
@@ -874,7 +921,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "image_cropper": {
         "key": "image_cropper",
@@ -892,7 +940,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "image_filters": {
         "key": "image_filters",
@@ -910,7 +959,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "instagram_filters": {
         "key": "instagram_filters",
@@ -928,7 +978,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "instagram_post_generator": {
         "key": "instagram_post_generator",
@@ -946,7 +997,12 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": {
+            "platformName": "Instagram",
+            "rightsGuidance": "Use generated mockups only with media, captions, and profile details you own or can reuse.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by Instagram or Meta."
+        }
     },
     "instagram_story_generator": {
         "key": "instagram_story_generator",
@@ -964,7 +1020,12 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": {
+            "platformName": "Instagram",
+            "rightsGuidance": "Use story mockups only with assets, captions, and profile details you own or can reuse.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by Instagram or Meta."
+        }
     },
     "open_graph_meta_generator": {
         "key": "open_graph_meta_generator",
@@ -982,7 +1043,12 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": {
+            "platformName": "Open Graph and social cards",
+            "rightsGuidance": "Generate metadata for pages, images, and descriptions you control or have rights to publish.",
+            "affiliationDisclaimer": "Open Graph, X (Twitter), Instagram, YouTube, and Vimeo names are used descriptively only."
+        }
     },
     "tweet_generator": {
         "key": "tweet_generator",
@@ -1000,7 +1066,12 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": {
+            "platformName": "X (Twitter)",
+            "rightsGuidance": "Use generated copy only with accounts and content you are authorized to manage.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by X Corp. or Twitter."
+        }
     },
     "tweet_to_image_converter": {
         "key": "tweet_to_image_converter",
@@ -1018,7 +1089,12 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": {
+            "platformName": "X (Twitter)",
+            "rightsGuidance": "Export images only from text and profile details you have rights to use.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by X Corp. or Twitter."
+        }
     },
     "twitter_ad_revenue_generator": {
         "key": "twitter_ad_revenue_generator",
@@ -1036,7 +1112,12 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": {
+            "platformName": "X (Twitter)",
+            "rightsGuidance": "Use forecast values as planning estimates; verify actual platform terms and analytics separately.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by X Corp. or Twitter."
+        }
     },
     "instagram_photo_downloader": {
         "key": "instagram_photo_downloader",
@@ -1063,7 +1144,12 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         ],
         "networkPurposeKey": "authorized_media_download",
         "requiresExplicitUserAction": true,
-        "externalDataSent": "user_provided_url"
+        "externalDataSent": "user_provided_url",
+        "compliance": {
+            "platformName": "Instagram",
+            "rightsGuidance": "Download only media you own or have explicit permission to use; the provided URL leaves your browser only after confirmation.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by Instagram or Meta."
+        }
     },
     "vimeo_thumbnail_grabber": {
         "key": "vimeo_thumbnail_grabber",
@@ -1094,7 +1180,12 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         ],
         "networkPurposeKey": "thumbnail_preview",
         "requiresExplicitUserAction": true,
-        "externalDataSent": "derived_url"
+        "externalDataSent": "derived_url",
+        "compliance": {
+            "platformName": "Vimeo",
+            "rightsGuidance": "Use thumbnail previews only for videos you own, manage, or are allowed to reference; derived thumbnail URLs load only after confirmation.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by Vimeo."
+        }
     },
     "youtube_thumbnail_grabber": {
         "key": "youtube_thumbnail_grabber",
@@ -1127,7 +1218,12 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         ],
         "networkPurposeKey": "thumbnail_preview",
         "requiresExplicitUserAction": true,
-        "externalDataSent": "derived_url"
+        "externalDataSent": "derived_url",
+        "compliance": {
+            "platformName": "YouTube",
+            "rightsGuidance": "Use thumbnail previews only for videos you own, manage, or are allowed to reference; derived thumbnail URLs load only after confirmation.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by YouTube or Google."
+        }
     },
     "image_resizer": {
         "key": "image_resizer",
@@ -1145,7 +1241,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "photo_censor": {
         "key": "photo_censor",
@@ -1163,7 +1260,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "scanned_pdf_converter": {
         "key": "scanned_pdf_converter",
@@ -1181,7 +1279,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "svg_blob_generator": {
         "key": "svg_blob_generator",
@@ -1199,7 +1298,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "svg_pattern_generator": {
         "key": "svg_pattern_generator",
@@ -1217,7 +1317,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "svg_stroke_to_fill_converter": {
         "key": "svg_stroke_to_fill_converter",
@@ -1235,7 +1336,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "svg_to_png_converter": {
         "key": "svg_to_png_converter",
@@ -1253,7 +1355,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "css_background_pattern_generator": {
         "key": "css_background_pattern_generator",
@@ -1271,7 +1374,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "css_border_radius_generator": {
         "key": "css_border_radius_generator",
@@ -1289,7 +1393,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "css_box_shadow_generator": {
         "key": "css_box_shadow_generator",
@@ -1307,7 +1412,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "css_checkbox_generator": {
         "key": "css_checkbox_generator",
@@ -1325,7 +1431,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "css_clip_path_generator": {
         "key": "css_clip_path_generator",
@@ -1343,7 +1450,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "css_cubic_bezier_generator": {
         "key": "css_cubic_bezier_generator",
@@ -1361,7 +1469,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "css_glassmorphism_generator": {
         "key": "css_glassmorphism_generator",
@@ -1379,7 +1488,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "css_gradient_generator": {
         "key": "css_gradient_generator",
@@ -1397,7 +1507,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "css_loader_generator": {
         "key": "css_loader_generator",
@@ -1415,7 +1526,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "css_switch_generator": {
         "key": "css_switch_generator",
@@ -1433,7 +1545,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "css_text_glitch_effect_generator": {
         "key": "css_text_glitch_effect_generator",
@@ -1451,7 +1564,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "css_triangle_generator": {
         "key": "css_triangle_generator",
@@ -1469,7 +1583,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "qr_code_generator": {
         "key": "qr_code_generator",
@@ -1487,7 +1602,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "barcode_generator": {
         "key": "barcode_generator",
@@ -1505,7 +1621,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "fake_iban_generator": {
         "key": "fake_iban_generator",
@@ -1523,7 +1640,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "list_randomizer": {
         "key": "list_randomizer",
@@ -1541,7 +1659,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "ascii_art_generator": {
         "key": "ascii_art_generator",
@@ -1559,7 +1678,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "env_parser": {
         "key": "env_parser",
@@ -1577,7 +1697,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "id_generator": {
         "key": "id_generator",
@@ -1595,7 +1716,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "regex_tester": {
         "key": "regex_tester",
@@ -1613,7 +1735,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "regex_generator": {
         "key": "regex_generator",
@@ -1631,7 +1754,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "crontab_generator": {
         "key": "crontab_generator",
@@ -1649,7 +1773,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "user_agent_parser": {
         "key": "user_agent_parser",
@@ -1667,7 +1792,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "cron_visualizer": {
         "key": "cron_visualizer",
@@ -1685,7 +1811,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "http_status_codes": {
         "key": "http_status_codes",
@@ -1703,7 +1830,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "chmod_calculator": {
         "key": "chmod_calculator",
@@ -1721,7 +1849,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "cidr_subnet_calculator": {
         "key": "cidr_subnet_calculator",
@@ -1739,7 +1868,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "url_parser": {
         "key": "url_parser",
@@ -1757,7 +1887,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "certificate_decoder": {
         "key": "certificate_decoder",
@@ -1775,7 +1906,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "http_request_builder": {
         "key": "http_request_builder",
@@ -1793,7 +1925,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "curl_to_code": {
         "key": "curl_to_code",
@@ -1811,7 +1944,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "ndjson_formatter": {
         "key": "ndjson_formatter",
@@ -1829,7 +1963,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "jwt_verifier": {
         "key": "jwt_verifier",
@@ -1847,7 +1982,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "slugify_case_converter": {
         "key": "slugify_case_converter",
@@ -1865,7 +2001,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "invisible_chars_detector": {
         "key": "invisible_chars_detector",
@@ -1883,7 +2020,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "robots_txt_tester": {
         "key": "robots_txt_tester",
@@ -1901,7 +2039,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "csp_parser": {
         "key": "csp_parser",
@@ -1919,7 +2058,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "csv_diff": {
         "key": "csv_diff",
@@ -1937,7 +2077,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "header_diff": {
         "key": "header_diff",
@@ -1955,7 +2096,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "security_header_analyzer": {
         "key": "security_header_analyzer",
@@ -1973,7 +2115,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "totp_generator": {
         "key": "totp_generator",
@@ -1991,7 +2134,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "openapi_mock": {
         "key": "openapi_mock",
@@ -2009,7 +2153,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "docker_run_to_compose": {
         "key": "docker_run_to_compose",
@@ -2027,7 +2172,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "local_log_parser": {
         "key": "local_log_parser",
@@ -2045,7 +2191,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "jq_playground": {
         "key": "jq_playground",
@@ -2063,7 +2210,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "log_scrubber": {
         "key": "log_scrubber",
@@ -2081,7 +2229,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "gzip_brotli_lab": {
         "key": "gzip_brotli_lab",
@@ -2099,7 +2248,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "yaml_merge_patch_explorer": {
         "key": "yaml_merge_patch_explorer",
@@ -2117,7 +2267,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "yq_playground": {
         "key": "yq_playground",
@@ -2135,7 +2286,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "structured_data_visualizer": {
         "key": "structured_data_visualizer",
@@ -2153,7 +2305,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "har_viewer_sanitizer": {
         "key": "har_viewer_sanitizer",
@@ -2171,7 +2324,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "pipeline_builder": {
         "key": "pipeline_builder",
@@ -2189,7 +2343,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "saml_decoder": {
         "key": "saml_decoder",
@@ -2207,7 +2362,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "asn1_der_inspector": {
         "key": "asn1_der_inspector",
@@ -2225,7 +2381,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "hex_bytes_workbench": {
         "key": "hex_bytes_workbench",
@@ -2243,7 +2400,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "unicode_inspector": {
         "key": "unicode_inspector",
@@ -2261,7 +2419,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     },
     "public_key_jwk_helper": {
         "key": "public_key_jwk_helper",
@@ -2279,7 +2438,8 @@ const ROUTE_TOOL_LOOKUP: Record<string, RouteToolLookupEntry> = {
         "networkHosts": [],
         "networkPurposeKey": null,
         "requiresExplicitUserAction": null,
-        "externalDataSent": null
+        "externalDataSent": null,
+        "compliance": null
     }
 }
 

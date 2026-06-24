@@ -30,6 +30,11 @@ export type ToolInputSizePolicy = {
     hardLimitBytes?: number
     streamingSupported?: boolean
 }
+export type ToolComplianceMetadata = {
+    platformName?: string
+    rightsGuidance?: string
+    affiliationDisclaimer?: string
+}
 export type RelatedToolWorkflow = {
     toolKey: string
     reasonKey: string
@@ -57,6 +62,8 @@ export interface ToolMeta {
     sampleMode?: string
     /** Input-size thresholds used by performance UI and quality gates */
     inputSizePolicy?: ToolInputSizePolicy
+    /** Optional public compliance copy used by social/media policy gates */
+    compliance?: ToolComplianceMetadata
     /** SEO target keywords (English, used for meta keywords) */
     keywords: string[]
     /** Optional deterministic lastmod timestamp used by sitemap */

@@ -23,10 +23,33 @@ export function toUrlSafeBase64(base64: string): string {
 }
 
 export function fromUrlSafeBase64(value: string): string {
+    validateUrlSafeBase64Input(value)
     const normalized = value.replace(/-/g, "+").replace(/_/g, "/")
     const padding = normalized.length % 4
     if (padding === 0) return normalized
+    if (padding === 1) throw new Error("INVALID_BASE64URL_LENGTH")
     return normalized + "=".repeat(4 - padding)
+}
+
+export function validateUrlSafeBase64Input(value: string): void {
+    if (/\s/.test(value)) {
+        throw new Error("INVALID_BASE64URL_WHITESPACE")
+    }
+
+    const hasStandardAlphabet = /[+/]/.test(value)
+    const hasUrlSafeAlphabet = /[-_]/.test(value)
+    if (hasStandardAlphabet && hasUrlSafeAlphabet) {
+        throw new Error("MIXED_BASE64_ALPHABET")
+    }
+
+    if (hasStandardAlphabet || !/^[A-Za-z0-9\-_]*={0,2}$/.test(value) || /=.*[^=]/.test(value)) {
+        throw new Error("INVALID_BASE64URL_CHARACTERS")
+    }
+
+    const unpaddedLength = value.replace(/=+$/g, "").length
+    if (unpaddedLength % 4 === 1) {
+        throw new Error("INVALID_BASE64URL_LENGTH")
+    }
 }
 
 export function encodeBytesToBase64(bytes: Uint8Array, urlSafe = false): string {

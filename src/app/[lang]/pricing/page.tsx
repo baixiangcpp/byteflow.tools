@@ -95,6 +95,12 @@ export default function PricingPage() {
                     {p.pricing_cta_secondary}
                     <ArrowUpRight className="h-3.5 w-3.5" />
                 </a>
+                <Link
+                    href={`/${lang}/self-hosting`}
+                    className="inline-flex items-center gap-2 rounded-xl border border-border/75 bg-background/55 px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                    Self-hosting guide
+                </Link>
             </section>
         </div>
     )

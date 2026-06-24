@@ -19,6 +19,11 @@ export const toolManifest = {
             consentRequired: true,
         },
     },
+    compliance: {
+        platformName: "Vimeo",
+        rightsGuidance: "Use thumbnail previews only for videos you own, manage, or are allowed to reference; derived thumbnail URLs load only after confirmation.",
+        affiliationDisclaimer: "byteflow.tools is not affiliated with, endorsed by, or sponsored by Vimeo.",
+    },
     keywords: ["vimeo thumbnail grabber", "vimeo thumbnail downloader", "vimeo cover image", "get vimeo video thumbnail"],
     deprecated: {
         alternatives: ["image_resizer"],

@@ -23,6 +23,20 @@ describe("base64 utils", () => {
         expect(fromUrlSafeBase64(urlSafe)).toBe(standard)
     })
 
+    it("decodes padded and unpadded URL-safe Base64", () => {
+        expect(decodeBase64ToText("SGVsbG8td29ybGQ", true)).toBe("Hello-world")
+        expect(decodeBase64ToText("SGVsbG8td29ybGQ=", true)).toBe("Hello-world")
+    })
+
+    it("rejects mixed alphabet URL-safe Base64 input", () => {
+        expect(() => decodeBase64ToText("abc-_+/", true)).toThrow("MIXED_BASE64_ALPHABET")
+    })
+
+    it("rejects invalid URL-safe Base64 lengths and padding", () => {
+        expect(() => decodeBase64ToText("A", true)).toThrow("INVALID_BASE64URL_LENGTH")
+        expect(() => decodeBase64ToText("abc=def", true)).toThrow("INVALID_BASE64URL_CHARACTERS")
+    })
+
     it("encodes and decodes binary bytes without loss", () => {
         const bytes = new Uint8Array([0, 12, 255, 22, 88, 171, 42, 9])
         const encoded = encodeBytesToBase64(bytes)

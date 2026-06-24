@@ -13,6 +13,7 @@ export type ClientToolLookupEntry = {
     sampleInput: string | null
     sampleMode: string | null
     inputSizePolicy: Readonly<{ warnAtBytes?: number; workerAtBytes?: number; hardLimitBytes?: number; streamingSupported?: boolean }> | null
+    compliance: Readonly<{ platformName?: string; rightsGuidance?: string; affiliationDisclaimer?: string }> | null
     privacy: ToolPrivacyManifest
     networkAccess: "none" | "user_requested" | "third_party_api"
     networkHosts: readonly string[]
@@ -91,6 +92,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hardLimitBytes": 52428800,
             "streamingSupported": false
         },
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -152,6 +154,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -206,6 +209,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -260,6 +264,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -314,6 +319,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -359,6 +365,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -405,6 +412,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -451,6 +459,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -498,6 +507,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -575,6 +585,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hardLimitBytes": 10485760,
             "streamingSupported": false
         },
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -638,6 +649,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -694,6 +706,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -741,6 +754,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -796,6 +810,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -841,6 +856,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -888,6 +904,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -934,6 +951,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -979,6 +997,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1031,6 +1050,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hardLimitBytes": 1048576,
             "streamingSupported": false
         },
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1100,6 +1120,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hardLimitBytes": 10485760,
             "streamingSupported": false
         },
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1184,6 +1205,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hardLimitBytes": 10485760,
             "streamingSupported": false
         },
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1238,6 +1260,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1294,10 +1317,27 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hash_generator",
             "url_encode_decode"
         ],
-        "relatedWorkflows": [],
+        "relatedWorkflows": [
+            {
+                "toolKey": "jwt_workbench",
+                "reasonKey": "verify_token_claims",
+                "handoffSupported": true
+            },
+            {
+                "toolKey": "base64_encode_decode",
+                "reasonKey": "inspect_token_segments",
+                "handoffSupported": true
+            },
+            {
+                "toolKey": "hash_generator",
+                "reasonKey": "compare_token_hashes",
+                "handoffSupported": true
+            }
+        ],
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1358,6 +1398,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1410,6 +1451,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hardLimitBytes": 52428800,
             "streamingSupported": false
         },
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1468,6 +1510,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1514,6 +1557,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1559,6 +1603,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1605,6 +1650,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1651,6 +1697,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1696,6 +1743,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1742,6 +1790,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1790,6 +1839,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1836,6 +1886,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1882,6 +1933,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1921,12 +1973,27 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "relatedToolKeys": [
             "password_generator",
             "unix_timestamp",
-            "lorem_ipsum"
+            "lorem_ipsum",
+            "id_generator"
         ],
-        "relatedWorkflows": [],
+        "relatedWorkflows": [
+            {
+                "toolKey": "password_generator",
+                "reasonKey": "generate_test_credentials"
+            },
+            {
+                "toolKey": "unix_timestamp",
+                "reasonKey": "stamp_seed_data"
+            },
+            {
+                "toolKey": "lorem_ipsum",
+                "reasonKey": "fill_fixture_records"
+            }
+        ],
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -1980,6 +2047,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2023,6 +2091,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2068,6 +2137,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2115,6 +2185,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2162,6 +2233,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2210,6 +2282,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2257,6 +2330,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2306,6 +2380,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2355,6 +2430,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2403,6 +2479,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2452,6 +2529,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2501,6 +2579,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2549,6 +2628,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2597,6 +2677,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2644,6 +2725,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": {
+            "platformName": "Instagram",
+            "rightsGuidance": "Use generated mockups only with media, captions, and profile details you own or can reuse.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by Instagram or Meta."
+        },
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2690,6 +2776,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": {
+            "platformName": "Instagram",
+            "rightsGuidance": "Use story mockups only with assets, captions, and profile details you own or can reuse.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by Instagram or Meta."
+        },
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2732,10 +2823,28 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "instagram_post_generator",
             "instagram_story_generator"
         ],
-        "relatedWorkflows": [],
+        "relatedWorkflows": [
+            {
+                "toolKey": "tweet_generator",
+                "reasonKey": "draft_social_copy"
+            },
+            {
+                "toolKey": "tweet_to_image_converter",
+                "reasonKey": "turn_copy_into_preview"
+            },
+            {
+                "toolKey": "instagram_post_generator",
+                "reasonKey": "adapt_preview_for_instagram"
+            }
+        ],
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": {
+            "platformName": "Open Graph and social cards",
+            "rightsGuidance": "Generate metadata for pages, images, and descriptions you control or have rights to publish.",
+            "affiliationDisclaimer": "Open Graph, X (Twitter), Instagram, YouTube, and Vimeo names are used descriptively only."
+        },
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2782,6 +2891,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": {
+            "platformName": "X (Twitter)",
+            "rightsGuidance": "Use generated copy only with accounts and content you are authorized to manage.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by X Corp. or Twitter."
+        },
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2829,6 +2943,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": {
+            "platformName": "X (Twitter)",
+            "rightsGuidance": "Export images only from text and profile details you have rights to use.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by X Corp. or Twitter."
+        },
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2876,6 +2995,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": {
+            "platformName": "X (Twitter)",
+            "rightsGuidance": "Use forecast values as planning estimates; verify actual platform terms and analytics separately.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by X Corp. or Twitter."
+        },
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -2922,6 +3046,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": {
+            "platformName": "Instagram",
+            "rightsGuidance": "Download only media you own or have explicit permission to use; the provided URL leaves your browser only after confirmation.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by Instagram or Meta."
+        },
         "privacy": {
             "executionMode": "external-request",
             "offlineCapable": false,
@@ -2978,6 +3107,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": {
+            "platformName": "Vimeo",
+            "rightsGuidance": "Use thumbnail previews only for videos you own, manage, or are allowed to reference; derived thumbnail URLs load only after confirmation.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by Vimeo."
+        },
         "privacy": {
             "executionMode": "external-request",
             "offlineCapable": false,
@@ -3037,6 +3171,11 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": {
+            "platformName": "YouTube",
+            "rightsGuidance": "Use thumbnail previews only for videos you own, manage, or are allowed to reference; derived thumbnail URLs load only after confirmation.",
+            "affiliationDisclaimer": "byteflow.tools is not affiliated with, endorsed by, or sponsored by YouTube or Google."
+        },
         "privacy": {
             "executionMode": "external-request",
             "offlineCapable": false,
@@ -3094,7 +3233,20 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "image_base64",
             "code_to_image_converter"
         ],
-        "relatedWorkflows": [],
+        "relatedWorkflows": [
+            {
+                "toolKey": "image_cropper",
+                "reasonKey": "crop_before_resize"
+            },
+            {
+                "toolKey": "image_filters",
+                "reasonKey": "adjust_after_resize"
+            },
+            {
+                "toolKey": "image_base64",
+                "reasonKey": "embed_resized_asset"
+            }
+        ],
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": {
@@ -3103,6 +3255,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hardLimitBytes": 12582912,
             "streamingSupported": false
         },
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -3151,6 +3304,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -3204,6 +3358,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hardLimitBytes": 12582912,
             "streamingSupported": false
         },
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -3251,6 +3406,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -3299,6 +3455,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -3346,6 +3503,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -3393,6 +3551,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -3441,6 +3600,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -3488,6 +3648,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -3535,6 +3696,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -3583,6 +3745,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -3630,6 +3793,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -3678,6 +3842,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -3725,6 +3890,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -3772,6 +3938,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -3820,6 +3987,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -3867,6 +4035,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -3914,6 +4083,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -3961,6 +4131,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4006,6 +4177,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4051,6 +4223,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4098,6 +4271,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4144,6 +4318,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4187,6 +4362,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4231,6 +4407,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4279,6 +4456,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4319,10 +4497,24 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "text_diff_checker",
             "url_encode_decode"
         ],
-        "relatedWorkflows": [],
+        "relatedWorkflows": [
+            {
+                "toolKey": "jsonpath_playground",
+                "reasonKey": "test_extracted_json_paths"
+            },
+            {
+                "toolKey": "text_diff_checker",
+                "reasonKey": "compare_regex_matches"
+            },
+            {
+                "toolKey": "url_encode_decode",
+                "reasonKey": "decode_url_samples"
+            }
+        ],
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4383,6 +4575,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4427,6 +4620,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4488,6 +4682,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4531,6 +4726,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4577,6 +4773,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4622,6 +4819,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4669,6 +4867,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4714,6 +4913,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4760,6 +4960,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4803,10 +5004,24 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "url_encode_decode",
             "user_agent_parser"
         ],
-        "relatedWorkflows": [],
+        "relatedWorkflows": [
+            {
+                "toolKey": "url_parser",
+                "reasonKey": "inspect_request_url"
+            },
+            {
+                "toolKey": "http_status_codes",
+                "reasonKey": "check_expected_status"
+            },
+            {
+                "toolKey": "url_encode_decode",
+                "reasonKey": "encode_query_params"
+            }
+        ],
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4855,6 +5070,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4902,6 +5118,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4951,6 +5168,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -4998,6 +5216,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5045,6 +5264,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5104,6 +5324,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5149,6 +5370,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5197,6 +5419,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5244,6 +5467,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5291,6 +5515,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5340,6 +5565,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5387,6 +5613,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5433,6 +5660,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5492,6 +5720,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5551,6 +5780,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5604,10 +5834,24 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "jwt_decoder",
             "text_diff_checker"
         ],
-        "relatedWorkflows": [],
+        "relatedWorkflows": [
+            {
+                "toolKey": "local_log_parser",
+                "reasonKey": "parse_after_redaction"
+            },
+            {
+                "toolKey": "jwt_decoder",
+                "reasonKey": "inspect_redacted_tokens"
+            },
+            {
+                "toolKey": "text_diff_checker",
+                "reasonKey": "compare_scrubbed_logs"
+            }
+        ],
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5658,6 +5902,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5704,6 +5949,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5753,6 +5999,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5801,6 +6048,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5847,10 +6095,24 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "http_status_codes",
             "security_header_analyzer"
         ],
-        "relatedWorkflows": [],
+        "relatedWorkflows": [
+            {
+                "toolKey": "log_scrubber",
+                "reasonKey": "scrub_followup_logs"
+            },
+            {
+                "toolKey": "http_status_codes",
+                "reasonKey": "explain_har_statuses"
+            },
+            {
+                "toolKey": "security_header_analyzer",
+                "reasonKey": "review_response_headers"
+            }
+        ],
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5900,6 +6162,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -5955,6 +6218,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -6004,6 +6268,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -6051,6 +6316,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -6096,6 +6362,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "sampleInput": null,
         "sampleMode": null,
         "inputSizePolicy": null,
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,
@@ -6159,6 +6426,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
             "hardLimitBytes": 262144,
             "streamingSupported": false
         },
+        "compliance": null,
         "privacy": {
             "executionMode": "browser-local",
             "offlineCapable": true,

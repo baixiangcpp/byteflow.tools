@@ -39,6 +39,7 @@ function RoutePageChromeContent({ children, pathname }: RoutePageChromeProps) {
             networkHosts: tool.networkHosts,
             networkPurposeKey: tool.networkPurposeKey,
             externalDataSent: tool.externalDataSent,
+            compliance: tool.compliance,
             sourceUrl: getToolSourceUrl(routeContext.slug),
         }
     }, [routeContext])
@@ -86,6 +87,7 @@ function RoutePageChromeContent({ children, pathname }: RoutePageChromeProps) {
                         networkHosts={activeTool.networkHosts}
                         networkPurposeKey={activeTool.networkPurposeKey}
                         externalDataSent={activeTool.externalDataSent}
+                        compliance={activeTool.compliance}
                     />
                 </>
             ) : null}
