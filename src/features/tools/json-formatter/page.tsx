@@ -90,20 +90,6 @@ export function JsonFormatterPage() {
     const formatRequestIdRef = React.useRef(0)
     const formatAbortControllerRef = React.useRef<AbortController | null>(null)
     const [lastFormatMode, setLastFormatMode] = React.useState<JsonFormatMode>("format")
-    const inputEditorOptions = React.useMemo(
-        () => ({
-            ...JSON_EDITOR_OPTIONS,
-            ariaLabel: t.common.input,
-        }),
-        [t.common.input],
-    )
-    const outputEditorOptions = React.useMemo(
-        () => ({
-            ...JSON_OUTPUT_EDITOR_OPTIONS,
-            ariaLabel: t.common.output,
-        }),
-        [t.common.output],
-    )
     React.useEffect(() => {
         const savedMode = readStorageString(VIEW_MODE_STORAGE_KEY)
         if (savedMode === "text" || savedMode === "tree") {
@@ -633,7 +619,7 @@ export function JsonFormatterPage() {
                             beforeMount={(monaco) => ensureByteflowMonacoThemes(monaco)}
                             value={input}
                             onChange={(val) => handleInputChange(val || "")}
-                            options={inputEditorOptions}
+                            options={{ ...JSON_EDITOR_OPTIONS, ariaLabel: t.common.input }}
                             aria-describedby={error ? "json-formatter-error" : undefined}
                             aria-invalid={error ? "true" : undefined}
                         />
@@ -674,7 +660,7 @@ export function JsonFormatterPage() {
                                     theme={monacoTheme}
                                     beforeMount={(monaco) => ensureByteflowMonacoThemes(monaco)}
                                     value={output}
-                                    options={outputEditorOptions}
+                                    options={{ ...JSON_OUTPUT_EDITOR_OPTIONS, ariaLabel: t.common.output }}
                                 />
                             ) : (
                                 <JsonTextOutputEmptyState hasInput={Boolean(input.trim())} text={text} />
