@@ -18,7 +18,7 @@ import {
     type CensorMode,
     type CensorRectPercent,
 } from "@/features/tools/photo-censor/utils"
-import { runImageEditTask } from "@/features/tools/shared/image-edit-task"
+import { runImageEditTask } from "@/features/tool-processing/image-edit-task"
 
 const IMAGE_FILE_POLICY = FILE_INPUT_POLICIES["image-standard"]
 

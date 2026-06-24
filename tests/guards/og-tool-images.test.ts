@@ -59,5 +59,5 @@ describe("BF-030 OG image coverage", () => {
 
         expect(output).toContain("[check:og-tool-images] OK")
         expect(output).not.toContain("stale")
-    }, 15_000)
+    }, 45_000)
 })

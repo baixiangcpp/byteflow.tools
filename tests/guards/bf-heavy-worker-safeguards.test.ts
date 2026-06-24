@@ -10,8 +10,8 @@ function read(relativePath: string) {
 
 describe("BF-025/BF-031/BF-035 heavy local processing safeguards", () => {
     it("routes shared image crop/filter/censor work through a worker with abortable fallback", () => {
-        const task = read("src/features/tools/shared/image-edit-task.ts")
-        const worker = read("src/features/tools/shared/image-edit-worker.ts")
+        const task = read("src/features/tool-processing/image-edit-task.ts")
+        const worker = read("src/features/tool-processing/image-edit-worker.ts")
         const cropper = read("src/features/tools/image-cropper/page.tsx")
         const filters = read("src/features/tools/image-filters/page.tsx")
         const censor = read("src/features/tools/photo-censor/page.tsx")

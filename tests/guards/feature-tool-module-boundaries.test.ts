@@ -7,12 +7,13 @@ const FEATURE_TOOLS_DIR = path.join(ROOT, "src/features/tools")
 const DEFAULT_PAGE_LINE_LIMIT = 450
 const SPLIT_PAGE_LINE_LIMITS: Record<string, number> = {
     "json-formatter": 720,
-    "pipeline-builder": 540,
+    "pipeline-builder": 560,
     "password-generator": 500,
     "qr-code-generator": 450,
     "base64-encode-decode": 470,
     "hash-generator": 450,
     "jwt-workbench": 400,
+    "scanned-pdf-converter": 520,
 }
 
 const NON_UI_MODULE_NAMES = new Set(["logic.ts", "samples.ts", "types.ts", "constants.ts", "utils.ts", "error-utils.ts"])

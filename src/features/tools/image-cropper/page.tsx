@@ -13,7 +13,7 @@ import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { createDemoImageDataUrl, fileToDataUrl, loadPolicyCheckedImage } from "@/core/utils/image-canvas-utils"
 import { normalizeCropPercent, percentCropToPixels } from "@/core/utils/image-edit-utils"
-import { runImageEditTask } from "@/features/tools/shared/image-edit-task"
+import { runImageEditTask } from "@/features/tool-processing/image-edit-task"
 
 const IMAGE_FILE_POLICY = FILE_INPUT_POLICIES["image-standard"]
 
