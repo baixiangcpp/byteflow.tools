@@ -19,8 +19,6 @@ const ROOT_SITE_COPY_KEYS = [
     "root_local_desc",
     "root_verifiable_title",
     "root_verifiable_desc",
-    "root_language_title",
-    "root_language_desc",
     "root_popular_title",
     "root_popular_subtitle",
     "root_categories_title",
@@ -41,6 +39,12 @@ describe("root x-default page guard", () => {
         expect(pageSource).not.toContain("root-locale-redirect.js")
         expect(pageSource).not.toContain("window.location.replace")
         expect(pageSource).not.toContain("navigator.language")
+        expect(pageSource).not.toContain("t.site.root_language_title")
+        expect(pageSource).not.toContain("t.site.root_language_desc")
+        expect(pageSource).toContain('aria-label="Primary"')
+        expect(pageSource).toContain('aria-label="Language"')
+        expect(pageSource).toContain('aria-label="Footer"')
+        expect(pageSource).toContain("LOCALES.map")
         expect(pageSource).toContain("t.site.root_badge")
         expect(pageSource).toContain("t.site.root_title")
         expect(pageSource).toContain("t.site.root_cta_search")
@@ -57,8 +61,6 @@ describe("root x-default page guard", () => {
         expect(pageSource).toContain('"regex_tester"')
         expect(pageSource).toContain('"markdown_preview"')
         expect(pageSource).toContain("t.site.root_categories_title")
-        expect(pageSource).toContain("t.site.root_language_title")
-        expect(englishSiteCopy.root_language_desc).toContain("does not force a first-visit redirect")
         expect(pageSource).toContain('href="/en/privacy"')
         expect(pageSource).toContain("t.site.root_privacy_policy")
         expect(pageSource).toContain('href="/en/trust-center"')
