@@ -7,6 +7,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
+import { OutputWrapModeControl, type OutputWrapMode } from "@/features/tool-shell/text-output-panel"
+import { cn } from "@/core/utils/utils"
 
 interface HeaderEntry { key: string; value: string }
 
@@ -41,6 +43,7 @@ export function HeaderDiffPage() {
     const [leftText, setLeftText] = React.useState("Content-Type: application/json\nAuthorization: Bearer token123\nAccept: */*\nX-Request-Id: abc-123\nCache-Control: no-cache")
     const [rightText, setRightText] = React.useState("Content-Type: text/html\nAuthorization: Bearer token456\nAccept: */*\nX-Forwarded-For: 1.2.3.4\nCache-Control: max-age=3600")
     const [diff, setDiff] = React.useState<HeaderDiff[]>([])
+    const [wrapMode, setWrapMode] = React.useState<OutputWrapMode>("wrap")
 
     React.useEffect(() => {
         const left = parseHeaders(leftText)
@@ -83,11 +86,14 @@ export function HeaderDiffPage() {
 
             {diff.length > 0 && (
                 <>
-                    <div className="flex items-center gap-4 text-sm">
-                        <span className="flex items-center gap-1 text-emerald-500"><Plus className="h-4 w-4" />{stats.added} {toolT.added}</span>
-                        <span className="flex items-center gap-1 text-red-500"><Minus className="h-4 w-4" />{stats.removed} {toolT.removed}</span>
-                        <span className="flex items-center gap-1 text-amber-500"><ArrowLeftRight className="h-4 w-4" />{stats.modified} {toolT.modified_label}</span>
-                        <span className="flex items-center gap-1 text-muted-foreground"><Equal className="h-4 w-4" />{stats.unchanged} {toolT.unchanged}</span>
+                    <div className="flex flex-wrap items-center justify-between gap-3 text-sm">
+                        <div className="flex flex-wrap items-center gap-4">
+                            <span className="flex items-center gap-1 text-emerald-500"><Plus className="h-4 w-4" />{stats.added} {toolT.added}</span>
+                            <span className="flex items-center gap-1 text-red-500"><Minus className="h-4 w-4" />{stats.removed} {toolT.removed}</span>
+                            <span className="flex items-center gap-1 text-amber-500"><ArrowLeftRight className="h-4 w-4" />{stats.modified} {toolT.modified_label}</span>
+                            <span className="flex items-center gap-1 text-muted-foreground"><Equal className="h-4 w-4" />{stats.unchanged} {toolT.unchanged}</span>
+                        </div>
+                        <OutputWrapModeControl value={wrapMode} onChange={setWrapMode} />
                     </div>
                     <div className="space-y-2">
                         {diff.map((d, i) => (
@@ -95,9 +101,9 @@ export function HeaderDiffPage() {
                                 <div className="pt-0.5">{typeIcons[d.type]}</div>
                                 <div className="flex-1 min-w-0">
                                     <div className="font-mono text-sm font-semibold">{d.key}</div>
-                                    {d.type !== "added" && <div className="font-mono text-xs text-red-500/70 break-all">- {d.leftValue}</div>}
-                                    {d.type !== "removed" && <div className="font-mono text-xs text-emerald-500/70 break-all">+ {d.rightValue}</div>}
-                                    {d.type === "unchanged" && <div className="font-mono text-xs text-muted-foreground break-all">{d.leftValue}</div>}
+                                    {d.type !== "added" && <div className={cn("overflow-auto font-mono text-xs text-red-500/70", wrapMode === "wrap" ? "break-words" : "whitespace-pre")}>- {d.leftValue}</div>}
+                                    {d.type !== "removed" && <div className={cn("overflow-auto font-mono text-xs text-emerald-500/70", wrapMode === "wrap" ? "break-words" : "whitespace-pre")}>+ {d.rightValue}</div>}
+                                    {d.type === "unchanged" && <div className={cn("overflow-auto font-mono text-xs text-muted-foreground", wrapMode === "wrap" ? "break-words" : "whitespace-pre")}>{d.leftValue}</div>}
                                 </div>
                             </div>
                         ))}

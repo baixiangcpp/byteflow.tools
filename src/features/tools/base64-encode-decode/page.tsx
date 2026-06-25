@@ -2,14 +2,14 @@
 
 import * as React from "react"
 import { Binary, Copy, Download, Eraser, FileUp, Play, Share2, TestTube2, Workflow } from "lucide-react"
-import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { ModeSelector } from "@/features/tool-shell/mode-selector"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { copyTextWithToolFeedback, downloadedFileFeedback, notifyToolActionSuccess } from "@/features/tool-shell/tool-action-feedback"
+import { TextOutputPanel } from "@/features/tool-shell/text-output-panel"
 import { useLang } from "@/core/i18n/lang-provider"
 import { Textarea } from "@/components/ui/textarea"
 import { readStorageString, writeStorageString } from "@/core/storage/tool-persistence"
-import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildToolHandoffLink } from "@/core/routing/tool-handoff"
 import { FILE_INPUT_POLICIES, describeFilePolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { downloadBlob, downloadTextFile } from "./browser-actions"
@@ -146,46 +146,33 @@ export function Base64Page() {
         if (navigator.share) {
             try {
                 await navigator.share({ title: text("share_title"), url: link })
-                return
+                return notifyToolActionSuccess(t, {
+                    kind: "share",
+                    label: text("share_action"),
+                    title: text("share_title"),
+                    description: text("link_copied_desc"),
+                })
             } catch {
                 // fall through to clipboard
             }
         }
-        const result = await safeClipboardWrite(link)
-        if (!result.ok) {
-            toast.error(t.common.copy_failed)
-            return
-        }
-        toast.success(text("link_copied"), {
-            description: text("link_copied_desc"),
-        })
+        return copyTextWithToolFeedback(t, link, text("share_action"), text("link_copied_desc"))
     }
 
     const handleCopyOutput = async () => {
         if (!output) return
-        const result = await safeClipboardWrite(output)
-        if (!result.ok) {
-            toast.error(t.common.copy_failed)
-            return
-        }
-        toast.success(t.common.copied, {
-            description: t.common.copied_desc,
-        })
+        return copyTextWithToolFeedback(t, output, t.common.output, t.common.copied_desc)
     }
 
     const handleDownload = () => {
         if (decodedBlob) {
             downloadBlob(decodedBlob, decodedFileName)
-            toast.success(text("downloaded"), {
-                description: text("downloaded_saved_file").replace("{filename}", decodedFileName),
-            })
-            return
+            return downloadedFileFeedback(t, decodedFileName, text("downloaded_saved_file").replace("{filename}", decodedFileName))
         }
         if (!output) return
-        downloadTextFile(output, mode === "url-safe" ? "base64url.txt" : "base64-output.txt")
-        toast.success(text("downloaded"), {
-            description: text("downloaded_output_file_saved"),
-        })
+        const filename = mode === "url-safe" ? "base64url.txt" : "base64-output.txt"
+        downloadTextFile(output, filename)
+        return downloadedFileFeedback(t, filename, text("downloaded_output_file_saved"))
     }
 
     const encodeBase64 = async () => {
@@ -439,29 +426,20 @@ export function Base64Page() {
                     </div>
                 </div>
 
-                <div className="flex h-full flex-col overflow-hidden rounded-lg border bg-card">
-                    <div className="tool-pane-header tool-pane-header-between">
-                        <span>{t.common.output}</span>
-                        <span className="text-xs font-normal text-muted-foreground">
-                            {output.length} chars / {outputBytes} bytes
+                <TextOutputPanel
+                    title={t.common.output}
+                    ariaLabel={t.common.output}
+                    value={outputPreview}
+                    metadata={`${output.length} chars / ${outputBytes} bytes`}
+                    emptyText={t.common.result_placeholder}
+                    minHeightClassName="min-h-[400px]"
+                    className="rounded-lg"
+                    actions={isOutputPreviewTruncated ? (
+                        <span className="rounded-md border border-border/70 bg-background/90 px-2 py-1 text-[11px] font-normal text-muted-foreground">
+                            {toolT.output_preview_truncated.replace("{hidden}", String(output.length - OUTPUT_PREVIEW_LIMIT))}
                         </span>
-                    </div>
-                    <div className="relative flex-1 p-0">
-                        <Textarea
-                            className="h-full min-h-[400px] w-full resize-none border-0 p-4 font-mono text-sm leading-relaxed focus-visible:ring-1 focus-visible:ring-ring/50"
-                            placeholder={t.common.result_placeholder}
-                            value={outputPreview}
-                            readOnly
-                            aria-label={t.common.output}
-                            spellCheck={false}
-                        />
-                        {isOutputPreviewTruncated ? (
-                            <p className="absolute bottom-3 right-3 rounded-md border border-border/70 bg-background/90 px-2 py-1 text-[11px] text-muted-foreground">
-                                Preview truncated
-                            </p>
-                        ) : null}
-                    </div>
-                </div>
+                    ) : null}
+                />
             </div>
         </div>
     )

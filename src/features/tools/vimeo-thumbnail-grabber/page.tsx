@@ -2,15 +2,15 @@
 
 import * as React from "react"
 import { Clapperboard, Copy, Download, Eraser, ImageDown, ShieldCheck, TestTube2 } from "lucide-react"
-import { toast } from "sonner"
 import { useLang } from "@/core/i18n/lang-provider"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { copyTextWithToolFeedback, downloadedFileFeedback, notifyToolActionFailure, notifyToolActionSuccess } from "@/features/tool-shell/tool-action-feedback"
 import { ExternalRequestConfirmation } from "@/features/tool-shell/external-request-confirmation"
-import { isBrowserOffline } from "@/features/tool-shell/external-request-offline"
+import { isBrowserOffline, useBrowserOnlineStatus } from "@/features/tool-shell/external-request-offline"
+import { ExternalRequestStatus, type ExternalRequestStatusKind } from "@/features/tool-shell/external-request-status"
+import { TextOutputPanel } from "@/features/tool-shell/text-output-panel"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
-import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import {
     buildVimeoThumbnailCandidates,
     parseVimeoVideoId,
@@ -42,8 +42,11 @@ export function VimeoThumbnailGrabberPage() {
     const [candidates, setCandidates] = React.useState<ThumbnailCandidate[]>([])
     const [selectedUrl, setSelectedUrl] = React.useState("")
     const [status, setStatus] = React.useState(statusIdle)
+    const [requestStatus, setRequestStatus] = React.useState<ExternalRequestStatusKind>("idle")
+    const [requestNextStep, setRequestNextStep] = React.useState(t.common.external_request_status.next_step_add_input)
     const [previewApproved, setPreviewApproved] = React.useState(false)
     const [externalRequestConfirmed, setExternalRequestConfirmed] = React.useState(false)
+    const isOnline = useBrowserOnlineStatus()
 
     React.useEffect(() => {
         const id = parseVimeoVideoId(url)
@@ -54,6 +57,8 @@ export function VimeoThumbnailGrabberPage() {
             setPreviewApproved(false)
             setExternalRequestConfirmed(false)
             setStatus(url.trim() ? statusInvalid : statusIdle)
+            setRequestStatus(url.trim() ? "invalid" : "idle")
+            setRequestNextStep(url.trim() ? t.common.external_request_status.next_step_fix_input : t.common.external_request_status.next_step_add_input)
             return
         }
 
@@ -64,7 +69,17 @@ export function VimeoThumbnailGrabberPage() {
         setPreviewApproved(false)
         setExternalRequestConfirmed(false)
         setStatus(statusReady)
-    }, [statusAutoSelectedTemplate, statusIdle, statusInvalid, statusReady, statusUnreachable, url])
+        setRequestStatus("permission")
+        setRequestNextStep(t.common.external_request_status.next_step_confirm)
+    }, [statusAutoSelectedTemplate, statusIdle, statusInvalid, statusReady, statusUnreachable, t.common.external_request_status, url])
+
+    React.useEffect(() => {
+        if (!isOnline && candidates.length > 0 && externalRequestConfirmed) {
+            setStatus(t.common.external_network_notice.offline_required)
+            setRequestStatus("offline")
+            setRequestNextStep(t.common.external_request_status.next_step_reconnect)
+        }
+    }, [candidates.length, externalRequestConfirmed, isOnline, t.common.external_network_notice.offline_required, t.common.external_request_status])
 
     const output = React.useMemo(
         () =>
@@ -85,49 +100,84 @@ export function VimeoThumbnailGrabberPage() {
         setUrl("")
         setExternalRequestConfirmed(false)
     }
-    const handleLoadPreview = () => {
+    const handleLoadPreview = async () => {
         if (candidates.length === 0) return
         if (!externalRequestConfirmed) {
-            toast.error(t.common.external_network_notice.confirm_required)
-            return
+            setRequestStatus("permission")
+            setRequestNextStep(t.common.external_request_status.next_step_confirm)
+            return notifyToolActionFailure(t, {
+                kind: "share",
+                label: t.common.preview,
+                title: t.common.external_network_notice.confirm_required,
+                description: t.common.external_request_status.next_step_confirm,
+            })
         }
         if (isBrowserOffline()) {
-            toast.error(t.common.external_network_notice.offline_required)
             setStatus(t.common.external_network_notice.offline_required)
-            return
+            setRequestStatus("offline")
+            setRequestNextStep(t.common.external_request_status.next_step_reconnect)
+            return notifyToolActionFailure(t, {
+                kind: "share",
+                label: t.common.preview,
+                title: t.common.external_network_notice.offline_required,
+                description: t.common.external_request_status.next_step_reconnect,
+            })
         }
         setPreviewApproved(true)
         setStatus(statusReady)
-        void (async () => {
-            const firstWorking = await probeFirstWorkingThumbnail(candidates)
-            if (firstWorking) {
-                setSelectedUrl(firstWorking.url)
-                setStatus(statusAutoSelectedTemplate.replace("{label}", firstWorking.label))
-            } else {
-                setStatus(statusUnreachable)
-            }
-        })()
+        setRequestStatus("requesting")
+        setRequestNextStep(t.common.external_request_status.next_step_wait)
+        const firstWorking = await probeFirstWorkingThumbnail(candidates)
+        if (firstWorking) {
+            setSelectedUrl(firstWorking.url)
+            setStatus(statusAutoSelectedTemplate.replace("{label}", firstWorking.label))
+            setRequestStatus("success")
+            setRequestNextStep(t.common.external_request_status.next_step_download)
+            return notifyToolActionSuccess(t, {
+                kind: "share",
+                label: t.common.preview,
+                title: t.common.action_status_success.replace("{action}", t.common.preview),
+                description: t.common.external_request_status.next_step_download,
+            })
+        }
+
+        setStatus(statusUnreachable)
+        setRequestStatus("unreachable")
+        setRequestNextStep(t.common.external_request_status.next_step_try_another)
+        return notifyToolActionFailure(t, {
+            kind: "share",
+            label: t.common.preview,
+            title: statusUnreachable,
+            description: t.common.external_request_status.next_step_try_another,
+        })
     }
 
     const handleCopy = async () => {
-        const result = await safeClipboardWrite(output)
-        if (!result.ok) {
-            toast.error(t.common.copy_failed)
-            return
-        }
-        toast.success(t.common.copied)
+        return copyTextWithToolFeedback(t, output, t.common.output)
     }
 
     const handleDownload = () => {
         if (!selectedUrl) return
         if (!externalRequestConfirmed) {
-            toast.error(t.common.external_network_notice.confirm_required)
-            return
+            setRequestStatus("permission")
+            setRequestNextStep(t.common.external_request_status.next_step_confirm)
+            return notifyToolActionFailure(t, {
+                kind: "download",
+                label: t.common.download,
+                title: t.common.external_network_notice.confirm_required,
+                description: t.common.external_request_status.next_step_confirm,
+            })
         }
         if (isBrowserOffline()) {
-            toast.error(t.common.external_network_notice.offline_required)
             setStatus(t.common.external_network_notice.offline_required)
-            return
+            setRequestStatus("offline")
+            setRequestNextStep(t.common.external_request_status.next_step_reconnect)
+            return notifyToolActionFailure(t, {
+                kind: "download",
+                label: t.common.download,
+                title: t.common.external_network_notice.offline_required,
+                description: t.common.external_request_status.next_step_reconnect,
+            })
         }
         const filename = `vimeo-thumbnail-${videoId || "image"}.jpg`
         const anchor = document.createElement("a")
@@ -136,7 +186,7 @@ export function VimeoThumbnailGrabberPage() {
         anchor.rel = "noopener noreferrer"
         anchor.download = filename
         anchor.click()
-        toast.success(t.common.downloaded_file.replace("{filename}", filename))
+        return downloadedFileFeedback(t, filename, selectedUrl)
     }
 
     const actions: ToolAction[] = [
@@ -147,23 +197,27 @@ export function VimeoThumbnailGrabberPage() {
             label: t.common.preview,
             icon: ImageDown,
             onClick: handleLoadPreview,
-            disabled: candidates.length === 0 || !externalRequestConfirmed,
+            disabled: candidates.length === 0 || !externalRequestConfirmed || !isOnline,
             disabledReason: candidates.length === 0
                 ? t.common.action_disabled_input_required
-                : t.common.external_network_notice.confirm_required,
+                : !externalRequestConfirmed
+                    ? t.common.external_network_notice.confirm_required
+                    : t.common.external_network_notice.offline_required,
         },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy() },
+        { id: "copy", label: t.common.copy, icon: Copy, onClick: handleCopy },
         {
             id: "download",
             label: t.common.download,
             icon: Download,
             onClick: handleDownload,
-            disabled: !selectedUrl || !previewApproved || !externalRequestConfirmed,
+            disabled: !selectedUrl || !previewApproved || !externalRequestConfirmed || !isOnline,
             disabledReason: !selectedUrl
                 ? t.common.action_disabled_no_output
                 : !externalRequestConfirmed
                     ? t.common.external_network_notice.confirm_required
-                    : t.common.action_disabled_preview_required,
+                    : !isOnline
+                        ? t.common.external_network_notice.offline_required
+                        : t.common.action_disabled_preview_required,
         },
     ]
 
@@ -212,6 +266,17 @@ export function VimeoThumbnailGrabberPage() {
                                 onConfirmedChange={(confirmed) => {
                                     setExternalRequestConfirmed(confirmed)
                                     if (!confirmed) setPreviewApproved(false)
+                                    if (confirmed) {
+                                        setRequestStatus(candidates.length > 0 ? "ready" : "idle")
+                                        setRequestNextStep(candidates.length > 0
+                                            ? t.common.external_request_status.next_step_preview
+                                            : t.common.external_request_status.next_step_add_input)
+                                    } else {
+                                        setRequestStatus(candidates.length > 0 ? "permission" : "idle")
+                                        setRequestNextStep(candidates.length > 0
+                                            ? t.common.external_request_status.next_step_confirm
+                                            : t.common.external_request_status.next_step_add_input)
+                                    }
                                 }}
                                 rightsGuidance={t.common.thumbnail_public_only_notice}
                             />
@@ -266,20 +331,20 @@ export function VimeoThumbnailGrabberPage() {
                         )}
                     </ToolPreviewArea>
                     <div className="space-y-3 border-b bg-background/30 p-3">
-                        <div id="vimeo-thumbnail-status" role="status" aria-live="polite" className="rounded-lg border bg-background p-2 text-xs text-muted-foreground">
-                            <ImageDown className="mr-1 inline h-3.5 w-3.5" />
-                            {status}
-                        </div>
-                    </div>
-                    <div className="flex-1 p-0">
-                        <Textarea
-                            readOnly
-                            value={output}
-                            aria-label={t.common.output}
-                            className="h-full min-h-[260px] w-full resize-none border-0 p-4 font-mono text-sm leading-relaxed focus-visible:ring-1 focus-visible:ring-ring/50"
-                            spellCheck={false}
+                        <ExternalRequestStatus
+                            id="vimeo-thumbnail-status"
+                            status={requestStatus}
+                            message={status}
+                            nextStep={requestNextStep}
+                            hosts={EXTERNAL_HOSTS}
                         />
                     </div>
+                    <TextOutputPanel
+                        title={t.common.output}
+                        ariaLabel={t.common.output}
+                        value={output}
+                        className="flex-1 rounded-none border-0"
+                    />
                 </div>
             </div>
         </div>

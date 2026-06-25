@@ -2,13 +2,13 @@
 
 import * as React from "react"
 import { Copy, Download, Eraser, Globe2, TestTube2 } from "lucide-react"
-import { toast } from "sonner"
 import { useLang } from "@/core/i18n/lang-provider"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { copyTextWithToolFeedback, downloadedFileFeedback } from "@/features/tool-shell/tool-action-feedback"
+import { TextOutputPanel } from "@/features/tool-shell/text-output-panel"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
-import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import {
     buildOpenGraphMetaTags,
     buildOpenGraphSnippetDocument,
@@ -60,28 +60,25 @@ export function OpenGraphMetaGeneratorPage() {
         })
 
     const handleCopy = async () => {
-        const result = await safeClipboardWrite(output)
-        if (!result.ok) {
-            toast.error(t.common.copy_failed)
-            return
-        }
-        toast.success(t.common.copied)
+        return copyTextWithToolFeedback(t, output, toolT.preview_meta_tags_label || t.common.output)
     }
 
     const handleDownload = () => {
+        const filename = "open-graph-tags.txt"
         const blob = new Blob([output], { type: "text/plain;charset=utf-8" })
         const objectUrl = URL.createObjectURL(blob)
         const anchor = document.createElement("a")
         anchor.href = objectUrl
-        anchor.download = "open-graph-tags.txt"
+        anchor.download = filename
         anchor.click()
         URL.revokeObjectURL(objectUrl)
+        return downloadedFileFeedback(t, filename)
     }
 
     const actions: ToolAction[] = [
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: handleSample },
         { id: "reset", label: t.common.reset, icon: Eraser, onClick: handleReset },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy() },
+        { id: "copy", label: t.common.copy, icon: Copy, onClick: handleCopy },
         { id: "download", label: t.common.download, icon: Download, onClick: handleDownload },
     ]
 
@@ -176,14 +173,12 @@ export function OpenGraphMetaGeneratorPage() {
                             </div>
                         </div>
                     </div>
-                    <div className="flex-1 p-0">
-                        <Textarea
-                            readOnly
-                            value={output}
-                            className="h-full min-h-[260px] w-full resize-none border-0 p-4 font-mono text-sm leading-relaxed focus-visible:ring-1 focus-visible:ring-ring/50"
-                            spellCheck={false}
-                        />
-                    </div>
+                    <TextOutputPanel
+                        title={toolT.preview_meta_tags_label || t.common.output}
+                        ariaLabel={toolT.preview_meta_tags_label || t.common.output}
+                        value={output}
+                        className="flex-1 rounded-none border-0"
+                    />
                 </div>
             </div>
         </div>

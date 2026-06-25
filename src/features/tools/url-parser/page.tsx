@@ -2,12 +2,12 @@
 
 import * as React from "react"
 import { Copy, Eraser, Link2, Plus, Trash2, ArrowRight } from "lucide-react"
-import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
-import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { copyTextWithToolFeedback } from "@/features/tool-shell/tool-action-feedback"
+import { TextOutputPanel } from "@/features/tool-shell/text-output-panel"
 
 interface QueryParam {
     id: string
@@ -151,12 +151,7 @@ export function UrlParserPage() {
 
     const handleCopyReconstructed = async () => {
         if (!reconstructedUrl) return
-        const result = await safeClipboardWrite(reconstructedUrl)
-        if (!result.ok) {
-            toast.error(t.common.copy_failed)
-            return
-        }
-        toast.success(t.common.copied)
+        return copyTextWithToolFeedback(t, reconstructedUrl, toolT.reconstructed_heading)
     }
 
     const addParam = () => {
@@ -306,17 +301,18 @@ export function UrlParserPage() {
             </div>
 
             {/* Reconstructed URL */}
-            <div className="p-5 border rounded-lg bg-card shadow-sm space-y-3">
-                <div className="flex items-center justify-between">
-                    <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">{toolT.reconstructed_heading}</h3>
+            <TextOutputPanel
+                title={toolT.reconstructed_heading}
+                value={reconstructedUrl}
+                ariaLabel={toolT.reconstructed_heading}
+                defaultMode="scroll"
+                minHeightClassName="min-h-28"
+                actions={(
                     <Button variant="outline" size="sm" onClick={() => void handleCopyReconstructed()} disabled={!reconstructedUrl}>
                         <Copy className="mr-2 h-4 w-4" />{t.common.copy}
                     </Button>
-                </div>
-                <div className="p-3 bg-muted/50 rounded-md font-mono text-sm break-all select-all">
-                    {reconstructedUrl || <span className="text-muted-foreground italic">—</span>}
-                </div>
-            </div>
+                )}
+            />
 
             <RelatedTools toolKey="url_parser" />
         </div>

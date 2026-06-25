@@ -2,16 +2,16 @@
 
 import * as React from "react"
 import { AlertTriangle, CheckCircle2, Copy, Download, Eraser, ImageDown, TestTube2 } from "lucide-react"
-import { toast } from "sonner"
 import { useLang } from "@/core/i18n/lang-provider"
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { copyTextWithToolFeedback, downloadedFileFeedback, notifyToolActionFailure, notifyToolActionSuccess } from "@/features/tool-shell/tool-action-feedback"
 import { ExternalRequestConfirmation } from "@/features/tool-shell/external-request-confirmation"
-import { isBrowserOffline } from "@/features/tool-shell/external-request-offline"
+import { isBrowserOffline, useBrowserOnlineStatus } from "@/features/tool-shell/external-request-offline"
+import { ExternalRequestStatus, type ExternalRequestStatusKind } from "@/features/tool-shell/external-request-status"
+import { TextOutputPanel } from "@/features/tool-shell/text-output-panel"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
-import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { openExternalUrl } from "@/core/security/external-url"
 import {
     canDownloadAuthorizedInstagramMedia,
@@ -32,6 +32,9 @@ export function InstagramPhotoDownloaderPage() {
     const [statusNote, setStatusNote] = React.useState("")
     const [previewApproved, setPreviewApproved] = React.useState(false)
     const [externalRequestConfirmed, setExternalRequestConfirmed] = React.useState(false)
+    const [requestStatus, setRequestStatus] = React.useState<ExternalRequestStatusKind>("idle")
+    const [requestNextStep, setRequestNextStep] = React.useState(t.common.external_request_status.next_step_add_input)
+    const isOnline = useBrowserOnlineStatus()
 
     const statusReadyLine = text("status_ready_line")
     const statusPendingLine = text("status_pending_line")
@@ -93,31 +96,51 @@ export function InstagramPhotoDownloaderPage() {
     React.useEffect(() => {
         if (!inputUrl.trim()) {
             setStatusNote("")
+            setRequestStatus("idle")
+            setRequestNextStep(t.common.external_request_status.next_step_add_input)
             return
         }
         if (!parsed) {
             setStatusNote(statusInvalidUrl)
+            setRequestStatus("invalid")
+            setRequestNextStep(t.common.external_request_status.next_step_fix_input)
             return
         }
         if (!parsed.isHttps) {
             setStatusNote(statusHttpsOnly)
+            setRequestStatus("invalid")
+            setRequestNextStep(t.common.external_request_status.next_step_fix_input)
             return
         }
         if (parsed.kind === "instagram_post") {
             setStatusNote(statusPostReelUnsupported)
+            setRequestStatus("blocked")
+            setRequestNextStep(t.common.external_request_status.next_step_try_another)
             return
         }
         if (parsed.kind === "unsupported") {
             setStatusNote(statusDirectImageOnly)
+            setRequestStatus("invalid")
+            setRequestNextStep(t.common.external_request_status.next_step_fix_input)
             return
         }
         if (!rightsConfirmed) {
             setStatusNote(statusConfirmRights)
+            setRequestStatus("permission")
+            setRequestNextStep(t.common.external_request_status.next_step_check_permission)
             return
         }
         setStatusNote(statusReadyAuthorized)
+        setRequestStatus(!isOnline && externalRequestConfirmed ? "offline" : externalRequestConfirmed ? "ready" : "permission")
+        setRequestNextStep(externalRequestConfirmed
+            ? !isOnline
+                ? t.common.external_request_status.next_step_reconnect
+                : t.common.external_request_status.next_step_preview
+            : t.common.external_request_status.next_step_confirm)
     }, [
+        externalRequestConfirmed,
         inputUrl,
+        isOnline,
         parsed,
         rightsConfirmed,
         statusConfirmRights,
@@ -126,6 +149,7 @@ export function InstagramPhotoDownloaderPage() {
         statusInvalidUrl,
         statusPostReelUnsupported,
         statusReadyAuthorized,
+        t.common.external_request_status,
     ])
 
     const handleSample = () => {
@@ -145,46 +169,87 @@ export function InstagramPhotoDownloaderPage() {
 
     const handleLoadPreview = () => {
         if (!canDownload) {
-            toast.error(t.common.download_blocked_until_checks_pass)
-            return
+            setRequestStatus("blocked")
+            setRequestNextStep(t.common.external_request_status.next_step_check_permission)
+            return notifyToolActionFailure(t, {
+                kind: "share",
+                label: t.common.preview,
+                title: t.common.download_blocked_until_checks_pass,
+                description: t.common.external_request_status.next_step_check_permission,
+            })
         }
         if (!externalRequestConfirmed) {
-            toast.error(t.common.external_network_notice.confirm_required)
-            return
+            setRequestStatus("permission")
+            setRequestNextStep(t.common.external_request_status.next_step_confirm)
+            return notifyToolActionFailure(t, {
+                kind: "share",
+                label: t.common.preview,
+                title: t.common.external_network_notice.confirm_required,
+                description: t.common.external_request_status.next_step_confirm,
+            })
         }
         if (isBrowserOffline()) {
-            toast.error(t.common.external_network_notice.offline_required)
             setStatusNote(t.common.external_network_notice.offline_required)
-            return
+            setRequestStatus("offline")
+            setRequestNextStep(t.common.external_request_status.next_step_reconnect)
+            return notifyToolActionFailure(t, {
+                kind: "share",
+                label: t.common.preview,
+                title: t.common.external_network_notice.offline_required,
+                description: t.common.external_request_status.next_step_reconnect,
+            })
         }
         setPreviewApproved(true)
+        setRequestStatus("success")
+        setRequestNextStep(t.common.external_request_status.next_step_download)
+        return notifyToolActionSuccess(t, {
+            kind: "share",
+            label: t.common.preview,
+            title: t.common.action_status_success.replace("{action}", t.common.preview),
+            description: t.common.external_request_status.next_step_download,
+        })
     }
 
     const handleCopy = async () => {
-        const result = await safeClipboardWrite(output)
-        if (!result.ok) {
-            toast.error(t.common.copy_failed)
-            return
-        }
-        toast.success(t.common.copied)
+        return copyTextWithToolFeedback(t, output, t.common.output)
     }
 
     const handleDownload = async () => {
         if (!parsed || !canDownload) {
-            toast.error(t.common.download_blocked_until_checks_pass)
-            return
+            setRequestStatus("blocked")
+            setRequestNextStep(t.common.external_request_status.next_step_check_permission)
+            return notifyToolActionFailure(t, {
+                kind: "download",
+                label: t.common.download,
+                title: t.common.download_blocked_until_checks_pass,
+                description: t.common.external_request_status.next_step_check_permission,
+            })
         }
         if (!externalRequestConfirmed) {
-            toast.error(t.common.external_network_notice.confirm_required)
-            return
+            setRequestStatus("permission")
+            setRequestNextStep(t.common.external_request_status.next_step_confirm)
+            return notifyToolActionFailure(t, {
+                kind: "download",
+                label: t.common.download,
+                title: t.common.external_network_notice.confirm_required,
+                description: t.common.external_request_status.next_step_confirm,
+            })
         }
         if (isBrowserOffline()) {
-            toast.error(t.common.external_network_notice.offline_required)
             setStatusNote(t.common.external_network_notice.offline_required)
-            return
+            setRequestStatus("offline")
+            setRequestNextStep(t.common.external_request_status.next_step_reconnect)
+            return notifyToolActionFailure(t, {
+                kind: "download",
+                label: t.common.download,
+                title: t.common.external_network_notice.offline_required,
+                description: t.common.external_request_status.next_step_reconnect,
+            })
         }
 
         const filename = getInstagramMediaFilename(parsed.normalizedUrl)
+        setRequestStatus("requesting")
+        setRequestNextStep(t.common.external_request_status.next_step_wait)
 
         try {
             const response = await fetch(parsed.normalizedUrl)
@@ -197,12 +262,19 @@ export function InstagramPhotoDownloaderPage() {
             anchor.download = filename
             anchor.click()
             URL.revokeObjectURL(objectUrl)
-            toast.success((t.common.downloaded_file).replace("{filename}", filename))
+            setRequestStatus("success")
+            setRequestNextStep(t.common.external_request_status.next_step_download)
+            return downloadedFileFeedback(t, filename, parsed.normalizedUrl)
         } catch {
             openExternalUrl(parsed.normalizedUrl)
-            toast.info(
-                t.common.direct_download_blocked_opened_new_tab,
-            )
+            setRequestStatus("blocked")
+            setRequestNextStep(t.common.external_request_status.next_step_open_remote)
+            return notifyToolActionFailure(t, {
+                kind: "download",
+                label: t.common.download,
+                title: t.common.direct_download_blocked_opened_new_tab,
+                description: t.common.external_request_status.next_step_open_remote,
+            })
         }
     }
 
@@ -214,21 +286,25 @@ export function InstagramPhotoDownloaderPage() {
             label: t.common.preview,
             icon: ImageDown,
             onClick: handleLoadPreview,
-            disabled: !canDownload || !externalRequestConfirmed,
+            disabled: !canDownload || !externalRequestConfirmed || !isOnline,
             disabledReason: !canDownload
                 ? t.common.download_blocked_until_checks_pass
-                : t.common.external_network_notice.confirm_required,
+                : !externalRequestConfirmed
+                    ? t.common.external_network_notice.confirm_required
+                    : t.common.external_network_notice.offline_required,
         },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy() },
+        { id: "copy", label: t.common.copy, icon: Copy, onClick: handleCopy },
         {
             id: "download",
             label: t.common.download,
             icon: Download,
-            onClick: () => void handleDownload(),
-            disabled: !canDownload || !externalRequestConfirmed,
+            onClick: handleDownload,
+            disabled: !canDownload || !externalRequestConfirmed || !isOnline,
             disabledReason: !canDownload
                 ? t.common.download_blocked_until_checks_pass
-                : t.common.external_network_notice.confirm_required,
+                : !externalRequestConfirmed
+                    ? t.common.external_network_notice.confirm_required
+                    : t.common.external_network_notice.offline_required,
         },
     ]
 
@@ -295,6 +371,17 @@ export function InstagramPhotoDownloaderPage() {
                                 onConfirmedChange={(confirmed) => {
                                     setExternalRequestConfirmed(confirmed)
                                     if (!confirmed) setPreviewApproved(false)
+                                    if (confirmed) {
+                                        setRequestStatus(canDownload ? "ready" : requestStatus)
+                                        setRequestNextStep(canDownload
+                                            ? t.common.external_request_status.next_step_preview
+                                            : requestNextStep)
+                                    } else {
+                                        setRequestStatus(canDownload ? "permission" : requestStatus)
+                                        setRequestNextStep(canDownload
+                                            ? t.common.external_request_status.next_step_confirm
+                                            : requestNextStep)
+                                    }
                                 }}
                                 rightsGuidance={text("compliance_notice")}
                             />
@@ -302,16 +389,23 @@ export function InstagramPhotoDownloaderPage() {
                                 {text("compliance_notice")}
                             </div>
                             {canDownload ? (
-                                <div id="instagram-media-status" role="status" aria-live="polite" className="flex items-start gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 p-3 text-emerald-700 dark:text-emerald-300">
+                                <div role="status" aria-live="polite" className="flex items-start gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 p-3 text-emerald-700 dark:text-emerald-300">
                                     <CheckCircle2 className="mt-0.5 h-4 w-4" />
                                     <span>{guidancePassed}</span>
                                 </div>
                             ) : (
-                                <div id="instagram-media-status" role="status" aria-live="polite" className="flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-amber-700 dark:text-amber-300">
+                                <div role="status" aria-live="polite" className="flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-amber-700 dark:text-amber-300">
                                     <AlertTriangle className="mt-0.5 h-4 w-4" />
                                     <span>{statusNote || guidanceNeedInput}</span>
                                 </div>
                             )}
+                            <ExternalRequestStatus
+                                id="instagram-media-status"
+                                status={requestStatus}
+                                message={statusNote || guidanceNeedInput}
+                                nextStep={requestNextStep}
+                                hosts={EXTERNAL_HOSTS}
+                            />
                         </div>
                     </div>
                 </div>
@@ -340,15 +434,12 @@ export function InstagramPhotoDownloaderPage() {
                             )}
                         </ToolPreviewArea>
                     </div>
-                    <div className="flex-1 p-0">
-                        <Textarea
-                            readOnly
-                            value={output}
-                            aria-label={t.common.output}
-                            className="h-full min-h-[260px] w-full resize-none border-0 p-4 font-mono text-sm leading-relaxed focus-visible:ring-1 focus-visible:ring-ring/50"
-                            spellCheck={false}
-                        />
-                    </div>
+                    <TextOutputPanel
+                        title={t.common.output}
+                        ariaLabel={t.common.output}
+                        value={output}
+                        className="flex-1 rounded-none border-0"
+                    />
                 </div>
             </div>
         </div>

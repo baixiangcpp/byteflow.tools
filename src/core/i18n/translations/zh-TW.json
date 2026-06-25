@@ -441,7 +441,38 @@
     "processing_file_locally": "正在本地處理檔案...",
     "file_ready_locally": "檔案已可在本地處理。",
     "file_processing_cancelled": "處理已取消。",
-    "file_upload_requirements": "上傳要求"
+    "file_upload_requirements": "上傳要求",
+    "action_status_pending": "{action} 正在進行。",
+    "action_status_success": "{action} 已完成。",
+    "action_status_failed": "{action} 失敗。",
+    "output_overflow": {
+      "mode_label": "輸出溢位模式",
+      "wrap": "換行",
+      "scroll": "捲動"
+    },
+    "external_request_status": {
+      "idle": "等待輸入",
+      "invalid": "輸入無效",
+      "ready": "已準備好明確請求",
+      "requesting": "正在請求外部資源",
+      "success": "外部資源已載入",
+      "unreachable": "遠端資源無法連線",
+      "blocked": "請求被阻止",
+      "offline": "離線",
+      "permission": "需要權限",
+      "next_step_label": "下一步",
+      "boundary_label": "外部邊界",
+      "next_step_add_input": "先加入支援的 URL，再執行外部請求。",
+      "next_step_fix_input": "修正 URL 後重新執行工具。",
+      "next_step_confirm": "預覽或下載前，請確認外部請求和權利說明。",
+      "next_step_preview": "選擇「預覽」，從你的瀏覽器請求已揭露的資源。",
+      "next_step_wait": "等待瀏覽器請求完成。",
+      "next_step_download": "查看預覽後，僅在你有權限時下載。",
+      "next_step_reconnect": "重新連線後，再重試該明確操作。",
+      "next_step_try_another": "嘗試其他公開 URL 或候選項，然後再次預覽。",
+      "next_step_check_permission": "確認你擁有或獲授權使用此媒體 URL。",
+      "next_step_open_remote": "如果直接下載被阻止，請使用已開啟的遠端分頁。"
+    }
   },
   "tools": {
     "json_formatter": {

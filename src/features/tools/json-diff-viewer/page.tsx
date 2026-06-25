@@ -7,6 +7,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { MonacoDiffEditor } from "@/features/tool-shell/monaco-editors"
+import { OutputWrapModeControl, type OutputWrapMode } from "@/features/tool-shell/text-output-panel"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { buildInputTooLargeMessage, isOverUtf8Budget, TOOL_RUNTIME_BUDGETS } from "@/core/performance/tool-runtime-budgets"
@@ -64,6 +65,7 @@ export function JsonDiffViewerPage() {
     const [left, setLeft] = React.useState(SAMPLE_A)
     const [right, setRight] = React.useState(SAMPLE_B)
     const [error, setError] = React.useState<string | null>(null)
+    const [wrapMode, setWrapMode] = React.useState<OutputWrapMode>("wrap")
     const toolT = t.tools["json_diff_viewer"] as Record<string, string>
 
     const monacoTheme = getByteflowMonacoThemeName(resolvedTheme)
@@ -194,6 +196,7 @@ export function JsonDiffViewerPage() {
                             <span className="text-muted-foreground">vs</span>
                             <span className="text-muted-foreground">{toolT.modified}</span>
                         </div>
+                        <OutputWrapModeControl value={wrapMode} onChange={setWrapMode} />
                     </div>
                     <div className="min-h-[600px]">
                         <MonacoDiffEditor
@@ -210,6 +213,7 @@ export function JsonDiffViewerPage() {
                                 fontSize: 13,
                                 lineNumbers: "on",
                                 renderSideBySide: true,
+                                wordWrap: wrapMode === "wrap" ? "on" : "off",
                                 originalEditable: true,
                                 readOnly: false,
                             }}

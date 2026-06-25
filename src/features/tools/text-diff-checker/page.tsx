@@ -6,6 +6,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
 import { MonacoDiffEditor } from "@/features/tool-shell/monaco-editors"
+import { OutputWrapModeControl, type OutputWrapMode } from "@/features/tool-shell/text-output-panel"
 import { buildInputTooLargeMessage, isOverUtf8Budget, TOOL_RUNTIME_BUDGETS } from "@/core/performance/tool-runtime-budgets"
 
 const ACTION_BUTTON_CLASS =
@@ -16,6 +17,7 @@ export function TextDiffCheckerPage() {
     const [original, setOriginal] = React.useState("")
     const [modified, setModified] = React.useState("")
     const [error, setError] = React.useState<string | null>(null)
+    const [wrapMode, setWrapMode] = React.useState<OutputWrapMode>("wrap")
 
     const { resolvedTheme } = useThemePreference()
     const monacoTheme = getByteflowMonacoThemeName(resolvedTheme)
@@ -48,6 +50,7 @@ export function TextDiffCheckerPage() {
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
+                    <OutputWrapModeControl value={wrapMode} onChange={setWrapMode} />
                     <button type="button" className={ACTION_BUTTON_CLASS} onClick={handleClear}>
                         <Eraser className="mr-2 h-4 w-4" />
                         {t.common.clear}
@@ -90,7 +93,7 @@ export function TextDiffCheckerPage() {
                             lineHeight: 24,
                             padding: { top: 12 },
                             scrollBeyondLastLine: false,
-                            wordWrap: "on",
+                            wordWrap: wrapMode === "wrap" ? "on" : "off",
                             readOnly: false,
                             originalEditable: true,
                             ariaLabel: t.tools['text_diff_checker'].title,

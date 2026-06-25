@@ -242,6 +242,7 @@ export function MonacoEditor(props: MonacoEditorProps) {
 
     const readOnly = Boolean(props.options?.readOnly)
     const value = props.value ?? props.defaultValue ?? ""
+    const wrapsText = props.options?.wordWrap !== "off"
 
     return (
         <textarea
@@ -264,6 +265,7 @@ export function MonacoEditor(props: MonacoEditorProps) {
             className={cn(
                 "h-full w-full resize-none border-0 bg-background p-3 font-mono text-sm leading-relaxed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring/50",
                 readOnly ? "cursor-default text-muted-foreground" : "",
+                wrapsText ? "whitespace-pre-wrap break-words" : "overflow-x-auto whitespace-pre",
                 className,
             )}
             style={{ height: resolveEditorHeight(props.height), minHeight: 220 }}
@@ -332,6 +334,7 @@ export function MonacoDiffEditor(props: MonacoDiffEditorProps) {
 
     const readOnly = Boolean(props.options?.readOnly)
     const originalEditable = props.options?.originalEditable ?? !readOnly
+    const wrapsText = props.options?.wordWrap !== "off"
 
     return (
         <div className={cn("grid h-full min-h-[360px] grid-cols-1 gap-2 p-2 md:grid-cols-2", className)}>
@@ -350,6 +353,7 @@ export function MonacoDiffEditor(props: MonacoDiffEditorProps) {
                 className={cn(
                     "h-full min-h-[180px] w-full resize-none rounded border bg-background p-3 font-mono text-sm leading-relaxed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring/50",
                     !originalEditable ? "cursor-default text-muted-foreground" : "",
+                    wrapsText ? "whitespace-pre-wrap break-words" : "overflow-x-auto whitespace-pre",
                 )}
             />
             <textarea
@@ -367,6 +371,7 @@ export function MonacoDiffEditor(props: MonacoDiffEditorProps) {
                 className={cn(
                     "h-full min-h-[180px] w-full resize-none rounded border bg-background p-3 font-mono text-sm leading-relaxed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring/50",
                     readOnly ? "cursor-default text-muted-foreground" : "",
+                    wrapsText ? "whitespace-pre-wrap break-words" : "overflow-x-auto whitespace-pre",
                 )}
             />
         </div>

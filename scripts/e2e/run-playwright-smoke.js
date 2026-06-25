@@ -861,11 +861,12 @@ async function assertBase64PipelineHandoffJourney(context, baseUrl) {
     await input.fill("hello pipeline");
 
     await page.getByRole("button", { name: /^Encode Base64$/ }).first().click();
-    const output = page.locator("textarea").nth(1);
+    const output = page.getByLabel("Output").first();
     await output.waitFor({ state: "visible", timeout: 15_000 });
     await page.waitForFunction(() => {
-        const textareas = Array.from(document.querySelectorAll("textarea"));
-        return textareas.some((node) => node.value.includes("aGVsbG8gcGlwZWxpbmU="));
+        const outputNode = document.querySelector("[aria-label='Output']");
+        const outputText = outputNode && "value" in outputNode ? outputNode.value : outputNode?.textContent;
+        return outputText?.includes("aGVsbG8gcGlwZWxpbmU=");
     }, null, { timeout: 15_000 });
 
     const handoffMenu = page.getByRole("button", { name: /Send to/i }).first();
@@ -893,9 +894,14 @@ async function assertBase64PipelineHandoffJourney(context, baseUrl) {
 async function expectTextareaValue(page, pattern, label) {
     await page.waitForFunction((source) => {
         const regex = new RegExp(source);
-        return Array.from(document.querySelectorAll("textarea")).some((node) => regex.test(node.value));
+        const textareaMatches = Array.from(document.querySelectorAll("textarea")).some((node) => regex.test(node.value));
+        const labelledOutputMatches = ["Output", "Final output"].some((name) => {
+            const node = document.querySelector(`[aria-label='${name}']`);
+            return regex.test(node && "value" in node ? node.value : node?.textContent || "");
+        });
+        return textareaMatches || labelledOutputMatches;
     }, pattern.source, { timeout: 15_000 }).catch(() => {
-        throw new Error(`Expected textarea value matching ${pattern} for ${label}.`);
+        throw new Error(`Expected textarea or output value matching ${pattern} for ${label}.`);
     });
 }
 
@@ -1248,7 +1254,14 @@ async function assertPwaShellJourney(browser, baseUrl) {
         await page.waitForSelector("main", { timeout: 15_000 });
         await page.getByRole("button", { name: /^Sample$/ }).first().click();
         await page.getByLabel(/I understand this action may request/i).click();
-        await page.getByRole("button", { name: /^Preview$/ }).first().click();
+        const offlinePreview = page.getByRole("button", {
+            name: /^Preview$/,
+            description: /external-request action needs network access/i,
+        }).first();
+        await offlinePreview.waitFor({ state: "visible", timeout: 15_000 });
+        if (await offlinePreview.isEnabled()) {
+            throw new Error("Offline external-request preview should be disabled before any network action.");
+        }
         await page.getByText(/external-request action needs network access/i).first()
             .waitFor({ state: "visible", timeout: 15_000 });
 

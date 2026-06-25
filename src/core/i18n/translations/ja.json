@@ -441,7 +441,38 @@
     "processing_file_locally": "ファイルをローカルで処理しています...",
     "file_ready_locally": "ファイルはローカル処理の準備ができました。",
     "file_processing_cancelled": "処理をキャンセルしました。",
-    "file_upload_requirements": "アップロード要件"
+    "file_upload_requirements": "アップロード要件",
+    "action_status_pending": "{action}を実行中です。",
+    "action_status_success": "{action}が完了しました。",
+    "action_status_failed": "{action}に失敗しました。",
+    "output_overflow": {
+      "mode_label": "出力のはみ出しモード",
+      "wrap": "折り返し",
+      "scroll": "スクロール"
+    },
+    "external_request_status": {
+      "idle": "入力待ち",
+      "invalid": "入力が無効です",
+      "ready": "明示的なリクエストの準備完了",
+      "requesting": "外部アセットをリクエスト中",
+      "success": "外部アセットを読み込みました",
+      "unreachable": "リモートアセットに到達できません",
+      "blocked": "リクエストがブロックされました",
+      "offline": "オフライン",
+      "permission": "権限が必要です",
+      "next_step_label": "次の手順",
+      "boundary_label": "外部境界",
+      "next_step_add_input": "外部リクエストを実行する前に、対応する URL を追加してください。",
+      "next_step_fix_input": "URL を修正してからツールを再実行してください。",
+      "next_step_confirm": "プレビューまたはダウンロードの前に、外部リクエストと権利ガイダンスを確認してください。",
+      "next_step_preview": "「プレビュー」を選び、開示されたアセットをブラウザからリクエストしてください。",
+      "next_step_wait": "ブラウザのリクエスト完了を待ってください。",
+      "next_step_download": "プレビューを確認し、権限がある場合のみダウンロードしてください。",
+      "next_step_reconnect": "ネットワークに再接続してから、明示的な操作を再試行してください。",
+      "next_step_try_another": "別の公開 URL または候補を試してから、もう一度プレビューしてください。",
+      "next_step_check_permission": "このメディア URL を所有しているか、利用許可があることを確認してください。",
+      "next_step_open_remote": "直接ダウンロードがブロックされた場合は、開いたリモートタブを使用してください。"
+    }
   },
   "tools": {
     "json_formatter": {

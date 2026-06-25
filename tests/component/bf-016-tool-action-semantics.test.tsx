@@ -111,9 +111,14 @@ function textboxValue(name: string): string {
     return element.value
 }
 
-function queryTextboxValue(name: string): string {
-    const element = screen.queryByRole("textbox", { name }) as HTMLTextAreaElement | HTMLInputElement | null
-    return element?.value ?? ""
+function outputValue(name: string): string {
+    const textbox = screen.queryByRole("textbox", { name }) as HTMLTextAreaElement | HTMLInputElement | null
+    return textbox?.value ?? screen.getByLabelText(name).textContent ?? ""
+}
+
+function queryOutputValue(name: string): string {
+    const textbox = screen.queryByRole("textbox", { name }) as HTMLTextAreaElement | HTMLInputElement | null
+    return textbox?.value ?? screen.queryByLabelText(name)?.textContent ?? ""
 }
 
 class MockImage {
@@ -173,7 +178,7 @@ describe("BF-016 shared tool action semantics", () => {
 
         await waitFor(() => {
             expect(textboxValue("Input")).toContain('"Alice Chen"')
-            expect(textboxValue("Output")).toContain('"Alice Chen"')
+            expect(outputValue("Output")).toContain('"Alice Chen"')
         })
 
         fireEvent.change(screen.getByRole("textbox", { name: "Input" }), { target: { value: "{\"ok\":}" } })
@@ -183,7 +188,7 @@ describe("BF-016 shared tool action semantics", () => {
             expect(screen.getByRole("alert")).toHaveTextContent(/Invalid JSON|Unexpected token|Expected/)
         })
         expect(textboxValue("Input")).not.toContain('"Alice Chen"')
-        expect(queryTextboxValue("Output")).not.toContain('"Alice Chen"')
+        expect(queryOutputValue("Output")).not.toContain('"Alice Chen"')
 
         fireEvent.click(screen.getByRole("button", { name: "Clear" }))
         expect(screen.getByRole("textbox", { name: "Input" })).toHaveValue("")
@@ -203,11 +208,11 @@ describe("BF-016 shared tool action semantics", () => {
         expect(screen.getByRole("textbox", { name: "Input" })).toHaveValue("user_001|zh-CN|text")
 
         fireEvent.click(screen.getByRole("button", { name: "Encode Base64" }))
-        await waitFor(() => expect(screen.getByRole("textbox", { name: "Output" })).toHaveValue("dXNlcl8wMDF8emgtQ058dGV4dA=="))
+        await waitFor(() => expect(outputValue("Output")).toContain("dXNlcl8wMDF8emgtQ058dGV4dA=="))
 
         fireEvent.click(screen.getByRole("radio", { name: "File" }))
         expect(screen.getByRole("textbox", { name: "Input" })).toHaveValue("")
-        expect(screen.getByRole("textbox", { name: "Output" })).toHaveValue("")
+        expect(outputValue("Output")).toContain("Result will appear here...")
 
         fireEvent.click(screen.getByRole("button", { name: "Sample" }))
         expect(await screen.findByText("Select a file to try file encoding.")).toBeInTheDocument()
@@ -220,7 +225,7 @@ describe("BF-016 shared tool action semantics", () => {
 
         fireEvent.click(screen.getByRole("button", { name: "Clear" }))
         expect(screen.getByRole("textbox", { name: "Input" })).toHaveValue("")
-        expect(screen.getByRole("textbox", { name: "Output" })).toHaveValue("")
+        expect(outputValue("Output")).toContain("Result will appear here...")
         expect(screen.queryByText("Select a file to try file encoding.")).not.toBeInTheDocument()
     })
 
@@ -266,7 +271,7 @@ describe("BF-016 shared tool action semantics", () => {
         await waitFor(() => expect(widthInput).toHaveValue(1200))
         expect(heightInput).toHaveValue(675)
         await waitFor(() => expect(runImageResizeTaskMock).toHaveBeenCalled())
-        expect(textboxValue("Output")).toContain("Format: WEBP")
+        expect(outputValue("Output")).toContain("Format: WEBP")
 
         const file = new File(["image"], "local.png", { type: "image/png" })
         fireEvent.change(screen.getByLabelText(/Image files up to 12 MB and 24 MP/i), { target: { files: [file] } })
@@ -275,7 +280,7 @@ describe("BF-016 shared tool action semantics", () => {
 
         fireEvent.click(screen.getByRole("button", { name: "Clear" }))
         expect(screen.queryByText(/local\.png/)).not.toBeInTheDocument()
-        expect(textboxValue("Output")).toContain("Source: - x -")
+        expect(outputValue("Output")).toContain("Source: - x -")
         expect(widthInput).toHaveValue(1280)
         expect(heightInput).toHaveValue(720)
 
@@ -315,6 +320,6 @@ describe("BF-016 shared tool action semantics", () => {
             name: "Preview",
             description: "Add input before running this action.",
         })).toBeDisabled()
-        expect(textboxValue("Output")).toContain("Video ID: (none)")
+        expect(outputValue("Output")).toContain("Video ID: (none)")
     })
 })

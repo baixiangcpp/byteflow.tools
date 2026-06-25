@@ -77,16 +77,36 @@ describe("tool action consistency guard", () => {
             "src/features/tools/youtube-thumbnail-grabber/page.tsx",
         ]
 
+        const sharedFeedbackTools = [
+            "src/features/tools/json-formatter/page.tsx",
+            "src/features/tools/base64-encode-decode/page.tsx",
+            "src/features/tools/image-resizer/page.tsx",
+            "src/features/tools/youtube-thumbnail-grabber/page.tsx",
+            "src/features/tools/vimeo-thumbnail-grabber/page.tsx",
+            "src/features/tools/instagram-photo-downloader/page.tsx",
+            "src/features/tools/open-graph-meta-generator/page.tsx",
+            "src/features/tools/curl-to-code/page.tsx",
+            "src/features/tools/url-parser/page.tsx",
+            "src/features/tools/pipeline-builder/page.tsx",
+        ]
+
+        expect(read("src/features/tool-shell/tool-action-feedback.ts")).toContain("copyTextWithToolFeedback")
+        expect(read("src/features/tool-shell/tool-action-bar.tsx")).toContain("data-tool-action-status")
+        expect(read("src/features/tool-shell/tool-action-bar.tsx")).toContain("action_status_pending")
+
+        for (const file of sharedFeedbackTools) {
+            const source = read(file)
+            expect(source, file).toMatch(/copyTextWithToolFeedback|downloadedFileFeedback|notifyToolAction(Failure|Success)/)
+        }
+
         for (const file of auditedFeedbackFiles) {
             const source = read(file)
-            expect(source, file).toMatch(/toast\.success/)
-            expect(source, file).toMatch(/toast\.error/)
             if (source.includes('id: "copy') || source.includes("id: \"copy_")) {
-                expect(source, file).toContain("safeClipboardWrite")
-                expect(source, file).toContain("copy_failed")
+                expect(source, file).toMatch(/copyTextWithToolFeedback|safeClipboardWrite/)
+                expect(source, file).toMatch(/copy_failed|copyTextWithToolFeedback/)
             }
             if (source.includes('id: "download') || source.includes("id: \"download_")) {
-                expect(source, file).toContain("downloaded")
+                expect(source, file).toMatch(/downloaded|downloadedFileFeedback/)
             }
         }
 
