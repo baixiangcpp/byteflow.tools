@@ -193,6 +193,10 @@ const groups = [
     },
 ]
 
+const LARGE_INVENTORY_TOOL_COUNT = 300
+const LARGE_INVENTORY_CARD_BUDGET = 6
+const LARGE_INVENTORY_COMPACT_LINK_BUDGET = LARGE_INVENTORY_TOOL_COUNT - LARGE_INVENTORY_CARD_BUDGET
+
 function renderDiscovery() {
     return render(
         <AllToolsDiscovery
@@ -203,6 +207,38 @@ function renderDiscovery() {
             tags={["json", "base64", "http", "image", "pipeline-ready"]}
             totalTools={10}
             workflows={[{ id: "api", title: "API payload cleanup", href: "/en/pipeline-builder", tags: ["json", "pipeline-ready"] }]}
+        />,
+    )
+}
+
+function renderLargeInventoryDiscovery() {
+    const largeGroup = {
+        key: "data_code_formats",
+        title: "Data & Code Formats",
+        description: "Large inventory group for render-budget coverage.",
+        href: "/data-code-formats",
+        tools: Array.from({ length: LARGE_INVENTORY_TOOL_COUNT }, (_, index) => ({
+            key: `synthetic_tool_${index}`,
+            slug: `synthetic-tool-${index}`,
+            title: `Synthetic Tool ${index}`,
+            description: `Synthetic local utility ${index}.`,
+            family: "synthetic",
+            familyLabel: "Synthetic",
+            searchKeywords: [`synthetic ${index}`],
+            tags: ["bulk", "json"],
+            capabilities: ["browser-local", "offline-capable", "pipeline-ready"],
+        })),
+    }
+
+    return render(
+        <AllToolsDiscovery
+            capabilityLabels={capabilityLabels}
+            groups={[largeGroup]}
+            labels={labels}
+            locale="en"
+            tags={["bulk", "json", "pipeline-ready"]}
+            totalTools={LARGE_INVENTORY_TOOL_COUNT}
+            workflows={[]}
         />,
     )
 }
@@ -297,6 +333,28 @@ describe("AllToolsDiscovery", () => {
         expect(container.querySelectorAll("[data-all-tools-card='true']")).toHaveLength(10)
         expect(container.querySelectorAll("[data-all-tools-compact-link='true']")).toHaveLength(0)
         expect(screen.getByRole("button", { name: "Show fewer" })).toHaveAttribute("aria-expanded", "true")
+    })
+
+    it("keeps a 300-tool inventory within default and filtered render budgets", () => {
+        const { container } = renderLargeInventoryDiscovery()
+
+        expect(screen.getByRole("status")).toHaveTextContent("300 tools")
+        expect(container.querySelectorAll("[data-all-tools-card='true']")).toHaveLength(LARGE_INVENTORY_CARD_BUDGET)
+        expect(container.querySelectorAll("[data-all-tools-compact-link='true']")).toHaveLength(LARGE_INVENTORY_COMPACT_LINK_BUDGET)
+        expect(screen.getByRole("link", { name: "Synthetic Tool 299" })).toHaveAttribute("href", "/en/synthetic-tool-299")
+
+        fireEvent.click(screen.getByRole("button", { name: "bulk" }))
+
+        expect(screen.getByRole("status")).toHaveTextContent("300 tools")
+        expect(screen.getByRole("button", { name: "Remove filter: bulk" })).toBeInTheDocument()
+        expect(container.querySelectorAll("[data-all-tools-card='true']")).toHaveLength(LARGE_INVENTORY_CARD_BUDGET)
+        expect(container.querySelectorAll("[data-all-tools-compact-link='true']")).toHaveLength(LARGE_INVENTORY_COMPACT_LINK_BUDGET)
+
+        fireEvent.change(screen.getByRole("textbox", { name: "Search tools" }), { target: { value: "Synthetic Tool 299" } })
+
+        expect(screen.getByRole("status")).toHaveTextContent("1 tools")
+        expect(container.querySelectorAll("[data-all-tools-card='true']")).toHaveLength(1)
+        expect(container.querySelectorAll("[data-all-tools-compact-link='true']")).toHaveLength(0)
     })
 
     it("uses a mobile filter drawer with counts, close, clear, and focus restoration", async () => {

@@ -23,6 +23,9 @@ const MOBILE_TOOL_VIEWPORTS = [
     { width: 390, height: 844 },
     { width: 430, height: 932 },
 ];
+const ALL_TOOLS_FILTER_INTERACTION_BUDGET_MS = 2000;
+const ALL_TOOLS_MOBILE_SCROLL_BUDGET_MS = 3500;
+const ALL_TOOLS_MOBILE_MAX_FRAME_DELTA_MS = 500;
 const GENERATED_TOOL_INDEX_PATH = path.resolve(process.cwd(), "src/generated/tool-index.json");
 
 function getExpectedToolCount() {
@@ -614,13 +617,78 @@ async function assertMobileRegexTester(page) {
 }
 
 async function assertMobileAllTools(page) {
+    const initialDomBudget = await page.evaluate(() => ({
+        cards: document.querySelectorAll("[data-all-tools-card='true']").length,
+        compactLinks: document.querySelectorAll("[data-all-tools-compact-link='true']").length,
+    }));
+    if (initialDomBudget.cards > 60 || initialDomBudget.compactLinks < 1) {
+        throw new Error(`All Tools mobile DOM budget failed: ${initialDomBudget.cards} full cards, ${initialDomBudget.compactLinks} compact links.`);
+    }
+
+    const scrollMetrics = await page.evaluate(async () => {
+        const frameDeltas = [];
+        const longTasks = [];
+        let previousFrame = performance.now();
+        let observer = null;
+        if (
+            "PerformanceObserver" in window &&
+            Array.isArray(PerformanceObserver.supportedEntryTypes) &&
+            PerformanceObserver.supportedEntryTypes.includes("longtask")
+        ) {
+            observer = new PerformanceObserver((list) => {
+                longTasks.push(...list.getEntries().map((entry) => entry.duration));
+            });
+            observer.observe({ entryTypes: ["longtask"] });
+        }
+        const waitFrame = () => new Promise((resolve) => {
+            requestAnimationFrame((now) => {
+                frameDeltas.push(now - previousFrame);
+                previousFrame = now;
+                resolve();
+            });
+        });
+
+        const start = performance.now();
+        const maxScroll = Math.max(document.documentElement.scrollHeight, document.body?.scrollHeight || 0) - window.innerHeight;
+        const step = Math.max(160, Math.floor(window.innerHeight / 2));
+        for (let y = 0; y <= maxScroll; y += step) {
+            window.scrollTo(0, y);
+            await waitFrame();
+        }
+        window.scrollTo(0, 0);
+        await waitFrame();
+        observer?.disconnect();
+
+        return {
+            elapsedMs: performance.now() - start,
+            longTaskCount: longTasks.length,
+            maxFrameDeltaMs: Math.max(0, ...frameDeltas),
+            maxLongTaskMs: Math.max(0, ...longTasks),
+        };
+    });
+    if (
+        scrollMetrics.elapsedMs > ALL_TOOLS_MOBILE_SCROLL_BUDGET_MS ||
+        scrollMetrics.maxFrameDeltaMs > ALL_TOOLS_MOBILE_MAX_FRAME_DELTA_MS
+    ) {
+        throw new Error(
+            `All Tools mobile scroll budget failed: ${Math.round(scrollMetrics.elapsedMs)}ms elapsed, ` +
+            `${Math.round(scrollMetrics.maxFrameDeltaMs)}ms max frame delta, ` +
+            `${scrollMetrics.longTaskCount} long tasks, ${Math.round(scrollMetrics.maxLongTaskMs)}ms max long task.`,
+        );
+    }
+
     await page.getByRole("button", { name: /Show filters/i }).first().click();
     const filterDialog = page.getByRole("dialog", { name: /Show filters/i }).first();
     await filterDialog.waitFor({ state: "visible", timeout: 15_000 });
     await filterDialog.getByRole("group", { name: /Input type/i }).first().waitFor({ state: "visible", timeout: 15_000 });
+    const filterStart = Date.now();
     await filterDialog.getByRole("button", { name: /^File$/ }).first().click();
     await page.getByText(/Active filters/i).first().waitFor({ state: "visible", timeout: 15_000 });
     await page.locator('a[href="/en/json-formatter"]').first().waitFor({ state: "visible", timeout: 15_000 });
+    const filterElapsedMs = Date.now() - filterStart;
+    if (filterElapsedMs > ALL_TOOLS_FILTER_INTERACTION_BUDGET_MS) {
+        throw new Error(`All Tools mobile filter interaction exceeded budget: ${filterElapsedMs}ms.`);
+    }
     await filterDialog.getByRole("button", { name: /Clear filters/i }).first().click();
     await page.getByText(new RegExp(`${EXPECTED_TOOL_COUNT}\\s+tools`, "i")).first().waitFor({ state: "visible", timeout: 15_000 });
 }

@@ -351,25 +351,19 @@ export function PipelineBuilderPage() {
         }
     }, [pendingPrivacyAction, performExportRecipe, performSaveRecipe, performShareRecipe])
 
-    const copyOutput = React.useCallback(async () => {
-        if (!finalOutput) return
-        const copied = await safeClipboardWrite(finalOutput)
-        if (!copied.ok) {
-            toast.error(t.common.copy_failed)
-            return
-        }
-        toast.success(t.common.copied)
-    }, [finalOutput, t.common.copied, t.common.copy_failed])
-
-    const copyStepOutput = React.useCallback(async (step: PipelineStepExecution) => {
-        if (!step.output) return
-        const copied = await safeClipboardWrite(step.output)
+    const copyText = React.useCallback(async (value?: string) => {
+        if (!value) return
+        const copied = await safeClipboardWrite(value)
         if (!copied.ok) {
             toast.error(t.common.copy_failed)
             return
         }
         toast.success(t.common.copied)
     }, [t.common.copied, t.common.copy_failed])
+
+    const copyOutput = React.useCallback(() => void copyText(finalOutput), [copyText, finalOutput])
+    const copyStepInput = React.useCallback((step: PipelineStepExecution) => void copyText(step.input), [copyText])
+    const copyStepOutput = React.useCallback((step: PipelineStepExecution) => void copyText(step.output), [copyText])
 
     const loadSample = React.useCallback(() => {
         loadTemplate(PIPELINE_RECIPE_TEMPLATES[0], "sample_action")
@@ -525,6 +519,7 @@ export function PipelineBuilderPage() {
 
                     <PipelineRunLog result={result} text={text} />
                     <PipelineStepDiagnostics
+                        onCopyStepInput={(step) => void copyStepInput(step)}
                         onCopyStepOutput={(step) => void copyStepOutput(step)}
                         recipe={recipe}
                         result={result}
