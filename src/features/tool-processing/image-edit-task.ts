@@ -1,4 +1,4 @@
-import { runWorkerTask } from "@/core/workers/run-worker-task"
+import { runWorkerTask, WorkerTaskError } from "@/core/workers/run-worker-task"
 import { runImageEditDomTask } from "./image-edit-dom"
 import type { ImageEditTaskInput, ImageEditTaskResult } from "./image-edit-worker-types"
 
@@ -19,7 +19,7 @@ export async function runImageEditTask(input: ImageEditTaskInput, options: Image
             { signal: options.signal, timeoutMs: options.timeoutMs ?? 20_000 },
         )
     } catch (error) {
-        if (error instanceof Error && (error.message === "WORKER_TIMEOUT" || error.message === "WORKER_ABORTED")) {
+        if (error instanceof WorkerTaskError && (error.code === "WORKER_TIMEOUT" || error.code === "WORKER_ABORTED")) {
             throw error
         }
         return runImageEditDomTask(input)

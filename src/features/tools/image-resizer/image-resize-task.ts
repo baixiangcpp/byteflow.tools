@@ -1,4 +1,4 @@
-import { runWorkerTask } from "@/core/workers/run-worker-task"
+import { runWorkerTask, WorkerTaskError } from "@/core/workers/run-worker-task"
 import { renderImageResizeDataUrlDom } from "./image-resize-dom"
 import type { ImageResizeTaskInput } from "./image-resize-task-types"
 
@@ -59,7 +59,7 @@ export async function runImageResizeTask(input: ImageResizeTaskInput, options: I
     try {
         return await renderWithWorker(input, options)
     } catch (error) {
-        if (error instanceof Error && (error.message === "WORKER_TIMEOUT" || error.message === "WORKER_ABORTED")) {
+        if (error instanceof WorkerTaskError && (error.code === "WORKER_TIMEOUT" || error.code === "WORKER_ABORTED")) {
             throw error
         }
         return renderImageResizeDataUrlDom(input)

@@ -1,4 +1,4 @@
-import { runWorkerTask } from "@/core/workers/run-worker-task"
+import { runWorkerTask, WorkerTaskError } from "@/core/workers/run-worker-task"
 import { runCompressionLab, type BinaryEncoding, type CompressionFormatName, type CompressionMode, type CompressionResult } from "./utils"
 
 export type CompressionTaskInput = {
@@ -26,7 +26,7 @@ export async function runCompressionTask(task: CompressionTaskInput, options: Co
             { signal: options.signal, timeoutMs: options.timeoutMs ?? 15_000 },
         )
     } catch (error) {
-        if (error instanceof Error && (error.message === "WORKER_TIMEOUT" || error.message === "WORKER_ABORTED")) {
+        if (error instanceof WorkerTaskError && (error.code === "WORKER_TIMEOUT" || error.code === "WORKER_ABORTED")) {
             throw error
         }
         return runCompressionLab(task.input, task)

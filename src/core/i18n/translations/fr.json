@@ -2915,7 +2915,10 @@
       "generate_pkce_action": "Générer PKCE",
       "inspect_jwks_action": "Inspecter JWKS",
       "jwks_label": "JWKS au format JSON",
-      "jwt_label": "JWT à vérifier"
+      "jwt_label": "JWT à vérifier",
+      "selected_key_label": "JWKS key utilisée pour vérifier",
+      "selected_key_help": "Choisissez une key collée par kid avant de vérifier. Si le JWT header kid diffère, le rapport avertit au lieu de changer de key silencieusement.",
+      "no_jwks_keys_option": "Aucune JWKS key trouvée"
     },
     "image_privacy_workbench": {
       "title": "Atelier confidentialité image",

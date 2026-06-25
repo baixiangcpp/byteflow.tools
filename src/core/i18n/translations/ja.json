@@ -2915,7 +2915,10 @@
       "generate_pkce_action": "PKCE を生成",
       "inspect_jwks_action": "JWKS を検査",
       "jwks_label": "JWKS JSON 入力",
-      "jwt_label": "検証する JWT"
+      "jwt_label": "検証する JWT",
+      "selected_key_label": "検証に使う JWKS key",
+      "selected_key_help": "貼り付けた key を kid で選んでから検証します。JWT header の kid と異なる場合、ツールは黙って key を切り替えず警告します。",
+      "no_jwks_keys_option": "JWKS key が見つかりません"
     },
     "image_privacy_workbench": {
       "title": "画像プライバシーワークベンチ",

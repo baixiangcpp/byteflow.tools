@@ -15,6 +15,7 @@ import { jsonToTs } from "@/features/tools/json-to-typescript/utils"
 import { decodeJwtParts } from "@/features/tools/jwt-decoder/utils"
 import { runNdjsonTransform, type NdjsonMessages, type NdjsonMode } from "@/features/tools/ndjson-formatter/utils"
 import { diffOpenApiSpecs, formatOpenApiDiffReport } from "@/features/tools/openapi-diff/logic"
+import { runRegexTestTask } from "@/features/tools/regex-tester/regex-test-task"
 import { testRegexPattern } from "@/features/tools/regex-tester/utils"
 import { convertCase, type CaseStyle } from "@/features/tools/slugify-case-converter/utils"
 import { parseTimestampHeuristic } from "@/features/tools/unix-timestamp/utils"
@@ -593,12 +594,15 @@ const regexTesterAdapter: PipelineToolAdapter = {
         if (!validation.ok) return fail("pattern must be a valid JavaScript regular expression.")
         return ok()
     },
-    run(input, options) {
+    async run(input, options) {
         const startedAt = performance.now()
         const pattern = stringOption(options, "pattern", "")
         const flags = stringOption(options, "flags", "g")
         const maxMatches = Math.max(1, Math.min(5000, Math.floor(Number(options.maxMatches ?? 100))))
-        const result = testRegexPattern(pattern, flags, input, maxMatches)
+        const result = await runRegexTestTask(pattern, flags, input, {
+            maxMatches,
+            timeoutMs: 1_000,
+        })
         if (!result.ok) {
             return failure("regex_error", result.error, startedAt, input)
         }

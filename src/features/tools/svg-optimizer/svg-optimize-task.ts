@@ -1,4 +1,4 @@
-import { runWorkerTask } from "@/core/workers/run-worker-task"
+import { runWorkerTask, WorkerTaskError } from "@/core/workers/run-worker-task"
 import { optimizeSvg } from "./logic"
 
 export type SvgOptimizeTaskInput = {
@@ -26,7 +26,7 @@ export async function runSvgOptimizeTask(input: SvgOptimizeTaskInput, options: S
             { signal: options.signal, timeoutMs: options.timeoutMs ?? 10_000 },
         )
     } catch (error) {
-        if (error instanceof Error && (error.message === "WORKER_TIMEOUT" || error.message === "WORKER_ABORTED")) {
+        if (error instanceof WorkerTaskError && (error.code === "WORKER_TIMEOUT" || error.code === "WORKER_ABORTED")) {
             throw error
         }
         return { optimized: optimizeSvg(input.svg) }

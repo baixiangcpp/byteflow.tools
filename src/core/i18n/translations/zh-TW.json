@@ -2915,7 +2915,10 @@
       "generate_pkce_action": "產生 PKCE",
       "inspect_jwks_action": "檢查 JWKS",
       "jwks_label": "JWKS JSON 輸入",
-      "jwt_label": "待驗證 JWT"
+      "jwt_label": "待驗證 JWT",
+      "selected_key_label": "用於驗證的 JWKS key",
+      "selected_key_help": "先依 kid 選擇貼上的 key 再驗證。如果 JWT header kid 不一致，報告會提示，而不是靜默切換 key。",
+      "no_jwks_keys_option": "未找到 JWKS key"
     },
     "image_privacy_workbench": {
       "title": "圖片隱私工作台",

@@ -1,4 +1,4 @@
-import type { JwksKeySummary, JwtJwksVerificationReport, PkcePair } from "./types"
+import type { JwksKeySummary, JwksVerificationOptions, JwtJwksVerificationReport, PkcePair } from "./types"
 
 function bytesToBase64Url(bytes: Uint8Array): string {
     let binary = ""
@@ -46,8 +46,11 @@ export function summarizeJwks(jwksInput: string): JwksKeySummary[] {
         if (!entry || typeof entry !== "object" || Array.isArray(entry)) throw new Error(`keys[${index}] must be a JWK object.`)
         const jwk = entry as JsonWebKey & { kid?: string }
         if (typeof jwk.kty !== "string") throw new Error(`keys[${index}].kty is required.`)
+        const kid = typeof jwk.kid === "string" ? jwk.kid : `(no kid ${index})`
         return {
-            kid: typeof jwk.kid === "string" ? jwk.kid : `(no kid ${index})`,
+            index,
+            selector: typeof jwk.kid === "string" ? jwk.kid : `#${index}`,
+            kid,
             kty: jwk.kty,
             alg: typeof jwk.alg === "string" ? jwk.alg : undefined,
             use: typeof jwk.use === "string" ? jwk.use : undefined,
@@ -56,20 +59,39 @@ export function summarizeJwks(jwksInput: string): JwksKeySummary[] {
     })
 }
 
-function findJwkForJwt(jwksInput: string, token: string): JsonWebKey & { kid?: string } {
-    const header = parseJwtHeader(token)
+function parseJwksKeys(jwksInput: string): Array<JsonWebKey & { kid?: string }> {
     const parsed = JSON.parse(jwksInput) as { keys?: JsonWebKey[] }
     if (!Array.isArray(parsed.keys)) throw new Error("JWKS must contain a keys array.")
+    return parsed.keys.map((key) => key as JsonWebKey & { kid?: string })
+}
+
+function selectedKeyMatches(key: JsonWebKey & { kid?: string }, index: number, selectedKey: string): boolean {
+    return key.kid === selectedKey || selectedKey === `#${index}` || selectedKey === String(index)
+}
+
+function findJwkForJwt(jwksInput: string, token: string, options: JwksVerificationOptions = {}): { jwk: JsonWebKey & { kid?: string }; selectedKey: string } {
+    const header = parseJwtHeader(token)
+    const keys = parseJwksKeys(jwksInput)
+    const selectedKey = options.selectedKey?.trim()
     const kid = typeof header.kid === "string" ? header.kid : undefined
     const alg = typeof header.alg === "string" ? header.alg : undefined
-    const matches = parsed.keys.filter((key) => {
-        const keyWithKid = key as JsonWebKey & { kid?: string }
-        if (kid && keyWithKid.kid !== kid) return false
-        if (alg && keyWithKid.alg && keyWithKid.alg !== alg) return false
-        return true
-    })
-    if (matches.length === 0) throw new Error(kid ? `No JWKS key matches kid ${kid}.` : "No compatible JWKS key found.")
-    return matches[0] as JsonWebKey & { kid?: string }
+    const matches = keys
+        .map((key, index) => ({ key, index }))
+        .filter(({ key, index }) => {
+            if (selectedKey && !selectedKeyMatches(key, index, selectedKey)) return false
+            if (!selectedKey && kid && key.kid !== kid) return false
+            if (!selectedKey && alg && key.alg && key.alg !== alg) return false
+            return true
+        })
+    if (matches.length === 0) {
+        if (selectedKey) throw new Error(`No JWKS key matches selected key ${selectedKey}.`)
+        throw new Error(kid ? `No JWKS key matches kid ${kid}.` : "No compatible JWKS key found.")
+    }
+    const selected = matches[0]
+    return {
+        jwk: selected.key,
+        selectedKey: selected.key.kid ?? `#${selected.index}`,
+    }
 }
 
 function algorithmForJwt(alg: string): AlgorithmIdentifier | RsaHashedImportParams | EcKeyImportParams {
@@ -81,13 +103,16 @@ function algorithmForJwt(alg: string): AlgorithmIdentifier | RsaHashedImportPara
     throw new Error(`Unsupported JWT algorithm for JWKS verification: ${alg}.`)
 }
 
-export async function verifyJwtWithJwks(token: string, jwksInput: string): Promise<JwtJwksVerificationReport> {
+export async function verifyJwtWithJwks(token: string, jwksInput: string, options: JwksVerificationOptions = {}): Promise<JwtJwksVerificationReport> {
     const parts = token.trim().split(".")
     const warnings: string[] = []
     if (parts.length !== 3) throw new Error("JWT must contain header, payload, and signature.")
     const header = parseJwtHeader(token)
     const alg = typeof header.alg === "string" ? header.alg : ""
-    const jwk = findJwkForJwt(jwksInput, token)
+    const { jwk, selectedKey } = findJwkForJwt(jwksInput, token, options)
+    if (options.selectedKey?.trim() && typeof header.kid === "string" && jwk.kid !== header.kid) {
+        warnings.push(`Selected JWK kid ${jwk.kid ?? selectedKey} does not match JWT kid ${header.kid}.`)
+    }
     if (jwk.use && jwk.use !== "sig") warnings.push("Selected JWK use is not sig.")
     if (jwk.alg && jwk.alg !== alg) warnings.push(`Selected JWK alg ${jwk.alg} does not match JWT alg ${alg}.`)
     const algorithm = algorithmForJwt(alg)
@@ -99,6 +124,7 @@ export async function verifyJwtWithJwks(token: string, jwksInput: string): Promi
     return {
         valid,
         selectedKid: jwk.kid,
+        selectedKey,
         algorithm: alg,
         message: valid ? "JWT signature matches the selected JWKS key." : "JWT signature does not match the selected JWKS key.",
         warnings,
