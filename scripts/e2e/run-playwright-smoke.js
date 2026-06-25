@@ -569,7 +569,7 @@ async function assertMobileBase64(page) {
 }
 
 async function assertMobileJwtDecoder(page) {
-    await page.getByRole("button", { name: /Try Example/i }).first().click();
+    await page.getByRole("button", { name: /^Sample$/ }).first().click();
     await expectTextareaValue(page, /"name": "Alice Chen"/, "mobile jwt decoded payload");
     await clickCopyAndExpectToast(
         page,
@@ -751,7 +751,7 @@ async function assertPipelineRecipeJourney(context, baseUrl) {
     await page.goto(`${baseUrl}/en/pipeline-builder`, { waitUntil: "domcontentloaded" });
     await page.waitForSelector("main", { timeout: 15_000 });
 
-    await page.getByRole("button", { name: /Try Example/i }).first().click();
+    await page.getByRole("button", { name: /^Sample$/ }).first().click();
     await page.getByLabel("Recipe name").fill("Smoke saved recipe");
     await page.getByLabel("Initial input").fill('{ "apiKey": "runtime-secret-value-987", "ok": true }');
     await page.getByRole("button", { name: /Run Recipe/i }).first().click();
@@ -1080,7 +1080,7 @@ async function assertPwaShellJourney(browser, baseUrl) {
 
         await page.goto(`${baseUrl}/en/pipeline-builder`, { waitUntil: "domcontentloaded" });
         await page.waitForSelector("main", { timeout: 15_000 });
-        await page.getByRole("button", { name: /Try Example/i }).first().click();
+        await page.getByRole("button", { name: /^Sample$/ }).first().click();
         await page.getByLabel("Initial input").fill('{ "message": "offline pipeline", "ok": true }');
         await page.getByRole("button", { name: /Run Recipe/i }).first().click();
         await page.waitForFunction(() => {
