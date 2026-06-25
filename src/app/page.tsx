@@ -2,21 +2,52 @@ import type { Metadata } from "next"
 import { AppLayout } from "@/components/layout/app-layout"
 import { ServerFooter } from "@/components/layout/server-footer"
 import { ServerNavbar } from "@/components/layout/server-navbar"
+import { LOCALES, type Locale } from "@/core/i18n/i18n"
 import { LangProvider } from "@/core/i18n/lang-provider"
 import { getTranslation } from "@/core/i18n/translations/catalog"
-import { SITE_URL, buildLocalizedAlternates } from "@/core/seo/urls"
 import { SiteJsonLd } from "@/core/seo/components/site-json-ld"
+import { buildDefaultOgImageUrl, buildSiteKeywords } from "@/core/seo/seo"
+import { SITE_URL } from "@/core/seo/urls"
 import { ToolPrivacyFooterSlot } from "@/features/tool-shell/tool-privacy-footer-slot"
 import LocalizedHomePage from "@/app/[lang]/page"
 
+const locale: Locale = "en"
+const translations = getTranslation(locale)
+const ROOT_TITLE = "byteflow.tools | Privacy-first Local Developer Tools"
+const ROOT_OG_IMAGE = buildDefaultOgImageUrl(locale)
+
+const ROOT_ALTERNATES = Object.fromEntries(
+    LOCALES.map((supportedLocale) => [
+        supportedLocale,
+        supportedLocale === locale ? SITE_URL : `${SITE_URL}/${supportedLocale}`,
+    ]),
+) as Record<string, string>
+
+ROOT_ALTERNATES["x-default"] = SITE_URL
+
 export const metadata: Metadata = {
     title: {
-        absolute: "byteflow.tools | Privacy-first Local Developer Tools",
+        absolute: ROOT_TITLE,
     },
-    description: "Format, convert, generate, and inspect data with 100+ local browser tools for developers. No signup, no server-side processing, open source, and installable as a PWA.",
+    description: `${translations.site.description} No signup, no cloud history, and installable as a PWA.`,
+    keywords: buildSiteKeywords({ lang: locale, title: ROOT_TITLE }),
+    openGraph: {
+        title: ROOT_TITLE,
+        description: translations.site.description,
+        url: SITE_URL,
+        siteName: "byteflow.tools",
+        type: "website",
+        images: [ROOT_OG_IMAGE],
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: ROOT_TITLE,
+        description: translations.site.description,
+        images: [ROOT_OG_IMAGE],
+    },
     alternates: {
         canonical: SITE_URL,
-        languages: buildLocalizedAlternates(),
+        languages: ROOT_ALTERNATES,
     },
     robots: {
         index: true,
@@ -25,9 +56,6 @@ export const metadata: Metadata = {
 }
 
 export default function RootPage() {
-    const locale = "en"
-    const translations = getTranslation(locale)
-
     return (
         <LangProvider lang={locale} translations={translations}>
             <SiteJsonLd lang={locale} />
