@@ -41,6 +41,7 @@ export function Base64Page() {
     const canDownload = output.length > 0 || decodedBlob !== null
     const outputPreviewTruncatedLabel = toolT.output_preview_truncated
     const isOutputPreviewTruncated = output.length > OUTPUT_PREVIEW_LIMIT
+    const inputA11yProps = error ? { "aria-describedby": "base64-error", "aria-invalid": true } : {}
     const outputPreview = React.useMemo(() => {
         if (!isOutputPreviewTruncated) return output
         const hiddenChars = output.length - OUTPUT_PREVIEW_LIMIT
@@ -67,13 +68,8 @@ export function Base64Page() {
         }
     }, [])
 
-    React.useEffect(() => {
-        writeStorageString(MODE_STORAGE_KEY, mode)
-    }, [mode])
-
-    React.useEffect(() => {
-        writeStorageString(OPERATION_STORAGE_KEY, operation)
-    }, [operation])
+    React.useEffect(() => { writeStorageString(MODE_STORAGE_KEY, mode) }, [mode])
+    React.useEffect(() => { writeStorageString(OPERATION_STORAGE_KEY, operation) }, [operation])
 
     const resetTransientState = React.useCallback(() => {
         abortFileTask()
@@ -437,8 +433,7 @@ export function Base64Page() {
                             value={input}
                             onChange={(event) => setInput(event.target.value)}
                             aria-label={t.common.input}
-                            aria-describedby={error ? "base64-error" : undefined}
-                            aria-invalid={error ? "true" : undefined}
+                            {...inputA11yProps}
                             spellCheck={false}
                         />
                     </div>
