@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { parseAsn1Der, type Asn1Node, type Asn1ParseResult } from "@/features/tools/asn1-der-inspector/utils"
 
@@ -76,6 +77,8 @@ export function Asn1DerInspectorPage() {
                 </div>
             </div>
 
+            <SensitiveInputWarning variant="certificate" />
+
             <Alert><AlertDescription>{text("scope_note")}</AlertDescription></Alert>
             {result?.error ? <Alert variant="destructive"><AlertDescription>{result.error}</AlertDescription></Alert> : null}
             {result?.truncated ? <Alert><AlertDescription>{text("truncated_warning")}</AlertDescription></Alert> : null}
@@ -106,4 +109,3 @@ export function Asn1DerInspectorPage() {
         </div>
     )
 }
-

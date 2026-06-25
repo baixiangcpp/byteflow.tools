@@ -29,6 +29,7 @@ import { buildJsonParseErrorDetails, type JsonParseErrorDetails } from "@/featur
 import { runJsonFormatTask, type JsonFormatMode } from "@/features/tools/json-formatter/format-json-task"
 import { PrivacyBadge } from "@/features/tool-shell/privacy-badge"
 import { PrivacyFAQ } from "@/features/tool-shell/privacy-faq"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { JsonImportDropzone } from "./json-import-dropzone"
 import { JsonOutputToolbar } from "./json-output-toolbar"
 import { JsonTreeSearch } from "./json-tree-search"
@@ -71,7 +72,6 @@ export function JsonFormatterPage() {
         return findMatchingPaths(treeData, searchQuery.trim())
     }, [treeData, searchQuery])
 
-    // Auto-expand parents when searching
     React.useEffect(() => {
         if (searchResults.parents.size > 0) {
             setExpanded(prev => {
@@ -590,10 +590,9 @@ export function JsonFormatterPage() {
                         {toolT.description}
                     </p>
                 </div>
-
                 <ToolActionBar actions={actions} handoffPayload={handoffPayload} />
             </div>
-
+            <SensitiveInputWarning />
             <JsonImportDropzone
                 fileInputRef={fileInputRef}
                 isDragActive={isImportDragActive}

@@ -8,6 +8,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { downloadText } from "./browser-actions"
 import { runSeoWorkbench } from "./logic"
 import { SAMPLE_INPUT } from "./samples"
@@ -59,6 +60,8 @@ export function SeoMetadataWorkbenchPage() {
                 </div>
                 <ToolActionBar actions={actions} />
             </div>
+
+            <SensitiveInputWarning />
 
             {error ? <div className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">{error}</div> : null}
 

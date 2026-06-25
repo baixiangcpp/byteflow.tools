@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 
 const CSP_DIRECTIVE_KEYS: Record<string, { descriptionKey: string; risk: "low" | "medium" | "high" | "info" }> = {
     "default-src": { descriptionKey: "directive_default_src_desc", risk: "info" },
@@ -129,6 +130,8 @@ export function CspParserPage() {
                     <Eraser className="mr-2 h-4 w-4" />{t.common.clear}
                 </Button>
             </div>
+
+            <SensitiveInputWarning />
 
             <div className="space-y-2">
                 <label className="text-sm font-medium">{toolT.input_label}</label>

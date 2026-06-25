@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { readStorageString, removeStorageKey, writeStorageString } from "@/core/storage/tool-persistence"
 import {
@@ -210,6 +211,8 @@ export function PasswordGeneratorPage() {
                     </p>
                 </div>
             </div>
+
+            <SensitiveInputWarning variant="secret" />
 
             <div className="rounded-lg border bg-card p-3">
                 <div className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">

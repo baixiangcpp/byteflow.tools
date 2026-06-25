@@ -9,6 +9,7 @@ import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { ModeSelector } from "@/features/tool-shell/mode-selector"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { convertPublicKey, formatSummary } from "./logic"
 import { SAMPLE_PUBLIC_JWK, SAMPLE_PUBLIC_KEY_PEM } from "./samples"
 import type { PublicKeyConversionResult, PublicKeyInputFormat, PublicKeyOutputFormat } from "./types"
@@ -141,6 +142,8 @@ export function PublicKeyJwkHelperPage() {
                 </div>
                 <ToolActionBar actions={actions} />
             </div>
+
+            <SensitiveInputWarning />
 
             <div className="grid gap-3 rounded-lg border border-border/70 bg-card/40 p-4 lg:grid-cols-[1fr_auto_1fr] lg:items-end">
                 <ModeSelector

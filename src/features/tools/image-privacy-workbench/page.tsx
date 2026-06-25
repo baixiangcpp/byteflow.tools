@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { createLocalObjectUrl, downloadObjectUrl, revokeLocalObjectUrl, stripImageMetadata } from "./browser-actions"
 import { formatMetadataScan } from "./logic"
 
@@ -87,6 +88,8 @@ export function ImagePrivacyWorkbenchPage() {
                 </div>
                 <ToolActionBar actions={actions} />
             </div>
+
+            <SensitiveInputWarning />
 
             <Input
                 ref={fileRef}

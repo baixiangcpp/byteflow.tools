@@ -10,6 +10,7 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { ExternalRequestConfirmation } from "@/features/tool-shell/external-request-confirmation"
 import { isBrowserOffline } from "@/features/tool-shell/external-request-offline"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { openExternalUrl } from "@/core/security/external-url"
 import {
@@ -245,6 +246,8 @@ export function InstagramPhotoDownloaderPage() {
                 </div>
                 <ToolActionBar actions={actions} />
             </div>
+
+            <SensitiveInputWarning variant="request" />
 
             <div className="grid grid-cols-1 gap-4 xl:grid-cols-[1.05fr_0.95fr]">
                 <div className="space-y-4 rounded-xl border bg-card p-4">

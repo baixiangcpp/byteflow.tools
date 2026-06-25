@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 
 interface HeaderEntry { key: string; value: string }
 
@@ -66,6 +67,8 @@ export function HeaderDiffPage() {
                     <Eraser className="mr-2 h-4 w-4" />{t.common.clear}
                 </Button>
             </div>
+
+            <SensitiveInputWarning variant="log" />
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 <div className="flex flex-col border rounded-lg bg-card overflow-hidden shadow-sm">

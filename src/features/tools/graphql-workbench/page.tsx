@@ -8,6 +8,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { inspectGraphql } from "./logic"
 import { SAMPLE_INPUT, SAMPLE_INTROSPECTION, SAMPLE_VARIABLES } from "./samples"
 
@@ -77,6 +78,8 @@ export function GraphqlWorkbenchPage() {
                 <ToolActionBar actions={actions} />
             </div>
 
+            <SensitiveInputWarning />
+
             <div className="grid gap-4 xl:grid-cols-[1.2fr_0.8fr]">
                 <section className="flex min-h-[520px] flex-col overflow-hidden rounded-lg border bg-card">
                     <div className="tool-pane-header">{toolT.query_label}</div>
@@ -111,4 +114,3 @@ export function GraphqlWorkbenchPage() {
         </div>
     )
 }
-
