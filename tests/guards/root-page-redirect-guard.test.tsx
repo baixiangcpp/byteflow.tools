@@ -6,34 +6,9 @@ import { getTranslation } from "@/core/i18n/translations/catalog"
 import { SITE_URL } from "@/core/seo/urls"
 import { describe, expect, it } from "vitest"
 
-const ROOT_SITE_COPY_KEYS = [
-    "root_badge",
-    "root_title",
-    "root_subtitle",
-    "root_cta_search",
-    "root_cta_browse",
-    "root_cta_install",
-    "root_free_title",
-    "root_free_desc",
-    "root_local_title",
-    "root_local_desc",
-    "root_verifiable_title",
-    "root_verifiable_desc",
-    "root_popular_title",
-    "root_popular_subtitle",
-    "root_categories_title",
-    "root_categories_subtitle",
-    "root_privacy_title",
-    "root_privacy_desc",
-    "root_privacy_policy",
-    "root_trust_center",
-    "root_free_open_source",
-] as const
-
 describe("root x-default page guard", () => {
-    it("keeps the root page as a complete crawlable x-default landing page", () => {
+    it("keeps the root page on the original English homepage instead of a duplicate redesign", () => {
         const pageSource = fs.readFileSync(path.join(process.cwd(), "src/app/page.tsx"), "utf8")
-        const englishSiteCopy = getTranslation("en").site
 
         expect(pageSource).not.toContain('import Script from "next/script"')
         expect(pageSource).not.toContain("root-locale-redirect.js")
@@ -41,31 +16,13 @@ describe("root x-default page guard", () => {
         expect(pageSource).not.toContain("navigator.language")
         expect(pageSource).not.toContain("t.site.root_language_title")
         expect(pageSource).not.toContain("t.site.root_language_desc")
-        expect(pageSource).toContain('aria-label="Primary"')
-        expect(pageSource).toContain('aria-label="Language"')
-        expect(pageSource).toContain('aria-label="Footer"')
-        expect(pageSource).toContain("LOCALES.map")
-        expect(pageSource).toContain("t.site.root_badge")
-        expect(pageSource).toContain("t.site.root_title")
-        expect(pageSource).toContain("t.site.root_cta_search")
-        expect(pageSource).toContain('href="/en/all-tools#tool-discovery"')
-        expect(pageSource).toContain("t.site.root_cta_browse")
-        expect(pageSource).toContain('href="/en/install-app"')
-        expect(pageSource).toContain("t.site.root_cta_install")
-        expect(pageSource).toContain('"json_formatter"')
-        expect(pageSource).toContain('"jwt_decoder"')
-        expect(pageSource).toContain('"base64_encode_decode"')
-        expect(pageSource).toContain('"hash_generator"')
-        expect(pageSource).toContain('"url_encode_decode"')
-        expect(pageSource).toContain('"uuid_generator"')
-        expect(pageSource).toContain('"regex_tester"')
-        expect(pageSource).toContain('"markdown_preview"')
-        expect(pageSource).toContain("t.site.root_categories_title")
-        expect(pageSource).toContain('href="/en/privacy"')
-        expect(pageSource).toContain("t.site.root_privacy_policy")
-        expect(pageSource).toContain('href="/en/trust-center"')
-        expect(pageSource).toContain("t.site.root_trust_center")
-        expect(englishSiteCopy.root_free_desc).toContain("No signup, no account")
+        expect(pageSource).not.toContain("t.site.root_badge")
+        expect(pageSource).not.toContain("t.site.root_title")
+        expect(pageSource).toContain('import LocalizedHomePage from "@/app/[lang]/page"')
+        expect(pageSource).toContain('<LocalizedHomePage params={Promise.resolve({ lang: locale })} />')
+        expect(pageSource).toContain("ServerNavbar")
+        expect(pageSource).toContain("ServerFooter")
+        expect(pageSource).toContain("LangProvider")
 
         const languages = rootMetadata.alternates?.languages as Record<string, string>
         expect(rootMetadata.alternates?.canonical).toBe(SITE_URL)
@@ -78,10 +35,20 @@ describe("root x-default page guard", () => {
         expect(rootMetadata.description).toContain("installable as a PWA")
     })
 
-    it("keeps root x-default copy localized in every supported locale", () => {
+    it("keeps the reused homepage copy localized in every supported locale", () => {
         for (const locale of LOCALES) {
             const siteCopy = getTranslation(locale).site
-            for (const key of ROOT_SITE_COPY_KEYS) {
+            for (const key of [
+                "hero_badge",
+                "hero_title_highlight",
+                "hero_title_2",
+                "hero_subtitle",
+                "hero_search",
+                "popular_tools_title",
+                "popular_tools_subtitle",
+                "explore_by_category_title",
+                "explore_by_category_subtitle",
+            ] as const) {
                 const value = siteCopy[key]
                 expect(typeof value, `${locale}.${key}`).toBe("string")
                 expect(value.trim().length, `${locale}.${key}`).toBeGreaterThan(0)

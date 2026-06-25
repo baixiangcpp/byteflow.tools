@@ -8,7 +8,7 @@
       "maxInitialScriptFiles": 12,
       "maxCssGzipBytes": 35000,
       "maxCssRawBytes": 220000,
-      "maxHtmlBytes": 90000
+      "maxHtmlBytes": 330000
     },
     {
       "route": "/en/all-tools",
