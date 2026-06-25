@@ -147,6 +147,52 @@ export const PIPELINE_RECIPE_TEMPLATES = [
             },
         ],
     },
+    {
+        id: "json_typescript_contract_review",
+        titleKey: "template_json_typescript_contract_review_title",
+        descriptionKey: "template_json_typescript_contract_review_description",
+        categoryKey: "recipe_category_api",
+        difficultyKey: "recipe_difficulty_medium",
+        privacyBoundaryKey: "recipe_privacy_structure_only",
+        tags: ["json", "typescript", "contract", "schema"],
+        workflowSlug: "json-typescript-contract-review",
+        sampleInput: '{ "id": "evt_001", "type": "user.created", "payload": { "email": "alice@example.com", "active": true } }',
+        steps: [
+            {
+                toolKey: "json_formatter",
+                labelKey: "template_step_pretty_json",
+                options: { mode: "pretty", indent: 2 },
+            },
+            {
+                toolKey: "json_to_typescript",
+                labelKey: "template_step_generate_typescript_interfaces",
+                options: { rootName: "ApiEvent", readonly: true, optional: false },
+            },
+        ],
+    },
+    {
+        id: "image_resize_social_export",
+        titleKey: "template_image_resize_social_export_title",
+        descriptionKey: "template_image_resize_social_export_description",
+        categoryKey: "recipe_category_image",
+        difficultyKey: "recipe_difficulty_easy",
+        privacyBoundaryKey: "recipe_privacy_structure_only",
+        tags: ["image", "social", "export", "checksum"],
+        workflowSlug: "image-resize-social-export",
+        sampleInput: "asset: hero-card.png\nsize: 1200x630\nformat: webp\nquality: 0.9\nrights: owned-or-approved",
+        steps: [
+            {
+                toolKey: "multiple_whitespace_remover",
+                labelKey: "template_step_normalize_export_manifest",
+                options: {},
+            },
+            {
+                toolKey: "hash_generator",
+                labelKey: "template_step_generate_manifest_checksum",
+                options: { algorithm: "sha256" },
+            },
+        ],
+    },
 ] as const satisfies readonly PipelineRecipeTemplate[]
 
 export function getPipelineRecipeTemplate(templateId: string): PipelineRecipeTemplate | undefined {

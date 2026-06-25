@@ -5,19 +5,20 @@ import type { PipelineExecutionResult, PipelineStepExecution, RecipeDocument } f
 const PREVIEW_LIMIT = 2000
 
 type PipelineStepDiagnosticsProps = {
+    onCopyStepInput: (step: PipelineStepExecution) => void
     onCopyStepOutput: (step: PipelineStepExecution) => void
     recipe: RecipeDocument
     result: PipelineExecutionResult | null
     text: (key: string) => string
 }
 
-function previewOutput(step: PipelineStepExecution) {
-    const output = step.output ?? ""
-    if (!output) return ""
-    return output.length > PREVIEW_LIMIT ? `${output.slice(0, PREVIEW_LIMIT)}\n...` : output
+function previewValue(value?: string) {
+    if (!value) return ""
+    return value.length > PREVIEW_LIMIT ? `${value.slice(0, PREVIEW_LIMIT)}\n...` : value
 }
 
 export function PipelineStepDiagnostics({
+    onCopyStepInput,
     onCopyStepOutput,
     recipe,
     result,
@@ -47,7 +48,8 @@ export function PipelineStepDiagnostics({
                     const status = execution
                         ? execution.ok ? text("status_ok") : text("status_failed")
                         : text("status_not_run")
-                    const outputPreview = execution ? previewOutput(execution) : ""
+                    const inputPreview = execution ? previewValue(execution.input) : ""
+                    const outputPreview = execution ? previewValue(execution.output) : ""
                     const messages = execution
                         ? [
                             ...(execution.error?.message ? [execution.error.message] : []),
@@ -105,23 +107,43 @@ export function PipelineStepDiagnostics({
                                 </ul>
                             ) : null}
 
-                            <div className="mt-3 rounded-md border border-border/70 bg-muted/20">
-                                <div className="flex items-center justify-between gap-2 border-b border-border/70 px-3 py-2">
-                                    <span className="text-xs font-medium">{text("diagnostic_output_preview")}</span>
-                                    <Button
-                                        type="button"
-                                        size="sm"
-                                        variant="outline"
-                                        disabled={!outputPreview}
-                                        onClick={() => execution ? onCopyStepOutput(execution) : undefined}
-                                    >
-                                        <Copy className="h-3.5 w-3.5" />
-                                        {text("copy_step_output")}
-                                    </Button>
+                            <div className="mt-3 grid gap-3 lg:grid-cols-2">
+                                <div className="rounded-md border border-border/70 bg-muted/20">
+                                    <div className="flex items-center justify-between gap-2 border-b border-border/70 px-3 py-2">
+                                        <span className="text-xs font-medium">{text("diagnostic_input_preview")}</span>
+                                        <Button
+                                            type="button"
+                                            size="sm"
+                                            variant="outline"
+                                            disabled={!inputPreview}
+                                            onClick={() => execution ? onCopyStepInput(execution) : undefined}
+                                        >
+                                            <Copy className="h-3.5 w-3.5" />
+                                            {text("copy_step_input")}
+                                        </Button>
+                                    </div>
+                                    <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-words p-3 text-xs text-muted-foreground">
+                                        {inputPreview || text("diagnostic_input_empty")}
+                                    </pre>
                                 </div>
-                                <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-words p-3 text-xs text-muted-foreground">
-                                    {outputPreview || text("diagnostic_output_empty")}
-                                </pre>
+                                <div className="rounded-md border border-border/70 bg-muted/20">
+                                    <div className="flex items-center justify-between gap-2 border-b border-border/70 px-3 py-2">
+                                        <span className="text-xs font-medium">{text("diagnostic_output_preview")}</span>
+                                        <Button
+                                            type="button"
+                                            size="sm"
+                                            variant="outline"
+                                            disabled={!outputPreview}
+                                            onClick={() => execution ? onCopyStepOutput(execution) : undefined}
+                                        >
+                                            <Copy className="h-3.5 w-3.5" />
+                                            {text("copy_step_output")}
+                                        </Button>
+                                    </div>
+                                    <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-words p-3 text-xs text-muted-foreground">
+                                        {outputPreview || text("diagnostic_output_empty")}
+                                    </pre>
+                                </div>
                             </div>
                         </article>
                     )

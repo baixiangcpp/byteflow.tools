@@ -90,6 +90,7 @@ export interface PipelineStepExecution {
     inputBytes: number
     outputBytes: number
     durationMs: number
+    input?: string
     output?: string
     warnings: string[]
     error?: {

@@ -11,6 +11,7 @@ import { formatDevopsYamlReport, validateDevopsYaml } from "@/features/tools/dev
 import { inspectGraphql } from "@/features/tools/graphql-workbench/logic"
 import { convertHtmlToMarkdown } from "@/features/tools/html-to-markdown/utils"
 import { formatValidationReport, generateJsonSchema, validateJsonWithSchema } from "@/features/tools/json-schema-workbench/logic"
+import { jsonToTs } from "@/features/tools/json-to-typescript/utils"
 import { decodeJwtParts } from "@/features/tools/jwt-decoder/utils"
 import { runNdjsonTransform, type NdjsonMessages, type NdjsonMode } from "@/features/tools/ndjson-formatter/utils"
 import { diffOpenApiSpecs, formatOpenApiDiffReport } from "@/features/tools/openapi-diff/logic"
@@ -673,6 +674,43 @@ const jsonSchemaAdapter: PipelineToolAdapter = {
     },
 }
 
+const jsonToTypescriptAdapter: PipelineToolAdapter = {
+    toolKey: "json_to_typescript",
+    slug: "json-to-typescript",
+    version: 1,
+    inputKind: "json",
+    outputKind: "text",
+    safeForSensitiveInput: true,
+    deterministic: true,
+    mayIncreaseSize: true,
+    warnings: ["Generated interfaces are static type hints; pair them with runtime validation for untrusted payloads."],
+    defaultOptions: {
+        rootName: "Root",
+        readonly: false,
+        optional: false,
+    },
+    publicOptionKeys: ["rootName", "readonly", "optional"],
+    validateOptions(options) {
+        if (typeof (options.rootName ?? "Root") !== "string") return fail("rootName must be a string.")
+        if (typeof (options.readonly ?? false) !== "boolean") return fail("readonly must be boolean.")
+        if (typeof (options.optional ?? false) !== "boolean") return fail("optional must be boolean.")
+        return ok()
+    },
+    run(input, options) {
+        const startedAt = performance.now()
+        try {
+            const parsed = JSON.parse(input)
+            const rootName = stringOption(options, "rootName", "Root").trim() || "Root"
+            return success(jsonToTs(parsed, rootName, {
+                readonly: booleanOption(options, "readonly", false),
+                optional: booleanOption(options, "optional", false),
+            }), startedAt, input)
+        } catch (error) {
+            return failure("json_to_typescript_error", error instanceof Error ? error.message : "Invalid JSON.", startedAt, input)
+        }
+    },
+}
+
 const openApiDiffAdapter: PipelineToolAdapter = {
     toolKey: "openapi_diff",
     slug: "openapi-diff",
@@ -763,6 +801,7 @@ export const PIPELINE_TOOL_ADAPTERS = [
     regexTesterAdapter,
     envParserAdapter,
     jsonSchemaAdapter,
+    jsonToTypescriptAdapter,
     openApiDiffAdapter,
     graphqlAdapter,
     devopsYamlValidatorAdapter,

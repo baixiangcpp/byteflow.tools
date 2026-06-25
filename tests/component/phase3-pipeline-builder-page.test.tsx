@@ -56,6 +56,7 @@ describe("phase 3 pipeline builder page", () => {
     beforeEach(() => {
         trackPipelineTemplateOpenedMock.mockReset()
         installMemoryStorage()
+        window.history.replaceState(null, "", "/en/pipeline-builder")
     })
 
     it.each([
@@ -86,6 +87,8 @@ describe("phase 3 pipeline builder page", () => {
         expect(screen.getByText("API payload cleanup")).toBeInTheDocument()
         expect(screen.getByText("Security token review")).toBeInTheDocument()
         expect(screen.getByText("Log scrub before sharing")).toBeInTheDocument()
+        expect(screen.getByText("JSON TypeScript contract review")).toBeInTheDocument()
+        expect(screen.getByText("Image social export manifest")).toBeInTheDocument()
         expect(screen.getByText("Step diagnostics")).toBeInTheDocument()
         expect(screen.getByRole("button", { name: /Run Recipe/i })).toBeInTheDocument()
         expect(screen.getAllByRole("button", { name: /Export JSON/i }).length).toBeGreaterThan(0)
@@ -232,6 +235,45 @@ describe("phase 3 pipeline builder page", () => {
         expect(screen.getByRole("status")).toHaveTextContent("OK: 2 Run log")
         expect(screen.getByRole("table", { name: "Run log" })).toBeInTheDocument()
         expect(screen.getByText("Recipe is valid for the linear MVP executor.")).toBeInTheDocument()
+        expect(screen.getAllByText("Input preview").length).toBeGreaterThan(0)
+        expect(screen.getAllByText("%7B%22user%22%3A%22alice%40example.com%22%2C%22active%22%3Atrue%7D").length).toBeGreaterThan(0)
+        expect(screen.getAllByRole("button", { name: "Copy step input" }).length).toBeGreaterThan(0)
+    })
+
+    it.each([
+        ["json_typescript_contract_review", "JSON TypeScript contract review", "Generate TypeScript interfaces", "export interface ApiEvent"],
+        ["image_resize_social_export", "Image social export manifest", "Generate manifest checksum", /^[a-f0-9]{64}$/],
+    ] as const)("loads workflow template %s from the URL without embedding runtime payload in the recipe", async (templateId, recipeName, stepLabel, expectedOutput) => {
+        window.history.replaceState(null, "", `/en/pipeline-builder?template=${templateId}`)
+
+        renderWithEnglish(<PipelineBuilderPage />)
+
+        await waitFor(() => {
+            expect(screen.getByLabelText("Recipe name")).toHaveValue(recipeName)
+        })
+
+        fireEvent.click(screen.getByRole("button", { name: new RegExp(stepLabel) }))
+        expect(screen.getByLabelText("Step label")).toHaveValue(stepLabel)
+        expect(trackPipelineTemplateOpenedMock).toHaveBeenCalledWith({
+            templateId,
+            language: "en",
+            sourcePage: "workflow_page",
+            action: "handoff",
+        })
+        expect(JSON.stringify(trackPipelineTemplateOpenedMock.mock.calls)).not.toContain("alice@example.com")
+
+        fireEvent.click(screen.getByRole("button", { name: /Run Recipe/i }))
+
+        await waitFor(() => {
+            const value = (screen.getByPlaceholderText("Run the recipe to generate output...") as HTMLTextAreaElement).value
+            if (typeof expectedOutput === "string") {
+                expect(value).toContain(expectedOutput)
+            } else {
+                expect(value).toMatch(expectedOutput)
+            }
+        })
+        expect(screen.getAllByText("Input preview").length).toBeGreaterThan(0)
+        expect(screen.getAllByText(/hero-card\.png|evt_001/).length).toBeGreaterThan(0)
     })
 
     it("loads the security token review template without putting the sample JWT into recipe JSON", () => {

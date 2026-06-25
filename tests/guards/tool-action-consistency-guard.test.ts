@@ -63,6 +63,9 @@ describe("tool action consistency guard", () => {
         expect(toaster).toContain('role="status"')
         expect(toaster).toContain('aria-live="polite"')
         expect(toaster).toContain("data-toast-live-region")
+        expect(toaster).toContain("useSonner")
+        expect(toaster).toContain("toastNodeToText")
+        expect(read("tests/component/toaster-live-region.test.tsx")).toContain("announces the latest toast title and description")
     })
 
     it("keeps audited copy, download, and share actions on visible success/failure feedback paths", () => {

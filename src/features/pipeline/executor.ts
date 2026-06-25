@@ -259,6 +259,9 @@ export async function runRecipe(
                 warnings: [],
                 error: { code: "input_too_large", message: error },
             }
+            if (settings.keepIntermediateOutputs) {
+                execution.input = stepInput
+            }
             executions.push(execution)
             errors.push(error)
             if (settings.stopOnError) break
@@ -279,6 +282,9 @@ export async function runRecipe(
                 durationMs: Math.max(0, performance.now() - startedAt),
                 warnings: [],
                 error: { code: "adapter_runtime_error", message },
+            }
+            if (settings.keepIntermediateOutputs) {
+                execution.input = stepInput
             }
             executions.push(execution)
             errors.push(`${step.id}: ${message}`)
@@ -303,6 +309,7 @@ export async function runRecipe(
                 error: { code: "output_too_large", message: error },
             }
             if (settings.keepIntermediateOutputs) {
+                execution.input = stepInput
                 execution.output = output
             }
             executions.push(execution)
@@ -322,6 +329,7 @@ export async function runRecipe(
             error: result.error,
         }
         if (settings.keepIntermediateOutputs) {
+            execution.input = stepInput
             execution.output = output
         }
         executions.push(execution)

@@ -9,6 +9,7 @@ import { createRecipeFromTemplate, getPipelineRecipeTemplateForWorkflow, PIPELIN
 import { createSavedRecipeRecord, isRecipeStoreAvailable } from "@/features/pipeline/recipe-store"
 import { DEFAULT_RECIPE_SETTINGS, type PipelineToolAdapter, type RecipeDocument } from "@/features/pipeline/recipe-types"
 import { getStepCompatibilityHints } from "@/features/tools/pipeline-builder/logic"
+import { WORKFLOW_DEFINITIONS } from "@/core/workflows/workflow-hubs"
 
 function buildRecipe(overrides: Partial<RecipeDocument> = {}): RecipeDocument {
     const base: RecipeDocument = {
@@ -61,6 +62,7 @@ describe("pipeline foundation", () => {
             "regex_tester",
             "env_parser",
             "json_schema_workbench",
+            "json_to_typescript",
             "openapi_diff",
             "graphql_workbench",
             "devops_yaml_validator",
@@ -168,7 +170,9 @@ describe("pipeline foundation", () => {
         expect(result.ok).toBe(true)
         expect(result.errors).toEqual([])
         expect(result.steps).toHaveLength(2)
+        expect(result.steps[0].input).toBe('{ "name": "byteflow" }')
         expect(result.steps[0].output).toBe('{"name":"byteflow"}')
+        expect(result.steps[1].input).toBe('{"name":"byteflow"}')
         expect(result.finalOutput).toBe("eyJuYW1lIjoiYnl0ZWZsb3cifQ")
     })
 
@@ -653,7 +657,45 @@ describe("pipeline foundation", () => {
 
         expect(result.ok).toBe(true)
         expect(result.finalOutput).toBe("eyJuYW1lIjoiYnl0ZWZsb3cifQ")
+        expect(result.steps.every((step) => !Object.prototype.hasOwnProperty.call(step, "input"))).toBe(true)
         expect(result.steps.every((step) => !Object.prototype.hasOwnProperty.call(step, "output"))).toBe(true)
+    })
+
+    it("captures per-step input previews for success, warning, and failure diagnostics without persisting them", async () => {
+        const success = await runRecipe(buildRecipe(), '{ "name": "byteflow" }')
+        const warning = await runRecipe(buildRecipe({
+            steps: [{
+                id: "scrub",
+                toolKey: "log_scrubber",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { bearerTokens: true, emails: true },
+            }],
+            edges: [],
+        }), "Authorization: Bearer secret-token\nemail=alice@example.com")
+        const failure = await runRecipe(buildRecipe({
+            steps: [{
+                id: "format",
+                toolKey: "json_formatter",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: { mode: "pretty", indent: 2 },
+            }],
+            edges: [],
+        }), "{broken json")
+
+        expect(success.steps[0]).toMatchObject({
+            input: '{ "name": "byteflow" }',
+            ok: true,
+        })
+        expect(warning.steps[0].input).toContain("secret-token")
+        expect(warning.steps[0].warnings.join(" ")).toMatch(/Redacted|match/i)
+        expect(failure.steps[0]).toMatchObject({
+            input: "{broken json",
+            ok: false,
+        })
+        expect(failure.steps[0].error?.code).toBe("json_parse_error")
+        expect(exportRecipeToJson(buildRecipe())).not.toContain("byteflow")
     })
 
     it("creates portable recipes without runtime payloads or private options", () => {
@@ -964,6 +1006,13 @@ describe("pipeline foundation", () => {
         expect(getPipelineRecipeTemplateForWorkflow("api-payload-cleanup")?.id).toBe("api_payload_cleanup")
         expect(getPipelineRecipeTemplateForWorkflow("security-token-review")?.id).toBe("security_token_review")
         expect(getPipelineRecipeTemplateForWorkflow("log-scrub-before-sharing")?.id).toBe("log_scrub_before_sharing")
+        expect(getPipelineRecipeTemplateForWorkflow("image-resize-social-export")?.id).toBe("image_resize_social_export")
+        expect(getPipelineRecipeTemplateForWorkflow("json-typescript-contract-review")?.id).toBe("json_typescript_contract_review")
+
+        for (const workflow of WORKFLOW_DEFINITIONS) {
+            const template = getPipelineRecipeTemplateForWorkflow(workflow.slug)
+            expect(template, `${workflow.slug} must open an importable Pipeline Builder recipe`).toBeDefined()
+        }
 
         for (const template of PIPELINE_RECIPE_TEMPLATES.filter((candidate) => "workflowSlug" in candidate)) {
             const generated = createRecipeFromTemplate(template, {
@@ -974,7 +1023,9 @@ describe("pipeline foundation", () => {
             })
             const encoded = encodeRecipeForShareUrl(generated.recipe)
 
+            expect(validateRecipe(generated.recipe)).toEqual({ ok: true, errors: [] })
             expect(encoded).not.toContain(generated.initialInput)
+            expect(JSON.stringify(generated.recipe)).not.toContain(generated.initialInput)
             expect(recipeContainsRuntimeInput(generated.recipe)).toBe(false)
         }
     })

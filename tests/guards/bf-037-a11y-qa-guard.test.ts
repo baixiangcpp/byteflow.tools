@@ -11,12 +11,15 @@ function readSource(relativePath: string): string {
 describe("BF-037 accessibility QA guard", () => {
     it("keeps axe coverage for representative dynamic tool interfaces", () => {
         const source = readSource("tests/component/representative-a11y-axe.test.tsx")
+        const toastSource = readSource("tests/component/toaster-live-region.test.tsx")
 
         expect(source).toContain("axe.run")
         expect(source).toContain("<JsonFormatterPage />")
         expect(source).toContain("<PipelineBuilderPage />")
         expect(source).toContain("<YouTubeThumbnailGrabberPage />")
         expect(source).toContain("<AllToolsDiscovery")
+        expect(toastSource).toContain("toast.success")
+        expect(toastSource).toContain("screen.getByRole(\"status\")")
     })
 
     it("keeps the manual screen-reader QA checklist documented", () => {
