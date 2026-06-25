@@ -68,6 +68,56 @@ describe("shared tool shell status and output components", () => {
         expect(outputRegion).toHaveTextContent(output)
     })
 
+    it("lets keyboard users switch long output wrap modes with radio navigation keys", () => {
+        const output = `https://example.com/${"a".repeat(180)}`
+
+        renderEnglish(<TextOutputPanel title="Output" value={output} />)
+
+        const outputRegion = screen.getByLabelText("Output")
+        const wrapRadio = screen.getByRole("radio", { name: "Wrap" })
+        expect(outputRegion).toHaveAttribute("data-output-overflow-mode", "wrap")
+
+        fireEvent.keyDown(wrapRadio, { key: "ArrowRight" })
+        expect(outputRegion).toHaveAttribute("data-output-overflow-mode", "scroll")
+        expect(screen.getByRole("radio", { name: "Scroll" })).toHaveFocus()
+
+        fireEvent.keyDown(screen.getByRole("radio", { name: "Scroll" }), { key: "Home" })
+        expect(outputRegion).toHaveAttribute("data-output-overflow-mode", "wrap")
+        expect(wrapRadio).toHaveFocus()
+
+        fireEvent.keyDown(wrapRadio, { key: "End" })
+        expect(outputRegion).toHaveAttribute("data-output-overflow-mode", "scroll")
+    })
+
+    it("announces permission external request states politely while keeping failures assertive", () => {
+        const { rerender } = renderEnglish(
+            <ExternalRequestStatus
+                status="permission"
+                message="Confirm before previewing external media."
+                nextStep="Confirm the external request."
+                hosts={["i.ytimg.com"]}
+            />,
+        )
+
+        const permissionStatus = screen.getByRole("status")
+        expect(permissionStatus).toHaveAttribute("data-external-request-status", "permission")
+        expect(permissionStatus).toHaveAttribute("aria-live", "polite")
+
+        rerender(
+            <LangProvider lang="en" translations={getTranslation("en")}>
+                <ExternalRequestStatus
+                    status="offline"
+                    message="This external-request action needs network access."
+                    nextStep="Reconnect and retry."
+                    hosts={["i.ytimg.com"]}
+                />
+            </LangProvider>,
+        )
+
+        expect(screen.getByRole("alert")).toHaveAttribute("data-external-request-status", "offline")
+        expect(screen.getByRole("alert")).toHaveAttribute("aria-live", "assertive")
+    })
+
     it("exposes external request status, next step, hosts, and alert semantics for failures", () => {
         renderEnglish(
             <ExternalRequestStatus

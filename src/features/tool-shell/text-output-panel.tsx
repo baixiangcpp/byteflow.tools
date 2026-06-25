@@ -18,10 +18,44 @@ export function OutputWrapModeControl({
 }) {
     const { t } = useLang()
     const labels = t.common.output_overflow
+    const optionRefs = React.useRef<Array<HTMLButtonElement | null>>([])
     const options = [
         { value: "wrap" as const, label: labels.wrap, icon: AlignLeft },
         { value: "scroll" as const, label: labels.scroll, icon: ListMinus },
     ]
+    const selectedIndex = Math.max(0, options.findIndex((option) => option.value === value))
+
+    const selectOption = (index: number) => {
+        const nextIndex = (index + options.length) % options.length
+        const nextOption = options[nextIndex]
+        onChange(nextOption.value)
+        optionRefs.current[nextIndex]?.focus()
+    }
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+        switch (event.key) {
+            case "ArrowRight":
+            case "ArrowDown":
+                event.preventDefault()
+                selectOption(selectedIndex + 1)
+                break
+            case "ArrowLeft":
+            case "ArrowUp":
+                event.preventDefault()
+                selectOption(selectedIndex - 1)
+                break
+            case "Home":
+                event.preventDefault()
+                selectOption(0)
+                break
+            case "End":
+                event.preventDefault()
+                selectOption(options.length - 1)
+                break
+            default:
+                break
+        }
+    }
 
     return (
         <div
@@ -29,7 +63,7 @@ export function OutputWrapModeControl({
             aria-label={labels.mode_label}
             className={cn("inline-flex rounded-md border bg-background/70 p-0.5", className)}
         >
-            {options.map((option) => {
+            {options.map((option, index) => {
                 const Icon = option.icon
                 const active = option.value === value
                 return (
@@ -40,7 +74,11 @@ export function OutputWrapModeControl({
                         aria-checked={active}
                         tabIndex={active ? 0 : -1}
                         title={option.label}
+                        ref={(node) => {
+                            optionRefs.current[index] = node
+                        }}
                         onClick={() => onChange(option.value)}
+                        onKeyDown={handleKeyDown}
                         className={cn(
                             "inline-flex min-h-8 items-center gap-1 rounded px-2 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
                             active ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",

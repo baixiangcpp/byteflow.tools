@@ -49,7 +49,7 @@ const STATUS_ICON: Record<ExternalRequestStatusKind, React.ComponentType<{ class
     permission: ShieldAlert,
 }
 
-const ASSERTIVE_STATUSES = new Set<ExternalRequestStatusKind>(["invalid", "unreachable", "blocked", "offline", "permission"])
+const ASSERTIVE_STATUSES = new Set<ExternalRequestStatusKind>(["invalid", "unreachable", "blocked", "offline"])
 
 export function ExternalRequestStatus({
     status,

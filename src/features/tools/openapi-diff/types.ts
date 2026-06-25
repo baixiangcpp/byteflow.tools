@@ -5,9 +5,16 @@ export type OpenApiOperationSnapshot = {
     method: OpenApiMethod
     operationId?: string
     summary?: string
-    parameters: string[]
+    parameters: OpenApiParameterSnapshot[]
     responses: string[]
     security: string[]
+}
+
+export type OpenApiParameterSnapshot = {
+    key: string
+    location: string
+    name: string
+    required: boolean
 }
 
 export type OpenApiSpecSnapshot = {
