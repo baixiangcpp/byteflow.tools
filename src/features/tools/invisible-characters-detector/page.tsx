@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import {
     analyzeText,
     cleanText,
@@ -91,6 +92,8 @@ export function InvisibleCharsDetectorPage() {
                 <h1 className="text-3xl font-bold">{text("title")}</h1>
                 <p className="text-muted-foreground">{text("description")}</p>
             </div>
+
+            <SensitiveInputWarning />
 
             <div className="space-y-4">
                 <div className="flex items-center gap-2">

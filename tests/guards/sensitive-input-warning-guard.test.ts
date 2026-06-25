@@ -1,34 +1,44 @@
-import { readFileSync } from "node:fs"
+import { existsSync, readFileSync } from "node:fs"
 import { describe, expect, it } from "vitest"
 
-const SENSITIVE_TOOL_FILES = [
-    "src/features/tools/jwt-decoder/page.tsx",
-    "src/features/tools/jwt-workbench/page.tsx",
-    "src/features/tools/jwt-verifier/page.tsx",
-    "src/features/tools/hash-generator/page.tsx",
-    "src/features/tools/certificate-decoder/page.tsx",
-    "src/features/tools/saml-decoder/page.tsx",
-    "src/features/tools/http-request-builder/page.tsx",
-    "src/features/tools/log-scrubber/page.tsx",
-    "src/features/tools/har-viewer-sanitizer/page.tsx",
-    "src/features/tools/env-parser/page.tsx",
-]
+type GeneratedToolIndex = {
+    canonicalTools: Array<{
+        key: string
+        slug: string
+        privacy?: {
+            sensitiveInput?: boolean
+        }
+    }>
+}
+
+const generatedToolIndex = JSON.parse(
+    readFileSync("src/generated/tool-index.json", "utf8"),
+) as GeneratedToolIndex
 
 describe("sensitive input warning guard", () => {
-    it("uses the shared warning on sensitive token, key, certificate, log, and request tools", () => {
-        for (const file of SENSITIVE_TOOL_FILES) {
-            const source = readFileSync(file, "utf8")
-            expect(source, file).toContain("SensitiveInputWarning")
+    it("uses the shared warning on every manifest-marked sensitive input tool page", () => {
+        const sensitiveTools = generatedToolIndex.canonicalTools.filter((tool) => tool.privacy?.sensitiveInput)
+
+        expect(sensitiveTools.length).toBeGreaterThan(0)
+
+        for (const tool of sensitiveTools) {
+            const pagePath = `src/features/tools/${tool.slug}/page.tsx`
+            if (!existsSync(pagePath)) continue
+
+            const source = readFileSync(pagePath, "utf8")
+            expect(source, `${tool.key} (${pagePath})`).toContain("SensitiveInputWarning")
         }
     })
 
-    it("links warning copy to the privacy page and DevTools verification guidance", () => {
+    it("links warning copy to the Trust Center and DevTools verification guidance", () => {
         const source = readFileSync("src/features/tool-shell/sensitive-input-warning.tsx", "utf8")
 
         expect(source).toContain("sensitive_warning_title")
+        expect(source).toContain("tool_trust_header.trust_center_link")
         expect(source).toContain("sensitive_warning_verify_devtools")
+        expect(source).toContain('href={`/${lang}/trust-center`}')
         expect(source).toContain('href={`/${lang}/trust-center#verify-local-processing`}')
-        expect(source).toContain('href={`/${lang}/about#privacy`}')
+        expect(source).not.toContain('href={`/${lang}/about#privacy`}')
         expect(source).not.toMatch(/localStorage|sessionStorage|indexedDB|fetch\(/)
     })
 
@@ -48,8 +58,8 @@ describe("sensitive input warning guard", () => {
     })
 
     it("keeps the existing DevTools verification anchor target real", () => {
-        const aboutSource = readFileSync("src/app/[lang]/about/page.tsx", "utf8")
+        const trustCenterSource = readFileSync("src/app/[lang]/trust-center/page.tsx", "utf8")
 
-        expect(aboutSource).toContain('id="privacy"')
+        expect(trustCenterSource).toContain('id="verify-local-processing"')
     })
 })

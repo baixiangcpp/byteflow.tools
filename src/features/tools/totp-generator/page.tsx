@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 
 // ─── TOTP Engine (RFC 6238) ─────────────────────────────────────────────────
@@ -134,6 +135,8 @@ export function TotpGeneratorPage() {
                 </h1>
                 <p className="text-muted-foreground mt-1">{toolT.description}</p>
             </div>
+
+            <SensitiveInputWarning variant="secret" />
 
             {/* OTP Display */}
             <div className="p-8 border rounded-xl bg-card shadow-sm text-center space-y-4">

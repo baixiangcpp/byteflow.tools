@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { Label } from "@/components/ui/label"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import {
     parseLogs,
     filterLogs,
@@ -145,6 +146,8 @@ export function LocalLogParserPage() {
                 <h1 className="text-3xl font-bold">{text("title")}</h1>
                 <p className="text-muted-foreground">{text("description")}</p>
             </div>
+
+            <SensitiveInputWarning variant="log" />
 
             <div className="flex gap-2">
                 <Button variant="outline" size="sm" onClick={handleLoadExample}>

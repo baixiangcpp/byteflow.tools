@@ -12,6 +12,7 @@ import { readStorageString, writeStorageString } from "@/core/storage/tool-persi
 import { buildSensitiveToolHandoffLink } from "@/core/routing/tool-handoff"
 import { importTextFile, TEXT_FILE_IMPORT_ACCEPT } from "@/core/files/text-file-import"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { convertStructuredData, type StructuredDataFormat } from "./utils"
 
 const MODE_STORAGE_KEY = "byteflow:yaml-json-converter:mode"
@@ -234,6 +235,8 @@ export function YamlJsonConverterPage() {
                     </Button>
                 </div>
             </div>
+
+            <SensitiveInputWarning />
 
             <div
                 className={`rounded-xl border border-dashed px-4 py-3 transition-colors ${isImportDragActive ? "border-primary bg-primary/10" : "border-border/70 bg-card/40"}`}

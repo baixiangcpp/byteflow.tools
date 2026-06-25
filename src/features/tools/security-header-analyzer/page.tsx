@@ -6,6 +6,7 @@ import { toast } from "sonner"
 import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { analyzeSecurityHeaders, formatSecurityHeaderReport, type HeaderStatus } from "@/features/tools/security-header-analyzer/utils"
@@ -109,6 +110,8 @@ export function SecurityHeaderAnalyzerPage() {
             </div>
 
             <div className="flex-1 overflow-auto p-4 md:p-6">
+                <SensitiveInputWarning variant="log" className="mx-auto mb-4 w-full max-w-6xl" />
+
                 <div className="mx-auto grid w-full max-w-6xl gap-4 lg:grid-cols-5">
                     <section className="lg:col-span-2 space-y-2">
                         <label className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">

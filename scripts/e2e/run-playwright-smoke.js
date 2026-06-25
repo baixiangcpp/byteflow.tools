@@ -641,6 +641,25 @@ async function assertMobileCrontabGenerator(page) {
         .waitFor({ state: "visible", timeout: 15_000 });
 }
 
+async function assertMobileImageResizer(page) {
+    await page.getByRole("button", { name: /^Sample$/ }).first().click();
+    await expectTextareaValue(page, /WEBP|1200|675/, "mobile image resizer output summary");
+    await page.getByRole("button", { name: /^Download$/ }).first().waitFor({ state: "visible", timeout: 15_000 });
+}
+
+async function assertMobileJsonDiffViewer(page) {
+    await page.getByRole("button", { name: /^Format$/ }).first().click();
+    await page.getByText(/Key Diff|Structural Changes/i).first().waitFor({ state: "visible", timeout: 15_000 });
+    await page.getByText(/Original \(A\)|Modified \(B\)/i).first().waitFor({ state: "visible", timeout: 15_000 });
+    await page.getByText(/version|features|port|analytics/i).first().waitFor({ state: "visible", timeout: 15_000 });
+}
+
+async function assertMobileTextDiffChecker(page) {
+    await page.getByRole("button", { name: /^Clear$/ }).first().click();
+    await page.getByText(/Original/i).first().waitFor({ state: "visible", timeout: 15_000 });
+    await page.getByText(/Modified/i).first().waitFor({ state: "visible", timeout: 15_000 });
+}
+
 async function assertMobileToolPageJourneys(browser, baseUrl) {
     const journeys = [
         { route: "/en/all-tools", run: assertMobileAllTools },
@@ -650,6 +669,9 @@ async function assertMobileToolPageJourneys(browser, baseUrl) {
         { route: "/en/markdown-preview", run: assertMobileMarkdownPreview },
         { route: "/en/regex-tester", run: assertMobileRegexTester },
         { route: "/en/crontab-generator", run: assertMobileCrontabGenerator },
+        { route: "/en/image-resizer", run: assertMobileImageResizer },
+        { route: "/en/json-diff-viewer", run: assertMobileJsonDiffViewer },
+        { route: "/en/text-diff-checker", run: assertMobileTextDiffChecker },
     ];
 
     for (const viewport of MOBILE_TOOL_VIEWPORTS) {

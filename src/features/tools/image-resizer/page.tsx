@@ -312,6 +312,8 @@ export function ImageResizerPage() {
                                 min={1}
                                 max={4096}
                                 value={targetWidth}
+                                aria-label={t.common.width}
+                                className="min-h-11 sm:min-h-9"
                                 onChange={(event) => setWidthAndKeepRatio(Number(event.target.value))}
                             />
                         </label>
@@ -322,6 +324,8 @@ export function ImageResizerPage() {
                                 min={1}
                                 max={4096}
                                 value={targetHeight}
+                                aria-label={t.common.height}
+                                className="min-h-11 sm:min-h-9"
                                 onChange={(event) => setHeightAndKeepRatio(Number(event.target.value))}
                             />
                         </label>
@@ -398,8 +402,9 @@ export function ImageResizerPage() {
                                 step={0.01}
                                 value={quality}
                                 disabled={format === "png"}
+                                aria-label={toolT.output_quality_label}
                                 onChange={(event) => setQuality(Number(event.target.value))}
-                                className="cursor-pointer disabled:cursor-not-allowed"
+                                className="min-h-11 cursor-pointer disabled:cursor-not-allowed sm:min-h-9"
                             />
                         </div>
                     </div>
