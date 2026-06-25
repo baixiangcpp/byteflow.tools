@@ -41,6 +41,7 @@ export function Base64Page() {
     const canDownload = output.length > 0 || decodedBlob !== null
     const outputPreviewTruncatedLabel = toolT.output_preview_truncated
     const isOutputPreviewTruncated = output.length > OUTPUT_PREVIEW_LIMIT
+    const inputA11yProps = error ? { "aria-describedby": "base64-error", "aria-invalid": true } : {}
     const outputPreview = React.useMemo(() => {
         if (!isOutputPreviewTruncated) return output
         const hiddenChars = output.length - OUTPUT_PREVIEW_LIMIT
@@ -67,13 +68,8 @@ export function Base64Page() {
         }
     }, [])
 
-    React.useEffect(() => {
-        writeStorageString(MODE_STORAGE_KEY, mode)
-    }, [mode])
-
-    React.useEffect(() => {
-        writeStorageString(OPERATION_STORAGE_KEY, operation)
-    }, [operation])
+    React.useEffect(() => { writeStorageString(MODE_STORAGE_KEY, mode) }, [mode])
+    React.useEffect(() => { writeStorageString(OPERATION_STORAGE_KEY, operation) }, [operation])
 
     const resetTransientState = React.useCallback(() => {
         abortFileTask()
@@ -415,7 +411,7 @@ export function Base64Page() {
             </div>
 
             {error ? (
-                <div className="rounded-md bg-destructive/90 p-3 text-sm font-medium text-destructive-foreground">
+                <div id="base64-error" role="alert" className="rounded-md bg-destructive/90 p-3 text-sm font-medium text-destructive-foreground">
                     {error}
                 </div>
             ) : null}
@@ -436,6 +432,8 @@ export function Base64Page() {
                             placeholder={mode === "file" ? text("input_placeholder_file") : text("input_placeholder_text")}
                             value={input}
                             onChange={(event) => setInput(event.target.value)}
+                            aria-label={t.common.input}
+                            {...inputA11yProps}
                             spellCheck={false}
                         />
                     </div>
@@ -454,6 +452,7 @@ export function Base64Page() {
                             placeholder={t.common.result_placeholder}
                             value={outputPreview}
                             readOnly
+                            aria-label={t.common.output}
                             spellCheck={false}
                         />
                         {isOutputPreviewTruncated ? (

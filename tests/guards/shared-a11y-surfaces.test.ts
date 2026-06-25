@@ -37,4 +37,34 @@ describe("shared accessibility surfaces", () => {
         expect(source).toContain("aria-label={text(\"run_log\")}")
         expect(source).toContain("role=\"alert\"")
     })
+
+    it("keeps representative dynamic tools labeled with associated errors and status regions", () => {
+        const base64 = readSource("src/features/tools/base64-encode-decode/page.tsx")
+        const regex = readSource("src/features/tools/regex-tester/page.tsx")
+        const imageResizer = readSource("src/features/tools/image-resizer/page.tsx")
+        const youtube = readSource("src/features/tools/youtube-thumbnail-grabber/page.tsx")
+        const vimeo = readSource("src/features/tools/vimeo-thumbnail-grabber/page.tsx")
+        const instagram = readSource("src/features/tools/instagram-photo-downloader/page.tsx")
+
+        expect(base64).toContain('role="alert"')
+        expect(base64).toContain('aria-label={t.common.input}')
+        expect(base64).toContain('"aria-describedby": "base64-error"')
+        expect(base64).toContain('"aria-invalid": true')
+        expect(base64).toContain("{...inputA11yProps}")
+        expect(base64).toContain('aria-label={t.common.output}')
+
+        expect(regex).toContain('id="regex-pattern"')
+        expect(regex).toContain('role="alert"')
+        expect(regex).toContain('aria-describedby={error ? "regex-pattern-error" : undefined}')
+        expect(regex).toContain('aria-live="polite"')
+
+        expect(imageResizer).toContain('aria-label={uploadPolicy.description}')
+        expect(imageResizer).toContain('aria-pressed={lockAspect}')
+        expect(imageResizer).toContain('aria-label={t.common.output}')
+
+        for (const source of [youtube, vimeo, instagram]) {
+            expect(source).toContain('role="status"')
+            expect(source).toContain('aria-live="polite"')
+        }
+    })
 })
