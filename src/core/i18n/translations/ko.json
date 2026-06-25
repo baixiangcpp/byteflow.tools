@@ -1071,7 +1071,9 @@
       "error_match_limit": "일치 개수가 한도를 초과했습니다. 빈 문자열을 무한히 매칭하고 있을 수 있습니다.",
       "timing_label": "시간: {ms} ms",
       "evaluating_label": "평가 중...",
-      "performance_warning_title": "성능 경고"
+      "performance_warning_title": "성능 경고",
+      "sample_action_title": "기본 정규식 패턴, 플래그, 테스트 문자열을 복원합니다.",
+      "clear_action_title": "패턴과 테스트 문자열을 비우고 안전한 기본 플래그는 유지합니다."
     },
     "regex_generator": {
       "title": "정규식 생성기",
@@ -3098,6 +3100,14 @@
     "trust_center_faq_a2": "도구 payload는 기본적으로 저장되지 않아야 합니다. 저장은 안전한 설정과 민감한 payload가 없는 로컬 프리셋으로 제한됩니다.",
     "trust_center_faq_q3": "외부 요청이 예상된 동작인지 어떻게 확인하나요?",
     "trust_center_faq_a3": "도구 신뢰 헤더와 이 자동 생성 표를 확인하고, DevTools에서 네트워크 접근이 명시적 작업 후에만 시작되는지 확인하세요.",
-    "trust_center_vulnerability_link": "취약점 신고"
+    "trust_center_vulnerability_link": "취약점 신고",
+    "pricing_support_deployment_aria": "지원 및 배포 옵션",
+    "pricing_support_title": "프로젝트 지원",
+    "pricing_support_desc": "GitHub에서 별표, fork, 가능한 경우 후원, 또는 공개 요청에 투표할 수 있습니다. 기존 로컬 도구는 계속 무료이며 계정이 필요하지 않습니다.",
+    "pricing_github_project": "GitHub 프로젝트",
+    "pricing_internal_deployment_title": "내부 배포 안내",
+    "pricing_internal_deployment_desc": "자체 호스팅은 클라우드 기록 없음 약속을 유지합니다. 호스팅 계정, payload 동기화, 서버 측 도구 payload 처리가 없습니다.",
+    "pricing_internal_deployment_cta": "내부 배포 문의",
+    "pricing_self_hosting_guide": "자체 호스팅 가이드"
   }
 }

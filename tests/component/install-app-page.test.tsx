@@ -58,6 +58,7 @@ describe("install app page", () => {
         expect(browseLink).toHaveAttribute("href", getAllToolsHref("en"))
         expect(browseLink).not.toHaveAttribute("href", "/en/format-validate")
         expect(screen.getByRole("link", { name: "Trust Center" })).toHaveAttribute("href", "/en/trust-center")
+        expect(screen.getByRole("link", { name: "Extension and desktop research" })).toHaveAttribute("href", "/en/distribution-research")
         expect(screen.getByRole("heading", { name: "Offline support matrix" })).toBeInTheDocument()
         expect(screen.getByRole("link", { name: "Offline matrix" })).toHaveAttribute("href", "/en/trust-center#offline-support-matrix")
         expect(screen.getByRole("button", { name: "Clear cached app files" })).toBeInTheDocument()

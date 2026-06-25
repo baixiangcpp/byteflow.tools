@@ -1071,7 +1071,9 @@
       "error_match_limit": "Limite de correspondances dépassée. L'expression peut faire des correspondances infinies sur une chaîne vide.",
       "timing_label": "Duree : {ms} ms",
       "evaluating_label": "Evaluation...",
-      "performance_warning_title": "Avertissement de performance"
+      "performance_warning_title": "Avertissement de performance",
+      "sample_action_title": "Restaurer le motif regex, les indicateurs et le texte de test par défaut.",
+      "clear_action_title": "Effacer le motif et le texte de test tout en gardant les indicateurs sûrs par défaut."
     },
     "regex_generator": {
       "title": "Générateur Regex",
@@ -3098,6 +3100,14 @@
     "trust_center_faq_a2": "Les payloads d’outil ne doivent pas être stockés par défaut. Le stockage est limité aux préférences sûres et aux presets locaux sans payload sensible.",
     "trust_center_faq_q3": "Comment savoir si une requête externe est attendue ?",
     "trust_center_faq_a3": "Consultez l’en-tête de confiance de l’outil et ce tableau généré, puis vérifiez dans DevTools que l’accès réseau ne commence qu’après votre action explicite.",
-    "trust_center_vulnerability_link": "Signaler une vulnérabilité"
+    "trust_center_vulnerability_link": "Signaler une vulnérabilité",
+    "pricing_support_deployment_aria": "Options de soutien et de déploiement",
+    "pricing_support_title": "Soutenir le projet",
+    "pricing_support_desc": "Ajoutez une étoile, forkez, sponsorisez via GitHub lorsque disponible, ou votez pour les demandes publiques. Les outils locaux existants restent gratuits et sans compte.",
+    "pricing_github_project": "Projet GitHub",
+    "pricing_internal_deployment_title": "Conseil de déploiement interne",
+    "pricing_internal_deployment_desc": "L’auto-hébergement conserve la promesse sans historique cloud : pas de comptes hébergés, pas de synchronisation de payload et aucun traitement serveur des payloads d’outil.",
+    "pricing_internal_deployment_cta": "Demander un déploiement interne",
+    "pricing_self_hosting_guide": "Guide d’auto-hébergement"
   }
 }

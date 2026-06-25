@@ -36,6 +36,7 @@ export type ToolAction = {
     disabledReason?: string
     destructive?: boolean
     href?: string
+    title?: string
 }
 
 type AnalyticsAction = "tool_run" | "copy_output" | "download_output" | null
@@ -181,6 +182,7 @@ export function ToolActionBar({
                 const analyticsAction = classifyAnalyticsAction(action.id)
                 const disabledReason = action.disabled ? action.disabledReason || t.common.action_disabled_unavailable : undefined
                 const accessibleLabel = getActionLabel(action, t.common.action_disabled_unavailable)
+                const title = disabledReason ? accessibleLabel : action.title || action.label
                 const disabledDescriptionId = disabledReason ? getActionDescriptionId(action.id) : undefined
                 const isDestructive = isDestructiveAction(action)
                 const variantClass = isDestructive
@@ -202,7 +204,7 @@ export function ToolActionBar({
                                 aria-disabled={action.disabled || undefined}
                                 aria-describedby={disabledDescriptionId}
                                 tabIndex={action.disabled ? -1 : undefined}
-                                title={accessibleLabel}
+                                title={title}
                                 data-analytics-action={analyticsAction || undefined}
                                 data-analytics-id={action.id}
                                 onClick={(event) => {
@@ -236,7 +238,7 @@ export function ToolActionBar({
                             onClick={() => triggerAction(action)}
                             disabled={action.disabled}
                             aria-describedby={disabledDescriptionId}
-                            title={accessibleLabel}
+                            title={title}
                             data-analytics-action={analyticsAction || undefined}
                             data-analytics-id={action.id}
                         >

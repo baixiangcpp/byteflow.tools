@@ -1071,7 +1071,9 @@
       "error_match_limit": "比對數量超出上限，正則可能正在無限比對空字串。",
       "timing_label": "{ms} 毫秒",
       "evaluating_label": "正在評估...",
-      "performance_warning_title": "效能警告"
+      "performance_warning_title": "效能警告",
+      "sample_action_title": "還原預設正規表示式樣式、旗標和測試文字。",
+      "clear_action_title": "清空樣式和測試文字，並保留安全的預設旗標。"
     },
     "regex_generator": {
       "title": "正規表達式產生器",
@@ -3098,6 +3100,14 @@
     "trust_center_faq_a2": "工具 payload 預設不應被保存。儲存只限安全偏好和不包含敏感 payload 的本地預設。",
     "trust_center_faq_q3": "我如何判斷外部請求是預期行為？",
     "trust_center_faq_a3": "查看工具信任頭和此處產生的外部請求表，並在 DevTools 中確認網路存取只在你明確操作後開始。",
-    "trust_center_vulnerability_link": "回報漏洞"
+    "trust_center_vulnerability_link": "回報漏洞",
+    "pricing_support_deployment_aria": "支持與部署選項",
+    "pricing_support_title": "支持專案",
+    "pricing_support_desc": "可以在 GitHub 加星、fork、可用時贊助，或為公開請求投票。既有本地工具會繼續免費且無需帳號。",
+    "pricing_github_project": "GitHub 專案",
+    "pricing_internal_deployment_title": "內部部署指引",
+    "pricing_internal_deployment_desc": "自託管會保留無雲端歷史承諾：無託管帳號、無 payload 同步，也沒有服務端工具 payload 處理。",
+    "pricing_internal_deployment_cta": "諮詢內部部署",
+    "pricing_self_hosting_guide": "自託管指南"
   }
 }

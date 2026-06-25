@@ -227,6 +227,15 @@ describe("BF-016 shared tool action semantics", () => {
     it("keeps Regex Tester Sample and Clear deterministic after invalid and valid states", async () => {
         renderEnglish(<RegexTesterPage />)
 
+        expect(screen.getByRole("button", { name: "Sample" })).toHaveAttribute(
+            "title",
+            "Restore the default regex pattern, flags, and test string.",
+        )
+        expect(screen.getByRole("button", { name: "Clear" })).toHaveAttribute(
+            "title",
+            "Clear the pattern and test string while keeping safe default flags.",
+        )
+
         fireEvent.change(screen.getByLabelText("Expression Pattern"), { target: { value: "(" } })
         await waitFor(() => expect(screen.getByText(/Invalid regular expression|Unterminated group/i)).toBeInTheDocument())
 

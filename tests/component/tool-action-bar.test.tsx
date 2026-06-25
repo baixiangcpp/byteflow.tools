@@ -55,6 +55,12 @@ describe("ToolActionBar", () => {
         expect(screen.getByRole("button", { name: "Clear" }).className).toContain("text-destructive")
     })
 
+    it("uses optional titles for tooltips without changing accessible names", () => {
+        render(<ToolActionBar actions={[{ id: "sample", label: "Sample", icon: TestTube2, title: "Restore the documented sample." }]} />)
+
+        expect(screen.getByRole("button", { name: "Sample" })).toHaveAttribute("title", "Restore the documented sample.")
+    })
+
     it("falls back to a generic disabled reason when a tool omits one", () => {
         render(<ToolActionBar actions={[{ id: "download", label: "Download", icon: Download, disabled: true }]} />)
 

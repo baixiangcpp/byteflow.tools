@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest"
 import { MENU_GROUP_DEFS } from "@/core/registry/menu-groups"
 import { toolGroups } from "@/components/layout/tool-groups"
 import { Navbar } from "@/components/layout/navbar"
+import { NavbarMobileMenu } from "@/components/layout/navbar-mobile-menu"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Footer } from "@/components/layout/footer"
 import { CommandPalette } from "@/components/layout/command-palette"
@@ -38,6 +39,7 @@ function createMockLangValue(lang: string) {
     for (const group of toolGroups) {
         nav[group.navKey] = nav[group.navKey] || group.navKey
     }
+    nav.language = "Language"
 
     const pages: Record<string, string> = {
         about_title: "About",
@@ -74,6 +76,10 @@ function createMockLangValue(lang: string) {
         add_favorite: "Add to favorites",
         remove_favorite: "Remove from favorites",
         theme: "Theme",
+        theme_toggle: "Toggle theme",
+        theme_light: "Light",
+        theme_dark: "Dark",
+        theme_system: "System",
         copy: "Copy",
     }
 
@@ -106,7 +112,8 @@ function createMockLangValue(lang: string) {
 
 vi.mock("next/navigation", () => ({
     usePathname: () => mocks.pathname,
-    useRouter: () => ({ push: mocks.push }),
+    useRouter: () => ({ push: mocks.push, replace: mocks.push }),
+    useSearchParams: () => new URLSearchParams(),
 }))
 
 vi.mock("next/link", () => ({
@@ -235,6 +242,18 @@ describe("layout components", () => {
         expect(screen.getByRole("link", { name: "Pipeline Builder" })).toHaveAttribute("href", "/en/pipeline-builder")
         expect(screen.getByRole("link", { name: "All tools" })).toHaveAttribute("href", getAllToolsHref("en"))
         expect(screen.getByLabelText("Search")).toHaveAttribute("data-command-palette-trigger")
+    })
+
+    it("exposes language and theme controls inside the mobile navigation sheet", () => {
+        render(<NavbarMobileMenu open={true} onOpenChange={vi.fn()} />)
+
+        expect(screen.getByRole("heading", { name: "Language" })).toBeInTheDocument()
+        expect(screen.getByRole("button", { name: "English" })).toHaveAttribute("aria-current", "true")
+        expect(screen.getByRole("button", { name: "Français" })).toBeInTheDocument()
+        expect(screen.getByRole("radiogroup", { name: "Toggle theme" })).toBeInTheDocument()
+        expect(screen.getByRole("radio", { name: "Light" })).toBeInTheDocument()
+        expect(screen.getByRole("radio", { name: "Dark" })).toBeInTheDocument()
+        expect(screen.getByRole("radio", { name: "System" })).toBeInTheDocument()
     })
 
     it("renders sidebar links with locale-aware href and active state", () => {

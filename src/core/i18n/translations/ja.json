@@ -1071,7 +1071,9 @@
       "error_match_limit": "一致数が上限を超えました。空文字列への無限一致が発生している可能性があります。",
       "timing_label": "{ms} ミリ秒",
       "evaluating_label": "評価中...",
-      "performance_warning_title": "パフォーマンス警告"
+      "performance_warning_title": "パフォーマンス警告",
+      "sample_action_title": "既定の正規表現パターン、フラグ、テスト文字列に戻します。",
+      "clear_action_title": "パターンとテスト文字列を消去し、安全な既定フラグを残します。"
     },
     "regex_generator": {
       "title": "正規表現ジェネレーター",
@@ -3098,6 +3100,14 @@
     "trust_center_faq_a2": "ツール payload は既定では保存しない前提です。保存は安全な設定と、機密 payload を含まないローカルプリセットに限定されます。",
     "trust_center_faq_q3": "外部リクエストが想定されたものか確認するには？",
     "trust_center_faq_a3": "ツール信頼ヘッダーとこの自動生成表を確認し、DevTools でネットワークアクセスが明示操作後だけ始まることを確認してください。",
-    "trust_center_vulnerability_link": "脆弱性を報告"
+    "trust_center_vulnerability_link": "脆弱性を報告",
+    "pricing_support_deployment_aria": "支援とデプロイの選択肢",
+    "pricing_support_title": "プロジェクトを支援",
+    "pricing_support_desc": "GitHub でスター、fork、利用可能な場合はスポンサー、または公開リクエストに投票できます。既存のローカルツールは引き続き無料で、アカウントは不要です。",
+    "pricing_github_project": "GitHub プロジェクト",
+    "pricing_internal_deployment_title": "内部デプロイの相談",
+    "pricing_internal_deployment_desc": "セルフホストでもクラウド履歴なしの約束を保ちます。ホスト型アカウント、payload 同期、サーバー側のツール payload 処理はありません。",
+    "pricing_internal_deployment_cta": "内部デプロイを相談",
+    "pricing_self_hosting_guide": "セルフホストガイド"
   }
 }

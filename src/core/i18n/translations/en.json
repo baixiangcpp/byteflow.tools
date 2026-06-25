@@ -1099,7 +1099,9 @@
       "error_match_limit": "Match limit exceeded. The regex may be matching endless zero-length strings.",
       "timing_label": "{ms} ms",
       "evaluating_label": "Evaluating...",
-      "performance_warning_title": "Performance warning"
+      "performance_warning_title": "Performance warning",
+      "sample_action_title": "Restore the default regex pattern, flags, and test string.",
+      "clear_action_title": "Clear the pattern and test string while keeping safe default flags."
     },
     "regex_generator": {
       "title": "Regex Generator",
@@ -3098,6 +3100,14 @@
     "trust_center_faq_a2": "Tool payloads are not meant to be stored by default. Storage is limited to safe preferences and local presets that must not contain sensitive payloads.",
     "trust_center_faq_q3": "How do I know an external request is expected?",
     "trust_center_faq_a3": "Check the tool trust header and this generated external request table, then verify in DevTools that network access starts only after your explicit action.",
-    "trust_center_vulnerability_link": "Report a vulnerability"
+    "trust_center_vulnerability_link": "Report a vulnerability",
+    "pricing_support_deployment_aria": "Support and deployment options",
+    "pricing_support_title": "Support the project",
+    "pricing_support_desc": "Star, fork, sponsor through GitHub when available, or vote on public requests. Existing local tools stay free with no account requirement.",
+    "pricing_github_project": "GitHub project",
+    "pricing_internal_deployment_title": "Internal deployment guidance",
+    "pricing_internal_deployment_desc": "Self-hosting keeps the no cloud history promise: no hosted accounts, no payload sync, and no server-side tool payload processing.",
+    "pricing_internal_deployment_cta": "Ask about internal deployment",
+    "pricing_self_hosting_guide": "Self-hosting guide"
   }
 }

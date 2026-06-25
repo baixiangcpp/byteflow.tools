@@ -1071,7 +1071,9 @@
       "error_match_limit": "匹配数量超限，正则可能正在无限匹配空字符串。",
       "timing_label": "{ms} 毫秒",
       "evaluating_label": "正在评估...",
-      "performance_warning_title": "性能警告"
+      "performance_warning_title": "性能警告",
+      "sample_action_title": "恢复默认正则模式、标志和测试文本。",
+      "clear_action_title": "清空模式和测试文本，并保留安全的默认标志。"
     },
     "regex_generator": {
       "title": "正则表达式生成器",
@@ -3098,6 +3100,14 @@
     "trust_center_faq_a2": "工具 payload 默认不应被保存。存储只限安全偏好和不包含敏感 payload 的本地预设。",
     "trust_center_faq_q3": "我如何判断外部请求是预期行为？",
     "trust_center_faq_a3": "查看工具信任头和此处生成的外部请求表，并在 DevTools 中确认网络访问只在你明确操作后开始。",
-    "trust_center_vulnerability_link": "报告漏洞"
+    "trust_center_vulnerability_link": "报告漏洞",
+    "pricing_support_deployment_aria": "支持与部署选项",
+    "pricing_support_title": "支持项目",
+    "pricing_support_desc": "可以在 GitHub 点星、fork、在可用时赞助，或为公开请求投票。现有本地工具会继续免费且无需账号。",
+    "pricing_github_project": "GitHub 项目",
+    "pricing_internal_deployment_title": "内部部署指导",
+    "pricing_internal_deployment_desc": "自托管会保留无云端历史承诺：无托管账号、无 payload 同步，也没有服务端工具 payload 处理。",
+    "pricing_internal_deployment_cta": "咨询内部部署",
+    "pricing_self_hosting_guide": "自托管指南"
   }
 }

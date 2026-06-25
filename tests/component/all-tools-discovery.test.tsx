@@ -433,4 +433,23 @@ describe("AllToolsDiscovery", () => {
         fireEvent.change(screen.getByRole("textbox", { name: "Search tools" }), { target: { value: "format payload" } })
         expect(screen.getByText("JSON Formatter")).toBeInTheDocument()
     })
+
+    it("offers privacy-safe request and voting links from empty search results without storing the query", () => {
+        renderDiscovery()
+
+        fireEvent.change(screen.getByRole("textbox", { name: "Search tools" }), { target: { value: "nonexistent local tool" } })
+
+        expect(screen.getByText("No results")).toBeInTheDocument()
+        expect(screen.getByRole("link", { name: "Request a tool" })).toHaveAttribute(
+            "href",
+            "https://github.com/baixiangcpp/byteflow.tools/issues/new?template=feature_request.yml",
+        )
+        expect(screen.getByRole("link", { name: "Vote on existing requests" })).toHaveAttribute(
+            "href",
+            "https://github.com/baixiangcpp/byteflow.tools/issues?q=is%3Aissue%20is%3Aopen%20label%3Aenhancement",
+        )
+        expect(screen.getByText("Use sanitized examples only.")).toBeInTheDocument()
+        expect(window.location.search).toBe("")
+        expect(window.localStorage.getItem("byteflow:tools:search")).toBeNull()
+    })
 })

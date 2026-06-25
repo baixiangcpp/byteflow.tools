@@ -1,14 +1,18 @@
 import fs from "node:fs"
 import path from "node:path"
+import { createElement } from "react"
 import { renderToStaticMarkup } from "react-dom/server"
 import { describe, expect, it } from "vitest"
 import sitemap from "@/app/sitemap"
 import { LOCALES } from "@/core/i18n/i18n"
+import { LangProvider } from "@/core/i18n/lang-provider"
+import { getTranslation } from "@/core/i18n/translations/catalog"
 import { buildCanonicalUrl } from "@/core/seo/urls"
 import RoadmapPage from "@/app/[lang]/roadmap/page"
 import ChangelogPage from "@/app/[lang]/changelog/page"
 import SelfHostingPage from "@/app/[lang]/self-hosting/page"
 import DistributionResearchPage from "@/app/[lang]/distribution-research/page"
+import ContactPage from "@/app/[lang]/contact/page"
 
 const PUBLIC_PLANNING_SLUGS = ["roadmap", "changelog", "self-hosting", "distribution-research"]
 
@@ -30,15 +34,26 @@ describe("public roadmap, changelog, self-hosting, and distribution docs", () =>
             renderToStaticMarkup(await ChangelogPage({ params })),
             renderToStaticMarkup(await SelfHostingPage({ params })),
             renderToStaticMarkup(await DistributionResearchPage({ params })),
+            renderToStaticMarkup(createElement(
+                LangProvider,
+                { lang: "en", translations: getTranslation("en") },
+                createElement(ContactPage),
+            )),
         ].join("\n")
 
         expect(markup).toContain("Request a tool")
         expect(markup).toContain("Vote on requests")
         expect(markup).toContain("Request and vote")
+        expect(markup).toContain("Extension and desktop research")
+        expect(markup).toContain("Vote on launcher demand")
+        expect(markup).toContain("Request launcher access")
         expect(markup).toContain("no server-side tool payload processing")
         expect(markup).toContain("no payload sync")
         expect(markup).toContain("Self-host byteflow.tools")
         expect(markup).toContain("/en/roadmap")
+        expect(markup).toContain("/en/distribution-research")
+        expect(markup).toContain("/en/self-hosting")
+        expect(markup).toContain("feat%3A%20extension%20or%20desktop%20distribution")
         expect(markup).toContain("issues/new?template=feature_request.yml")
         expect(markup).toContain("label%3Aenhancement")
         expect(markup).toContain("Do not post real secrets")
