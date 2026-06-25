@@ -85,6 +85,8 @@ describe("BF-027 workflow hubs", () => {
         expect(screen.getByRole("heading", { name: "API payload cleanup" })).toBeInTheDocument()
         expect(detail.container.querySelector('a[href="/en/json-formatter"]')).not.toBeNull()
         expect(detail.container.querySelector('a[href="/en/validate-json-before-api-requests"]')).not.toBeNull()
+        expect(screen.getByRole("link", { name: /Open in Pipeline Builder/i })).toHaveAttribute("href", "/en/pipeline-builder?template=api_payload_cleanup")
+        expect(screen.getByText("Structure-only template; no runtime input in the URL.")).toBeInTheDocument()
 
         const types = collectTypes(parseJsonLdScripts(detail.container))
         expect([...types]).toEqual(expect.arrayContaining(["HowTo", "HowToStep", "BreadcrumbList"]))

@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { Boxes, MonitorDown, ShieldCheck } from "lucide-react"
+import { Boxes, MessageSquarePlus, MonitorDown, ShieldCheck, ThumbsUp } from "lucide-react"
 import type { Locale } from "@/core/i18n/i18n"
 import { isValidLocale } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
@@ -17,6 +17,9 @@ const MVP_TOOL_KEYS = [
     "log_scrubber",
 ] as const
 
+const DISTRIBUTION_REQUEST_URL = "https://github.com/baixiangcpp/byteflow.tools/issues/new?template=feature_request.yml&title=feat%3A%20extension%20or%20desktop%20distribution"
+const DISTRIBUTION_VOTE_URL = "https://github.com/baixiangcpp/byteflow.tools/issues?q=is%3Aissue%20is%3Aopen%20label%3Aenhancement"
+
 const DISTRIBUTION_COPY: Record<Locale, {
     badge: string
     heading: string
@@ -25,6 +28,10 @@ const DISTRIBUTION_COPY: Record<Locale, {
     mvpBodyPrefix: string
     mvpBodySuffix: string
     roadmapLink: string
+    feedbackTitle: string
+    feedbackBody: string
+    requestLink: string
+    voteLink: string
     options: Array<{ title: string; verdict: string; body: string }>
 }> = {
     en: {
@@ -35,6 +42,10 @@ const DISTRIBUTION_COPY: Record<Locale, {
         mvpBodyPrefix: "A future MVP would focus on",
         mvpBodySuffix: "Non-goals include payload sync, account login, browsing-history collection, background scraping, and server-side payload processing.",
         roadmapLink: "Linked from roadmap",
+        feedbackTitle: "Vote on launcher demand",
+        feedbackBody: "Add a thumbs-up or comment on existing launcher requests, or open a sanitized request if no extension or desktop distribution issue matches your need. Do not include private payloads, URLs, secrets, logs, screenshots, or generated output.",
+        requestLink: "Request launcher access",
+        voteLink: "Vote on existing requests",
         options: [
             { title: "PWA", verdict: "Preferred first path", body: "Already preserves the hosted site's browser-local runtime, offline app shell, and no-payload-sync model." },
             { title: "Browser extension", verdict: "Research only", body: "Could offer popup and context-menu access for common tools, but permissions must stay narrow and payload sync must remain out of scope." },
@@ -49,6 +60,10 @@ const DISTRIBUTION_COPY: Record<Locale, {
         mvpBodyPrefix: "未来 MVP 会优先覆盖",
         mvpBodySuffix: "非目标包括 payload 同步、账号登录、浏览历史收集、后台抓取和服务端 payload 处理。",
         roadmapLink: "已从路线图链接",
+        feedbackTitle: "为启动器需求投票",
+        feedbackBody: "可以在已有启动器请求上点赞或评论；如果没有匹配的扩展或桌面分发请求，请用脱敏内容提交。不要包含私有 payload、URL、密钥、日志、截图或生成内容。",
+        requestLink: "请求启动器入口",
+        voteLink: "为已有请求投票",
         options: [
             { title: "PWA", verdict: "首选路径", body: "已保留托管站点的浏览器本地运行时、离线应用外壳和无 payload 同步模型。" },
             { title: "浏览器扩展", verdict: "仅研究", body: "可为常用工具提供弹窗和右键菜单入口，但权限必须收窄，payload 同步仍不在范围内。" },
@@ -63,6 +78,10 @@ const DISTRIBUTION_COPY: Record<Locale, {
         mvpBodyPrefix: "未來 MVP 會優先覆蓋",
         mvpBodySuffix: "非目標包括 payload 同步、帳號登入、瀏覽歷史收集、背景抓取和服務端 payload 處理。",
         roadmapLink: "已從路線圖連結",
+        feedbackTitle: "為啟動器需求投票",
+        feedbackBody: "可以在既有啟動器請求上按讚或留言；如果沒有符合的擴充功能或桌面分發請求，請用脫敏內容提交。不要包含私有 payload、URL、密鑰、日誌、截圖或生成內容。",
+        requestLink: "請求啟動器入口",
+        voteLink: "為既有請求投票",
         options: [
             { title: "PWA", verdict: "首選路徑", body: "已保留託管網站的瀏覽器本地執行時、離線應用外殼和無 payload 同步模型。" },
             { title: "瀏覽器擴充功能", verdict: "僅研究", body: "可為常用工具提供彈窗和右鍵選單入口，但權限必須收窄，payload 同步仍不在範圍內。" },
@@ -77,6 +96,10 @@ const DISTRIBUTION_COPY: Record<Locale, {
         mvpBodyPrefix: "将来の MVP は次のツールを優先します:",
         mvpBodySuffix: "非目標は payload 同期、アカウントログイン、閲覧履歴収集、バックグラウンド取得、サーバー側 payload 処理です。",
         roadmapLink: "ロードマップからリンク",
+        feedbackTitle: "ランチャー需要に投票",
+        feedbackBody: "既存のランチャー要望に thumbs-up やコメントを追加できます。該当する拡張機能またはデスクトップ配布の要望がなければ、サニタイズ済み内容でリクエストしてください。非公開 payload、URL、シークレット、ログ、スクリーンショット、生成出力は含めないでください。",
+        requestLink: "ランチャーアクセスをリクエスト",
+        voteLink: "既存リクエストに投票",
         options: [
             { title: "PWA", verdict: "最初の推奨経路", body: "ホスト版のブラウザローカル実行、オフラインアプリシェル、payload 同期なしのモデルをすでに保っています。" },
             { title: "ブラウザ拡張", verdict: "調査のみ", body: "よく使うツールにポップアップやコンテキストメニューを提供できますが、権限は狭く保ち、payload 同期は対象外にします。" },
@@ -91,6 +114,10 @@ const DISTRIBUTION_COPY: Record<Locale, {
         mvpBodyPrefix: "향후 MVP는 다음 도구에 집중합니다:",
         mvpBodySuffix: "비목표에는 payload 동기화, 계정 로그인, 브라우징 기록 수집, 백그라운드 스크래핑, 서버 측 payload 처리가 포함됩니다.",
         roadmapLink: "로드맵에서 연결됨",
+        feedbackTitle: "런처 수요에 투표",
+        feedbackBody: "기존 런처 요청에 thumbs-up 반응이나 댓글을 남길 수 있습니다. 맞는 확장 또는 데스크톱 배포 요청이 없다면 정리된 내용으로 요청하세요. 비공개 payload, URL, 비밀값, 로그, 스크린샷, 생성 출력은 포함하지 마세요.",
+        requestLink: "런처 접근 요청",
+        voteLink: "기존 요청에 투표",
         options: [
             { title: "PWA", verdict: "우선 경로", body: "호스팅 사이트의 브라우저 로컬 런타임, 오프라인 앱 셸, payload 동기화 없는 모델을 이미 보존합니다." },
             { title: "브라우저 확장", verdict: "연구 전용", body: "일반 도구에 팝업과 컨텍스트 메뉴 접근을 제공할 수 있지만 권한은 좁게 유지하고 payload 동기화는 범위 밖이어야 합니다." },
@@ -105,6 +132,10 @@ const DISTRIBUTION_COPY: Record<Locale, {
         mvpBodyPrefix: "Ein künftiges MVP würde sich konzentrieren auf",
         mvpBodySuffix: "Nichtziele sind Payload-Synchronisierung, Konto-Login, Browserverlauf-Erfassung, Hintergrund-Scraping und serverseitige Payload-Verarbeitung.",
         roadmapLink: "Von der Roadmap verlinkt",
+        feedbackTitle: "Launcher-Nachfrage priorisieren",
+        feedbackBody: "Geben Sie bestehenden Launcher-Anfragen einen Daumen hoch oder kommentieren Sie sie. Wenn keine passende Erweiterungs- oder Desktop-Verteilungsanfrage existiert, öffnen Sie eine bereinigte Anfrage. Keine privaten Payloads, URLs, Geheimnisse, Logs, Screenshots oder generierten Ausgaben posten.",
+        requestLink: "Launcher-Zugriff anfragen",
+        voteLink: "Bestehende Anfragen priorisieren",
         options: [
             { title: "PWA", verdict: "Bevorzugter erster Pfad", body: "Bewahrt bereits die browser-lokale Laufzeit, Offline-App-Shell und das Modell ohne Payload-Synchronisierung." },
             { title: "Browser-Erweiterung", verdict: "Nur Forschung", body: "Könnte Popup- und Kontextmenüzugriff für häufige Tools bieten, aber Berechtigungen müssen eng bleiben und Payload-Synchronisierung bleibt außerhalb des Umfangs." },
@@ -119,6 +150,10 @@ const DISTRIBUTION_COPY: Record<Locale, {
         mvpBodyPrefix: "Un futur MVP se concentrerait sur",
         mvpBodySuffix: "Les non-objectifs incluent synchronisation de payload, connexion obligatoire, collecte d’historique, scraping en arrière-plan et traitement serveur des payloads.",
         roadmapLink: "Lié depuis la feuille de route",
+        feedbackTitle: "Voter pour la demande de lanceur",
+        feedbackBody: "Ajoutez un pouce levé ou un commentaire aux demandes de lanceur existantes. Si aucune demande d’extension ou de distribution desktop ne correspond, ouvrez une demande nettoyée. N’incluez pas de payloads privés, URL, secrets, logs, captures ou sorties générées.",
+        requestLink: "Demander un accès lanceur",
+        voteLink: "Voter pour les demandes existantes",
         options: [
             { title: "PWA", verdict: "Premier chemin préféré", body: "Préserve déjà l’exécution locale au navigateur, le shell hors ligne et le modèle sans synchronisation de payload." },
             { title: "Extension navigateur", verdict: "Recherche seulement", body: "Pourrait offrir un accès popup et menu contextuel aux outils courants, mais les permissions doivent rester étroites et la synchronisation de payload hors périmètre." },
@@ -167,10 +202,24 @@ export default async function DistributionResearchPage({ params }: { params: Pro
                 </div>
             </section>
 
-            <Link className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href={`/${lang}/roadmap`}>
-                <MonitorDown className="h-4 w-4" aria-hidden="true" />
-                {copy.roadmapLink}
-            </Link>
+            <section className="rounded-lg border border-border/70 bg-background/55 p-5">
+                <h2 className="text-lg font-semibold">{copy.feedbackTitle}</h2>
+                <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">{copy.feedbackBody}</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                    <a className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href={DISTRIBUTION_REQUEST_URL} target="_blank" rel="noopener noreferrer">
+                        <MessageSquarePlus className="h-4 w-4" aria-hidden="true" />
+                        {copy.requestLink}
+                    </a>
+                    <a className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href={DISTRIBUTION_VOTE_URL} target="_blank" rel="noopener noreferrer">
+                        <ThumbsUp className="h-4 w-4" aria-hidden="true" />
+                        {copy.voteLink}
+                    </a>
+                    <Link className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href={`/${lang}/roadmap`}>
+                        <MonitorDown className="h-4 w-4" aria-hidden="true" />
+                        {copy.roadmapLink}
+                    </Link>
+                </div>
+            </section>
         </div>
     )
 }

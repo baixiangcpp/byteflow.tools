@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Check, Sparkles, ShieldCheck, LockKeyhole, ArrowUpRight } from "lucide-react"
+import { Check, Sparkles, ShieldCheck, LockKeyhole, ArrowUpRight, HeartHandshake, ServerCog, Mail } from "lucide-react"
 import { useLang } from "@/core/i18n/lang-provider"
 
 export default function PricingPage() {
@@ -79,6 +79,47 @@ export default function PricingPage() {
                 </ul>
             </section>
 
+            <section className="grid gap-4 md:grid-cols-2" aria-label={p.pricing_support_deployment_aria}>
+                <article className="rounded-2xl border border-border/70 bg-background/55 p-5">
+                    <HeartHandshake className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <h2 className="mt-3 text-lg font-semibold">{p.pricing_support_title}</h2>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                        {p.pricing_support_desc}
+                    </p>
+                    <a
+                        href="https://github.com/baixiangcpp/byteflow.tools"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                        {p.pricing_github_project}
+                        <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
+                    </a>
+                </article>
+                <article className="rounded-2xl border border-border/70 bg-background/55 p-5">
+                    <ServerCog className="h-5 w-5 text-primary" aria-hidden="true" />
+                    <h2 className="mt-3 text-lg font-semibold">{p.pricing_internal_deployment_title}</h2>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                        {p.pricing_internal_deployment_desc}
+                    </p>
+                    <div className="mt-4 flex flex-wrap gap-2">
+                        <Link
+                            href={`/${lang}/self-hosting`}
+                            className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        >
+                            {p.self_hosting_title}
+                        </Link>
+                        <Link
+                            href={`/${lang}/contact`}
+                            className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        >
+                            <Mail className="h-3.5 w-3.5" aria-hidden="true" />
+                            {p.pricing_internal_deployment_cta}
+                        </Link>
+                    </div>
+                </article>
+            </section>
+
             <section className="flex flex-wrap items-center gap-3 pt-1">
                 <Link
                     href={`/${lang}/all-tools`}
@@ -99,7 +140,7 @@ export default function PricingPage() {
                     href={`/${lang}/self-hosting`}
                     className="inline-flex items-center gap-2 rounded-xl border border-border/75 bg-background/55 px-4 py-2.5 text-sm text-muted-foreground transition-colors hover:text-foreground"
                 >
-                    Self-hosting guide
+                    {p.pricing_self_hosting_guide}
                 </Link>
             </section>
         </div>

@@ -26,7 +26,7 @@ export function LangProvider({
     translations,
     englishToolSearchAliases,
 }: {
-    children: React.ReactNode
+    children?: React.ReactNode
     lang: Locale
     translations: TranslationSchema
     englishToolSearchAliases?: ToolSearchAliases

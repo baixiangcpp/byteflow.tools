@@ -97,12 +97,14 @@ export function RegexTesterPage() {
         {
             id: "sample",
             label: t.common.sample,
+            title: toolT.sample_action_title,
             icon: TestTube2,
             onClick: handleSample,
         },
         {
             id: "clear",
             label: t.common.clear,
+            title: toolT.clear_action_title,
             icon: Eraser,
             onClick: handleClear,
             destructive: true,

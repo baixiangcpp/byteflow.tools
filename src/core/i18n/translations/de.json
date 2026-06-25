@@ -1071,7 +1071,9 @@
       "error_match_limit": "Trefferlimit ueberschritten. Der Ausdruck koennte endlos leere Zeichenfolgen finden.",
       "timing_label": "Dauer: {ms} ms",
       "evaluating_label": "Wird ausgewertet...",
-      "performance_warning_title": "Leistungswarnung"
+      "performance_warning_title": "Leistungswarnung",
+      "sample_action_title": "Standardmuster, Optionen und Testtext wiederherstellen.",
+      "clear_action_title": "Muster und Testtext leeren, sichere Standardoptionen beibehalten."
     },
     "regex_generator": {
       "title": "Regex-Generator",
@@ -3098,6 +3100,14 @@
     "trust_center_faq_a2": "Tool-Payloads sollen standardmäßig nicht gespeichert werden. Speicherung ist auf sichere Einstellungen und lokale Presets ohne sensible Payloads begrenzt.",
     "trust_center_faq_q3": "Woran erkenne ich, dass eine externe Anfrage erwartet ist?",
     "trust_center_faq_a3": "Prüfe den Tool-Vertrauensheader und diese generierte Tabelle und bestätige in DevTools, dass Netzwerkzugriff erst nach deiner ausdrücklichen Aktion startet.",
-    "trust_center_vulnerability_link": "Schwachstelle melden"
+    "trust_center_vulnerability_link": "Schwachstelle melden",
+    "pricing_support_deployment_aria": "Support- und Bereitstellungsoptionen",
+    "pricing_support_title": "Projekt unterstützen",
+    "pricing_support_desc": "Geben Sie dem Projekt auf GitHub einen Stern, forken Sie es, sponsern Sie es wenn verfügbar oder stimmen Sie für öffentliche Anfragen. Bestehende lokale Tools bleiben kostenlos und ohne Konto nutzbar.",
+    "pricing_github_project": "GitHub-Projekt",
+    "pricing_internal_deployment_title": "Interne Bereitstellung",
+    "pricing_internal_deployment_desc": "Self-Hosting bewahrt das Versprechen ohne Cloud-Verlauf: keine gehosteten Konten, keine Payload-Synchronisierung und keine serverseitige Verarbeitung von Tool-Payloads.",
+    "pricing_internal_deployment_cta": "Interne Bereitstellung anfragen",
+    "pricing_self_hosting_guide": "Self-Hosting-Anleitung"
   }
 }

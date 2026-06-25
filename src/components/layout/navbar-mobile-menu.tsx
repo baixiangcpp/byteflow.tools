@@ -2,12 +2,15 @@
 
 import * as React from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { Search } from "lucide-react"
+import { usePathname, useRouter, useSearchParams } from "next/navigation"
+import { Check, Languages, Moon, Search, Sun } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetClose, SheetContent, SheetTitle } from "@/components/ui/sheet"
+import { LOCALES, LOCALE_NAMES, type Locale } from "@/core/i18n/i18n"
 import { useLang } from "@/core/i18n/lang-provider"
+import { buildHomepageHref } from "@/core/routing/homepage-route"
 import { cn } from "@/core/utils/utils"
+import { type ThemePreference, useThemePreference } from "@/hooks/use-theme-preference"
 
 type PageLink = {
     slug: "about" | "contact"
@@ -30,6 +33,12 @@ const PAGE_LINKS: PageLink[] = [
     { slug: "contact", key: "contact_title" },
 ]
 
+const THEME_OPTIONS: Array<{ value: ThemePreference; labelKey: "theme_light" | "theme_dark" | "theme_system" }> = [
+    { value: "light", labelKey: "theme_light" },
+    { value: "dark", labelKey: "theme_dark" },
+    { value: "system", labelKey: "theme_system" },
+]
+
 export function NavbarMobileMenu({
     open,
     onOpenChange,
@@ -38,9 +47,32 @@ export function NavbarMobileMenu({
     onOpenChange: (open: boolean) => void
 }) {
     const pathname = usePathname()
+    const router = useRouter()
+    const searchParams = useSearchParams()
     const { lang, t } = useLang()
+    const { theme, setTheme } = useThemePreference()
 
     const getCategoryHref = React.useCallback((slug: string) => `/${lang}/${slug}`, [lang])
+    const switchLang = React.useCallback((newLang: Locale) => {
+        if (newLang === lang) return
+
+        try {
+            localStorage.setItem("byteflow:preferred-locale", newLang)
+        } catch {
+            // Safe preference only; ignore unavailable storage.
+        }
+
+        const segments = pathname.split("/").filter(Boolean)
+        const currentIsHome = pathname === "/" || (segments.length === 1 && LOCALES.includes(segments[0] as Locale))
+        const targetPathname = currentIsHome
+            ? buildHomepageHref(newLang)
+            : `/${[newLang, ...segments.slice(1)].join("/")}`
+        const queryString = searchParams.toString()
+        const hash = typeof window !== "undefined" ? window.location.hash : ""
+
+        onOpenChange(false)
+        router.replace(`${targetPathname}${queryString ? `?${queryString}` : ""}${hash}`)
+    }, [lang, onOpenChange, pathname, router, searchParams])
 
     return (
         <Sheet open={open} onOpenChange={onOpenChange}>
@@ -119,6 +151,66 @@ export function NavbarMobileMenu({
                         </Button>
                     </SheetClose>
                 </div>
+                <section className="mt-4 space-y-3 border-t border-border/70 px-1 pt-4" aria-labelledby="mobile-language-title">
+                    <div className="flex items-center gap-2 text-sm font-semibold">
+                        <Languages className="h-4 w-4 text-primary" aria-hidden="true" />
+                        <h2 id="mobile-language-title">{t.nav.language}</h2>
+                    </div>
+                    <div className="grid grid-cols-2 gap-2">
+                        {LOCALES.map((locale) => {
+                            const selected = locale === lang
+                            return (
+                                <button
+                                    key={locale}
+                                    type="button"
+                                    aria-current={selected ? "true" : undefined}
+                                    className={cn(
+                                        "inline-flex min-h-11 items-center justify-between rounded-lg border px-3 text-left text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45",
+                                        selected
+                                            ? "border-primary/35 bg-primary/12 text-primary"
+                                            : "border-border/70 text-foreground/90 hover:bg-muted",
+                                    )}
+                                    onClick={() => switchLang(locale)}
+                                >
+                                    <span>{LOCALE_NAMES[locale]}</span>
+                                    {selected ? <Check className="h-3.5 w-3.5" aria-hidden="true" /> : null}
+                                </button>
+                            )
+                        })}
+                    </div>
+                </section>
+                <section className="mt-4 space-y-3 border-t border-border/70 px-1 pt-4" aria-labelledby="mobile-theme-title">
+                    <div className="flex items-center gap-2 text-sm font-semibold">
+                        {theme === "light" ? (
+                            <Sun className="h-4 w-4 text-primary" aria-hidden="true" />
+                        ) : (
+                            <Moon className="h-4 w-4 text-primary" aria-hidden="true" />
+                        )}
+                        <h2 id="mobile-theme-title">{t.common.theme}</h2>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label={t.common.theme_toggle}>
+                        {THEME_OPTIONS.map((option) => {
+                            const selected = theme === option.value
+                            return (
+                                <button
+                                    key={option.value}
+                                    type="button"
+                                    role="radio"
+                                    aria-checked={selected}
+                                    className={cn(
+                                        "inline-flex min-h-11 items-center justify-center rounded-lg border px-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45",
+                                        selected
+                                            ? "border-primary/35 bg-primary/12 text-primary"
+                                            : "border-border/70 text-foreground/90 hover:bg-muted",
+                                    )}
+                                    onClick={() => setTheme(option.value)}
+                                >
+                                    {t.common[option.labelKey]}
+                                </button>
+                            )
+                        })}
+                    </div>
+                </section>
             </SheetContent>
         </Sheet>
     )

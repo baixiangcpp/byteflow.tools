@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { CheckCircle2, Download, Globe, Shield, Smartphone, Trash2, WifiOff, Zap } from "lucide-react"
+import { CheckCircle2, Download, Globe, MonitorDown, Shield, Smartphone, Trash2, WifiOff, Zap } from "lucide-react"
 import { trackPwaInstalled } from "@/core/analytics/analytics"
 import { Button } from "@/components/ui/button"
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
@@ -349,6 +349,12 @@ export function InstallAppClient({
                         <Link href={`/${locale}/trust-center`}>
                             <Shield className="mr-2 h-4 w-4" />
                             {trustCenterLabel}
+                        </Link>
+                    </Button>
+                    <Button asChild variant="outline">
+                        <Link href={`/${locale}/distribution-research`}>
+                            <MonitorDown className="mr-2 h-4 w-4" />
+                            Extension and desktop research
                         </Link>
                     </Button>
                 </div>

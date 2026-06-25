@@ -30,9 +30,15 @@ describe("pricing positioning", () => {
         }
     })
 
-    it("does not route pricing CTAs to contact or account-backed plan flows", () => {
+    it("routes pricing CTAs to free tools, support, self-hosting, and internal deployment guidance only", () => {
         expect(PRICING_SOURCE).toContain("/all-tools")
+        expect(PRICING_SOURCE).toContain("/contact")
         expect(PRICING_SOURCE).toContain("https://github.com/baixiangcpp/byteflow.tools")
-        expect(PRICING_SOURCE).not.toContain("/contact")
+        expect(PRICING_SOURCE).toContain("pricing_support_title")
+        expect(PRICING_SOURCE).toContain("self_hosting_title")
+        expect(PRICING_SOURCE).toContain("pricing_internal_deployment_cta")
+        expect(getTranslation("en").pages.pricing_internal_deployment_desc).toContain("no hosted accounts")
+        expect(getTranslation("en").pages.pricing_internal_deployment_desc).toContain("no payload sync")
+        expect(getTranslation("en").pages.pricing_internal_deployment_desc).toContain("no server-side tool payload processing")
     })
 })
