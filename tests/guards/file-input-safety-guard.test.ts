@@ -72,9 +72,12 @@ describe("file input safety guard", () => {
             "src/features/tools/image-filters/page.tsx",
             "src/features/tools/image-color-picker/page.tsx",
             "src/features/tools/image-color-extractor/page.tsx",
+            "src/features/tools/image-caption-generator/page.tsx",
+            "src/features/tools/image-resizer/page.tsx",
             "src/features/tools/photo-censor/page.tsx",
             "src/features/tools/scanned-pdf-converter/page.tsx",
             "src/features/tools/svg-optimizer/page.tsx",
+            "src/features/tools/tweet-to-image-converter/page.tsx",
         ]
 
         for (const file of files) {

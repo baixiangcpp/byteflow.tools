@@ -8,8 +8,10 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
+import { FILE_INPUT_POLICIES } from "@/core/files/file-input-policy"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { createDemoImageDataUrl, loadImageElement } from "@/core/utils/image-canvas-utils"
+import { FileUploadStatus, type FileUploadStatusState } from "@/features/tool-shell/file-upload-status"
 import { runImageResizeTask } from "@/features/tools/image-resizer/image-resize-task"
 import { loadResizeImageFile, replaceObjectUrl } from "@/features/tools/image-resizer/browser-actions"
 import {
@@ -18,8 +20,6 @@ import {
     type ResizeFitMode,
     type ResizeFormat,
 } from "@/features/tools/image-resizer/utils"
-
-const MAX_FILE_SIZE = 12 * 1024 * 1024
 
 const DEFAULT_STATE = {
     width: 1280,
@@ -43,6 +43,7 @@ export function ImageResizerPage() {
     const renderRequestIdRef = React.useRef(0)
     const renderAbortControllerRef = React.useRef<AbortController | null>(null)
     const imageObjectUrlRef = React.useRef<string | null>(null)
+    const uploadPolicy = FILE_INPUT_POLICIES["image-standard"]
     const [demoSrc, setDemoSrc] = React.useState("")
 
     const [imageSrc, setImageSrc] = React.useState("")
@@ -58,6 +59,10 @@ export function ImageResizerPage() {
     const [quality, setQuality] = React.useState(DEFAULT_STATE.quality)
     const [lockAspect, setLockAspect] = React.useState(DEFAULT_STATE.lockAspect)
     const [outputDataUrl, setOutputDataUrl] = React.useState("")
+    const [uploadStatus, setUploadStatus] = React.useState<FileUploadStatusState>("idle")
+    const [uploadMessage, setUploadMessage] = React.useState("")
+    const [uploadProgress, setUploadProgress] = React.useState<number | undefined>(undefined)
+    const [isProcessing, setIsProcessing] = React.useState(false)
     const fitModeLabels: Record<ResizeFitMode, string> = {
         contain: toolT.output_fit_mode_contain,
         cover: toolT.output_fit_mode_cover,
@@ -89,9 +94,14 @@ export function ImageResizerPage() {
             const source = imageSrc || demoSrc
             if (!source) {
                 setOutputDataUrl("")
+                setIsProcessing(false)
                 return
             }
 
+            setIsProcessing(true)
+            setUploadStatus("processing")
+            setUploadMessage(t.common.processing_file_locally)
+            setUploadProgress(65)
             try {
                 const result = await runImageResizeTask({
                     source,
@@ -107,9 +117,17 @@ export function ImageResizerPage() {
                 setSourceWidth((current) => current === result.sourceWidth ? current : result.sourceWidth)
                 setSourceHeight((current) => current === result.sourceHeight ? current : result.sourceHeight)
                 setOutputDataUrl(result.dataUrl)
-            } catch {
+                setUploadStatus("complete")
+                setUploadMessage(t.common.file_ready_locally)
+                setUploadProgress(100)
+                setIsProcessing(false)
+            } catch (error) {
                 if (renderRequestIdRef.current === requestId) {
                     setOutputDataUrl("")
+                    setUploadStatus(error instanceof Error && error.message === "WORKER_ABORTED" ? "cancelled" : "error")
+                    setUploadMessage(error instanceof Error && error.message === "WORKER_ABORTED" ? t.common.file_processing_cancelled : t.common.image_process_failed)
+                    setUploadProgress(undefined)
+                    setIsProcessing(false)
                 }
             }
         }
@@ -119,7 +137,7 @@ export function ImageResizerPage() {
         return () => {
             controller.abort()
         }
-    }, [demoSrc, fitMode, format, imageBytes, imageMime, imageSrc, quality, targetHeight, targetWidth])
+    }, [demoSrc, fitMode, format, imageBytes, imageMime, imageSrc, quality, t.common.file_processing_cancelled, t.common.file_ready_locally, t.common.image_process_failed, t.common.processing_file_locally, targetHeight, targetWidth])
 
     const output = React.useMemo(() => buildResizeOutputSummary({
         fitMode,
@@ -160,14 +178,9 @@ export function ImageResizerPage() {
     }
 
     const handleFile = async (file: File) => {
-        if (!file.type.startsWith("image/")) {
-            toast.error(t.common.image_file_required)
-            return
-        }
-        if (file.size > MAX_FILE_SIZE) {
-            toast.error((t.common.image_file_too_large).replace("{size}", "12MB"))
-            return
-        }
+        setUploadStatus("loading")
+        setUploadMessage(t.common.loading_file_locally)
+        setUploadProgress(25)
         try {
             const loaded = await loadResizeImageFile(file)
             replaceObjectUrl(imageObjectUrlRef, loaded.objectUrl)
@@ -179,9 +192,25 @@ export function ImageResizerPage() {
             setSourceHeight(loaded.height)
             setTargetWidth(loaded.width)
             setTargetHeight(loaded.height)
-        } catch {
-            toast.error(t.common.image_file_read_failed)
+            setUploadStatus("processing")
+            setUploadMessage(t.common.processing_file_locally)
+            setUploadProgress(50)
+        } catch (error) {
+            const message = error instanceof Error ? error.message : t.common.image_file_read_failed
+            setUploadStatus("error")
+            setUploadMessage(message)
+            setUploadProgress(undefined)
+            toast.error(message)
         }
+    }
+
+    const cancelProcessing = () => {
+        renderAbortControllerRef.current?.abort()
+        renderRequestIdRef.current += 1
+        setIsProcessing(false)
+        setUploadStatus("cancelled")
+        setUploadMessage(t.common.file_processing_cancelled)
+        setUploadProgress(undefined)
     }
 
     const handleSample = async () => {
@@ -194,6 +223,9 @@ export function ImageResizerPage() {
         setFileName("")
         setSourceWidth(image.width)
         setSourceHeight(image.height)
+        setUploadStatus("processing")
+        setUploadMessage(t.common.processing_file_locally)
+        setUploadProgress(50)
         setTargetWidth(1200)
         setTargetHeight(675)
         setFitMode("contain")
@@ -203,6 +235,9 @@ export function ImageResizerPage() {
     }
 
     const handleClear = () => {
+        renderAbortControllerRef.current?.abort()
+        renderRequestIdRef.current += 1
+        setIsProcessing(false)
         replaceObjectUrl(imageObjectUrlRef, null)
         setImageSrc("")
         setImageBytes(null)
@@ -211,6 +246,9 @@ export function ImageResizerPage() {
         setSourceWidth(0)
         setSourceHeight(0)
         setOutputDataUrl("")
+        setUploadStatus("idle")
+        setUploadMessage("")
+        setUploadProgress(undefined)
     }
 
     const handleReset = () => {
@@ -246,14 +284,14 @@ export function ImageResizerPage() {
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: () => void handleSample() },
         { id: "clear", label: t.common.clear, icon: Eraser, onClick: handleClear, destructive: true },
         { id: "reset", label: t.common.reset, icon: RotateCcw, onClick: handleReset, destructive: true },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy() },
+        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy(), disabled: isProcessing, disabledReason: t.common.processing_file_locally },
         {
             id: "download",
             label: t.common.download,
             icon: Download,
             onClick: handleDownload,
-            disabled: !outputDataUrl,
-            disabledReason: t.common.action_disabled_no_output,
+            disabled: isProcessing || !outputDataUrl,
+            disabledReason: isProcessing ? t.common.processing_file_locally : t.common.action_disabled_no_output,
         },
     ]
 
@@ -276,7 +314,15 @@ export function ImageResizerPage() {
                 <div className="space-y-4 rounded-xl border bg-card p-4">
                     <div
                         className="grid min-h-[300px] cursor-pointer place-items-center rounded-xl border border-dashed bg-muted/15 p-4"
+                        role="button"
+                        tabIndex={0}
+                        aria-label={activeFileLabel}
                         onClick={() => fileInputRef.current?.click()}
+                        onKeyDown={(event) => {
+                            if (event.key !== "Enter" && event.key !== " ") return
+                            event.preventDefault()
+                            fileInputRef.current?.click()
+                        }}
                         onDragOver={(event) => event.preventDefault()}
                         onDrop={(event) => {
                             event.preventDefault()
@@ -291,7 +337,7 @@ export function ImageResizerPage() {
                         <input
                             ref={fileInputRef}
                             type="file"
-                            accept="image/*"
+                            accept={uploadPolicy.accept}
                             className="hidden"
                             onChange={(event) => {
                                 const file = event.target.files?.[0]
@@ -303,6 +349,14 @@ export function ImageResizerPage() {
                             <span>{activeFileLabel}</span>
                         </div>
                     </div>
+
+                    <FileUploadStatus
+                        policy={uploadPolicy}
+                        status={uploadStatus}
+                        message={uploadMessage}
+                        progress={uploadProgress}
+                        onCancel={isProcessing || uploadStatus === "loading" ? cancelProcessing : undefined}
+                    />
 
                     <div className="grid gap-3 sm:grid-cols-2">
                         <label className="space-y-1.5 rounded-lg border bg-background/60 p-3">

@@ -44,7 +44,7 @@ describe("JwtDecoderPage actions", () => {
 
         expect(screen.getByText("Decode only — signature is not verified")).toBeInTheDocument()
 
-        fireEvent.click(screen.getByRole("button", { name: "Try Example" }))
+        fireEvent.click(screen.getByRole("button", { name: "Sample" }))
 
         await waitFor(() => {
             expect(screen.getByText("Claims and time semantics")).toBeInTheDocument()

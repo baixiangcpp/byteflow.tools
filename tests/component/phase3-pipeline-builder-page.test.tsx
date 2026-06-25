@@ -158,7 +158,7 @@ describe("phase 3 pipeline builder page", () => {
             expect(screen.getByRole("button", { name: /^Share URL$/i })).not.toBeDisabled()
             expect(screen.getAllByRole("button", { name: /^Export JSON$/i })[0]).not.toBeDisabled()
 
-            fireEvent.click(screen.getByRole("button", { name: /Try Example/i }))
+            fireEvent.click(screen.getByRole("button", { name: /^Sample$/i }))
 
             expect(screen.getByRole("button", { name: /Run Recipe/i })).not.toBeDisabled()
         } finally {
@@ -173,7 +173,7 @@ describe("phase 3 pipeline builder page", () => {
     it("uses standalone step action buttons without changing the selected step", () => {
         const { container } = renderWithEnglish(<PipelineBuilderPage />)
 
-        fireEvent.click(screen.getByRole("button", { name: /Try Example/i }))
+        fireEvent.click(screen.getByRole("button", { name: /^Sample$/i }))
 
         expect(container.querySelectorAll("button button")).toHaveLength(0)
         expect(container.querySelectorAll('[role="button"]')).toHaveLength(0)
@@ -201,7 +201,7 @@ describe("phase 3 pipeline builder page", () => {
     it("shows privacy preview before export and confirms structure-only scope", () => {
         renderWithEnglish(<PipelineBuilderPage />)
 
-        fireEvent.click(screen.getByRole("button", { name: /Try Example/i }))
+        fireEvent.click(screen.getByRole("button", { name: /^Sample$/i }))
         fireEvent.click(screen.getAllByRole("button", { name: /^Export JSON$/i })[0])
 
         expect(screen.getByRole("heading", { name: "Privacy preview" })).toBeInTheDocument()

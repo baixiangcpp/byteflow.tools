@@ -381,7 +381,7 @@ export function PipelineBuilderPage() {
     }, [])
 
     const actions: ToolAction[] = [
-        { id: "sample", label: t.common.try_example, icon: FileInput, onClick: loadSample },
+        { id: "sample", label: t.common.sample, icon: FileInput, onClick: loadSample },
         { id: "run", label: isRunning ? text("running") : text("run_recipe"), icon: Play, onClick: () => void runCurrentRecipe(), disabled: isRunning || recipe.steps.length === 0 },
         { id: "save", label: text("save_recipe"), icon: Save, onClick: () => requestPrivacyPreview("save"), disabled: !storageAvailable },
         { id: "export", label: text("export_recipe"), icon: Download, onClick: () => requestPrivacyPreview("export") },

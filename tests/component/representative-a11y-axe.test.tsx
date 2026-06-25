@@ -207,7 +207,7 @@ describe("representative axe accessibility checks", () => {
     it("passes axe for Pipeline Builder run status and output labeling", async () => {
         const { container } = renderEnglish(<PipelineBuilderPage />)
 
-        fireEvent.click(screen.getByRole("button", { name: /Try Example/i }))
+        fireEvent.click(screen.getByRole("button", { name: /^Sample$/i }))
         fireEvent.click(screen.getByRole("button", { name: /Run Recipe/i }))
 
         await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent(/OK: .*Run log/))

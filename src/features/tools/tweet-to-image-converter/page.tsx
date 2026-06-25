@@ -9,9 +9,11 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
-import { fileToDataUrl, loadImageElement } from "@/core/utils/image-canvas-utils"
+import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
+import { fileToDataUrl, loadImageElement, validateImageDimensions } from "@/core/utils/image-canvas-utils"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { resolveSocialThemeColors, wrapLines, type SocialTheme } from "@/core/utils/social-media-utils"
+import { FileUploadStatus, type FileUploadStatusState } from "@/features/tool-shell/file-upload-status"
 
 type CanvasPreset = "landscape" | "square" | "portrait"
 
@@ -20,8 +22,6 @@ const PRESET_SIZE: Record<CanvasPreset, { width: number; height: number; label: 
     square: { width: 1080, height: 1080, label: "1080x1080" },
     portrait: { width: 1080, height: 1350, label: "1080x1350" },
 }
-
-const MAX_FILE_SIZE = 5 * 1024 * 1024
 
 const DEFAULT_STATE = {
     displayName: "S42 Lab",
@@ -93,6 +93,8 @@ export function TweetToImageConverterPage() {
         [toolT.theme_dark, toolT.theme_light],
     )
     const avatarInputRef = React.useRef<HTMLInputElement>(null)
+    const avatarReadAbortControllerRef = React.useRef<AbortController | null>(null)
+    const avatarPolicy = FILE_INPUT_POLICIES["image-logo"]
 
     const [displayName, setDisplayName] = React.useState(DEFAULT_STATE.displayName)
     const [handle, setHandle] = React.useState(DEFAULT_STATE.handle)
@@ -105,6 +107,12 @@ export function TweetToImageConverterPage() {
     const [avatarDataUrl, setAvatarDataUrl] = React.useState("")
     const [avatarName, setAvatarName] = React.useState("")
     const [outputDataUrl, setOutputDataUrl] = React.useState("")
+    const [avatarUploadStatus, setAvatarUploadStatus] = React.useState<FileUploadStatusState>("idle")
+    const [avatarUploadMessage, setAvatarUploadMessage] = React.useState("")
+
+    React.useEffect(() => () => {
+        avatarReadAbortControllerRef.current?.abort()
+    }, [])
 
     React.useEffect(() => {
         const render = async () => {
@@ -229,24 +237,50 @@ export function TweetToImageConverterPage() {
     )
 
     const handleAvatarFile = async (file: File) => {
-        if (!file.type.startsWith("image/")) {
-            toast.error(t.common.image_file_required)
+        const validation = validateFileAgainstPolicy(file, avatarPolicy)
+        if (!validation.ok) {
+            setAvatarUploadStatus("error")
+            setAvatarUploadMessage(validation.message)
+            toast.error(validation.message)
             return
         }
-        if (file.size > MAX_FILE_SIZE) {
-            toast.error((t.common.image_file_too_large).replace("{size}", "5MB"))
-            return
-        }
+
+        avatarReadAbortControllerRef.current?.abort()
+        const controller = new AbortController()
+        avatarReadAbortControllerRef.current = controller
+        setAvatarUploadStatus("loading")
+        setAvatarUploadMessage(t.common.loading_file_locally)
+
         try {
-            const dataUrl = await fileToDataUrl(file)
+            const dataUrl = await fileToDataUrl(file, avatarPolicy, { signal: controller.signal })
+            if (controller.signal.aborted) return
+            const image = await loadImageElement(dataUrl)
+            validateImageDimensions(image.width, image.height, avatarPolicy)
             setAvatarDataUrl(dataUrl)
             setAvatarName(file.name)
-        } catch {
-            toast.error(t.common.avatar_file_read_failed)
+            setAvatarUploadStatus("complete")
+            setAvatarUploadMessage(t.common.file_ready_locally)
+        } catch (error) {
+            const isCancelled = error instanceof Error && error.message === "FILE_READ_ABORTED"
+            setAvatarUploadStatus(isCancelled ? "cancelled" : "error")
+            setAvatarUploadMessage(isCancelled ? t.common.file_processing_cancelled : t.common.avatar_file_read_failed)
+            if (!isCancelled) toast.error(t.common.avatar_file_read_failed)
+        } finally {
+            if (avatarReadAbortControllerRef.current === controller) {
+                avatarReadAbortControllerRef.current = null
+            }
         }
     }
 
+    const handleCancelAvatarUpload = () => {
+        avatarReadAbortControllerRef.current?.abort()
+        avatarReadAbortControllerRef.current = null
+        setAvatarUploadStatus("cancelled")
+        setAvatarUploadMessage(t.common.file_processing_cancelled)
+    }
+
     const handleSample = () => {
+        avatarReadAbortControllerRef.current?.abort()
         setDisplayName(DEFAULT_STATE.displayName)
         setHandle(DEFAULT_STATE.handle)
         setText(defaultText)
@@ -255,9 +289,14 @@ export function TweetToImageConverterPage() {
         setAccentColor("#22d3ee")
         setPreset("landscape")
         setFontSize(42)
+        setAvatarDataUrl("")
+        setAvatarName("")
+        setAvatarUploadStatus("idle")
+        setAvatarUploadMessage("")
     }
 
     const handleReset = () => {
+        avatarReadAbortControllerRef.current?.abort()
         setDisplayName(DEFAULT_STATE.displayName)
         setHandle(DEFAULT_STATE.handle)
         setText(defaultText)
@@ -268,6 +307,8 @@ export function TweetToImageConverterPage() {
         setFontSize(DEFAULT_STATE.fontSize)
         setAvatarDataUrl("")
         setAvatarName("")
+        setAvatarUploadStatus("idle")
+        setAvatarUploadMessage("")
     }
 
     const handleCopy = async () => {
@@ -397,7 +438,7 @@ export function TweetToImageConverterPage() {
                                 <input
                                     ref={avatarInputRef}
                                     type="file"
-                                    accept="image/*"
+                                    accept={avatarPolicy.accept}
                                     className="hidden"
                                     onChange={(event) => {
                                         const file = event.target.files?.[0]
@@ -405,6 +446,15 @@ export function TweetToImageConverterPage() {
                                     }}
                                 />
                                 {avatarName ? <span className="text-xs text-muted-foreground">{avatarName}</span> : null}
+                            </div>
+                            <div className="mt-3">
+                                <FileUploadStatus
+                                    policy={avatarPolicy}
+                                    status={avatarUploadStatus}
+                                    message={avatarUploadMessage}
+                                    progress={avatarUploadStatus === "loading" ? 50 : avatarUploadStatus === "complete" ? 100 : undefined}
+                                    onCancel={avatarUploadStatus === "loading" ? handleCancelAvatarUpload : undefined}
+                                />
                             </div>
                         </div>
                     </div>

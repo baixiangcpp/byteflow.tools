@@ -8,10 +8,10 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
+import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
-import { createDemoImageDataUrl, fileToDataUrl, loadImageElement } from "@/core/utils/image-canvas-utils"
-
-const MAX_FILE_SIZE = 12 * 1024 * 1024
+import { createDemoImageDataUrl, fileToDataUrl, loadImageElement, validateImageDimensions } from "@/core/utils/image-canvas-utils"
+import { FileUploadStatus, type FileUploadStatusState } from "@/features/tool-shell/file-upload-status"
 
 type CaptionPosition = "top" | "bottom"
 
@@ -41,6 +41,8 @@ export function ImageCaptionGeneratorPage() {
     const fileInputRef = React.useRef<HTMLInputElement>(null)
     const canvasRef = React.useRef<HTMLCanvasElement>(null)
     const demoSrcRef = React.useRef<string>("")
+    const fileReadAbortControllerRef = React.useRef<AbortController | null>(null)
+    const uploadPolicy = FILE_INPUT_POLICIES["image-standard"]
 
     const [imageSrc, setImageSrc] = React.useState("")
     const [fileName, setFileName] = React.useState("")
@@ -52,6 +54,8 @@ export function ImageCaptionGeneratorPage() {
     const [strokeWidth, setStrokeWidth] = React.useState(DEFAULT_STATE.strokeWidth)
     const [overlayAlpha, setOverlayAlpha] = React.useState(DEFAULT_STATE.overlayAlpha)
     const [outputDataUrl, setOutputDataUrl] = React.useState("")
+    const [uploadStatus, setUploadStatus] = React.useState<FileUploadStatusState>("idle")
+    const [uploadMessage, setUploadMessage] = React.useState("")
 
     const output = React.useMemo(
         () => [
@@ -94,6 +98,10 @@ export function ImageCaptionGeneratorPage() {
         if (!demoSrcRef.current) {
             demoSrcRef.current = createDemoImageDataUrl(1280, 720)
         }
+    }, [])
+
+    React.useEffect(() => () => {
+        fileReadAbortControllerRef.current?.abort()
     }, [])
 
     React.useEffect(() => {
@@ -145,27 +153,54 @@ export function ImageCaptionGeneratorPage() {
     }, [caption, fontSize, imageSrc, overlayAlpha, position, strokeColor, strokeWidth, textColor])
 
     const handleFile = async (file: File) => {
-        if (!file.type.startsWith("image/")) {
-            toast.error(t.common.image_file_required)
-            return
-        }
-        if (file.size > MAX_FILE_SIZE) {
-            toast.error((t.common.image_file_too_large).replace("{size}", "12MB"))
+        const validation = validateFileAgainstPolicy(file, uploadPolicy)
+        if (!validation.ok) {
+            setUploadStatus("error")
+            setUploadMessage(validation.message)
+            toast.error(validation.message)
             return
         }
 
+        fileReadAbortControllerRef.current?.abort()
+        const controller = new AbortController()
+        fileReadAbortControllerRef.current = controller
+        setUploadStatus("loading")
+        setUploadMessage(t.common.loading_file_locally)
+
         try {
-            const dataUrl = await fileToDataUrl(file)
+            const dataUrl = await fileToDataUrl(file, uploadPolicy, { signal: controller.signal })
+            if (controller.signal.aborted) return
+            const image = await loadImageElement(dataUrl)
+            validateImageDimensions(image.width, image.height, uploadPolicy)
             setImageSrc(dataUrl)
             setFileName(file.name)
-        } catch {
-            toast.error(t.common.image_file_read_failed)
+            setUploadStatus("complete")
+            setUploadMessage(t.common.file_ready_locally)
+        } catch (error) {
+            const isCancelled = error instanceof Error && error.message === "FILE_READ_ABORTED"
+            setUploadStatus(isCancelled ? "cancelled" : "error")
+            setUploadMessage(isCancelled ? t.common.file_processing_cancelled : t.common.image_file_read_failed)
+            if (!isCancelled) toast.error(t.common.image_file_read_failed)
+        } finally {
+            if (fileReadAbortControllerRef.current === controller) {
+                fileReadAbortControllerRef.current = null
+            }
         }
     }
 
+    const handleCancelUpload = () => {
+        fileReadAbortControllerRef.current?.abort()
+        fileReadAbortControllerRef.current = null
+        setUploadStatus("cancelled")
+        setUploadMessage(t.common.file_processing_cancelled)
+    }
+
     const handleSample = () => {
+        fileReadAbortControllerRef.current?.abort()
         setImageSrc("")
         setFileName(t.common.sample_image)
+        setUploadStatus("idle")
+        setUploadMessage("")
         setCaption(toolT.sample_caption)
         setPosition("top")
         setFontSize(56)
@@ -176,8 +211,11 @@ export function ImageCaptionGeneratorPage() {
     }
 
     const handleReset = () => {
+        fileReadAbortControllerRef.current?.abort()
         setImageSrc("")
         setFileName("")
+        setUploadStatus("idle")
+        setUploadMessage("")
         setCaption(toolT.default_caption)
         setPosition(DEFAULT_STATE.position)
         setFontSize(DEFAULT_STATE.fontSize)
@@ -230,7 +268,15 @@ export function ImageCaptionGeneratorPage() {
                 <div className="space-y-4 rounded-xl border bg-card p-4">
                     <div
                         className="grid min-h-[300px] cursor-pointer place-items-center rounded-xl border border-dashed bg-muted/15 p-4"
+                        role="button"
+                        tabIndex={0}
+                        aria-label={toolT.replace_sample_hint}
                         onClick={() => fileInputRef.current?.click()}
+                        onKeyDown={(event) => {
+                            if (event.key !== "Enter" && event.key !== " ") return
+                            event.preventDefault()
+                            fileInputRef.current?.click()
+                        }}
                         onDragOver={(event) => event.preventDefault()}
                         onDrop={(event) => {
                             event.preventDefault()
@@ -242,7 +288,7 @@ export function ImageCaptionGeneratorPage() {
                         <input
                             ref={fileInputRef}
                             type="file"
-                            accept="image/*"
+                            accept={uploadPolicy.accept}
                             className="hidden"
                             onChange={(event) => {
                                 const file = event.target.files?.[0]
@@ -256,6 +302,14 @@ export function ImageCaptionGeneratorPage() {
                             </div>
                         ) : null}
                     </div>
+
+                    <FileUploadStatus
+                        policy={uploadPolicy}
+                        status={uploadStatus}
+                        message={uploadMessage}
+                        progress={uploadStatus === "loading" ? 50 : uploadStatus === "complete" ? 100 : undefined}
+                        onCancel={uploadStatus === "loading" ? handleCancelUpload : undefined}
+                    />
 
                     <div className="grid gap-3 sm:grid-cols-2">
                         <label className="space-y-1.5 rounded-lg border bg-background/60 p-3 sm:col-span-2">
