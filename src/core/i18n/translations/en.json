@@ -441,7 +441,38 @@
     "processing_file_locally": "Processing file locally...",
     "file_ready_locally": "File ready for local processing.",
     "file_processing_cancelled": "Processing cancelled.",
-    "file_upload_requirements": "Upload requirements"
+    "file_upload_requirements": "Upload requirements",
+    "action_status_pending": "{action} in progress.",
+    "action_status_success": "{action} completed.",
+    "action_status_failed": "{action} failed.",
+    "output_overflow": {
+      "mode_label": "Output overflow mode",
+      "wrap": "Wrap",
+      "scroll": "Scroll"
+    },
+    "external_request_status": {
+      "idle": "Waiting for input",
+      "invalid": "Invalid input",
+      "ready": "Ready for explicit request",
+      "requesting": "Requesting external asset",
+      "success": "External asset loaded",
+      "unreachable": "Remote asset unreachable",
+      "blocked": "Request blocked",
+      "offline": "Offline",
+      "permission": "Permission needed",
+      "next_step_label": "What to do next",
+      "boundary_label": "External boundary",
+      "next_step_add_input": "Add a supported URL before running an external request.",
+      "next_step_fix_input": "Fix the URL, then run the tool again.",
+      "next_step_confirm": "Confirm the external request and rights guidance before previewing or downloading.",
+      "next_step_preview": "Choose Preview to request the disclosed asset from your browser.",
+      "next_step_wait": "Wait for the browser request to finish.",
+      "next_step_download": "Review the preview, then download only if you have permission.",
+      "next_step_reconnect": "Reconnect to the network, then retry the explicit action.",
+      "next_step_try_another": "Try another public URL or candidate, then preview again.",
+      "next_step_check_permission": "Confirm you own or are authorized to use this media URL.",
+      "next_step_open_remote": "Use the opened remote tab if direct download is blocked."
+    }
   },
   "categories": {
     "formatters_desc": "Format, beautify, and transform code and data files including JSON, XML, SQL, HTML, CSS, and YAML.",

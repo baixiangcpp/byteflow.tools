@@ -441,7 +441,38 @@
     "processing_file_locally": "Traitement local du fichier...",
     "file_ready_locally": "Le fichier est prêt pour le traitement local.",
     "file_processing_cancelled": "Traitement annulé.",
-    "file_upload_requirements": "Exigences d'import"
+    "file_upload_requirements": "Exigences d'import",
+    "action_status_pending": "{action} en cours.",
+    "action_status_success": "{action} terminé.",
+    "action_status_failed": "{action} a échoué.",
+    "output_overflow": {
+      "mode_label": "Mode de débordement de sortie",
+      "wrap": "Retour ligne",
+      "scroll": "Défilement"
+    },
+    "external_request_status": {
+      "idle": "En attente de saisie",
+      "invalid": "Entrée invalide",
+      "ready": "Prêt pour la requête explicite",
+      "requesting": "Requête de ressource externe en cours",
+      "success": "Ressource externe chargée",
+      "unreachable": "Ressource distante inaccessible",
+      "blocked": "Requête bloquée",
+      "offline": "Hors ligne",
+      "permission": "Autorisation requise",
+      "next_step_label": "Étape suivante",
+      "boundary_label": "Frontière externe",
+      "next_step_add_input": "Ajoutez une URL prise en charge avant de lancer une requête externe.",
+      "next_step_fix_input": "Corrigez l’URL, puis relancez l’outil.",
+      "next_step_confirm": "Confirmez la requête externe et les droits avant l’aperçu ou le téléchargement.",
+      "next_step_preview": "Choisissez Aperçu pour demander la ressource indiquée depuis votre navigateur.",
+      "next_step_wait": "Attendez la fin de la requête du navigateur.",
+      "next_step_download": "Vérifiez l’aperçu, puis téléchargez uniquement si vous avez l’autorisation.",
+      "next_step_reconnect": "Reconnectez-vous au réseau, puis réessayez l’action explicite.",
+      "next_step_try_another": "Essayez une autre URL publique ou un autre candidat, puis relancez l’aperçu.",
+      "next_step_check_permission": "Confirmez que vous possédez cette URL média ou êtes autorisé à l’utiliser.",
+      "next_step_open_remote": "Utilisez l’onglet distant ouvert si le téléchargement direct est bloqué."
+    }
   },
   "tools": {
     "json_formatter": {

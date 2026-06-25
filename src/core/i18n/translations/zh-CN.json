@@ -441,7 +441,38 @@
     "processing_file_locally": "正在本地处理文件...",
     "file_ready_locally": "文件已可在本地处理。",
     "file_processing_cancelled": "处理已取消。",
-    "file_upload_requirements": "上传要求"
+    "file_upload_requirements": "上传要求",
+    "action_status_pending": "{action} 正在进行。",
+    "action_status_success": "{action} 已完成。",
+    "action_status_failed": "{action} 失败。",
+    "output_overflow": {
+      "mode_label": "输出溢出模式",
+      "wrap": "换行",
+      "scroll": "滚动"
+    },
+    "external_request_status": {
+      "idle": "等待输入",
+      "invalid": "输入无效",
+      "ready": "已准备好显式请求",
+      "requesting": "正在请求外部资源",
+      "success": "外部资源已加载",
+      "unreachable": "远程资源不可访问",
+      "blocked": "请求被阻止",
+      "offline": "离线",
+      "permission": "需要权限",
+      "next_step_label": "下一步",
+      "boundary_label": "外部边界",
+      "next_step_add_input": "先添加受支持的 URL，再运行外部请求。",
+      "next_step_fix_input": "修正 URL 后重新运行工具。",
+      "next_step_confirm": "预览或下载前，请确认外部请求和权利说明。",
+      "next_step_preview": "选择“预览”，从你的浏览器请求已披露的资源。",
+      "next_step_wait": "等待浏览器请求完成。",
+      "next_step_download": "查看预览后，仅在你有权限时下载。",
+      "next_step_reconnect": "重新联网后，再重试该显式操作。",
+      "next_step_try_another": "尝试其他公开 URL 或候选项，然后再次预览。",
+      "next_step_check_permission": "确认你拥有或获授权使用此媒体 URL。",
+      "next_step_open_remote": "如果直接下载被阻止，请使用已打开的远程标签页。"
+    }
   },
   "tools": {
     "json_formatter": {

@@ -441,7 +441,38 @@
     "processing_file_locally": "파일을 로컬에서 처리하는 중...",
     "file_ready_locally": "파일을 로컬에서 처리할 준비가 되었습니다.",
     "file_processing_cancelled": "처리가 취소되었습니다.",
-    "file_upload_requirements": "업로드 요구사항"
+    "file_upload_requirements": "업로드 요구사항",
+    "action_status_pending": "{action} 진행 중입니다.",
+    "action_status_success": "{action} 완료되었습니다.",
+    "action_status_failed": "{action} 실패했습니다.",
+    "output_overflow": {
+      "mode_label": "출력 오버플로 모드",
+      "wrap": "줄바꿈",
+      "scroll": "스크롤"
+    },
+    "external_request_status": {
+      "idle": "입력 대기 중",
+      "invalid": "잘못된 입력",
+      "ready": "명시적 요청 준비 완료",
+      "requesting": "외부 자산 요청 중",
+      "success": "외부 자산을 불러왔습니다",
+      "unreachable": "원격 자산에 연결할 수 없습니다",
+      "blocked": "요청이 차단됨",
+      "offline": "오프라인",
+      "permission": "권한 필요",
+      "next_step_label": "다음 단계",
+      "boundary_label": "외부 경계",
+      "next_step_add_input": "외부 요청을 실행하기 전에 지원되는 URL을 추가하세요.",
+      "next_step_fix_input": "URL을 수정한 뒤 도구를 다시 실행하세요.",
+      "next_step_confirm": "미리보기 또는 다운로드 전에 외부 요청과 권리 안내를 확인하세요.",
+      "next_step_preview": "미리보기를 선택해 공개된 자산을 브라우저에서 요청하세요.",
+      "next_step_wait": "브라우저 요청이 끝날 때까지 기다리세요.",
+      "next_step_download": "미리보기를 검토한 뒤 권한이 있을 때만 다운로드하세요.",
+      "next_step_reconnect": "네트워크에 다시 연결한 뒤 명시적 작업을 재시도하세요.",
+      "next_step_try_another": "다른 공개 URL 또는 후보를 시도한 뒤 다시 미리보세요.",
+      "next_step_check_permission": "이 미디어 URL을 소유했거나 사용할 권한이 있는지 확인하세요.",
+      "next_step_open_remote": "직접 다운로드가 차단되면 열린 원격 탭을 사용하세요."
+    }
   },
   "tools": {
     "json_formatter": {

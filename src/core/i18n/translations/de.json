@@ -441,7 +441,38 @@
     "processing_file_locally": "Datei wird lokal verarbeitet...",
     "file_ready_locally": "Datei ist für lokale Verarbeitung bereit.",
     "file_processing_cancelled": "Verarbeitung abgebrochen.",
-    "file_upload_requirements": "Upload-Anforderungen"
+    "file_upload_requirements": "Upload-Anforderungen",
+    "action_status_pending": "{action} läuft.",
+    "action_status_success": "{action} abgeschlossen.",
+    "action_status_failed": "{action} fehlgeschlagen.",
+    "output_overflow": {
+      "mode_label": "Überlaufmodus der Ausgabe",
+      "wrap": "Umbruch",
+      "scroll": "Scrollen"
+    },
+    "external_request_status": {
+      "idle": "Wartet auf Eingabe",
+      "invalid": "Ungültige Eingabe",
+      "ready": "Bereit für explizite Anfrage",
+      "requesting": "Externe Datei wird angefragt",
+      "success": "Externe Datei geladen",
+      "unreachable": "Entfernte Datei nicht erreichbar",
+      "blocked": "Anfrage blockiert",
+      "offline": "Offline-Modus",
+      "permission": "Berechtigung erforderlich",
+      "next_step_label": "Nächster Schritt",
+      "boundary_label": "Externe Grenze",
+      "next_step_add_input": "Fügen Sie eine unterstützte URL hinzu, bevor Sie eine externe Anfrage ausführen.",
+      "next_step_fix_input": "Korrigieren Sie die URL und führen Sie das Tool erneut aus.",
+      "next_step_confirm": "Bestätigen Sie externe Anfrage und Rechtehinweis vor Vorschau oder Download.",
+      "next_step_preview": "Wählen Sie Vorschau, um die angegebene Datei aus Ihrem Browser anzufragen.",
+      "next_step_wait": "Warten Sie, bis die Browseranfrage abgeschlossen ist.",
+      "next_step_download": "Prüfen Sie die Vorschau und laden Sie nur herunter, wenn Sie berechtigt sind.",
+      "next_step_reconnect": "Stellen Sie die Netzwerkverbindung wieder her und wiederholen Sie die explizite Aktion.",
+      "next_step_try_another": "Versuchen Sie eine andere öffentliche URL oder einen anderen Kandidaten und zeigen Sie erneut die Vorschau an.",
+      "next_step_check_permission": "Bestätigen Sie, dass Sie diese Medien-URL besitzen oder verwenden dürfen.",
+      "next_step_open_remote": "Nutzen Sie den geöffneten Remote-Tab, wenn der direkte Download blockiert wird."
+    }
   },
   "tools": {
     "json_formatter": {

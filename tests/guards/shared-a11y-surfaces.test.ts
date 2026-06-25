@@ -45,13 +45,14 @@ describe("shared accessibility surfaces", () => {
         const youtube = readSource("src/features/tools/youtube-thumbnail-grabber/page.tsx")
         const vimeo = readSource("src/features/tools/vimeo-thumbnail-grabber/page.tsx")
         const instagram = readSource("src/features/tools/instagram-photo-downloader/page.tsx")
+        const externalRequestStatus = readSource("src/features/tool-shell/external-request-status.tsx")
 
         expect(base64).toContain('role="alert"')
         expect(base64).toContain('aria-label={t.common.input}')
         expect(base64).toContain('"aria-describedby": "base64-error"')
         expect(base64).toContain('"aria-invalid": true')
         expect(base64).toContain("{...inputA11yProps}")
-        expect(base64).toContain('aria-label={t.common.output}')
+        expect(base64).toContain("ariaLabel={t.common.output}")
 
         expect(regex).toContain('id="regex-pattern"')
         expect(regex).toContain('role="alert"')
@@ -63,8 +64,10 @@ describe("shared accessibility surfaces", () => {
         expect(imageResizer).toContain('aria-label={t.common.output}')
 
         for (const source of [youtube, vimeo, instagram]) {
-            expect(source).toContain('role="status"')
-            expect(source).toContain('aria-live="polite"')
+            expect(source).toContain("ExternalRequestStatus")
         }
+        expect(externalRequestStatus).toContain('role={role}')
+        expect(externalRequestStatus).toContain('aria-live={role === "alert" ? "assertive" : "polite"}')
+        expect(externalRequestStatus).toContain("data-external-request-status")
     })
 })

@@ -213,7 +213,9 @@ describe("representative axe accessibility checks", () => {
         fireEvent.click(screen.getByRole("button", { name: /^Sample$/i }))
         fireEvent.click(screen.getByRole("button", { name: /Run Recipe/i }))
 
-        await waitFor(() => expect(screen.getByRole("status")).toHaveTextContent(/OK: .*Run log/))
+        await waitFor(() => {
+            expect(document.querySelector("#pipeline-run-log-status")).toHaveTextContent(/OK: .*Run log/)
+        })
         expect(screen.getByLabelText("Final output")).toHaveAccessibleDescription(/Run log/)
         expect(screen.getByRole("table", { name: "Run log" })).toBeInTheDocument()
 

@@ -1,5 +1,6 @@
 import { Copy, Download, ListTree, Maximize2, Minimize2, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { OutputWrapModeControl, type OutputWrapMode } from "@/features/tool-shell/text-output-panel"
 import type { ViewMode } from "./types"
 
 type JsonOutputToolbarProps = {
@@ -22,8 +23,10 @@ type JsonOutputToolbarProps = {
     onDownload: () => void
     onExpandAll: () => void
     onToggleSearch: () => void
+    onWrapModeChange: (mode: OutputWrapMode) => void
     onViewModeChange: (mode: ViewMode) => void
     viewMode: ViewMode
+    wrapMode: OutputWrapMode
 }
 
 export function JsonOutputToolbar({
@@ -36,8 +39,10 @@ export function JsonOutputToolbar({
     onDownload,
     onExpandAll,
     onToggleSearch,
+    onWrapModeChange,
     onViewModeChange,
     viewMode,
+    wrapMode,
 }: JsonOutputToolbarProps) {
     return (
         <div className="tool-pane-header tool-pane-header-between">
@@ -99,6 +104,10 @@ export function JsonOutputToolbar({
                             <Search className="h-3.5 w-3.5" />
                         </Button>
                     </div>
+                ) : null}
+
+                {viewMode === "text" ? (
+                    <OutputWrapModeControl value={wrapMode} onChange={onWrapModeChange} />
                 ) : null}
 
                 <Button

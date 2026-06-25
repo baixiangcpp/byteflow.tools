@@ -7,9 +7,9 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { copyTextWithToolFeedback, downloadedFileFeedback } from "@/features/tool-shell/tool-action-feedback"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { FILE_INPUT_POLICIES } from "@/core/files/file-input-policy"
-import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { createDemoImageDataUrl, loadImageElement } from "@/core/utils/image-canvas-utils"
 import { FileUploadStatus, type FileUploadStatusState } from "@/features/tool-shell/file-upload-status"
 import { runImageResizeTask } from "@/features/tools/image-resizer/image-resize-task"
@@ -267,33 +267,33 @@ export function ImageResizerPage() {
     }
 
     const handleCopy = async () => {
-        const result = await safeClipboardWrite(output)
-        if (!result.ok) {
-            toast.error(t.common.copy_failed)
-            return
-        }
-        toast.success(t.common.copied)
+        if (!outputDataUrl) return
+        return copyTextWithToolFeedback(t, output, toolT.title)
     }
 
     const handleDownload = () => {
         if (!outputDataUrl) return
         const extension = EXT_BY_FORMAT[format]
+        const filename = `resized-image.${extension}`
         const anchor = document.createElement("a")
         anchor.href = outputDataUrl
-        anchor.download = `resized-image.${extension}`
+        anchor.download = filename
         anchor.click()
-        toast.success(t.common.downloaded_file.replace("{filename}", `resized-image.${extension}`))
+        return downloadedFileFeedback(t, filename)
     }
 
     const actions: ToolAction[] = [
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: () => void handleSample() },
         { id: "clear", label: t.common.clear, icon: Eraser, onClick: handleClear, destructive: true },
         { id: "reset", label: t.common.reset, icon: RotateCcw, onClick: handleReset, destructive: true },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy(), disabled: isProcessing, disabledReason: t.common.processing_file_locally },
         {
-            id: "download",
-            label: t.common.download,
-            icon: Download,
+            id: "copy", label: t.common.copy, icon: Copy,
+            onClick: handleCopy,
+            disabled: isProcessing || !outputDataUrl,
+            disabledReason: isProcessing ? t.common.processing_file_locally : t.common.action_disabled_no_output,
+        },
+        {
+            id: "download", label: t.common.download, icon: Download,
             onClick: handleDownload,
             disabled: isProcessing || !outputDataUrl,
             disabledReason: isProcessing ? t.common.processing_file_locally : t.common.action_disabled_no_output,

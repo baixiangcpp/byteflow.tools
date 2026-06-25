@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react"
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react"
 import { Copy, Download, Eraser, Play, TestTube2 } from "lucide-react"
 import { describe, expect, it, vi } from "vitest"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
@@ -22,6 +22,9 @@ vi.mock("@/core/i18n/lang-provider", () => ({
             common: {
                 action_disabled_no_output: "Run the tool first to create output.",
                 action_disabled_unavailable: "This action is unavailable right now.",
+                action_status_failed: "{action} failed.",
+                action_status_pending: "{action} in progress.",
+                action_status_success: "{action} completed.",
                 recommended_tools: "Recommended Tools",
                 send_to: "Send to...",
                 tool_actions: "Tool actions",
@@ -65,6 +68,55 @@ describe("ToolActionBar", () => {
         render(<ToolActionBar actions={[{ id: "download", label: "Download", icon: Download, disabled: true }]} />)
 
         expect(screen.getByRole("button", { name: "Download", description: "This action is unavailable right now." })).toBeDisabled()
+    })
+
+    it("exposes shared idle, disabled, pending, success, and failed action states", async () => {
+        let resolveCopy: (value: { status: "success"; message: string }) => void = () => undefined
+        let resolveFormat: (value: { status: "failed"; message: string }) => void = () => undefined
+
+        render(<ToolActionBar actions={[
+            { id: "sample", label: "Sample", icon: TestTube2 },
+            { id: "download", label: "Download", icon: Download, disabled: true },
+            {
+                id: "copy",
+                label: "Copy",
+                icon: Copy,
+                onClick: () => new Promise<{ status: "success"; message: string }>((resolve) => {
+                    resolveCopy = resolve
+                }),
+            },
+            {
+                id: "format",
+                label: "Format",
+                icon: Play,
+                onClick: () => new Promise<{ status: "failed"; message: string }>((resolve) => {
+                    resolveFormat = resolve
+                }),
+            },
+        ]} />)
+
+        expect(screen.getByRole("button", { name: "Sample" })).toHaveAttribute("data-tool-action-state", "idle")
+        expect(screen.getByRole("button", { name: "Download" })).toHaveAttribute("data-tool-action-state", "disabled")
+
+        fireEvent.click(screen.getByRole("button", { name: "Copy" }))
+        expect(screen.getByRole("button", { name: "Copy" })).toHaveAttribute("data-tool-action-state", "pending")
+        await act(async () => {
+            resolveCopy({ status: "success", message: "Copied" })
+        })
+        await waitFor(() => {
+            expect(screen.getByRole("button", { name: "Copy" })).toHaveAttribute("data-tool-action-state", "success")
+        })
+        expect(screen.getByText("Copied")).toBeInTheDocument()
+
+        fireEvent.click(screen.getByRole("button", { name: "Format" }))
+        expect(screen.getByRole("button", { name: "Format" })).toHaveAttribute("data-tool-action-state", "pending")
+        await act(async () => {
+            resolveFormat({ status: "failed", message: "Format failed" })
+        })
+        await waitFor(() => {
+            expect(screen.getByRole("button", { name: "Format" })).toHaveAttribute("data-tool-action-state", "failed")
+        })
+        expect(screen.getByText("Format failed")).toBeInTheDocument()
     })
 
     it("describes disabled handoff actions without changing their accessible name", () => {

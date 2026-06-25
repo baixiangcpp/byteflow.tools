@@ -14,10 +14,10 @@ import { toast } from "sonner"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { ToolActionBar, type ToolAction, type ToolActionResult } from "@/features/tool-shell/tool-action-bar"
+import { copyTextWithToolFeedback, downloadedFileFeedback } from "@/features/tool-shell/tool-action-feedback"
 import { useLang } from "@/core/i18n/lang-provider"
 import { trackPipelineTemplateOpened } from "@/core/analytics/analytics"
-import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { FILE_INPUT_POLICIES, readTextFileWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { getToolByKey } from "@/core/registry"
 import { readStorageString, writeStorageString } from "@/core/storage/tool-persistence"
@@ -295,9 +295,10 @@ export function PipelineBuilderPage() {
     }, [refreshSavedRecipes, selectedSavedId, storageAvailable, text])
 
     const performExportRecipe = React.useCallback(() => {
-        downloadText(`${recipe.name.trim().replace(/[^\w.-]+/g, "-") || "byteflow-recipe"}.json`, exportRecipeToJson(recipe))
-        toast.success(text("recipe_exported"))
-    }, [recipe, text])
+        const filename = `${recipe.name.trim().replace(/[^\w.-]+/g, "-") || "byteflow-recipe"}.json`
+        downloadText(filename, exportRecipeToJson(recipe))
+        return downloadedFileFeedback(t, filename, text("recipe_exported"))
+    }, [recipe, t, text])
 
     const importRecipe = React.useCallback(async (file: File) => {
         const validation = validateFileAgainstPolicy(file, FILE_INPUT_POLICIES["recipe-json"])
@@ -323,17 +324,22 @@ export function PipelineBuilderPage() {
     const performShareRecipe = React.useCallback(async () => {
         const encoded = encodeRecipeForShareUrl(recipe)
         const url = `${window.location.origin}/${lang}/pipeline-builder?${SHARE_PARAM}=${encodeURIComponent(encoded)}`
-        const copied = await safeClipboardWrite(url)
-        if (!copied.ok) {
-            toast.error(t.common.copy_failed)
-            return
-        }
-        toast.success(recipeContainsRuntimeInput(recipe) ? text("share_copied_without_runtime_input") : text("share_copied"))
-    }, [lang, recipe, t.common.copy_failed, text])
+        return copyTextWithToolFeedback(
+            t,
+            url,
+            text("share_recipe"),
+            recipeContainsRuntimeInput(recipe) ? text("share_copied_without_runtime_input") : text("share_copied"),
+        )
+    }, [lang, recipe, t, text])
 
-    const requestPrivacyPreview = React.useCallback((action: PendingPrivacyAction) => {
+    const requestPrivacyPreview = React.useCallback((action: PendingPrivacyAction): ToolActionResult => {
         setPendingPrivacyAction(action)
-    }, [])
+        return {
+            status: "success",
+            message: text("privacy_preview_title"),
+            description: text(`privacy_preview_${action}`),
+        }
+    }, [text])
 
     const cancelPrivacyPreview = React.useCallback(() => {
         setPendingPrivacyAction(null)
@@ -353,15 +359,10 @@ export function PipelineBuilderPage() {
 
     const copyText = React.useCallback(async (value?: string) => {
         if (!value) return
-        const copied = await safeClipboardWrite(value)
-        if (!copied.ok) {
-            toast.error(t.common.copy_failed)
-            return
-        }
-        toast.success(t.common.copied)
-    }, [t.common.copied, t.common.copy_failed])
+        return copyTextWithToolFeedback(t, value, t.common.output)
+    }, [t])
 
-    const copyOutput = React.useCallback(() => void copyText(finalOutput), [copyText, finalOutput])
+    const copyOutput = React.useCallback(() => copyText(finalOutput), [copyText, finalOutput])
     const copyStepInput = React.useCallback((step: PipelineStepExecution) => void copyText(step.input), [copyText])
     const copyStepOutput = React.useCallback((step: PipelineStepExecution) => void copyText(step.output), [copyText])
 
@@ -380,7 +381,7 @@ export function PipelineBuilderPage() {
         { id: "save", label: text("save_recipe"), icon: Save, onClick: () => requestPrivacyPreview("save"), disabled: !storageAvailable },
         { id: "export", label: text("export_recipe"), icon: Download, onClick: () => requestPrivacyPreview("export") },
         { id: "share", label: text("share_recipe"), icon: Link2, onClick: () => requestPrivacyPreview("share") },
-        { id: "copy_output", label: t.common.copy, icon: Copy, onClick: () => void copyOutput(), disabled: !finalOutput },
+        { id: "copy_output", label: t.common.copy, icon: Copy, onClick: copyOutput, disabled: !finalOutput, disabledReason: t.common.action_disabled_no_output },
     ]
 
     return (

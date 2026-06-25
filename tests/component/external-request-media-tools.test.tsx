@@ -75,10 +75,12 @@ describe("external request media tools", () => {
         fireEvent.click(screen.getByRole("button", { name: "Sample" }))
 
         expect(screen.getByText("Confirm external request")).toBeInTheDocument()
-        expect(screen.getByText("youtube.com, youtube-nocookie.com, youtu.be, i.ytimg.com")).toBeInTheDocument()
+        expect(screen.getAllByText("youtube.com, youtube-nocookie.com, youtu.be, i.ytimg.com").length).toBeGreaterThanOrEqual(1)
         expect(screen.getByRole("link", { name: "Trust Center" })).toHaveAttribute("href", "/en/trust-center#external-request-tools")
-        expect(screen.getByRole("textbox", { name: "Video URL" })).toHaveAccessibleDescription("Thumbnail candidates generated.")
-        expect(screen.getByRole("status")).toHaveTextContent("Thumbnail candidates generated.")
+        expect(screen.getByRole("textbox", { name: "Video URL" })).toHaveAccessibleDescription(/Thumbnail candidates generated\./)
+        expect(screen.getByText("Thumbnail candidates generated.")).toBeInTheDocument()
+        expect(screen.getByText("Permission needed")).toBeInTheDocument()
+        expect(document.querySelector('[data-external-request-status="permission"]')).toBeInTheDocument()
         expect(screen.getByRole("button", { name: "Preview", description: "Confirm the external request before previewing or downloading." })).toBeDisabled()
         expect(globalThis.fetch).not.toHaveBeenCalled()
 
@@ -100,9 +102,11 @@ describe("external request media tools", () => {
 
         fireEvent.click(screen.getByRole("button", { name: "Sample" }))
         fireEvent.click(screen.getByLabelText("I understand this action may request the disclosed external asset from my browser."))
-        fireEvent.click(screen.getByRole("button", { name: "Preview" }))
-
-        expect(toastErrorMock).toHaveBeenCalledWith("This external-request action needs network access. Reconnect and try again.")
+        expect(screen.getByRole("button", {
+            name: "Preview",
+            description: "This external-request action needs network access. Reconnect and try again.",
+        })).toBeDisabled()
+        expect(document.querySelector('[data-external-request-status="offline"]')).toBeInTheDocument()
         expect(globalThis.fetch).not.toHaveBeenCalled()
     })
 
@@ -112,9 +116,10 @@ describe("external request media tools", () => {
         fireEvent.click(screen.getByRole("button", { name: "Sample" }))
 
         expect(screen.getByText("Confirm external request")).toBeInTheDocument()
-        expect(screen.getByText("vimeo.com, player.vimeo.com, vumbnail.com")).toBeInTheDocument()
-        expect(screen.getByRole("textbox", { name: "Video URL" })).toHaveAccessibleDescription("Thumbnail candidates generated.")
-        expect(screen.getByRole("status")).toHaveTextContent("Thumbnail candidates generated.")
+        expect(screen.getAllByText("vimeo.com, player.vimeo.com, vumbnail.com").length).toBeGreaterThanOrEqual(1)
+        expect(screen.getByRole("textbox", { name: "Video URL" })).toHaveAccessibleDescription(/Thumbnail candidates generated\./)
+        expect(screen.getByText("Thumbnail candidates generated.")).toBeInTheDocument()
+        expect(document.querySelector('[data-external-request-status="permission"]')).toBeInTheDocument()
         expect(screen.getByRole("button", { name: "Preview", description: "Confirm the external request before previewing or downloading." })).toBeDisabled()
 
         fireEvent.click(screen.getByLabelText("I understand this action may request the disclosed external asset from my browser."))
@@ -139,9 +144,14 @@ describe("external request media tools", () => {
             configurable: true,
             value: false,
         })
-        fireEvent.click(screen.getByRole("button", { name: "Download" }))
-
-        expect(toastErrorMock).toHaveBeenCalledWith("This external-request action needs network access. Reconnect and try again.")
+        fireEvent(window, new Event("offline"))
+        await waitFor(() => {
+            expect(screen.getByRole("button", {
+                name: "Download",
+                description: "This external-request action needs network access. Reconnect and try again.",
+            })).toBeDisabled()
+        })
+        expect(document.querySelector('[data-external-request-status="offline"]')).toBeInTheDocument()
         expect(anchorClick).not.toHaveBeenCalled()
     })
 
@@ -159,8 +169,9 @@ describe("external request media tools", () => {
         fireEvent.change(screen.getByPlaceholderText("https://…"), { target: { value: "https://cdn.instagram.com/public/photo.jpg" } })
         fireEvent.click(screen.getByLabelText("I confirm this media URL is mine or I have explicit permission to download and use it."))
 
-        expect(screen.getByRole("textbox", { name: "Input URL" })).toHaveAccessibleDescription("All checks passed. You can now download the media.")
-        expect(screen.getByRole("status")).toHaveTextContent("All checks passed. You can now download the media.")
+        expect(screen.getByRole("textbox", { name: "Input URL" })).toHaveAccessibleDescription(/Ready to download authorized media\./)
+        expect(screen.getByText("All checks passed. You can now download the media.")).toBeInTheDocument()
+        expect(document.querySelector('[data-external-request-status="permission"]')).toBeInTheDocument()
         expect(screen.getByRole("button", { name: "Download", description: "Confirm the external request before previewing or downloading." })).toBeDisabled()
         expect(fetchMock).not.toHaveBeenCalled()
 
@@ -185,9 +196,11 @@ describe("external request media tools", () => {
         fireEvent.change(screen.getByPlaceholderText("https://…"), { target: { value: "https://cdn.instagram.com/public/photo.jpg" } })
         fireEvent.click(screen.getByLabelText("I confirm this media URL is mine or I have explicit permission to download and use it."))
         fireEvent.click(screen.getByLabelText("I understand this action may request the disclosed external asset from my browser."))
-        fireEvent.click(screen.getByRole("button", { name: "Download" }))
-
-        expect(toastErrorMock).toHaveBeenCalledWith("This external-request action needs network access. Reconnect and try again.")
+        expect(screen.getByRole("button", {
+            name: "Download",
+            description: "This external-request action needs network access. Reconnect and try again.",
+        })).toBeDisabled()
+        expect(document.querySelector('[data-external-request-status="offline"]')).toBeInTheDocument()
         expect(fetchMock).not.toHaveBeenCalled()
     })
 })

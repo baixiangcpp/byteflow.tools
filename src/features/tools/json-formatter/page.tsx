@@ -19,12 +19,13 @@ import { useThemePreference } from "@/hooks/use-theme-preference"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { copyTextWithToolFeedback, downloadedFileFeedback } from "@/features/tool-shell/tool-action-feedback"
+import type { OutputWrapMode } from "@/features/tool-shell/text-output-panel"
 import { ToolEmptyState } from "@/features/tool-shell/tool-empty-state"
 import { readStorageString, writeStorageString, removeStorageKey } from "@/core/storage/tool-persistence"
 import { enforceToolInputPersistencePolicy } from "@/core/storage/tool-persistence-policy"
 import { importTextFile } from "@/core/files/text-file-import"
 import { buildSensitiveToolHandoffLink, getToolHandoffFromSearchParams } from "@/core/routing/tool-handoff"
-import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildJsonParseErrorDetails, type JsonParseErrorDetails } from "@/features/tools/json-formatter/error-utils"
 import { runJsonFormatTask, type JsonFormatMode } from "@/features/tools/json-formatter/format-json-task"
 import { PrivacyBadge } from "@/features/tool-shell/privacy-badge"
@@ -60,6 +61,7 @@ export function JsonFormatterPage() {
     const [errorDetails, setErrorDetails] = React.useState<JsonParseErrorDetails | null>(null)
     const [isImportDragActive, setIsImportDragActive] = React.useState(false)
     const [viewMode, setViewMode] = React.useState<ViewMode>("text")
+    const [outputWrapMode, setOutputWrapMode] = React.useState<OutputWrapMode>("wrap")
     const [treeData, setTreeData] = React.useState<JsonValue | null>(null)
     const [expanded, setExpanded] = React.useState<Set<string>>(new Set(["$"]))
     const [treeDialog, setTreeDialog] = React.useState<TreeDialogState>(null)
@@ -251,15 +253,8 @@ export function JsonFormatterPage() {
             : output
 
         if (!copyText) return
-        const result = await safeClipboardWrite(copyText)
-        if (!result.ok) {
-            toast.error(t.common.copy_failed)
-            return
-        }
-        toast.success(t.common.copied, {
-            description: t.common.copied_desc,
-        })
-    }, [output, t.common, treeData, viewMode])
+        return copyTextWithToolFeedback(t, copyText, t.common.output, t.common.copied_desc)
+    }, [output, t, treeData, viewMode])
 
     const handleDownload = React.useCallback(() => {
         const content = viewMode === "tree" && treeData !== null
@@ -269,8 +264,8 @@ export function JsonFormatterPage() {
         if (!content || error) return
         const filename = lastFormatMode === "minify" ? "minified.json" : "formatted.json"
         downloadJsonOutput(content, filename)
-        toast.success(t.common.downloaded_file.replace("{filename}", filename))
-    }, [error, lastFormatMode, output, t.common.downloaded_file, treeData, viewMode])
+        return downloadedFileFeedback(t, filename)
+    }, [error, lastFormatMode, output, t, treeData, viewMode])
 
     const handleClear = () => {
         setInput("")
@@ -646,8 +641,10 @@ export function JsonFormatterPage() {
                         onDownload={handleDownload}
                         onExpandAll={handleExpandAll}
                         onToggleSearch={() => setIsSearchOpen(!isSearchOpen)}
+                        onWrapModeChange={setOutputWrapMode}
                         onViewModeChange={switchViewMode}
                         viewMode={viewMode}
+                        wrapMode={outputWrapMode}
                     />
 
                     {viewMode === "text" ? (
@@ -659,7 +656,11 @@ export function JsonFormatterPage() {
                                     theme={monacoTheme}
                                     beforeMount={(monaco) => ensureByteflowMonacoThemes(monaco)}
                                     value={output}
-                                    options={{ ...JSON_OUTPUT_EDITOR_OPTIONS, ariaLabel: t.common.output }}
+                                    options={{
+                                        ...JSON_OUTPUT_EDITOR_OPTIONS,
+                                        ariaLabel: t.common.output,
+                                        wordWrap: outputWrapMode === "wrap" ? "on" : "off",
+                                    }}
                                 />
                             ) : (
                                 <JsonTextOutputEmptyState hasInput={Boolean(input.trim())} text={text} />

@@ -232,7 +232,7 @@ describe("phase 3 pipeline builder page", () => {
   "active": true
 }`)
         })
-        expect(screen.getByRole("status")).toHaveTextContent("OK: 2 Run log")
+        expect(document.querySelector("#pipeline-run-log-status")).toHaveTextContent("OK: 2 Run log")
         expect(screen.getByRole("table", { name: "Run log" })).toBeInTheDocument()
         expect(screen.getByText("Recipe is valid for the linear MVP executor.")).toBeInTheDocument()
         expect(screen.getAllByText("Input preview").length).toBeGreaterThan(0)

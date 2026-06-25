@@ -25,10 +25,18 @@ import {
 type ActionVariant = "default" | "outline" | "ghost"
 type ActionSize = "sm" | "icon"
 
+export type ToolActionRuntimeStatus = "idle" | "disabled" | "pending" | "success" | "failed"
+export type ToolActionResultStatus = "success" | "failed"
+export type ToolActionResult = {
+    status: ToolActionResultStatus
+    message?: string
+    description?: string
+}
+
 export type ToolAction = {
     id: string
     label: string
-    onClick?: () => void
+    onClick?: () => void | Promise<void | ToolActionResult> | ToolActionResult
     icon?: LucideIcon
     variant?: ActionVariant
     size?: ActionSize
@@ -114,6 +122,34 @@ function isDestructiveAction(action: ToolAction): boolean {
     return action.destructive === true || normalized === "clear" || normalized === "reset" || normalized.startsWith("clear_") || normalized.startsWith("reset_")
 }
 
+function isActionResult(value: unknown): value is ToolActionResult {
+    return Boolean(
+        value
+        && typeof value === "object"
+        && "status" in value
+        && ((value as ToolActionResult).status === "success" || (value as ToolActionResult).status === "failed"),
+    )
+}
+
+function isPromiseLike<T>(value: unknown): value is PromiseLike<T> {
+    return Boolean(value && (typeof value === "object" || typeof value === "function") && "then" in value)
+}
+
+function getResultAnnouncement(action: ToolAction, result: ToolActionResult | void, t: ReturnType<typeof useLang>["t"]): string {
+    if (isActionResult(result)) {
+        const message = result.message || (result.status === "success"
+            ? formatActionStatus(t.common.action_status_success, action.label, "completed")
+            : formatActionStatus(t.common.action_status_failed, action.label, "failed"))
+        return result.description ? `${message}. ${result.description}` : message
+    }
+
+    return formatActionStatus(t.common.action_status_success, action.label, "completed")
+}
+
+function formatActionStatus(template: string | undefined, action: string, fallbackStatus: string): string {
+    return (template || `{action} ${fallbackStatus}.`).replace("{action}", action)
+}
+
 export function ToolActionBar({
     actions,
     className,
@@ -125,6 +161,9 @@ export function ToolActionBar({
 }) {
     const pathname = usePathname()
     const { t, lang } = useLang()
+    const [pendingActionId, setPendingActionId] = React.useState<string | null>(null)
+    const [actionAnnouncement, setActionAnnouncement] = React.useState("")
+    const [lastActionStatus, setLastActionStatus] = React.useState<Record<string, ToolActionRuntimeStatus>>({})
     const toolKey = React.useMemo(() => {
         const context = getRouteContext(pathname)
         if (!context.slug) return null
@@ -151,8 +190,8 @@ export function ToolActionBar({
     }, [actions])
 
     const triggerAction = React.useCallback(
-        (action: ToolAction) => {
-            if (action.disabled) return
+        async (action: ToolAction) => {
+            if (action.disabled || pendingActionId === action.id) return
             const analyticsAction = classifyAnalyticsAction(action.id)
             if (toolKey && analyticsAction) {
                 if (analyticsAction === "tool_run") {
@@ -163,9 +202,36 @@ export function ToolActionBar({
                     trackDownloadOutput(toolKey, action.id, { language: lang, sourcePage: "tool_action_bar" })
                 }
             }
-            action.onClick?.()
+            if (!action.onClick) return
+
+            try {
+                const maybeResult = action.onClick()
+                if (!isPromiseLike<void | ToolActionResult>(maybeResult)) {
+                    setLastActionStatus((current) => ({
+                        ...current,
+                        [action.id]: isActionResult(maybeResult) ? maybeResult.status : "success",
+                    }))
+                    setActionAnnouncement(getResultAnnouncement(action, maybeResult, t))
+                    return
+                }
+
+                setPendingActionId(action.id)
+                setLastActionStatus((current) => ({ ...current, [action.id]: "pending" }))
+                setActionAnnouncement(formatActionStatus(t.common.action_status_pending, action.label, "in progress"))
+                const awaitedResult = await maybeResult
+                setLastActionStatus((current) => ({
+                    ...current,
+                    [action.id]: isActionResult(awaitedResult) ? awaitedResult.status : "success",
+                }))
+                setActionAnnouncement(getResultAnnouncement(action, awaitedResult, t))
+            } catch {
+                setLastActionStatus((current) => ({ ...current, [action.id]: "failed" }))
+                setActionAnnouncement(formatActionStatus(t.common.action_status_failed, action.label, "failed"))
+            } finally {
+                setPendingActionId((current) => (current === action.id ? null : current))
+            }
         },
-        [lang, toolKey],
+        [lang, pendingActionId, t, toolKey],
     )
 
     const handoffDisabledReason = !handoffPayload?.trim() ? t.common.action_disabled_no_output : undefined
@@ -185,6 +251,12 @@ export function ToolActionBar({
                 const title = disabledReason ? accessibleLabel : action.title || action.label
                 const disabledDescriptionId = disabledReason ? getActionDescriptionId(action.id) : undefined
                 const isDestructive = isDestructiveAction(action)
+                const isPending = pendingActionId === action.id
+                const runtimeStatus: ToolActionRuntimeStatus = action.disabled
+                    ? "disabled"
+                    : isPending
+                        ? "pending"
+                        : lastActionStatus[action.id] || "idle"
                 const variantClass = isDestructive
                     ? "border border-destructive/35 bg-background text-destructive shadow-xs hover:bg-destructive/10 dark:bg-input/30"
                     : ACTION_VARIANT_CLASS[action.variant ?? "outline"]
@@ -202,17 +274,19 @@ export function ToolActionBar({
                                     action.disabled && "pointer-events-none opacity-50",
                                 )}
                                 aria-disabled={action.disabled || undefined}
+                                aria-busy={isPending || undefined}
                                 aria-describedby={disabledDescriptionId}
                                 tabIndex={action.disabled ? -1 : undefined}
                                 title={title}
                                 data-analytics-action={analyticsAction || undefined}
                                 data-analytics-id={action.id}
+                                data-tool-action-state={runtimeStatus}
                                 onClick={(event) => {
                                     if (action.disabled) {
                                         event.preventDefault()
                                         return
                                     }
-                                    triggerAction(action)
+                                    void triggerAction(action)
                                 }}
                             >
                                 {Icon ? <Icon className="h-4 w-4" /> : null}
@@ -235,12 +309,14 @@ export function ToolActionBar({
                                 variantClass,
                                 "max-w-full",
                             )}
-                            onClick={() => triggerAction(action)}
-                            disabled={action.disabled}
+                            onClick={() => void triggerAction(action)}
+                            disabled={action.disabled || isPending}
+                            aria-busy={isPending || undefined}
                             aria-describedby={disabledDescriptionId}
                             title={title}
                             data-analytics-action={analyticsAction || undefined}
                             data-analytics-id={action.id}
+                            data-tool-action-state={runtimeStatus}
                         >
                             {Icon ? <Icon className="h-4 w-4" /> : null}
                             {action.label}
@@ -287,7 +363,7 @@ export function ToolActionBar({
                                                     e.preventDefault()
                                                     return
                                                 }
-                                                triggerAction(action)
+                                                void triggerAction(action)
                                             }}
                                             className={joinClasses(
                                                 "flex w-full items-center gap-2 cursor-pointer",
@@ -310,6 +386,11 @@ export function ToolActionBar({
                     ) : null}
                 </React.Fragment>
             )}
+            {actionAnnouncement ? (
+                <span className="sr-only" role="status" aria-live="polite" aria-atomic="true" data-tool-action-status>
+                    {actionAnnouncement}
+                </span>
+            ) : null}
         </div>
     )
 }
