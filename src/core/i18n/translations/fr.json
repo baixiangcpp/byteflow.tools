@@ -101,6 +101,8 @@
     "common_workflows": "Workflows courants",
     "clear_filters": "Effacer les filtres",
     "no_results_suggestion": "Essayez un autre mot-clé, retirez des filtres ou parcourez les groupes de workflows ci-dessous.",
+    "request_tool_privacy": "Utilisez uniquement des exemples nettoyés. Ne publiez pas de secrets de production, payloads privés, tokens, logs, fichiers HAR, URL privées, corps de requête ou de réponse, prompts, sorties générées ou captures sensibles.",
+    "vote_on_requests": "Voter pour les demandes existantes",
     "family_formatters_validators": "Formateurs et validateurs",
     "family_encoders_decoders": "Encodeurs et décodeurs",
     "family_text_strings": "Texte et chaînes",

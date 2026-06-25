@@ -97,6 +97,8 @@
     "common_workflows": "常見工作流程",
     "clear_filters": "清除篩選",
     "no_results_suggestion": "嘗試其他關鍵字、移除篩選，或瀏覽下方工作流程分組。",
+    "request_tool_privacy": "只使用脫敏範例。不要發布正式環境密鑰、私有 payload、token、日誌、HAR 檔案、私有 URL、請求或回應正文、prompt、生成內容，或包含敏感資訊的截圖。",
+    "vote_on_requests": "為既有請求投票",
     "family_formatters_validators": "格式化與校驗",
     "family_encoders_decoders": "編碼與解碼",
     "family_text_strings": "文字與字串",

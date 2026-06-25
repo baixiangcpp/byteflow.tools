@@ -440,6 +440,83 @@ async function assertSkipLinkKeyboardPath(context, baseUrl) {
     }
 }
 
+async function assertHeaderKeyboardPaths(context, baseUrl) {
+    const page = await context.newPage();
+    const runtimeErrors = [];
+    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+
+    try {
+        await page.goto(`${baseUrl}/en/json-formatter?keyboard=1`, { waitUntil: "domcontentloaded" });
+        await page.waitForSelector("main", { timeout: 15_000 });
+
+        const languageTrigger = page.getByRole("button", { name: /^Language:/ }).first();
+        await languageTrigger.waitFor({ state: "visible", timeout: 15_000 });
+        await languageTrigger.focus();
+        await page.keyboard.press("Enter");
+        const zhCnOption = page.locator('[data-slot="dropdown-menu-item"]').filter({ hasText: "简体中文" }).first();
+        await zhCnOption.waitFor({ state: "visible", timeout: 15_000 });
+        await page.keyboard.press("Escape");
+        await page.waitForFunction(() => {
+            const active = document.activeElement;
+            return active instanceof HTMLElement && active.getAttribute("aria-label")?.startsWith("Language:");
+        }, null, { timeout: 5_000 });
+
+        if (runtimeErrors.length > 0) {
+            throw new Error(`Header keyboard paths triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
+        }
+    } finally {
+        await page.close();
+    }
+}
+
+async function assertMobileNavigationKeyboardPath(browser, baseUrl) {
+    const context = await browser.newContext({
+        serviceWorkers: "block",
+        viewport: { width: 390, height: 844 },
+        isMobile: true,
+    });
+    const page = await context.newPage();
+    const runtimeErrors = [];
+    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+
+    try {
+        await page.goto(`${baseUrl}/en`, { waitUntil: "domcontentloaded" });
+        await page.waitForSelector("main", { timeout: 15_000 });
+
+        const menuTrigger = page.getByRole("button", { name: /Open Navigation/i }).first();
+        await menuTrigger.waitFor({ state: "visible", timeout: 15_000 });
+        await menuTrigger.focus();
+        await page.keyboard.press("Enter");
+
+        const dialog = page.getByRole("dialog").first();
+        await dialog.waitFor({ state: "visible", timeout: 15_000 });
+        await dialog.getByRole("link", { name: /Pipeline Builder/i }).first().waitFor({ state: "visible", timeout: 15_000 });
+
+        await page.keyboard.press("Tab");
+        const focusedInsideDialog = await page.evaluate(() => {
+            const dialog = document.querySelector("[data-slot='sheet-content']");
+            return Boolean(dialog && document.activeElement && dialog.contains(document.activeElement));
+        });
+        if (!focusedInsideDialog) {
+            throw new Error("Mobile navigation drawer did not keep focus inside after Tab.");
+        }
+
+        await page.keyboard.press("Escape");
+        await dialog.waitFor({ state: "hidden", timeout: 5_000 });
+        await page.waitForFunction(() => {
+            const active = document.activeElement;
+            return active instanceof HTMLElement && /Open Navigation/i.test(active.textContent || active.getAttribute("aria-label") || "");
+        }, null, { timeout: 5_000 });
+
+        if (runtimeErrors.length > 0) {
+            throw new Error(`Mobile navigation keyboard path triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
+        }
+    } finally {
+        await page.close();
+        await context.close();
+    }
+}
+
 async function assertNoHorizontalOverflow(page, routeLabel) {
     const overflow = await page.evaluate(() => {
         const documentElement = document.documentElement;
@@ -550,6 +627,12 @@ async function assertMobileJsonFormatter(page) {
     await page.getByRole("button", { name: /^Format$/ }).first().click();
     await page.getByText(/Invalid JSON|Unexpected token|Expected token|Trailing comma/i).first()
         .waitFor({ state: "visible", timeout: 15_000 });
+
+    const longKey = "x".repeat(220);
+    await input.fill(JSON.stringify({ [longKey]: longKey }));
+    await page.getByRole("button", { name: /^Format$/ }).first().click();
+    await expectTextareaValue(page, new RegExp(longKey.slice(0, 60)), "mobile json formatter long output");
+    await assertNoHorizontalOverflow(page, "mobile json formatter long output");
 }
 
 async function assertMobileBase64(page) {
@@ -569,6 +652,11 @@ async function assertMobileBase64(page) {
     await page.getByRole("button", { name: /^Decode Base64$/ }).first().click();
     await page.getByText(/Invalid Base64 input/i).first()
         .waitFor({ state: "visible", timeout: 15_000 });
+
+    await page.getByRole("radio", { name: /^Encode$/ }).first().click();
+    await input.fill("https://example.com/" + "very-long-path-segment-".repeat(12));
+    await page.getByRole("button", { name: /^Encode Base64$/ }).first().click();
+    await assertNoHorizontalOverflow(page, "mobile base64 long URL output");
 }
 
 async function assertMobileJwtDecoder(page) {
@@ -1245,6 +1333,9 @@ async function runSmoke(baseUrl) {
         await assertSkipLinkKeyboardPath(context, baseUrl);
         console.log("[playwright-smoke] PASS accessibility: skip link keyboard path");
 
+        await assertHeaderKeyboardPaths(context, baseUrl);
+        console.log("[playwright-smoke] PASS accessibility: header language keyboard path");
+
         await assertInputProcessCopyJourney(context, baseUrl, "en");
         console.log("[playwright-smoke] PASS journey: /en/list-randomizer input -> process -> copy");
 
@@ -1259,6 +1350,9 @@ async function runSmoke(baseUrl) {
 
         await assertLocaleSwitchJourney(context, baseUrl);
         console.log("[playwright-smoke] PASS journey: locale switch /en/json-formatter -> /zh-CN/json-formatter");
+
+        await assertMobileNavigationKeyboardPath(browser, baseUrl);
+        console.log("[playwright-smoke] PASS mobile navigation keyboard path");
 
         await assertMobileCommandPaletteJourney(browser, baseUrl);
         console.log("[playwright-smoke] PASS mobile journey: command palette -> /en/base64-encode-decode");

@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { GitPullRequest, Sparkles } from "lucide-react"
+import { GitPullRequest, Map, Sparkles, ThumbsUp } from "lucide-react"
 import type { Locale } from "@/core/i18n/i18n"
 import { isValidLocale } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
@@ -9,12 +9,16 @@ const CHANGELOG_COPY: Record<Locale, {
     badge: string
     intro: string
     roadmapLink: string
+    requestLink: string
+    voteLink: string
     entries: Array<{ date: string; title: string; items: string[] }>
 }> = {
     en: {
         badge: "Release notes",
         intro: "Recent updates across browser-local tools, privacy copy, technical SEO, accessibility, and public planning.",
         roadmapLink: "View roadmap",
+        requestLink: "Request a tool",
+        voteLink: "Vote on requests",
         entries: [
             {
                 date: "2026-06-24",
@@ -41,6 +45,8 @@ const CHANGELOG_COPY: Record<Locale, {
         badge: "发布记录",
         intro: "记录浏览器本地工具、隐私文案、技术 SEO、无障碍和公开规划的近期更新。",
         roadmapLink: "查看路线图",
+        requestLink: "请求工具",
+        voteLink: "为请求投票",
         entries: [
             {
                 date: "2026-06-24",
@@ -67,6 +73,8 @@ const CHANGELOG_COPY: Record<Locale, {
         badge: "發布記錄",
         intro: "記錄瀏覽器本地工具、隱私文案、技術 SEO、無障礙與公開規劃的近期更新。",
         roadmapLink: "查看路線圖",
+        requestLink: "請求工具",
+        voteLink: "為請求投票",
         entries: [
             {
                 date: "2026-06-24",
@@ -93,6 +101,8 @@ const CHANGELOG_COPY: Record<Locale, {
         badge: "リリースノート",
         intro: "ブラウザローカルツール、プライバシー文言、技術 SEO、アクセシビリティ、公開計画の最近の更新です。",
         roadmapLink: "ロードマップを見る",
+        requestLink: "ツールをリクエスト",
+        voteLink: "リクエストに投票",
         entries: [
             {
                 date: "2026-06-24",
@@ -119,6 +129,8 @@ const CHANGELOG_COPY: Record<Locale, {
         badge: "릴리스 노트",
         intro: "브라우저 로컬 도구, 개인정보 보호 문구, 기술 SEO, 접근성, 공개 계획의 최근 업데이트입니다.",
         roadmapLink: "로드맵 보기",
+        requestLink: "도구 요청",
+        voteLink: "요청에 투표",
         entries: [
             {
                 date: "2026-06-24",
@@ -145,6 +157,8 @@ const CHANGELOG_COPY: Record<Locale, {
         badge: "Versionshinweise",
         intro: "Aktuelle Änderungen an browser-lokalen Tools, Datenschutztexten, technischer SEO, Barrierefreiheit und öffentlicher Planung.",
         roadmapLink: "Roadmap ansehen",
+        requestLink: "Tool anfragen",
+        voteLink: "Für Anfragen stimmen",
         entries: [
             {
                 date: "2026-06-24",
@@ -171,6 +185,8 @@ const CHANGELOG_COPY: Record<Locale, {
         badge: "Notes de version",
         intro: "Mises à jour récentes des outils locaux au navigateur, textes de confidentialité, SEO technique, accessibilité et planification publique.",
         roadmapLink: "Voir la feuille de route",
+        requestLink: "Demander un outil",
+        voteLink: "Voter pour les demandes",
         entries: [
             {
                 date: "2026-06-24",
@@ -230,10 +246,20 @@ export default async function ChangelogPage({ params }: { params: Promise<{ lang
                 ))}
             </section>
 
-            <Link className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href={`/${lang}/roadmap`}>
-                <GitPullRequest className="h-4 w-4" aria-hidden="true" />
-                {copy.roadmapLink}
-            </Link>
+            <div className="flex flex-wrap gap-2">
+                <Link className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href={`/${lang}/roadmap`}>
+                    <GitPullRequest className="h-4 w-4" aria-hidden="true" />
+                    {copy.roadmapLink}
+                </Link>
+                <a className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href="https://github.com/baixiangcpp/byteflow.tools/issues/new?template=feature_request.yml" target="_blank" rel="noopener noreferrer">
+                    <Map className="h-4 w-4" aria-hidden="true" />
+                    {copy.requestLink}
+                </a>
+                <a className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href="https://github.com/baixiangcpp/byteflow.tools/issues?q=is%3Aissue%20is%3Aopen%20label%3Aenhancement" target="_blank" rel="noopener noreferrer">
+                    <ThumbsUp className="h-4 w-4" aria-hidden="true" />
+                    {copy.voteLink}
+                </a>
+            </div>
         </div>
     )
 }

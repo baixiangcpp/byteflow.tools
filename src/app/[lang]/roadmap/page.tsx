@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { CheckCircle2, GitPullRequest, Map, ShieldCheck } from "lucide-react"
+import { CheckCircle2, GitPullRequest, Map, ShieldCheck, ThumbsUp } from "lucide-react"
 import type { Locale } from "@/core/i18n/i18n"
 import { isValidLocale } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
@@ -9,6 +9,9 @@ const ROADMAP_COPY: Record<Locale, {
     badge: string
     intro: string
     changelogLink: string
+    voteLink: string
+    requestVoteTitle: string
+    requestVoteBody: string
     productBoundaryTitle: string
     productBoundaryBody: string
     items: Array<{ title: string; status: string; body: string }>
@@ -17,6 +20,9 @@ const ROADMAP_COPY: Record<Locale, {
         badge: "Public planning",
         intro: "The roadmap prioritizes browser-local utility, privacy-visible workflows, and sustainable open-source maintenance. It does not propose accounts, cloud history, or server-side payload processing.",
         changelogLink: "Changelog",
+        voteLink: "Vote on requests",
+        requestVoteTitle: "Request and vote",
+        requestVoteBody: "Open a sanitized feature request for new local-first tools, or add a thumbs-up reaction on an existing request. Do not post real secrets, private payloads, logs, HAR files, private URLs, request or response bodies, prompts, generated output, or sensitive screenshots.",
         productBoundaryTitle: "Product boundary",
         productBoundaryBody: "New features must preserve local-first behavior by default. Public requests should use sanitized examples and must not include production secrets, private payloads, customer data, tokens, logs, or screenshots containing sensitive content.",
         items: [
@@ -30,6 +36,9 @@ const ROADMAP_COPY: Record<Locale, {
         badge: "公开规划",
         intro: "路线图优先关注浏览器本地工具、清晰可见的隐私工作流，以及可持续的开源维护。它不计划账号、云端历史或服务端 payload 处理。",
         changelogLink: "更新日志",
+        voteLink: "为请求投票",
+        requestVoteTitle: "请求与投票",
+        requestVoteBody: "可以用脱敏内容提交新的本地优先工具请求，也可以在已有请求上添加点赞反应。不要发布真实密钥、私有 payload、日志、HAR 文件、私有 URL、请求或响应正文、prompt、生成内容，或敏感截图。",
         productBoundaryTitle: "产品边界",
         productBoundaryBody: "新功能默认必须保持本地优先。公开请求应使用脱敏示例，不能包含生产密钥、私有 payload、客户数据、token、日志或含敏感内容的截图。",
         items: [
@@ -43,6 +52,9 @@ const ROADMAP_COPY: Record<Locale, {
         badge: "公開規劃",
         intro: "路線圖優先關注瀏覽器本地工具、清晰可見的隱私工作流程，以及可持續的開源維護。它不計畫帳號、雲端歷史或服務端 payload 處理。",
         changelogLink: "更新日誌",
+        voteLink: "為請求投票",
+        requestVoteTitle: "請求與投票",
+        requestVoteBody: "可以用脫敏內容提交新的本地優先工具請求，也可以在既有請求上加入讚反應。不要發布真實密鑰、私有 payload、日誌、HAR 檔案、私有 URL、請求或回應正文、prompt、生成內容，或敏感截圖。",
         productBoundaryTitle: "產品邊界",
         productBoundaryBody: "新功能預設必須保持本地優先。公開請求應使用脫敏範例，不能包含正式環境密鑰、私有 payload、客戶資料、token、日誌或含敏感內容的截圖。",
         items: [
@@ -56,6 +68,9 @@ const ROADMAP_COPY: Record<Locale, {
         badge: "公開計画",
         intro: "ロードマップは、ブラウザローカルの実用性、見えるプライバシーワークフロー、持続可能なオープンソース保守を優先します。アカウント、クラウド履歴、サーバー側 payload 処理は計画していません。",
         changelogLink: "変更履歴",
+        voteLink: "リクエストに投票",
+        requestVoteTitle: "リクエストと投票",
+        requestVoteBody: "新しいローカル優先ツールはサニタイズ済み内容でリクエストし、既存リクエストには thumbs-up リアクションを追加できます。本物のシークレット、非公開 payload、ログ、HAR ファイル、非公開 URL、リクエスト/レスポンス本文、prompt、生成出力、機密スクリーンショットは投稿しないでください。",
         productBoundaryTitle: "プロダクト境界",
         productBoundaryBody: "新機能は既定でローカル優先を維持する必要があります。公開リクエストにはサニタイズ済み例だけを使い、本番シークレット、非公開 payload、顧客データ、token、ログ、機密スクリーンショットを含めないでください。",
         items: [
@@ -69,6 +84,9 @@ const ROADMAP_COPY: Record<Locale, {
         badge: "공개 계획",
         intro: "로드맵은 브라우저 로컬 유틸리티, 눈에 보이는 개인정보 보호 워크플로, 지속 가능한 오픈소스 유지보수를 우선합니다. 계정, 클라우드 기록, 서버 측 payload 처리는 제안하지 않습니다.",
         changelogLink: "변경 로그",
+        voteLink: "요청에 투표",
+        requestVoteTitle: "요청과 투표",
+        requestVoteBody: "새 로컬 우선 도구는 정리된 내용으로 요청하고, 기존 요청에는 thumbs-up 반응을 추가할 수 있습니다. 실제 비밀값, 비공개 payload, 로그, HAR 파일, 비공개 URL, 요청/응답 본문, prompt, 생성 출력, 민감한 스크린샷을 게시하지 마세요.",
         productBoundaryTitle: "제품 경계",
         productBoundaryBody: "새 기능은 기본적으로 로컬 우선 동작을 유지해야 합니다. 공개 요청에는 정리된 예시만 사용하고 운영 비밀값, 비공개 payload, 고객 데이터, token, 로그, 민감한 스크린샷을 포함하지 않아야 합니다.",
         items: [
@@ -82,6 +100,9 @@ const ROADMAP_COPY: Record<Locale, {
         badge: "Öffentliche Planung",
         intro: "Die Roadmap priorisiert browser-lokale Werkzeuge, sichtbare Datenschutzabläufe und nachhaltige Open-Source-Wartung. Konten, Cloud-Verlauf oder serverseitige Payload-Verarbeitung sind nicht vorgesehen.",
         changelogLink: "Änderungsprotokoll",
+        voteLink: "Für Anfragen stimmen",
+        requestVoteTitle: "Anfragen und Abstimmen",
+        requestVoteBody: "Neue lokal-orientierte Tools können mit bereinigten Beispielen angefragt werden; bestehende Anfragen können per Daumen-hoch-Reaktion priorisiert werden. Keine echten Geheimnisse, privaten Payloads, Logs, HAR-Dateien, privaten URLs, Request- oder Response-Bodies, Prompts, generierten Ausgaben oder sensiblen Screenshots posten.",
         productBoundaryTitle: "Produktgrenze",
         productBoundaryBody: "Neue Funktionen müssen standardmäßig lokal bleiben. Öffentliche Anfragen sollen bereinigte Beispiele verwenden und dürfen keine Produktionsgeheimnisse, privaten Payloads, Kundendaten, Token, Logs oder sensiblen Screenshots enthalten.",
         items: [
@@ -95,6 +116,9 @@ const ROADMAP_COPY: Record<Locale, {
         badge: "Planification publique",
         intro: "La feuille de route privilégie les outils locaux au navigateur, les flux confidentialité visibles et une maintenance open source durable. Elle ne prévoit pas de comptes, d’historique cloud ni de traitement serveur des payloads.",
         changelogLink: "Journal des changements",
+        voteLink: "Voter pour les demandes",
+        requestVoteTitle: "Demandes et votes",
+        requestVoteBody: "Ouvrez une demande nettoyée pour un nouvel outil local-first, ou ajoutez une réaction pouce levé sur une demande existante. Ne publiez pas de vrais secrets, payloads privés, logs, fichiers HAR, URL privées, corps de requête ou de réponse, prompts, sorties générées ou captures sensibles.",
         productBoundaryTitle: "Limite produit",
         productBoundaryBody: "Les nouvelles fonctionnalités doivent rester local-first par défaut. Les demandes publiques doivent utiliser des exemples nettoyés et ne jamais inclure secrets de production, payloads privés, données client, tokens, logs ou captures sensibles.",
         items: [
@@ -129,6 +153,10 @@ export default async function RoadmapPage({ params }: { params: Promise<{ lang: 
                         <Map className="h-4 w-4" aria-hidden="true" />
                         {t.common.request_tool}
                     </a>
+                    <a className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href="https://github.com/baixiangcpp/byteflow.tools/issues?q=is%3Aissue%20is%3Aopen%20label%3Aenhancement" target="_blank" rel="noopener noreferrer">
+                        <ThumbsUp className="h-4 w-4" aria-hidden="true" />
+                        {copy.voteLink}
+                    </a>
                 </div>
             </section>
 
@@ -145,6 +173,18 @@ export default async function RoadmapPage({ params }: { params: Promise<{ lang: 
                         </div>
                     </article>
                 ))}
+            </section>
+
+            <section className="rounded-lg border border-primary/30 bg-primary/10 p-5">
+                <div className="flex gap-3">
+                    <ThumbsUp className="mt-0.5 h-5 w-5 text-primary" aria-hidden="true" />
+                    <div>
+                        <h2 className="text-lg font-semibold">{copy.requestVoteTitle}</h2>
+                        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                            {copy.requestVoteBody}
+                        </p>
+                    </div>
+                </div>
             </section>
 
             <section className="rounded-lg border border-primary/30 bg-primary/10 p-5">

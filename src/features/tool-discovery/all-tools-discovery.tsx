@@ -83,6 +83,9 @@ type AllToolsDiscoveryLabels = {
     inputUrlDomain: string
     noResults: string
     noResultsSuggestion: string
+    requestTool: string
+    requestToolPrivacy: string
+    voteOnRequests: string
     noFavorites: string
     noRecentTools: string
     open: string
@@ -130,6 +133,8 @@ type ActiveFilter = {
 }
 
 const INITIAL_GROUP_TOOL_LIMIT = 6
+const TOOL_REQUEST_URL = "https://github.com/baixiangcpp/byteflow.tools/issues/new?template=feature_request.yml"
+const TOOL_REQUEST_VOTING_URL = "https://github.com/baixiangcpp/byteflow.tools/issues?q=is%3Aissue%20is%3Aopen%20label%3Aenhancement"
 
 const CAPABILITY_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
     "browser-local": ShieldCheck,
@@ -1144,6 +1149,22 @@ export function AllToolsDiscovery({
                         <Button type="button" variant="outline" onClick={clearFilters}>
                             {labels.clearFilters}
                         </Button>
+                        <a
+                            href={TOOL_REQUEST_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex min-h-11 items-center rounded-md border border-primary/35 bg-primary/10 px-3 text-sm font-medium text-primary transition-colors hover:border-primary/50 hover:bg-primary/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
+                        >
+                            {labels.requestTool}
+                        </a>
+                        <a
+                            href={TOOL_REQUEST_VOTING_URL}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex min-h-11 items-center rounded-md border border-border bg-background px-3 text-sm font-medium text-foreground transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
+                        >
+                            {labels.voteOnRequests}
+                        </a>
                         {workflows.slice(0, 2).map((workflow) => (
                             <Link
                                 key={workflow.id}
@@ -1154,6 +1175,9 @@ export function AllToolsDiscovery({
                             </Link>
                         ))}
                     </div>
+                    <p className="mx-auto mt-3 max-w-2xl text-xs leading-relaxed text-muted-foreground">
+                        {labels.requestToolPrivacy}
+                    </p>
                 </section>
             )}
         </div>

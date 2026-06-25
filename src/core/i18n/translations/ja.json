@@ -97,6 +97,8 @@
     "common_workflows": "よく使うワークフロー",
     "clear_filters": "フィルターをクリア",
     "no_results_suggestion": "別のキーワードを試すか、フィルターを外すか、下のワークフロー群を参照してください。",
+    "request_tool_privacy": "サニタイズ済みの例だけを使ってください。本番シークレット、非公開 payload、token、ログ、HAR ファイル、非公開 URL、リクエスト/レスポンス本文、prompt、生成出力、機密スクリーンショットは投稿しないでください。",
+    "vote_on_requests": "既存リクエストに投票",
     "family_formatters_validators": "フォーマッターとバリデーター",
     "family_encoders_decoders": "エンコーダーとデコーダー",
     "family_text_strings": "テキストと文字列",

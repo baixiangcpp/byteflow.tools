@@ -97,6 +97,8 @@
     "common_workflows": "공통 워크플로",
     "clear_filters": "필터 지우기",
     "no_results_suggestion": "다른 키워드를 시도하거나 필터를 제거하거나 아래 워크플로 그룹을 둘러보세요.",
+    "request_tool_privacy": "정리된 예시만 사용하세요. 운영 비밀값, 비공개 payload, token, 로그, HAR 파일, 비공개 URL, 요청/응답 본문, prompt, 생성 출력, 민감한 스크린샷을 게시하지 마세요.",
+    "vote_on_requests": "기존 요청에 투표",
     "family_formatters_validators": "포매터 및 검증 도구",
     "family_encoders_decoders": "인코더 및 디코더",
     "family_text_strings": "텍스트와 문자열",
