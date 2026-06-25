@@ -132,4 +132,14 @@ describe("sensitive storage audit", () => {
         expect(serviceWorker).toContain("'token'")
         expect(serviceWorker).toContain("'secret'")
     })
+
+    it("does not create new payload handoff URLs or sessionStorage payload refs", () => {
+        const handoff = read("src/core/routing/tool-handoff.ts")
+
+        expect(handoff).toContain("getToolHandoffFromSearchParams")
+        expect(handoff).not.toContain("sessionStorage.setItem")
+        expect(handoff).not.toContain("HANDOFF_STORAGE_PREFIX")
+        expect(handoff).not.toContain("#${HANDOFF_PARAM}=")
+        expect(handoff).not.toContain("#${HANDOFF_REF_PARAM}=")
+    })
 })

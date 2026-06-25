@@ -8,7 +8,7 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { minifyHtml } from "@/features/tools/html-minifier/utils"
 import { buildToolHandoffLink, getToolHandoffFromSearchParams } from "@/core/routing/tool-handoff"
 import { importTextFile, TEXT_FILE_IMPORT_ACCEPT } from "@/core/files/text-file-import"
-import { readStorageString, removeStorageKey, writeStorageString } from "@/core/storage/tool-persistence"
+import { removeStorageKey } from "@/core/storage/tool-persistence"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 
 const SAMPLE_HTML = [
@@ -52,10 +52,7 @@ export function HtmlMinifierPage() {
     }, [])
 
     React.useEffect(() => {
-        const savedInput = readStorageString(INPUT_STORAGE_KEY)
-        if (savedInput) {
-            setInput(savedInput)
-        }
+        removeStorageKey(INPUT_STORAGE_KEY)
     }, [])
 
     React.useEffect(() => {
@@ -67,11 +64,6 @@ export function HtmlMinifierPage() {
         setOutput("")
         setImportError(null)
     }, [])
-
-    React.useEffect(() => {
-        if (!input.trim()) return
-        writeStorageString(INPUT_STORAGE_KEY, input)
-    }, [input])
 
     const handoffPayload = output || input
     const htmlFormatterHandoff = React.useMemo(

@@ -10,7 +10,7 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { formatJavascript } from "@/features/tools/javascript-formatter/utils"
 import { buildToolHandoffLink } from "@/core/routing/tool-handoff"
 import { importTextFile, TEXT_FILE_IMPORT_ACCEPT } from "@/core/files/text-file-import"
-import { readStorageString, removeStorageKey, writeStorageString } from "@/core/storage/tool-persistence"
+import { removeStorageKey } from "@/core/storage/tool-persistence"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 
 const SAMPLE_CODE = [
@@ -38,16 +38,8 @@ export function JavascriptFormatterPage() {
   )
 
   React.useEffect(() => {
-    const savedInput = readStorageString(INPUT_STORAGE_KEY)
-    if (savedInput) {
-      setInput(savedInput)
-    }
+    removeStorageKey(INPUT_STORAGE_KEY)
   }, [])
-
-  React.useEffect(() => {
-    if (!input.trim()) return
-    writeStorageString(INPUT_STORAGE_KEY, input)
-  }, [input])
 
   const handleFormat = React.useCallback(() => {
     if (!input.trim()) {

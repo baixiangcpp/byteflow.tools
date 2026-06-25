@@ -63,10 +63,7 @@ export function CsvJsonConverterPage() {
         toast.success(message, description ? { description } : undefined)
     }, [])
     React.useEffect(() => {
-        const savedInput = readStorageString(INPUT_STORAGE_KEY)
-        if (savedInput !== null && !isOverUtf8Budget(savedInput, TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes)) {
-            setInput(savedInput)
-        }
+        removeStorageKey(INPUT_STORAGE_KEY)
 
         const savedDirection = readStorageString(DIRECTION_STORAGE_KEY)
         if (savedDirection === "csv-to-json" || savedDirection === "json-to-csv") {
@@ -88,18 +85,6 @@ export function CsvJsonConverterPage() {
             setTypeInference(savedTypeInference === "1")
         }
     }, [])
-
-    React.useEffect(() => {
-        if (!input.trim()) {
-            removeStorageKey(INPUT_STORAGE_KEY)
-            return
-        }
-        if (isOverUtf8Budget(input, TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes)) {
-            removeStorageKey(INPUT_STORAGE_KEY)
-            return
-        }
-        writeStorageString(INPUT_STORAGE_KEY, input)
-    }, [input])
 
     React.useEffect(() => {
         writeStorageString(DIRECTION_STORAGE_KEY, direction)

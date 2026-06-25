@@ -10,7 +10,7 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { minifyJavascript } from "@/features/tools/javascript-minifier/utils"
 import { getToolHandoffFromSearchParams } from "@/core/routing/tool-handoff"
 import { importTextFile, TEXT_FILE_IMPORT_ACCEPT } from "@/core/files/text-file-import"
-import { readStorageString, removeStorageKey, writeStorageString } from "@/core/storage/tool-persistence"
+import { removeStorageKey } from "@/core/storage/tool-persistence"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 
 const SAMPLE_CODE = [
@@ -38,10 +38,7 @@ export function JavascriptMinifierPage() {
     const fileInputRef = React.useRef<HTMLInputElement>(null)
 
     React.useEffect(() => {
-        const savedInput = readStorageString(INPUT_STORAGE_KEY)
-        if (savedInput) {
-            setInput(savedInput)
-        }
+        removeStorageKey(INPUT_STORAGE_KEY)
     }, [])
 
     React.useEffect(() => {
@@ -54,11 +51,6 @@ export function JavascriptMinifierPage() {
         setError(null)
         setImportError(null)
     }, [])
-
-    React.useEffect(() => {
-        if (!input.trim()) return
-        writeStorageString(INPUT_STORAGE_KEY, input)
-    }, [input])
 
     const inputSize = new Blob([input]).size
     const outputSize = new Blob([output]).size

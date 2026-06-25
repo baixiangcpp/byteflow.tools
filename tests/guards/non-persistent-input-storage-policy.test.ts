@@ -36,4 +36,35 @@ describe("non-persistent input storage policy", () => {
 
         expect(offenders).toEqual([])
     })
+
+    it("does not default-persist tool payloads, filters, seeds, or history", () => {
+        const filesToScan = sourceFilesUnder("src/features")
+        const forbiddenPatterns = [
+            /\bwriteStorageString\([^)]*(:input|INPUT_STORAGE_KEY)[^)]*,/,
+            /\breadStorageString\([^)]*(:input|INPUT_STORAGE_KEY)[^)]*\)/,
+            /\bwriteStorageJson(?:<[^>]+>)?\([^)]*(?:state|history)[^)]*,[\s\S]*?\b(input|output|payload|filter|seed)\b[\s\S]*?\)/,
+            /\blocalStorage\.setItem\([^)]*(?:history|filter|input|payload|seed)[^)]*\)/,
+        ]
+
+        const offenders = filesToScan.flatMap((file) => {
+            const source = read(file)
+            return forbiddenPatterns
+                .filter((pattern) => pattern.test(source))
+                .map((pattern) => `${file}: ${pattern.source}`)
+        })
+
+        expect(offenders).toEqual([])
+    })
 })
+
+function sourceFilesUnder(relativeDir: string): string[] {
+    const absoluteDir = path.join(ROOT, relativeDir)
+    if (!fs.existsSync(absoluteDir)) return []
+
+    return fs.readdirSync(absoluteDir, { withFileTypes: true }).flatMap((entry) => {
+        const relativePath = path.join(relativeDir, entry.name)
+        if (entry.isDirectory()) return sourceFilesUnder(relativePath)
+        if (entry.isFile() && /\.(ts|tsx)$/.test(entry.name)) return [relativePath]
+        return []
+    })
+}
