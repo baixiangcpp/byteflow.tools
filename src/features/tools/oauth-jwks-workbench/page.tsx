@@ -23,6 +23,13 @@ export function OauthJwksWorkbenchPage() {
     const [selectedKey, setSelectedKey] = React.useState("sample-rsa-key")
     const [output, setOutput] = React.useState("")
     const [error, setError] = React.useState<string | null>(null)
+    const selectMode = React.useCallback((nextMode: Mode) => {
+        if (nextMode === mode) return
+        setMode(nextMode)
+        setOutput("")
+        setError(null)
+    }, [mode])
+
     const keyOptions = React.useMemo(() => {
         try {
             return summarizeJwks(jwks)
@@ -73,10 +80,12 @@ export function OauthJwksWorkbenchPage() {
     }
 
     const actions: ToolAction[] = [
+        ...(mode === "jwks"
+            ? [{ id: "sample", label: t.common.sample, icon: RotateCcw, onClick: () => { setJwks(SAMPLE_INPUT); setToken(SAMPLE_JWT); setSelectedKey("sample-rsa-key"); setOutput(""); setError(null) } } satisfies ToolAction]
+            : []),
+        { id: "clear", label: t.common.clear, icon: Eraser, onClick: () => { if (mode === "jwks") { setJwks(""); setToken(""); setSelectedKey("") } setOutput(""); setError(null) } },
         { id: "run", label: mode === "pkce" ? toolT.generate_pkce_action : toolT.inspect_jwks_action, icon: Play, onClick: run, variant: "default" },
         { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void copyOutput(), disabled: !output },
-        { id: "sample", label: t.common.sample, icon: RotateCcw, onClick: () => { setJwks(SAMPLE_INPUT); setToken(SAMPLE_JWT); setSelectedKey("sample-rsa-key"); setOutput(""); setError(null) } },
-        { id: "clear", label: t.common.clear, icon: Eraser, onClick: () => { setJwks(""); setToken(""); setSelectedKey(""); setOutput(""); setError(null) } },
     ]
 
     return (
@@ -100,11 +109,7 @@ export function OauthJwksWorkbenchPage() {
                         key={item}
                         type="button"
                         className={`inline-flex min-h-9 items-center gap-2 rounded-md border px-3 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${mode === item ? "border-primary bg-primary text-primary-foreground" : "border-border bg-background hover:bg-accent"}`}
-                        onClick={() => {
-                            setMode(item)
-                            setOutput("")
-                            setError(null)
-                        }}
+                        onClick={() => selectMode(item)}
                     >
                         <ShieldCheck className="h-4 w-4" aria-hidden="true" />
                         {item === "pkce" ? toolT.mode_pkce : toolT.mode_jwks}
@@ -140,20 +145,22 @@ export function OauthJwksWorkbenchPage() {
 
             {error ? <div className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">{error}</div> : null}
 
-            <div className="grid flex-1 gap-4 lg:grid-cols-2">
-                <div className="grid gap-4">
-                    <section className="flex min-h-[260px] flex-col overflow-hidden rounded-lg border bg-card">
-                        <div className="tool-pane-header">{toolT.jwks_label}</div>
-                        <Textarea className="h-full min-h-[210px] resize-none border-0 p-4 font-mono text-xs leading-5" value={jwks} onChange={(event) => setJwks(event.target.value)} spellCheck={false} />
-                    </section>
-                    <section className="flex min-h-[220px] flex-col overflow-hidden rounded-lg border bg-card">
-                        <div className="tool-pane-header">{toolT.jwt_label}</div>
-                        <Textarea className="h-full min-h-[170px] resize-none border-0 p-4 font-mono text-xs leading-5" value={token} onChange={(event) => setToken(event.target.value)} spellCheck={false} />
-                    </section>
-                </div>
+            <div className={`grid flex-1 gap-4 ${mode === "jwks" ? "lg:grid-cols-2" : ""}`}>
+                {mode === "jwks" ? (
+                    <div className="grid gap-4">
+                        <section className="flex min-h-[260px] flex-col overflow-hidden rounded-lg border bg-card">
+                            <div className="tool-pane-header">{toolT.jwks_label}</div>
+                            <Textarea aria-label={toolT.jwks_label} className="h-full min-h-[210px] resize-none border-0 p-4 font-mono text-xs leading-5" value={jwks} onChange={(event) => setJwks(event.target.value)} spellCheck={false} />
+                        </section>
+                        <section className="flex min-h-[220px] flex-col overflow-hidden rounded-lg border bg-card">
+                            <div className="tool-pane-header">{toolT.jwt_label}</div>
+                            <Textarea aria-label={toolT.jwt_label} className="h-full min-h-[170px] resize-none border-0 p-4 font-mono text-xs leading-5" value={token} onChange={(event) => setToken(event.target.value)} spellCheck={false} />
+                        </section>
+                    </div>
+                ) : null}
                 <section className="flex min-h-[500px] flex-col overflow-hidden rounded-lg border bg-card">
                     <div className="tool-pane-header">{t.common.output}</div>
-                    <Textarea className="h-full min-h-[440px] resize-none border-0 bg-muted/30 p-4 font-mono text-xs leading-5" value={output} readOnly spellCheck={false} />
+                    <Textarea aria-label={t.common.output} className="h-full min-h-[440px] resize-none border-0 bg-muted/30 p-4 font-mono text-xs leading-5" value={output} readOnly spellCheck={false} />
                 </section>
             </div>
 

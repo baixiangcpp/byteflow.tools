@@ -18,6 +18,134 @@ describe("openapi-diff logic", () => {
         expect(report.items.find((item) => item.message.includes("404"))?.kind).toBe("breaking")
     })
 
+    it("classifies parameter requiredness changes by direction", () => {
+        const before = JSON.stringify({
+            paths: {
+                "/pets": {
+                    get: {
+                        parameters: [
+                            { in: "query", name: "status" },
+                            { in: "query", name: "page", required: true },
+                        ],
+                        responses: { "200": {} },
+                    },
+                },
+            },
+        })
+        const after = JSON.stringify({
+            paths: {
+                "/pets": {
+                    get: {
+                        parameters: [
+                            { in: "query", name: "status", required: true },
+                            { in: "query", name: "page" },
+                        ],
+                        responses: { "200": {} },
+                    },
+                },
+            },
+        })
+
+        const report = diffOpenApiSpecs(before, after)
+
+        expect(report.items).toEqual(expect.arrayContaining([
+            expect.objectContaining({
+                kind: "breaking",
+                message: 'parameter requiredness changed: query parameter "status" optional -> required',
+            }),
+            expect.objectContaining({
+                kind: "changed",
+                message: 'parameter requiredness changed: query parameter "page" required -> optional',
+            }),
+        ]))
+    })
+
+    it("classifies added parameters by requiredness", () => {
+        const before = '{"paths":{"/pets":{"get":{"responses":{"200":{}}}}}}'
+        const after = JSON.stringify({
+            paths: {
+                "/pets": {
+                    get: {
+                        parameters: [
+                            { in: "query", name: "status" },
+                            { in: "query", name: "limit", required: true },
+                        ],
+                        responses: { "200": {} },
+                    },
+                },
+            },
+        })
+
+        const report = diffOpenApiSpecs(before, after)
+
+        expect(report.items).toEqual(expect.arrayContaining([
+            expect.objectContaining({
+                kind: "changed",
+                message: 'parameter added: query parameter "status" (optional)',
+            }),
+            expect.objectContaining({
+                kind: "breaking",
+                message: 'parameter added: query parameter "limit" (required)',
+            }),
+        ]))
+    })
+
+    it("treats path parameters as required when required is omitted", () => {
+        const before = '{"paths":{"/pets/{id}":{"get":{"responses":{"200":{}}}}}}'
+        const after = JSON.stringify({
+            paths: {
+                "/pets/{id}": {
+                    get: {
+                        parameters: [{ in: "path", name: "id" }],
+                        responses: { "200": {} },
+                    },
+                },
+            },
+        })
+
+        const report = diffOpenApiSpecs(before, after)
+
+        expect(report.items).toEqual(expect.arrayContaining([
+            expect.objectContaining({
+                kind: "breaking",
+                message: 'parameter added: path parameter "id" (required)',
+            }),
+        ]))
+    })
+
+    it("includes path-level parameters and lets operation-level parameters override the same key", () => {
+        const before = JSON.stringify({
+            paths: {
+                "/pets": {
+                    parameters: [{ in: "query", name: "version", required: true }],
+                    get: {
+                        responses: { "200": {} },
+                    },
+                },
+            },
+        })
+        const after = JSON.stringify({
+            paths: {
+                "/pets": {
+                    parameters: [{ in: "query", name: "version", required: true }],
+                    get: {
+                        parameters: [{ in: "query", name: "version" }],
+                        responses: { "200": {} },
+                    },
+                },
+            },
+        })
+
+        const report = diffOpenApiSpecs(before, after)
+
+        expect(report.items).toEqual(expect.arrayContaining([
+            expect.objectContaining({
+                kind: "changed",
+                message: 'parameter requiredness changed: query parameter "version" required -> optional',
+            }),
+        ]))
+    })
+
     it("tracks schema and security scheme changes", () => {
         const before = JSON.stringify({
             paths: {},

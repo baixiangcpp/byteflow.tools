@@ -1,5 +1,5 @@
 import YAML from "yaml"
-import type { OpenApiDiffItem, OpenApiDiffReport, OpenApiMethod, OpenApiOperationSnapshot, OpenApiSpecSnapshot } from "./types"
+import type { OpenApiDiffItem, OpenApiDiffReport, OpenApiMethod, OpenApiOperationSnapshot, OpenApiParameterSnapshot, OpenApiSpecSnapshot } from "./types"
 
 const METHODS = new Set<OpenApiMethod>(["get", "post", "put", "patch", "delete", "options", "head", "trace"])
 
@@ -18,16 +18,28 @@ function objectEntries(value: unknown): [string, Record<string, unknown>][] {
     return Object.entries(value as Record<string, unknown>).filter(([, entry]) => Boolean(entry) && typeof entry === "object" && !Array.isArray(entry)) as [string, Record<string, unknown>][]
 }
 
-function listParameterIds(operation: Record<string, unknown>): string[] {
-    const parameters = Array.isArray(operation.parameters) ? operation.parameters : []
-    return parameters
-        .map((parameter) => {
-            if (!parameter || typeof parameter !== "object") return ""
-            const param = parameter as Record<string, unknown>
-            return `${String(param.in ?? "query")}:${String(param.name ?? "(unnamed)")}${param.required ? ":required" : ""}`
-        })
-        .filter(Boolean)
-        .sort()
+function snapshotParameter(parameter: unknown): OpenApiParameterSnapshot | undefined {
+    if (!parameter || typeof parameter !== "object" || Array.isArray(parameter)) return undefined
+    const param = parameter as Record<string, unknown>
+    const location = typeof param.in === "string" && param.in ? param.in : "query"
+    const name = typeof param.name === "string" && param.name ? param.name : "(unnamed)"
+    return {
+        key: `${location}:${name}`,
+        location,
+        name,
+        required: location === "path" || param.required === true,
+    }
+}
+
+function listParameters(pathItem: Record<string, unknown>, operation: Record<string, unknown>): OpenApiParameterSnapshot[] {
+    const parametersByKey = new Map<string, OpenApiParameterSnapshot>()
+    const pathParameters = Array.isArray(pathItem.parameters) ? pathItem.parameters : []
+    const operationParameters = Array.isArray(operation.parameters) ? operation.parameters : []
+    for (const parameter of [...pathParameters, ...operationParameters]) {
+        const snapshot = snapshotParameter(parameter)
+        if (snapshot) parametersByKey.set(snapshot.key, snapshot)
+    }
+    return [...parametersByKey.values()].sort((left, right) => left.key.localeCompare(right.key))
 }
 
 function listResponseCodes(operation: Record<string, unknown>): string[] {
@@ -63,7 +75,7 @@ function snapshotSpec(input: string): OpenApiSpecSnapshot {
                 method: method as OpenApiMethod,
                 operationId: typeof operation.operationId === "string" ? operation.operationId : undefined,
                 summary: typeof operation.summary === "string" ? operation.summary : undefined,
-                parameters: listParameterIds(operation),
+                parameters: listParameters(pathItem, operation),
                 responses: listResponseCodes(operation),
                 security: listSecurity(operation),
             }
@@ -98,6 +110,55 @@ function diffList(target: string, label: string, before: string[], after: string
             items.push({ kind: "changed", target, message: `${label} added: ${value}`, after: value })
         }
     }
+    return items
+}
+
+function requiredLabel(required: boolean): string {
+    return required ? "required" : "optional"
+}
+
+function describeParameter(parameter: OpenApiParameterSnapshot): string {
+    return `${parameter.location} parameter "${parameter.name}" (${requiredLabel(parameter.required)})`
+}
+
+function diffParameters(target: string, before: OpenApiParameterSnapshot[], after: OpenApiParameterSnapshot[]): OpenApiDiffItem[] {
+    const beforeByKey = new Map(before.map((parameter) => [parameter.key, parameter]))
+    const afterByKey = new Map(after.map((parameter) => [parameter.key, parameter]))
+    const items: OpenApiDiffItem[] = []
+
+    for (const parameter of before) {
+        const afterParameter = afterByKey.get(parameter.key)
+        if (!afterParameter) {
+            items.push({
+                kind: parameter.required ? "breaking" : "changed",
+                target,
+                message: `parameter removed: ${describeParameter(parameter)}`,
+                before: describeParameter(parameter),
+            })
+            continue
+        }
+        if (parameter.required !== afterParameter.required) {
+            items.push({
+                kind: afterParameter.required ? "breaking" : "changed",
+                target,
+                message: `parameter requiredness changed: ${parameter.location} parameter "${parameter.name}" ${requiredLabel(parameter.required)} -> ${requiredLabel(afterParameter.required)}`,
+                before: describeParameter(parameter),
+                after: describeParameter(afterParameter),
+            })
+        }
+    }
+
+    for (const parameter of after) {
+        if (!beforeByKey.has(parameter.key)) {
+            items.push({
+                kind: parameter.required ? "breaking" : "changed",
+                target,
+                message: `parameter added: ${describeParameter(parameter)}`,
+                after: describeParameter(parameter),
+            })
+        }
+    }
+
     return items
 }
 
@@ -158,7 +219,7 @@ export function diffOpenApiSpecs(beforeInput: string, afterInput: string): OpenA
                 after: afterOperation.operationId,
             })
         }
-        items.push(...diffList(target, "parameter", beforeOperation.parameters, afterOperation.parameters))
+        items.push(...diffParameters(target, beforeOperation.parameters, afterOperation.parameters))
         items.push(...diffList(target, "response", beforeOperation.responses, afterOperation.responses))
         items.push(...diffList(target, "security", beforeOperation.security, afterOperation.security))
     }
