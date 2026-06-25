@@ -1,4 +1,6 @@
 import { describe, expect, it } from "vitest"
+import fs from "node:fs"
+import path from "node:path"
 import sitemap from "@/app/sitemap"
 import { LOCALES } from "@/core/i18n/i18n"
 import { LEGACY_TAXONOMY_SLUGS } from "@/core/routing/seo-route-policy"
@@ -42,5 +44,21 @@ describe("BF-047 sitemap audit", () => {
                 expect(urls.has(buildCanonicalUrl(locale, tool.slug)), `${locale}/${tool.slug}`).toBe(true)
             }
         }
+    })
+
+    it("wires export-level sitemap QA into build checks", () => {
+        const packageJson = JSON.parse(fs.readFileSync(path.join(process.cwd(), "package.json"), "utf8"))
+        const exportGate = fs.readFileSync(path.join(process.cwd(), "scripts/gates/check-sitemap-export.js"), "utf8")
+
+        expect(packageJson.scripts["check:sitemap-export"]).toBe("node scripts/gates/check-sitemap-export.js")
+        expect(packageJson.scripts["build:post"]).toContain("npm run check:sitemap-export")
+        expect(exportGate).toContain("sitemap.xml")
+        expect(exportGate).toContain("sitemap-audit-report.json")
+        expect(exportGate).toContain("missing exported HTML file")
+        expect(exportGate).toContain("exported page is noindex")
+        expect(exportGate).toContain("canonical mismatch")
+        expect(exportGate).toContain("parameterized URL")
+        expect(exportGate).toContain("legacy taxonomy URL")
+        expect(exportGate).toContain("assertAlternateSet")
     })
 })

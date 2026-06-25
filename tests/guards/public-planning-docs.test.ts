@@ -33,10 +33,30 @@ describe("public roadmap, changelog, self-hosting, and distribution docs", () =>
         ].join("\n")
 
         expect(markup).toContain("Request a tool")
+        expect(markup).toContain("Vote on requests")
+        expect(markup).toContain("Request and vote")
         expect(markup).toContain("no server-side tool payload processing")
         expect(markup).toContain("no payload sync")
         expect(markup).toContain("Self-host byteflow.tools")
         expect(markup).toContain("/en/roadmap")
+        expect(markup).toContain("issues/new?template=feature_request.yml")
+        expect(markup).toContain("label%3Aenhancement")
+        expect(markup).toContain("Do not post real secrets")
+    })
+
+    it("keeps the All Tools empty state wired to privacy-safe request and voting flows", () => {
+        const allToolsPage = fs.readFileSync(path.join(process.cwd(), "src/app/[lang]/all-tools/page.tsx"), "utf8")
+        const allToolsDiscovery = fs.readFileSync(path.join(process.cwd(), "src/features/tool-discovery/all-tools-discovery.tsx"), "utf8")
+        const englishCopy = fs.readFileSync(path.join(process.cwd(), "src/core/i18n/translations/en.json"), "utf8")
+
+        expect(allToolsPage).toContain("requestToolPrivacy")
+        expect(allToolsPage).toContain("voteOnRequests")
+        expect(allToolsDiscovery).toContain("TOOL_REQUEST_URL")
+        expect(allToolsDiscovery).toContain("TOOL_REQUEST_VOTING_URL")
+        expect(allToolsDiscovery).toContain("issues/new?template=feature_request.yml")
+        expect(allToolsDiscovery).toContain("label%3Aenhancement")
+        expect(englishCopy).toContain("Use sanitized examples only")
+        expect(englishCopy).toContain("Vote on existing requests")
     })
 
     it("documents self-hosting and distribution research without proposing cloud payload history", () => {

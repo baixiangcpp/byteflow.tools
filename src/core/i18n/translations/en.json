@@ -97,6 +97,8 @@
     "common_workflows": "Common workflows",
     "clear_filters": "Clear filters",
     "no_results_suggestion": "Try another keyword, remove filters, or browse the workflow groups below.",
+    "request_tool_privacy": "Use sanitized examples only. Do not post production secrets, private payloads, tokens, logs, HAR files, private URLs, request or response bodies, prompts, generated output, or sensitive screenshots.",
+    "vote_on_requests": "Vote on existing requests",
     "family_formatters_validators": "Formatters and validators",
     "family_encoders_decoders": "Encoders and decoders",
     "family_text_strings": "Text and strings",

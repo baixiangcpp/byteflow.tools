@@ -23,16 +23,24 @@ describe("BF-036/BF-038 accessibility and visual QA guard", () => {
 
     it("keeps browser smoke coverage for keyboard, focus, mobile, copy feedback, and overflow", () => {
         const smoke = read("scripts/e2e/run-playwright-smoke.js")
+        const mobileNav = read("src/components/layout/deferred-mobile-nav-menu.tsx")
 
         expect(smoke).toContain("assertCommandPaletteJourney")
         expect(smoke).toContain("assertMobileCommandPaletteJourney")
         expect(smoke).toContain("assertSkipLinkKeyboardPath")
+        expect(smoke).toContain("assertHeaderKeyboardPaths")
+        expect(smoke).toContain("assertMobileNavigationKeyboardPath")
         expect(smoke).toContain("assertMobileToolPageJourneys")
         expect(smoke).toContain("assertMobileTouchTargets")
         expect(smoke).toContain("assertNoHorizontalOverflow")
         expect(smoke).toContain("clickCopyAndExpectToast")
+        expect(smoke).toContain("mobile json formatter long output")
+        expect(smoke).toContain("mobile base64 long URL output")
         expect(smoke).toContain('route: "/en/image-resizer"')
         expect(smoke).toContain('{ width: 390, height: 844 }')
+        expect(mobileNav).toContain("triggerRef")
+        expect(mobileNav).toContain("triggerRef.current?.focus()")
+        expect(mobileNav).toContain("aria-expanded")
     })
 
     it("keeps disabled reasons, long-text containment, and contrast token regression coverage wired", () => {
