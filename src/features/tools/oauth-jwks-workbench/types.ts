@@ -5,6 +5,8 @@ export type PkcePair = {
 }
 
 export type JwksKeySummary = {
+    index: number
+    selector: string
     kid: string
     kty: string
     alg?: string
@@ -12,11 +14,15 @@ export type JwksKeySummary = {
     keyOps: string[]
 }
 
+export type JwksVerificationOptions = {
+    selectedKey?: string
+}
+
 export type JwtJwksVerificationReport = {
     valid: boolean
     selectedKid?: string
+    selectedKey: string
     algorithm?: string
     message: string
     warnings: string[]
 }
-

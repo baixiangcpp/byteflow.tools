@@ -2915,7 +2915,10 @@
       "generate_pkce_action": "生成 PKCE",
       "inspect_jwks_action": "检查 JWKS",
       "jwks_label": "JWKS JSON 输入",
-      "jwt_label": "待验证 JWT"
+      "jwt_label": "待验证 JWT",
+      "selected_key_label": "用于验证的 JWKS key",
+      "selected_key_help": "先按 kid 选择粘贴的 key 再验证。如果 JWT header kid 不一致，报告会提示，而不是静默切换 key。",
+      "no_jwks_keys_option": "未找到 JWKS key"
     },
     "image_privacy_workbench": {
       "title": "图片隐私工作台",

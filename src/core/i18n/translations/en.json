@@ -2935,7 +2935,10 @@
       "generate_pkce_action": "Generate PKCE",
       "inspect_jwks_action": "Inspect JWKS",
       "jwks_label": "JWKS JSON",
-      "jwt_label": "JWT to verify"
+      "jwt_label": "JWT to verify",
+      "selected_key_label": "JWKS key to verify with",
+      "selected_key_help": "Choose a pasted key by kid before verifying. If the JWT header kid differs, the report warns you instead of silently switching keys.",
+      "no_jwks_keys_option": "No JWKS keys found"
     },
     "image_privacy_workbench": {
       "title": "Image Privacy Workbench",

@@ -19,6 +19,7 @@ describe("BF-025/BF-031/BF-035 heavy local processing safeguards", () => {
         expect(task).toContain("new Worker(new URL(\"./image-edit-worker.ts\", import.meta.url)")
         expect(task).toContain("signal: options.signal")
         expect(task).toContain("timeoutMs: options.timeoutMs ?? 20_000")
+        expect(task).toContain("error instanceof WorkerTaskError && (error.code === \"WORKER_TIMEOUT\" || error.code === \"WORKER_ABORTED\")")
         expect(task).toContain("runImageEditDomTask(input)")
         expect(worker).toContain("OffscreenCanvas")
         expect(worker).toContain("createImageBitmap")
@@ -75,26 +76,36 @@ describe("BF-025/BF-031/BF-035 heavy local processing safeguards", () => {
 
         expect(compressionTask).toContain("new Worker(new URL(\"./compression-worker.ts\", import.meta.url)")
         expect(compressionTask).toContain("signal: options.signal")
+        expect(compressionTask).toContain("error instanceof WorkerTaskError && (error.code === \"WORKER_TIMEOUT\" || error.code === \"WORKER_ABORTED\")")
         expect(compressionPage).toContain("runCompressionTask")
         expect(compressionPage).not.toContain("runCompressionLab(input")
         expect(svgTask).toContain("new Worker(new URL(\"./svg-optimize-worker.ts\", import.meta.url)")
         expect(svgTask).toContain("signal: options.signal")
+        expect(svgTask).toContain("error instanceof WorkerTaskError && (error.code === \"WORKER_TIMEOUT\" || error.code === \"WORKER_ABORTED\")")
         expect(svgPage).toContain("runSvgOptimizeTask")
         expect(svgPage).toContain("sanitizeOptimizedSvg")
     })
 
-    it("keeps scanned PDF preview/export and regex work abortable", () => {
+    it("keeps scanned PDF preview/export, image resize, and regex work abortable", () => {
+        const resizeTask = read("src/features/tools/image-resizer/image-resize-task.ts")
         const scanPage = read("src/features/tools/scanned-pdf-converter/page.tsx")
         const scanTask = read("src/features/tools/scanned-pdf-converter/scan-enhance-task.ts")
         const regexTask = read("src/features/tools/regex-tester/regex-test-task.ts")
+        const pipelineAdapters = read("src/features/pipeline/adapter-registry.ts")
 
+        expect(resizeTask).toContain("new Worker(new URL(\"./image-resize-worker.ts\", import.meta.url)")
+        expect(resizeTask).toContain("transfer: input.sourceBytes ? [input.sourceBytes] : undefined")
+        expect(resizeTask).toContain("error instanceof WorkerTaskError && (error.code === \"WORKER_TIMEOUT\" || error.code === \"WORKER_ABORTED\")")
         expect(scanPage).toContain("exportAbortControllerRef")
         expect(scanPage).toContain("runScanEnhanceTask({")
         expect(scanPage).toContain("signal: controller.signal")
         expect(scanTask).toContain("new Worker(new URL(\"./scan-enhance-worker.ts\", import.meta.url)")
         expect(scanTask).toContain("transfer: input.sourceBytes ? [input.sourceBytes] : undefined")
+        expect(scanTask).toContain("error instanceof WorkerTaskError && (error.code === \"WORKER_TIMEOUT\" || error.code === \"WORKER_ABORTED\")")
         expect(regexTask).toContain("new Worker(new URL(\"./regex-test-worker.ts\", import.meta.url)")
         expect(regexTask).toContain("timeoutMs ?? 1_000")
+        expect(pipelineAdapters).toContain("import { runRegexTestTask }")
+        expect(pipelineAdapters).toContain("const result = await runRegexTestTask(pattern, flags, input")
     })
 
     it("keeps shared upload status announced with accessible progress", () => {

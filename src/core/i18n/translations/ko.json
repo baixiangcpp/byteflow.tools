@@ -2915,7 +2915,10 @@
       "generate_pkce_action": "PKCE 생성",
       "inspect_jwks_action": "JWKS 검사",
       "jwks_label": "JWKS JSON 입력",
-      "jwt_label": "검증할 JWT"
+      "jwt_label": "검증할 JWT",
+      "selected_key_label": "검증에 사용할 JWKS key",
+      "selected_key_help": "붙여 넣은 key를 kid로 선택한 뒤 검증합니다. JWT header kid가 다르면 조용히 key를 바꾸지 않고 보고서에 경고합니다.",
+      "no_jwks_keys_option": "JWKS key를 찾을 수 없음"
     },
     "image_privacy_workbench": {
       "title": "이미지 개인정보 워크벤치",

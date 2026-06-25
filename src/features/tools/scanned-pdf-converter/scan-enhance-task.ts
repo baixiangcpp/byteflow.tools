@@ -1,4 +1,4 @@
-import { runWorkerTask } from "@/core/workers/run-worker-task"
+import { runWorkerTask, WorkerTaskError } from "@/core/workers/run-worker-task"
 import { enhanceScanDataUrlDom } from "./scan-enhance-dom"
 import type { ScanEnhanceTaskInput, ScanEnhanceTaskResult } from "./scan-enhance-task-types"
 import { dataUrlToUint8Array } from "./utils"
@@ -60,7 +60,7 @@ export async function runScanEnhanceTask(input: ScanEnhanceTaskInput, options: S
     try {
         return await enhanceWithWorker(input, options)
     } catch (error) {
-        if (error instanceof Error && (error.message === "WORKER_TIMEOUT" || error.message === "WORKER_ABORTED")) {
+        if (error instanceof WorkerTaskError && (error.code === "WORKER_TIMEOUT" || error.code === "WORKER_ABORTED")) {
             throw error
         }
         return enhanceWithDom(input)

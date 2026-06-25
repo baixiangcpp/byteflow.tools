@@ -20,8 +20,27 @@ export function OauthJwksWorkbenchPage() {
     const [mode, setMode] = React.useState<Mode>("pkce")
     const [jwks, setJwks] = React.useState(SAMPLE_INPUT)
     const [token, setToken] = React.useState(SAMPLE_JWT)
+    const [selectedKey, setSelectedKey] = React.useState("sample-rsa-key")
     const [output, setOutput] = React.useState("")
     const [error, setError] = React.useState<string | null>(null)
+    const keyOptions = React.useMemo(() => {
+        try {
+            return summarizeJwks(jwks)
+        } catch {
+            return []
+        }
+    }, [jwks])
+
+    React.useEffect(() => {
+        if (mode !== "jwks") return
+        if (keyOptions.length === 0) {
+            if (selectedKey) setSelectedKey("")
+            return
+        }
+        if (!keyOptions.some((key) => key.selector === selectedKey)) {
+            setSelectedKey(keyOptions[0].selector)
+        }
+    }, [keyOptions, mode, selectedKey])
 
     const run = React.useCallback(() => {
         setError(null)
@@ -32,7 +51,7 @@ export function OauthJwksWorkbenchPage() {
         try {
             const keys = summarizeJwks(jwks)
             setOutput(JSON.stringify({ keys }, null, 2))
-            void verifyJwtWithJwks(token, jwks)
+            void verifyJwtWithJwks(token, jwks, { selectedKey })
                 .then((report) => setOutput(JSON.stringify({ keys, verification: report }, null, 2)))
                 .catch((verifyError: unknown) => {
                     setOutput(JSON.stringify({ keys, verification: { valid: false, message: verifyError instanceof Error ? verifyError.message : String(verifyError) } }, null, 2))
@@ -41,7 +60,7 @@ export function OauthJwksWorkbenchPage() {
             setOutput("")
             setError(runError instanceof Error ? runError.message : String(runError))
         }
-    }, [jwks, mode, token])
+    }, [jwks, mode, selectedKey, token])
 
     const copyOutput = async () => {
         if (!output) return
@@ -56,8 +75,8 @@ export function OauthJwksWorkbenchPage() {
     const actions: ToolAction[] = [
         { id: "run", label: mode === "pkce" ? toolT.generate_pkce_action : toolT.inspect_jwks_action, icon: Play, onClick: run, variant: "default" },
         { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void copyOutput(), disabled: !output },
-        { id: "sample", label: t.common.sample, icon: RotateCcw, onClick: () => { setJwks(SAMPLE_INPUT); setToken(SAMPLE_JWT); setOutput(""); setError(null) } },
-        { id: "clear", label: t.common.clear, icon: Eraser, onClick: () => { setJwks(""); setToken(""); setOutput(""); setError(null) } },
+        { id: "sample", label: t.common.sample, icon: RotateCcw, onClick: () => { setJwks(SAMPLE_INPUT); setToken(SAMPLE_JWT); setSelectedKey("sample-rsa-key"); setOutput(""); setError(null) } },
+        { id: "clear", label: t.common.clear, icon: Eraser, onClick: () => { setJwks(""); setToken(""); setSelectedKey(""); setOutput(""); setError(null) } },
     ]
 
     return (
@@ -93,6 +112,32 @@ export function OauthJwksWorkbenchPage() {
                 ))}
             </div>
 
+            {mode === "jwks" ? (
+                <div className="grid gap-2 rounded-lg border border-border/70 bg-card/55 p-3 sm:grid-cols-[minmax(0,1fr)_minmax(220px,320px)] sm:items-end">
+                    <div>
+                        <div className="text-sm font-medium">{toolT.selected_key_label}</div>
+                        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                            {toolT.selected_key_help}
+                        </p>
+                    </div>
+                    <select
+                        className="min-h-11 rounded-md border border-input bg-background px-3 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                        value={selectedKey}
+                        onChange={(event) => setSelectedKey(event.target.value)}
+                        aria-label={toolT.selected_key_label}
+                        disabled={keyOptions.length === 0}
+                    >
+                        {keyOptions.length === 0 ? (
+                            <option value="">{toolT.no_jwks_keys_option}</option>
+                        ) : keyOptions.map((key) => (
+                            <option key={key.selector} value={key.selector}>
+                                {key.kid} - {key.kty}{key.alg ? ` / ${key.alg}` : ""}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+            ) : null}
+
             {error ? <div className="rounded-md border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">{error}</div> : null}
 
             <div className="grid flex-1 gap-4 lg:grid-cols-2">
@@ -116,4 +161,3 @@ export function OauthJwksWorkbenchPage() {
         </div>
     )
 }
-
