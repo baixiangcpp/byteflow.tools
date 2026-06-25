@@ -13,6 +13,7 @@ import LocalizedHomePage from "@/app/[lang]/page"
 
 const locale: Locale = "en"
 const translations = getTranslation(locale)
+const ROOT_TITLE = "byteflow.tools | Privacy-first Local Developer Tools"
 const ROOT_OG_IMAGE = buildDefaultOgImageUrl(locale)
 
 const ROOT_ALTERNATES = Object.fromEntries(
@@ -26,12 +27,12 @@ ROOT_ALTERNATES["x-default"] = SITE_URL
 
 export const metadata: Metadata = {
     title: {
-        absolute: translations.site.title,
+        absolute: ROOT_TITLE,
     },
     description: `${translations.site.description} No signup, no cloud history, and installable as a PWA.`,
-    keywords: buildSiteKeywords({ lang: locale, title: translations.site.title }),
+    keywords: buildSiteKeywords({ lang: locale, title: ROOT_TITLE }),
     openGraph: {
-        title: translations.site.title,
+        title: ROOT_TITLE,
         description: translations.site.description,
         url: SITE_URL,
         siteName: "byteflow.tools",
@@ -40,7 +41,7 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: "summary_large_image",
-        title: translations.site.title,
+        title: ROOT_TITLE,
         description: translations.site.description,
         images: [ROOT_OG_IMAGE],
     },
