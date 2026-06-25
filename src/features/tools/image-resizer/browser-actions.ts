@@ -1,4 +1,4 @@
-import { loadImageElement } from "@/core/utils/image-canvas-utils"
+import { loadImageElement, validateImageDimensions } from "@/core/utils/image-canvas-utils"
 import { FILE_INPUT_POLICIES, readArrayBufferWithPolicy } from "@/core/files/file-input-policy"
 
 export type LoadedResizeImageFile = {
@@ -15,6 +15,7 @@ export async function loadResizeImageFile(file: File): Promise<LoadedResizeImage
     const objectUrl = URL.createObjectURL(file)
     try {
         const image = await loadImageElement(objectUrl)
+        validateImageDimensions(image.width, image.height, FILE_INPUT_POLICIES["image-standard"])
         return {
             bytes,
             height: image.height,

@@ -12,8 +12,10 @@ const SPLIT_PAGE_LINE_LIMITS: Record<string, number> = {
     "qr-code-generator": 450,
     "base64-encode-decode": 470,
     "hash-generator": 450,
+    "image-resizer": 520,
     "jwt-workbench": 400,
     "scanned-pdf-converter": 520,
+    "tweet-to-image-converter": 500,
 }
 
 const NON_UI_MODULE_NAMES = new Set(["logic.ts", "samples.ts", "types.ts", "constants.ts", "utils.ts", "error-utils.ts"])

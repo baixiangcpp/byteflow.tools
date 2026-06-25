@@ -14,6 +14,7 @@ describe("tool action consistency guard", () => {
         expect(designSystem).toContain("Reset restores documented defaults")
         expect(designSystem).toContain("Copy, Download, and Export operate only on current valid output")
         expect(designSystem).toContain("Destructive Clear and Reset actions use destructive styling")
+        expect(designSystem).toContain("Shared tool actions should appear in this order")
     })
 
     it("keeps audited tool pages on the shared action bar path", () => {
@@ -21,15 +22,106 @@ describe("tool action consistency guard", () => {
             "src/features/tools/json-formatter/page.tsx",
             "src/features/tools/base64-encode-decode/page.tsx",
             "src/features/tools/image-resizer/page.tsx",
+            "src/features/tools/jwt-decoder/page.tsx",
             "src/features/tools/regex-generator/page.tsx",
             "src/features/tools/regex-tester/page.tsx",
             "src/features/tools/uuid-generator/page.tsx",
             "src/features/tools/youtube-thumbnail-grabber/page.tsx",
+            "src/features/tools/pipeline-builder/page.tsx",
         ]
 
         for (const file of auditedFiles) {
             expect(read(file), file).toContain("ToolActionBar")
         }
+    })
+
+    it("keeps shared toolbar sample actions named Sample instead of Try Example", () => {
+        const auditedFiles = [
+            "src/features/tools/json-formatter/page.tsx",
+            "src/features/tools/base64-encode-decode/page.tsx",
+            "src/features/tools/image-resizer/page.tsx",
+            "src/features/tools/jwt-decoder/page.tsx",
+            "src/features/tools/regex-generator/page.tsx",
+            "src/features/tools/regex-tester/page.tsx",
+            "src/features/tools/uuid-generator/page.tsx",
+            "src/features/tools/youtube-thumbnail-grabber/page.tsx",
+            "src/features/tools/pipeline-builder/page.tsx",
+        ]
+
+        for (const file of auditedFiles) {
+            const source = read(file)
+            expect(source, file).not.toMatch(/id:\s*"sample"[\s\S]{0,160}label:\s*t\.common\.try_example/)
+            if (source.includes('id: "sample"')) {
+                expect(source, file).toContain("label: t.common.sample")
+            }
+        }
+    })
+
+    it("keeps copy/download feedback exposed through an accessible live region", () => {
+        const toaster = read("src/components/ui/sonner.tsx")
+
+        expect(toaster).toContain('role="status"')
+        expect(toaster).toContain('aria-live="polite"')
+        expect(toaster).toContain("data-toast-live-region")
+    })
+
+    it("keeps audited copy, download, and share actions on visible success/failure feedback paths", () => {
+        const auditedFeedbackFiles = [
+            "src/features/tools/json-formatter/page.tsx",
+            "src/features/tools/base64-encode-decode/page.tsx",
+            "src/features/tools/image-resizer/page.tsx",
+            "src/features/tools/uuid-generator/page.tsx",
+            "src/features/tools/youtube-thumbnail-grabber/page.tsx",
+        ]
+
+        for (const file of auditedFeedbackFiles) {
+            const source = read(file)
+            expect(source, file).toMatch(/toast\.success/)
+            expect(source, file).toMatch(/toast\.error/)
+            if (source.includes('id: "copy') || source.includes("id: \"copy_")) {
+                expect(source, file).toContain("safeClipboardWrite")
+                expect(source, file).toContain("copy_failed")
+            }
+            if (source.includes('id: "download') || source.includes("id: \"download_")) {
+                expect(source, file).toContain("downloaded")
+            }
+        }
+
+        const base64 = read("src/features/tools/base64-encode-decode/page.tsx")
+        expect(base64).toContain('id: "share"')
+        expect(base64).toContain("navigator.share")
+        expect(base64).toContain("link_copied")
+    })
+
+    it("keeps audited disabled actions explainable and destructive actions visually distinct", () => {
+        const auditedFiles = [
+            "src/features/tools/json-formatter/page.tsx",
+            "src/features/tools/base64-encode-decode/page.tsx",
+            "src/features/tools/image-resizer/page.tsx",
+            "src/features/tools/uuid-generator/page.tsx",
+            "src/features/tools/youtube-thumbnail-grabber/page.tsx",
+        ]
+
+        for (const file of auditedFiles) {
+            const source = read(file)
+            expect(source, file).toContain("disabledReason")
+        }
+
+        const destructiveFiles = [
+            "src/features/tools/json-formatter/page.tsx",
+            "src/features/tools/base64-encode-decode/page.tsx",
+            "src/features/tools/image-resizer/page.tsx",
+            "src/features/tools/youtube-thumbnail-grabber/page.tsx",
+        ]
+        for (const file of destructiveFiles) {
+            expect(read(file), file).toContain("destructive: true")
+        }
+
+        const componentTest = read("tests/component/tool-action-bar.test.tsx")
+        expect(componentTest).toContain("orders common actions")
+        expect(componentTest).toContain("marks clear and reset style actions as destructive")
+        expect(componentTest).toContain("falls back to a generic disabled reason")
+        expect(componentTest).toContain("describes disabled handoff actions")
     })
 
     it("keeps JSON downloads as JSON files with stale output clearing", () => {

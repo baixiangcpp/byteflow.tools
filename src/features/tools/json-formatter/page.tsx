@@ -382,7 +382,7 @@ export function JsonFormatterPage() {
     const actions: ToolAction[] = [
         {
             id: "sample",
-            label: t.common.try_example,
+            label: t.common.sample,
             icon: TestTube2,
             onClick: handleUseSample,
         },

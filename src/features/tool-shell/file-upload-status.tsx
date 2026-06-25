@@ -50,7 +50,14 @@ export function FileUploadStatus({
             </div>
             {normalizedProgress !== undefined ? (
                 <div className="mt-3">
-                    <div className="h-1.5 overflow-hidden rounded-full bg-muted" aria-hidden="true">
+                    <div
+                        className="h-1.5 overflow-hidden rounded-full bg-muted"
+                        role="progressbar"
+                        aria-label={message || t.common.processing_file_locally}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-valuenow={normalizedProgress}
+                    >
                         <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${normalizedProgress}%` }} />
                     </div>
                     <div className="mt-1 text-[11px] tabular-nums">{normalizedProgress}%</div>

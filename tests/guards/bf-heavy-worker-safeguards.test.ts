@@ -27,6 +27,46 @@ describe("BF-025/BF-031/BF-035 heavy local processing safeguards", () => {
         expect(censor).toContain("runImageEditTask({ operation: \"censor\"")
     })
 
+    it("keeps image upload entry points on shared policies with visible status and keyboard access", () => {
+        const files = [
+            "src/features/tools/image-caption-generator/page.tsx",
+            "src/features/tools/image-resizer/page.tsx",
+            "src/features/tools/tweet-to-image-converter/page.tsx",
+        ]
+
+        for (const file of files) {
+            const source = read(file)
+            expect(source, file).toContain("FILE_INPUT_POLICIES")
+            expect(source, file).toContain("FileUploadStatus")
+            expect(source, file).toContain("status=")
+            expect(source, file).toContain("progress=")
+            expect(source, file).toContain("accept={")
+            expect(source, file).not.toContain("MAX_FILE_SIZE")
+            expect(source, file).not.toContain('accept="image/*"')
+            expect(source, file).not.toContain('file.type.startsWith("image/")')
+        }
+
+        const caption = read("src/features/tools/image-caption-generator/page.tsx")
+        const resizer = read("src/features/tools/image-resizer/page.tsx")
+        const tweet = read("src/features/tools/tweet-to-image-converter/page.tsx")
+
+        expect(caption).toContain('role="button"')
+        expect(caption).toContain("onKeyDown")
+        expect(caption).toContain("handleCancelUpload")
+        expect(caption).toContain("validateImageDimensions")
+        expect(resizer).toContain('role="button"')
+        expect(resizer).toContain("onKeyDown")
+        expect(resizer).toContain("runImageResizeTask({")
+        expect(resizer).toContain("cancelProcessing")
+        expect(resizer).toContain('setUploadStatus("processing")')
+        expect(resizer).toContain("disabled: isProcessing || !outputDataUrl")
+        expect(resizer).toContain("onCancel={isProcessing || uploadStatus === \"loading\" ? cancelProcessing : undefined}")
+        expect(read("src/features/tools/image-resizer/browser-actions.ts")).toContain("validateImageDimensions")
+        expect(tweet).toContain("handleCancelAvatarUpload")
+        expect(tweet).toContain('FILE_INPUT_POLICIES["image-logo"]')
+        expect(tweet).toContain("validateImageDimensions")
+    })
+
     it("keeps compression and SVG optimization behind worker tasks", () => {
         const compressionTask = read("src/features/tools/gzip-brotli-lab/compression-task.ts")
         const compressionPage = read("src/features/tools/gzip-brotli-lab/page.tsx")
@@ -55,5 +95,15 @@ describe("BF-025/BF-031/BF-035 heavy local processing safeguards", () => {
         expect(scanTask).toContain("transfer: input.sourceBytes ? [input.sourceBytes] : undefined")
         expect(regexTask).toContain("new Worker(new URL(\"./regex-test-worker.ts\", import.meta.url)")
         expect(regexTask).toContain("timeoutMs ?? 1_000")
+    })
+
+    it("keeps shared upload status announced with accessible progress", () => {
+        const status = read("src/features/tool-shell/file-upload-status.tsx")
+
+        expect(status).toContain('role="status"')
+        expect(status).toContain('aria-live="polite"')
+        expect(status).toContain('role="progressbar"')
+        expect(status).toContain("aria-valuenow={normalizedProgress}")
+        expect(status).toContain("onCancel")
     })
 })
