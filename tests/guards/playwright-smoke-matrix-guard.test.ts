@@ -9,7 +9,7 @@ describe("playwright smoke matrix guard", () => {
         expect(SMOKE_SOURCE).toContain('"/en/base64-encode-decode"')
         expect(SMOKE_SOURCE).toContain('"/en/pipeline-builder"')
         expect(SMOKE_SOURCE).toContain('"/en/csv-json-converter"')
-        expect(SMOKE_SOURCE).toContain("assertBase64PipelineHandoffJourney")
+        expect(SMOKE_SOURCE).toContain("assertBase64PipelineSafeNavigationJourney")
         expect(SMOKE_SOURCE).toContain("assertPipelineRecipeJourney")
         expect(SMOKE_SOURCE).toContain("assertMonacoFallbackJourney")
         expect(SMOKE_SOURCE).toContain("assertMobileCommandPaletteJourney")
