@@ -91,14 +91,18 @@ export function ImageResizerPage() {
         renderAbortControllerRef.current = controller
 
         const render = async () => {
-            const source = imageSrc || demoSrc
+            const source = imageSrc
             if (!source) {
                 setOutputDataUrl("")
+                setUploadStatus("idle")
+                setUploadMessage("")
+                setUploadProgress(undefined)
                 setIsProcessing(false)
                 return
             }
 
             setIsProcessing(true)
+            setOutputDataUrl("")
             setUploadStatus("processing")
             setUploadMessage(t.common.processing_file_locally)
             setUploadProgress(65)
@@ -137,7 +141,7 @@ export function ImageResizerPage() {
         return () => {
             controller.abort()
         }
-    }, [demoSrc, fitMode, format, imageBytes, imageMime, imageSrc, quality, t.common.file_processing_cancelled, t.common.file_ready_locally, t.common.image_process_failed, t.common.processing_file_locally, targetHeight, targetWidth])
+    }, [fitMode, format, imageBytes, imageMime, imageSrc, quality, t.common.file_processing_cancelled, t.common.file_ready_locally, t.common.image_process_failed, t.common.processing_file_locally, targetHeight, targetWidth])
 
     const output = React.useMemo(() => buildResizeOutputSummary({
         fitMode,
@@ -208,6 +212,7 @@ export function ImageResizerPage() {
         renderAbortControllerRef.current?.abort()
         renderRequestIdRef.current += 1
         setIsProcessing(false)
+        setOutputDataUrl("")
         setUploadStatus("cancelled")
         setUploadMessage(t.common.file_processing_cancelled)
         setUploadProgress(undefined)
@@ -330,14 +335,15 @@ export function ImageResizerPage() {
                             if (file) void handleFile(file)
                         }}
                     >
-                        {imageSrc || demoSrc ? (
+                        {imageSrc ? (
                             // eslint-disable-next-line @next/next/no-img-element
-                            <img src={imageSrc || demoSrc} alt={toolT.source_preview_alt} className="max-h-[280px] max-w-full rounded-lg border object-contain" />
+                            <img src={imageSrc} alt={toolT.source_preview_alt} className="max-h-[280px] max-w-full rounded-lg border object-contain" />
                         ) : null}
                         <input
                             ref={fileInputRef}
                             type="file"
                             accept={uploadPolicy.accept}
+                            aria-label={uploadPolicy.description}
                             className="hidden"
                             onChange={(event) => {
                                 const file = event.target.files?.[0]
@@ -391,6 +397,8 @@ export function ImageResizerPage() {
                             <button
                                 type="button"
                                 onClick={() => setLockAspect((prev) => !prev)}
+                                aria-pressed={lockAspect}
+                                aria-label={toolT.output_aspect_lock_label}
                                 className={`inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-md border px-3 text-sm ${
                                     lockAspect
                                         ? "border-primary/40 bg-primary/10 text-primary"
@@ -410,6 +418,8 @@ export function ImageResizerPage() {
                                         key={mode}
                                         type="button"
                                         onClick={() => setFitMode(mode)}
+                                        aria-pressed={fitMode === mode}
+                                        aria-label={`${toolT.output_fit_mode_label}: ${fitModeLabels[mode]}`}
                                         className={`min-h-11 rounded-md border px-2 text-xs uppercase tracking-wide ${
                                             fitMode === mode
                                                 ? "border-primary/40 bg-primary/10 text-primary"
@@ -432,6 +442,8 @@ export function ImageResizerPage() {
                                         key={item}
                                         type="button"
                                         onClick={() => setFormat(item)}
+                                        aria-pressed={format === item}
+                                        aria-label={`${toolT.output_format_label}: ${item.toUpperCase()}`}
                                         className={`min-h-11 rounded-md border px-2 text-xs uppercase tracking-wide ${
                                             format === item
                                                 ? "border-primary/40 bg-primary/10 text-primary"
@@ -492,6 +504,7 @@ export function ImageResizerPage() {
                         <Textarea
                             readOnly
                             value={output}
+                            aria-label={t.common.output}
                             className="h-full min-h-[280px] w-full resize-none border-0 p-4 font-mono text-sm leading-relaxed focus-visible:ring-1 focus-visible:ring-ring/50"
                             spellCheck={false}
                         />

@@ -77,6 +77,8 @@ describe("external request media tools", () => {
         expect(screen.getByText("Confirm external request")).toBeInTheDocument()
         expect(screen.getByText("youtube.com, youtube-nocookie.com, youtu.be, i.ytimg.com")).toBeInTheDocument()
         expect(screen.getByRole("link", { name: "Trust Center" })).toHaveAttribute("href", "/en/trust-center#external-request-tools")
+        expect(screen.getByRole("textbox", { name: "Video URL" })).toHaveAccessibleDescription("Thumbnail candidates generated.")
+        expect(screen.getByRole("status")).toHaveTextContent("Thumbnail candidates generated.")
         expect(screen.getByRole("button", { name: "Preview", description: "Confirm the external request before previewing or downloading." })).toBeDisabled()
         expect(globalThis.fetch).not.toHaveBeenCalled()
 
@@ -111,6 +113,8 @@ describe("external request media tools", () => {
 
         expect(screen.getByText("Confirm external request")).toBeInTheDocument()
         expect(screen.getByText("vimeo.com, player.vimeo.com, vumbnail.com")).toBeInTheDocument()
+        expect(screen.getByRole("textbox", { name: "Video URL" })).toHaveAccessibleDescription("Thumbnail candidates generated.")
+        expect(screen.getByRole("status")).toHaveTextContent("Thumbnail candidates generated.")
         expect(screen.getByRole("button", { name: "Preview", description: "Confirm the external request before previewing or downloading." })).toBeDisabled()
 
         fireEvent.click(screen.getByLabelText("I understand this action may request the disclosed external asset from my browser."))
@@ -155,6 +159,8 @@ describe("external request media tools", () => {
         fireEvent.change(screen.getByPlaceholderText("https://…"), { target: { value: "https://cdn.instagram.com/public/photo.jpg" } })
         fireEvent.click(screen.getByLabelText("I confirm this media URL is mine or I have explicit permission to download and use it."))
 
+        expect(screen.getByRole("textbox", { name: "Input URL" })).toHaveAccessibleDescription("All checks passed. You can now download the media.")
+        expect(screen.getByRole("status")).toHaveTextContent("All checks passed. You can now download the media.")
         expect(screen.getByRole("button", { name: "Download", description: "Confirm the external request before previewing or downloading." })).toBeDisabled()
         expect(fetchMock).not.toHaveBeenCalled()
 

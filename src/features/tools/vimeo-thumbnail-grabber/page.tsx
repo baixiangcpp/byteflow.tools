@@ -187,7 +187,14 @@ export function VimeoThumbnailGrabberPage() {
                     <div className="rounded-lg border bg-background/60">
                         <div className="tool-pane-header">{t.common.video_url}</div>
                         <div className="space-y-3 border-t p-3">
-                            <Input value={url} onChange={(event) => setUrl(event.target.value)} placeholder="https://vimeo.com/…" spellCheck={false} />
+                            <Input
+                                value={url}
+                                onChange={(event) => setUrl(event.target.value)}
+                                placeholder="https://vimeo.com/…"
+                                aria-label={t.common.video_url}
+                                aria-describedby="vimeo-thumbnail-status"
+                                spellCheck={false}
+                            />
                             <div className="rounded-md border bg-background/80 p-3 text-xs text-muted-foreground">
                                 {parsedVideoIdLabel}: <span className="font-mono text-foreground">{videoId || noneLabel}</span>
                             </div>
@@ -259,7 +266,7 @@ export function VimeoThumbnailGrabberPage() {
                         )}
                     </ToolPreviewArea>
                     <div className="space-y-3 border-b bg-background/30 p-3">
-                        <div className="rounded-lg border bg-background p-2 text-xs text-muted-foreground">
+                        <div id="vimeo-thumbnail-status" role="status" aria-live="polite" className="rounded-lg border bg-background p-2 text-xs text-muted-foreground">
                             <ImageDown className="mr-1 inline h-3.5 w-3.5" />
                             {status}
                         </div>

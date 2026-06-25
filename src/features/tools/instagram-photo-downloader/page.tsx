@@ -262,6 +262,8 @@ export function InstagramPhotoDownloaderPage() {
                                     setExternalRequestConfirmed(false)
                                 }}
                                 placeholder="https://…"
+                                aria-label={t.common.input_url}
+                                aria-describedby="instagram-media-status"
                                 spellCheck={false}
                             />
                             <label className="flex items-start gap-2 rounded-lg border bg-background/80 p-3 text-sm leading-relaxed">
@@ -300,12 +302,12 @@ export function InstagramPhotoDownloaderPage() {
                                 {text("compliance_notice")}
                             </div>
                             {canDownload ? (
-                                <div className="flex items-start gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 p-3 text-emerald-700 dark:text-emerald-300">
+                                <div id="instagram-media-status" role="status" aria-live="polite" className="flex items-start gap-2 rounded-md border border-emerald-500/30 bg-emerald-500/10 p-3 text-emerald-700 dark:text-emerald-300">
                                     <CheckCircle2 className="mt-0.5 h-4 w-4" />
                                     <span>{guidancePassed}</span>
                                 </div>
                             ) : (
-                                <div className="flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-amber-700 dark:text-amber-300">
+                                <div id="instagram-media-status" role="status" aria-live="polite" className="flex items-start gap-2 rounded-md border border-amber-500/30 bg-amber-500/10 p-3 text-amber-700 dark:text-amber-300">
                                     <AlertTriangle className="mt-0.5 h-4 w-4" />
                                     <span>{statusNote || guidanceNeedInput}</span>
                                 </div>

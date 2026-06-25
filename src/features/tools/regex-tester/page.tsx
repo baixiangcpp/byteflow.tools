@@ -129,29 +129,33 @@ export function RegexTesterPage() {
                 <div className="md:col-span-12 space-y-4 p-6 border rounded-xl bg-card shadow-sm">
                     <div className="flex flex-col md:flex-row gap-4">
                         <div className="flex-1 space-y-2 relative">
-                            <label className="text-sm font-medium leading-none">
+                            <label htmlFor="regex-pattern" className="text-sm font-medium leading-none">
                                 {toolT.expression_pattern_label}
                             </label>
                             <div className="relative flex items-center">
                                 <div className="absolute left-3 text-muted-foreground font-mono text-lg select-none">/</div>
                                 <Input
+                                    id="regex-pattern"
                                     type="text"
                                     className={`font-mono text-lg h-12 pl-8 pr-4 ${error ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                                     placeholder={toolT.pattern_placeholder}
                                     value={pattern}
                                     onChange={(e) => setPattern(e.target.value)}
+                                    aria-describedby={error ? "regex-pattern-error" : undefined}
+                                    aria-invalid={error ? "true" : undefined}
                                     spellCheck={false}
                                 />
                                 <div className="absolute right-3 text-muted-foreground font-mono text-lg select-none">/</div>
                             </div>
-                            {error && <p className="text-sm text-destructive">{error}</p>}
+                            {error && <p id="regex-pattern-error" role="alert" className="text-sm text-destructive">{error}</p>}
                         </div>
 
                         <div className="w-full md:w-32 space-y-2">
-                            <label className="text-sm font-medium leading-none">
+                            <label htmlFor="regex-flags" className="text-sm font-medium leading-none">
                                 {toolT.flags_label}
                             </label>
                             <Input
+                                id="regex-flags"
                                 type="text"
                                 className="font-mono text-lg h-12"
                                 placeholder={toolT.flags_placeholder}
@@ -173,6 +177,7 @@ export function RegexTesterPage() {
                         placeholder={toolT.test_string_placeholder}
                         value={testString}
                         onChange={(e) => setTestString(e.target.value)}
+                        aria-label={toolT.test_string_label}
                         spellCheck={false}
                     />
                 </div>
@@ -190,7 +195,7 @@ export function RegexTesterPage() {
                         </span>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                    <div className="flex-1 overflow-y-auto p-4 space-y-4" role="status" aria-live="polite" aria-atomic="false">
                         {warnings.length > 0 && (
                             <div className="rounded-md border border-amber-500/35 bg-amber-500/10 p-3 text-xs text-amber-700 dark:text-amber-300">
                                 <div className="flex items-start gap-2 font-medium">

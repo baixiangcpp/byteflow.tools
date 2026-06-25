@@ -415,7 +415,7 @@ export function Base64Page() {
             </div>
 
             {error ? (
-                <div className="rounded-md bg-destructive/90 p-3 text-sm font-medium text-destructive-foreground">
+                <div id="base64-error" role="alert" className="rounded-md bg-destructive/90 p-3 text-sm font-medium text-destructive-foreground">
                     {error}
                 </div>
             ) : null}
@@ -436,6 +436,9 @@ export function Base64Page() {
                             placeholder={mode === "file" ? text("input_placeholder_file") : text("input_placeholder_text")}
                             value={input}
                             onChange={(event) => setInput(event.target.value)}
+                            aria-label={t.common.input}
+                            aria-describedby={error ? "base64-error" : undefined}
+                            aria-invalid={error ? "true" : undefined}
                             spellCheck={false}
                         />
                     </div>
@@ -454,6 +457,7 @@ export function Base64Page() {
                             placeholder={t.common.result_placeholder}
                             value={outputPreview}
                             readOnly
+                            aria-label={t.common.output}
                             spellCheck={false}
                         />
                         {isOutputPreviewTruncated ? (
