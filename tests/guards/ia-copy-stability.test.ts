@@ -20,8 +20,9 @@ describe("IA count copy stability", () => {
         expect(homeSource).toContain("formatToolRegistryStatsTemplate")
         expect(allToolsSource).toContain("getToolRegistryStats")
         expect(allToolsSource).toContain("totalTools={registryStats.totalTools}")
-        expect(rootSource).toContain("getToolRegistryStats")
-        expect(rootSource).toContain("formatToolRegistryStatsTemplate")
+        expect(rootSource).toContain('import LocalizedHomePage from "@/app/[lang]/page"')
+        expect(rootSource).toContain("<LocalizedHomePage")
+        expect(rootSource).not.toContain("t.site.root_title")
     })
 
     it("keeps localized count copy as registry-backed templates", () => {
