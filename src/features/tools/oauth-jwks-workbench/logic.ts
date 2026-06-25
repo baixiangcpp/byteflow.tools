@@ -14,10 +14,10 @@ function base64UrlToBytes(input: string): Uint8Array {
     return bytes
 }
 
-function asBufferSource(bytes: Uint8Array): BufferSource {
-    const copy = new Uint8Array(bytes.byteLength)
+function asBufferSource(bytes: Uint8Array): Uint8Array<ArrayBuffer> {
+    const copy = new Uint8Array(new ArrayBuffer(bytes.byteLength))
     copy.set(bytes)
-    return copy.buffer
+    return copy
 }
 
 export async function generatePkcePair(byteLength = 64): Promise<PkcePair> {
