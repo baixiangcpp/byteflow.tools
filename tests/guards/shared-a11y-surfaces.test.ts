@@ -48,7 +48,9 @@ describe("shared accessibility surfaces", () => {
 
         expect(base64).toContain('role="alert"')
         expect(base64).toContain('aria-label={t.common.input}')
-        expect(base64).toContain('aria-describedby={error ? "base64-error" : undefined}')
+        expect(base64).toContain('"aria-describedby": "base64-error"')
+        expect(base64).toContain('"aria-invalid": true')
+        expect(base64).toContain("{...inputA11yProps}")
         expect(base64).toContain('aria-label={t.common.output}')
 
         expect(regex).toContain('id="regex-pattern"')
