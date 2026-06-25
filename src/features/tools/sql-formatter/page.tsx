@@ -54,21 +54,12 @@ export function SqlFormatterPage() {
     }, [])
 
     React.useEffect(() => {
-        const savedInput = readStorageString(INPUT_STORAGE_KEY)
-        if (savedInput) {
-            setInput(savedInput)
-        }
-
+        removeStorageKey(INPUT_STORAGE_KEY)
         const savedDialect = readStorageString(DIALECT_STORAGE_KEY)
         if (savedDialect && DIALECT_OPTIONS.has(savedDialect)) {
             setLanguage(savedDialect)
         }
     }, [])
-
-    React.useEffect(() => {
-        if (!input.trim()) return
-        writeStorageString(INPUT_STORAGE_KEY, input)
-    }, [input])
 
     React.useEffect(() => {
         writeStorageString(DIALECT_STORAGE_KEY, language)

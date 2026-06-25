@@ -848,7 +848,7 @@ async function assertMobileToolPageJourneys(browser, baseUrl) {
     }
 }
 
-async function assertBase64PipelineHandoffJourney(context, baseUrl) {
+async function assertBase64PipelineSafeNavigationJourney(context, baseUrl) {
     const page = await context.newPage();
     const runtimeErrors = [];
     page.on("pageerror", (error) => runtimeErrors.push(error.message));
@@ -881,14 +881,33 @@ async function assertBase64PipelineHandoffJourney(context, baseUrl) {
     ]);
 
     await page.waitForSelector("main", { timeout: 15_000 });
-    await expectTextareaValue(page, /aGVsbG8gcGlwZWxpbmU=/, "pipeline handoff initial input");
-    await assertBasicAccessibility(page, "/en/pipeline-builder handoff");
+    if (page.url().includes("aGVsbG8gcGlwZWxpbmU") || page.url().includes("hello%20pipeline")) {
+        throw new Error("Base64 -> Pipeline Builder navigation exposed payload in the URL.");
+    }
+    await expectTextareaValueAbsent(page, /aGVsbG8gcGlwZWxpbmU=|hello pipeline/, "pipeline safe navigation");
+    await assertBasicAccessibility(page, "/en/pipeline-builder safe navigation");
 
     if (runtimeErrors.length > 0) {
-        throw new Error(`Base64 -> Pipeline Builder handoff triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
+        throw new Error(`Base64 -> Pipeline Builder safe navigation triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
     }
 
     await page.close();
+}
+
+async function expectTextareaValueAbsent(page, pattern, label) {
+    const found = await page.evaluate((source) => {
+        const regex = new RegExp(source);
+        const textareaMatches = Array.from(document.querySelectorAll("textarea")).some((node) => regex.test(node.value));
+        const labelledOutputMatches = ["Output", "Final output"].some((name) => {
+            const node = document.querySelector(`[aria-label='${name}']`);
+            return regex.test(node && "value" in node ? node.value : node?.textContent || "");
+        });
+        return textareaMatches || labelledOutputMatches;
+    }, pattern.source);
+
+    if (found) {
+        throw new Error(`Expected no textarea or output value matching ${pattern} for ${label}.`);
+    }
 }
 
 async function expectTextareaValue(page, pattern, label) {
@@ -1352,8 +1371,8 @@ async function runSmoke(baseUrl) {
         await assertInputProcessCopyJourney(context, baseUrl, "en");
         console.log("[playwright-smoke] PASS journey: /en/list-randomizer input -> process -> copy");
 
-        await assertBase64PipelineHandoffJourney(context, baseUrl);
-        console.log("[playwright-smoke] PASS journey: /en/base64-encode-decode -> /en/pipeline-builder handoff");
+        await assertBase64PipelineSafeNavigationJourney(context, baseUrl);
+        console.log("[playwright-smoke] PASS journey: /en/base64-encode-decode -> /en/pipeline-builder safe navigation");
 
         await assertPipelineRecipeJourney(context, baseUrl);
         console.log("[playwright-smoke] PASS journey: /en/pipeline-builder template -> run");

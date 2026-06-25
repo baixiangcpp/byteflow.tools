@@ -35,9 +35,6 @@ type HtmlCssBeautifierToolProps = {
     availableModes?: FormatterMode[]
 }
 
-const INPUT_STORAGE_DEBOUNCE_MS = 500
-const INPUT_STORAGE_MAX_CHARS = 2_000_000
-
 function isCssFormatOptions(value: unknown): value is CssFormatOptions {
     if (!value || typeof value !== "object") return false
     const candidate = value as Record<string, unknown>
@@ -81,11 +78,7 @@ export function HtmlCssBeautifierTool({
     }, [availableModes, mode])
 
     React.useEffect(() => {
-        const savedInput = readStorageString(`${storagePrefix}:input`)
-        if (savedInput !== null) {
-            setInput(savedInput)
-        }
-
+        removeStorageKey(`${storagePrefix}:input`)
         const savedMode = readStorageString(`${storagePrefix}:mode`)
         if ((savedMode === "html" || savedMode === "css") && availableModes.includes(savedMode)) {
             setMode(savedMode)
@@ -104,18 +97,6 @@ export function HtmlCssBeautifierTool({
     React.useEffect(() => {
         writeStorageJson(`${storagePrefix}:css-options`, cssOptions)
     }, [cssOptions, storagePrefix])
-
-    React.useEffect(() => {
-        const timeoutId = window.setTimeout(() => {
-            if (!input.trim() || input.length > INPUT_STORAGE_MAX_CHARS) {
-                removeStorageKey(`${storagePrefix}:input`)
-                return
-            }
-            writeStorageString(`${storagePrefix}:input`, input)
-        }, INPUT_STORAGE_DEBOUNCE_MS)
-
-        return () => window.clearTimeout(timeoutId)
-    }, [input, storagePrefix])
 
     React.useEffect(() => {
         if (typeof window === "undefined") return

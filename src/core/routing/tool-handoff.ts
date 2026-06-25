@@ -1,9 +1,5 @@
 const HANDOFF_PARAM = "handoff"
 const HANDOFF_REF_PARAM = "handoff_ref"
-const HANDOFF_STORAGE_PREFIX = "byteflow:handoff:"
-const STORAGE_PROBE_KEY = `${HANDOFF_STORAGE_PREFIX}probe`
-
-let sessionStorageAvailable: boolean | null = null
 
 type ToolHandoffLink = {
     href: string
@@ -16,19 +12,6 @@ function buildBasePath(lang: string, slug: string): string {
         throw new Error("[i18n] tool handoff requires an explicit locale")
     }
     return `/${normalizedLang}/${slug}`
-}
-
-function toBase64Url(value: string): string {
-    const bytes = new TextEncoder().encode(value)
-    let binary = ""
-    for (let i = 0; i < bytes.length; i += 1) {
-        binary += String.fromCharCode(bytes[i])
-    }
-
-    return btoa(binary)
-        .replace(/\+/g, "-")
-        .replace(/\//g, "_")
-        .replace(/=+$/g, "")
 }
 
 function fromBase64Url(value: string): string | null {
@@ -51,80 +34,18 @@ function fromBase64Url(value: string): string | null {
 
 export function buildShareableToolHandoffHref(lang: string, slug: string, payload: string): string {
     const basePath = buildBasePath(lang, slug)
-    const text = payload.trim()
-    if (!text) return basePath
-
-    const encoded = toBase64Url(text)
-    return `${basePath}#${HANDOFF_PARAM}=${encodeURIComponent(encoded)}`
+    void payload
+    return basePath
 }
 
 export const buildToolHandoffHref = buildShareableToolHandoffHref
 
-function canUseSessionStorage(): boolean {
-    if (sessionStorageAvailable !== null) return sessionStorageAvailable
-    if (typeof window === "undefined") {
-        sessionStorageAvailable = false
-        return sessionStorageAvailable
-    }
-
-    try {
-        window.sessionStorage.setItem(STORAGE_PROBE_KEY, "1")
-        window.sessionStorage.removeItem(STORAGE_PROBE_KEY)
-        sessionStorageAvailable = true
-    } catch {
-        sessionStorageAvailable = false
-    }
-    return sessionStorageAvailable
-}
-
-function createHandoffRef(): string {
-    return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}`
-}
-
-function storeHandoffPayload(handoffRef: string, payload: string): void {
-    if (!canUseSessionStorage()) return
-    try {
-        window.sessionStorage.setItem(`${HANDOFF_STORAGE_PREFIX}${handoffRef}`, payload)
-    } catch {
-        // Ignore write failures and rely on query-string fallback callers.
-    }
-}
-
-function readHandoffPayload(handoffRef: string): string | null {
-    if (!canUseSessionStorage()) return null
-    try {
-        const key = `${HANDOFF_STORAGE_PREFIX}${handoffRef}`
-        const value = window.sessionStorage.getItem(key)
-        if (value !== null) {
-            window.sessionStorage.removeItem(key)
-        }
-        return value
-    } catch {
-        return null
-    }
-}
-
 export function buildToolHandoffLink(lang: string, slug: string, payload: string): ToolHandoffLink {
     const basePath = buildBasePath(lang, slug)
-    const text = payload.trim()
-    if (!text) {
-        return {
-            href: basePath,
-            prime: () => undefined,
-        }
-    }
-
-    if (!canUseSessionStorage()) {
-        return {
-            href: buildShareableToolHandoffHref(lang, slug, text),
-            prime: () => undefined,
-        }
-    }
-
-    const handoffRef = createHandoffRef()
+    void payload
     return {
-        href: `${basePath}#${HANDOFF_REF_PARAM}=${encodeURIComponent(handoffRef)}`,
-        prime: () => storeHandoffPayload(handoffRef, text),
+        href: basePath,
+        prime: () => undefined,
     }
 }
 
@@ -148,5 +69,5 @@ export function getToolHandoffFromSearchParams(searchParams: URLSearchParams, fr
 
     const handoffRef = fragmentParams.get(HANDOFF_REF_PARAM) ?? searchParams.get(HANDOFF_REF_PARAM)
     if (!handoffRef) return null
-    return readHandoffPayload(handoffRef)
+    return null
 }

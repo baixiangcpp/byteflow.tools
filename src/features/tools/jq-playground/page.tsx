@@ -13,7 +13,6 @@ import { executeJqFilter, formatJqParsedOutput, validateJSON, formatJSON, type J
 import { JQ_EXAMPLES, type JqExample } from "@/features/tools/jq-playground/samples"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 
-const FILTER_HISTORY_KEY = "jq-playground-filter-history"
 const AUTO_RUN_KEY = "jq-playground-auto-run"
 const MAX_HISTORY_SIZE = 10
 const AUTO_RUN_DEBOUNCE_MS = 500
@@ -40,20 +39,10 @@ export function JqPlaygroundPage() {
     const [filterHistory, setFilterHistory] = React.useState<FilterHistoryItem[]>([])
     const [showHistory, setShowHistory] = React.useState(false)
 
-    // Load preferences from localStorage
     React.useEffect(() => {
         const savedAutoRun = localStorage.getItem(AUTO_RUN_KEY)
         if (savedAutoRun === "true") {
             setAutoRun(true)
-        }
-
-        const savedHistory = localStorage.getItem(FILTER_HISTORY_KEY)
-        if (savedHistory) {
-            try {
-                setFilterHistory(JSON.parse(savedHistory))
-            } catch {
-                // Ignore invalid history
-            }
         }
     }, [])
 
@@ -62,7 +51,6 @@ export function JqPlaygroundPage() {
         localStorage.setItem(AUTO_RUN_KEY, autoRun.toString())
     }, [autoRun])
 
-    // Save filter to history
     const saveToHistory = React.useCallback((filter: string) => {
         if (!filter || filter === ".") return
 
@@ -76,7 +64,6 @@ export function JqPlaygroundPage() {
             const filtered = prev.filter((item) => item.filter !== filter)
             const updated = [newItem, ...filtered].slice(0, MAX_HISTORY_SIZE)
 
-            localStorage.setItem(FILTER_HISTORY_KEY, JSON.stringify(updated))
             return updated
         })
     }, [])
@@ -268,7 +255,6 @@ export function JqPlaygroundPage() {
                                 size="sm"
                                 onClick={() => {
                                     setFilterHistory([])
-                                    localStorage.removeItem(FILTER_HISTORY_KEY)
                                     toast.success(text("history_cleared"))
                                 }}
                                 className="h-6 px-2 text-xs"

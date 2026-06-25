@@ -9,24 +9,26 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
-import { readStorageJson, removeStorageKey, writeStorageJson } from "@/core/storage/tool-persistence"
+import { readStorageJson, writeStorageJson } from "@/core/storage/tool-persistence"
 import { importTextFile, TEXT_FILE_IMPORT_ACCEPT } from "@/core/files/text-file-import"
 import { randomizeList, type RandomizeMode } from "@/features/tools/list-randomizer/utils"
 
 const SAMPLE_INPUT = ["alpha", "beta", "charlie", "delta", "echo", "foxtrot", "golf", "hotel"].join("\n")
 const STORAGE_KEY = "byteflow:list-randomizer:state"
-const AUTO_SEEDS = new Set(["byteflow", "42"])
 
-type PersistedState = {
-    input: string
+type PersistedPreferences = {
     mode: RandomizeMode
     sampleCount: number
     dedupe: boolean
     withReplacement: boolean
+}
+
+type ToolStateDefaults = PersistedPreferences & {
+    input: string
     seed: string
 }
 
-const DEFAULT_STATE: PersistedState = {
+const DEFAULT_STATE: ToolStateDefaults = {
     input: SAMPLE_INPUT,
     mode: "shuffle",
     sampleCount: 3,
@@ -35,23 +37,19 @@ const DEFAULT_STATE: PersistedState = {
     seed: "42",
 }
 
-function normalizePersistedState(value: unknown): PersistedState | null {
+function normalizePersistedPreferences(value: unknown): PersistedPreferences | null {
     if (!value || typeof value !== "object") return null
-    const candidate = value as Partial<PersistedState>
+    const candidate = value as Partial<PersistedPreferences>
     const mode = candidate.mode === "sample" ? "sample" : candidate.mode === "shuffle" ? "shuffle" : null
     if (mode === null) return null
 
     return {
-        input: typeof candidate.input === "string" ? candidate.input : DEFAULT_STATE.input,
         mode,
         sampleCount: Number.isFinite(candidate.sampleCount) && Number(candidate.sampleCount) >= 1
             ? Number(candidate.sampleCount)
             : DEFAULT_STATE.sampleCount,
         dedupe: Boolean(candidate.dedupe),
         withReplacement: Boolean(candidate.withReplacement),
-        seed: typeof candidate.seed === "string"
-            ? (AUTO_SEEDS.has(candidate.seed) ? DEFAULT_STATE.seed : candidate.seed)
-            : DEFAULT_STATE.seed,
     }
 }
 
@@ -84,34 +82,26 @@ export function ListRandomizerPage() {
     const fileInputRef = React.useRef<HTMLInputElement | null>(null)
 
     React.useEffect(() => {
-        const saved = normalizePersistedState(readStorageJson<unknown>(STORAGE_KEY, null))
+        const saved = normalizePersistedPreferences(readStorageJson<unknown>(STORAGE_KEY, null))
         if (saved) {
-            setInput(saved.input)
             setMode(saved.mode)
             setSampleCount(saved.sampleCount)
             setDedupe(saved.dedupe)
             setWithReplacement(saved.withReplacement)
-            setSeed(saved.seed)
         }
         setHydrated(true)
     }, [])
 
     React.useEffect(() => {
         if (!hydrated) return
-        if (!input.trim()) {
-            removeStorageKey(STORAGE_KEY)
-            return
-        }
 
-        writeStorageJson<PersistedState>(STORAGE_KEY, {
-            input,
+        writeStorageJson<PersistedPreferences>(STORAGE_KEY, {
             mode,
             sampleCount,
             dedupe,
             withReplacement,
-            seed,
         })
-    }, [dedupe, hydrated, input, mode, sampleCount, seed, withReplacement])
+    }, [dedupe, hydrated, mode, sampleCount, withReplacement])
 
     const runRandomizer = React.useCallback(() => {
         const result = randomizeList({
@@ -171,7 +161,6 @@ export function ListRandomizerPage() {
         setSeed("")
         setItems([])
         setSourceCount(0)
-        removeStorageKey(STORAGE_KEY)
     }
 
     const handleImportFile = async (file: File) => {

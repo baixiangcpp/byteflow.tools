@@ -40,7 +40,6 @@ const INPUT_STORAGE_KEY = "byteflow:json-to-typescript:input"
 const ROOT_NAME_STORAGE_KEY = "byteflow:json-to-typescript:root-name"
 const READONLY_STORAGE_KEY = "byteflow:json-to-typescript:readonly"
 const OPTIONAL_STORAGE_KEY = "byteflow:json-to-typescript:optional"
-const INPUT_STORAGE_MAX_CHARS = 2_000_000
 const AUTO_ROOT_NAMES = new Set(["Root", "根节点", "根節點", "ルート", "루트", "Wurzel", "Racine"])
 
 export function JsonToTypeScriptPage() {
@@ -60,11 +59,7 @@ export function JsonToTypeScriptPage() {
     const monacoTheme = getByteflowMonacoThemeName(resolvedTheme)
 
     React.useEffect(() => {
-        const savedInput = readStorageString(INPUT_STORAGE_KEY)
-        if (savedInput !== null) {
-            setInput(savedInput)
-        }
-
+        removeStorageKey(INPUT_STORAGE_KEY)
         const savedRootName = readStorageString(ROOT_NAME_STORAGE_KEY)
         if (savedRootName !== null) {
             setRootName(AUTO_ROOT_NAMES.has(savedRootName) ? defaultRootName : savedRootName)
@@ -94,14 +89,6 @@ export function JsonToTypeScriptPage() {
         setInput(handoff)
         setError(null)
     }, [])
-
-    React.useEffect(() => {
-        if (!input.trim() || input.length > INPUT_STORAGE_MAX_CHARS) {
-            removeStorageKey(INPUT_STORAGE_KEY)
-            return
-        }
-        writeStorageString(INPUT_STORAGE_KEY, input)
-    }, [input])
 
     React.useEffect(() => {
         writeStorageString(ROOT_NAME_STORAGE_KEY, rootName)
