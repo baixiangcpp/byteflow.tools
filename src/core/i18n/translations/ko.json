@@ -2622,6 +2622,7 @@
       "recipe_loaded": "Recipe를 불러왔습니다",
       "recipe_deleted": "Recipe를 삭제했습니다",
       "recipe_exported": "Recipe를 내보냈습니다",
+      "recipe_export_failed": "Recipe 내보내기에 실패했습니다",
       "import_failed": "Recipe 가져오기에 실패했습니다",
       "recipe_imported": "Recipe를 가져왔습니다",
       "share_copied": "공유 URL을 복사했습니다",

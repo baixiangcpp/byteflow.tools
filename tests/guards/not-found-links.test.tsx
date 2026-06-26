@@ -55,6 +55,7 @@ describe("not-found all-tools links", () => {
         expect(screen.getByRole("link", { name: "Browse all tools" })).toHaveAttribute("href", getAllToolsHref("en"))
         expect(screen.getByRole("link", { name: "Search tools" })).toHaveAttribute("href", `${getAllToolsHref("en")}#tool-discovery`)
         expect(screen.getByRole("link", { name: "Data & Code Formats" })).toHaveAttribute("href", rootDataCodeFormatsHref)
+        expect(screen.getByRole("link", { name: "Contact or report it" })).toHaveAttribute("href", "/en/contact")
     })
 
     it("uses all-tools anchor in localized not-found page", () => {

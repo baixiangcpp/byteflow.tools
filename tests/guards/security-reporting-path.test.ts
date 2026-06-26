@@ -26,6 +26,17 @@ describe("BF-045 security reporting path", () => {
         expect(redirects).toContain("/security.txt /.well-known/security.txt 301")
     })
 
+    it("publishes humans.txt with canonical project and trust references", () => {
+        const humansTxt = read("public/humans.txt")
+
+        expect(humansTxt).toContain("Project: byteflow.tools")
+        expect(humansTxt).toContain("Repository: https://github.com/baixiangcpp/byteflow.tools")
+        expect(humansTxt).toContain("Contact: https://byteflow.tools/en/contact")
+        expect(humansTxt).toContain("Security: https://byteflow.tools/.well-known/security.txt")
+        expect(humansTxt).toContain("Sitemap: https://byteflow.tools/sitemap.xml")
+        expect(humansTxt).not.toMatch(/mailto:|api[_-]?key|token|secret/i)
+    })
+
     it("keeps repository security policy and public pages aligned", () => {
         const policy = read(".github/SECURITY.md")
         const contactPage = read("src/app/[lang]/contact/page.tsx")

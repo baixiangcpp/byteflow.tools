@@ -2622,6 +2622,7 @@
       "recipe_loaded": "Recipe 已载入",
       "recipe_deleted": "Recipe 已删除",
       "recipe_exported": "Recipe 已导出",
+      "recipe_export_failed": "Recipe 导出失败",
       "import_failed": "Recipe 导入失败",
       "recipe_imported": "Recipe 已导入",
       "share_copied": "分享 URL 已复制",

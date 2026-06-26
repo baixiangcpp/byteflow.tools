@@ -15,17 +15,15 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction, type ToolActionResult } from "@/features/tool-shell/tool-action-bar"
-import { copyTextWithToolFeedback, downloadedFileFeedback } from "@/features/tool-shell/tool-action-feedback"
+import { copyTextWithToolFeedback } from "@/features/tool-shell/tool-action-feedback"
 import { useLang } from "@/core/i18n/lang-provider"
 import { trackPipelineTemplateOpened } from "@/core/analytics/analytics"
-import { FILE_INPUT_POLICIES, readTextFileWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { getToolByKey } from "@/core/registry"
 import { readStorageString, writeStorageString } from "@/core/storage/tool-persistence"
 import { getToolHandoffFromSearchParams } from "@/core/routing/tool-handoff"
 import { PIPELINE_TOOL_ADAPTERS } from "@/features/pipeline/adapter-registry"
-import { decodeRecipeFromUrlParam, encodeRecipeForShareUrl, recipeContainsRuntimeInput } from "@/features/pipeline/recipe-codec"
+import { decodeRecipeFromUrlParam } from "@/features/pipeline/recipe-codec"
 import { runRecipe, validateRecipe } from "@/features/pipeline/executor"
-import { exportRecipeToJson, importRecipeFromJson } from "@/features/pipeline/recipe-import-export"
 import { RECIPE_STRUCTURE_PRIVACY_SCOPE } from "@/features/pipeline/recipe-sanitizer"
 import { createRecipeFromTemplate, getPipelineRecipeTemplate, PIPELINE_RECIPE_TEMPLATES, type PipelineRecipeTemplate } from "@/features/pipeline/recipe-templates"
 import {
@@ -37,7 +35,7 @@ import {
     type SavedRecipeRecord,
 } from "@/features/pipeline/recipe-store"
 import type { PipelineExecutionResult, PipelineStepExecution, RecipeDocument, RecipeStep } from "@/features/pipeline/recipe-types"
-import { downloadText } from "./browser-actions"
+import { exportPipelineRecipe, importPipelineRecipeFile, sharePipelineRecipe } from "./action-handlers"
 import { FIRST_ADAPTER, SHARE_PARAM } from "./constants"
 import { createId, createRecipe, createStep, getStepCompatibilityHints, updateRecipeTimestamp } from "./logic"
 import { PipelineRunLog } from "./pipeline-run-log"
@@ -71,6 +69,7 @@ export function PipelineBuilderPage() {
     const [storageAvailable, setStorageAvailable] = React.useState(false)
     const [storageMessage, setStorageMessage] = React.useState<string | null>(null)
     const [importError, setImportError] = React.useState<string | null>(null)
+    const [actionAnnouncement, setActionAnnouncement] = React.useState("")
     const [onboardingDismissed, setOnboardingDismissed] = React.useState(false)
     const [pendingPrivacyAction, setPendingPrivacyAction] = React.useState<PendingPrivacyAction | null>(null)
 
@@ -295,41 +294,25 @@ export function PipelineBuilderPage() {
     }, [refreshSavedRecipes, selectedSavedId, storageAvailable, text])
 
     const performExportRecipe = React.useCallback(() => {
-        const filename = `${recipe.name.trim().replace(/[^\w.-]+/g, "-") || "byteflow-recipe"}.json`
-        downloadText(filename, exportRecipeToJson(recipe))
-        return downloadedFileFeedback(t, filename, text("recipe_exported"))
+        return exportPipelineRecipe(recipe, t, text, setActionAnnouncement)
     }, [recipe, t, text])
 
     const importRecipe = React.useCallback(async (file: File) => {
-        const validation = validateFileAgainstPolicy(file, FILE_INPUT_POLICIES["recipe-json"])
-        if (!validation.ok) {
-            setImportError(validation.message)
-            return
-        }
-        const source = await readTextFileWithPolicy(file, FILE_INPUT_POLICIES["recipe-json"])
-        const imported = importRecipeFromJson(source)
+        const imported = await importPipelineRecipeFile(file, text)
         if (!imported.ok) {
-            const message = imported.errors.join("\n")
-            setImportError(message)
-            toast.error(text("import_failed"))
+            setImportError(imported.error)
+            setActionAnnouncement(imported.announcement)
             return
         }
         setRecipe(imported.recipe)
         setSelectedStepId(imported.recipe.steps[0]?.id ?? null)
         setResult(null)
         setImportError(null)
-        toast.success(text("recipe_imported"))
+        setActionAnnouncement(imported.announcement)
     }, [text])
 
     const performShareRecipe = React.useCallback(async () => {
-        const encoded = encodeRecipeForShareUrl(recipe)
-        const url = `${window.location.origin}/${lang}/pipeline-builder?${SHARE_PARAM}=${encodeURIComponent(encoded)}`
-        return copyTextWithToolFeedback(
-            t,
-            url,
-            text("share_recipe"),
-            recipeContainsRuntimeInput(recipe) ? text("share_copied_without_runtime_input") : text("share_copied"),
-        )
+        return sharePipelineRecipe(recipe, lang, t, text, setActionAnnouncement)
     }, [lang, recipe, t, text])
 
     const requestPrivacyPreview = React.useCallback((action: PendingPrivacyAction): ToolActionResult => {
@@ -407,6 +390,12 @@ export function PipelineBuilderPage() {
             <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-sm text-muted-foreground">
                 {text("privacy_note")}
             </div>
+
+            {actionAnnouncement ? (
+                <span className="sr-only" role="status" aria-live="polite" aria-atomic="true" data-pipeline-action-status>
+                    {actionAnnouncement}
+                </span>
+            ) : null}
 
             {pendingPrivacyAction ? (
                 <PipelinePrivacyPreview
