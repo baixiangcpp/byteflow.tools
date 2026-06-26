@@ -10,9 +10,6 @@ import {
   Palette,
   Network,
   TerminalSquare,
-  Regex,
-  Calculator,
-  Share2,
 } from "lucide-react"
 import { notFound } from "next/navigation"
 import { isValidLocale, requireTranslationValue } from "@/core/i18n/i18n"
@@ -31,6 +28,14 @@ type FeatureCard = {
   icon: typeof ShieldCheck
   title: string
   description: string
+  iconClass: string
+}
+
+type ScenarioCard = {
+  key: "api" | "jwt" | "logs" | "json" | "svg"
+  toolKey: "http_request_builder" | "jwt_decoder" | "log_scrubber" | "json_formatter" | "svg_optimizer"
+  slug: string
+  icon: typeof ShieldCheck
   iconClass: string
 }
 
@@ -108,30 +113,6 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   const categoryToolCounts = Object.fromEntries(
     registryStats.categories.map((category) => [category.key, category.toolCount])
   ) as Record<string, number>
-  const categoryIcons = {
-    data_code_formats: Braces,
-    encoding_crypto: KeyRound,
-    web_api_network: Network,
-    devops_logs: TerminalSquare,
-    text_regex: Regex,
-    images_svg_css: Palette,
-    generators_calculators: Calculator,
-    social_metadata: Share2,
-  } as const
-  const categoryIconClass = {
-    data_code_formats: "border-cyan-500/30 bg-cyan-500/12 text-cyan-400",
-    encoding_crypto: "border-blue-500/30 bg-blue-500/12 text-blue-400",
-    web_api_network: "border-indigo-500/30 bg-indigo-500/12 text-indigo-400",
-    devops_logs: "border-emerald-500/30 bg-emerald-500/12 text-emerald-400",
-    text_regex: "border-violet-500/30 bg-violet-500/12 text-violet-400",
-    images_svg_css: "border-pink-500/30 bg-pink-500/12 text-pink-400",
-    generators_calculators: "border-amber-500/30 bg-amber-500/12 text-amber-400",
-    social_metadata: "border-rose-500/30 bg-rose-500/12 text-rose-400",
-  } as const
-  const heroCategoryLinks = categoryLinks.map((item) => ({
-    ...item,
-    toolCount: categoryToolCounts[item.key] ?? 0,
-  }))
   const categoryNavLabels = Object.fromEntries(
     categoryLinks.map((item) => [item.key, requireTranslationValue(t.nav[item.key], `nav.${item.key}`)])
   ) as Record<(typeof MENU_GROUP_DEFS)[number]["key"], string>
@@ -145,6 +126,43 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
     keyboard: "bg-[linear-gradient(160deg,hsl(39_94%_56%/0.13),transparent_55%)]",
     tools: "bg-[linear-gradient(160deg,hsl(218_91%_60%/0.12),transparent_55%)]",
   } as const
+  const scenarioCards: ScenarioCard[] = [
+    {
+      key: "api",
+      toolKey: "http_request_builder",
+      slug: "http-request-builder",
+      icon: Network,
+      iconClass: "border-indigo-500/30 bg-indigo-500/12 text-indigo-400",
+    },
+    {
+      key: "jwt",
+      toolKey: "jwt_decoder",
+      slug: "jwt-decoder",
+      icon: KeyRound,
+      iconClass: "border-blue-500/30 bg-blue-500/12 text-blue-400",
+    },
+    {
+      key: "logs",
+      toolKey: "log_scrubber",
+      slug: "log-scrubber",
+      icon: TerminalSquare,
+      iconClass: "border-emerald-500/30 bg-emerald-500/12 text-emerald-400",
+    },
+    {
+      key: "json",
+      toolKey: "json_formatter",
+      slug: "json-formatter",
+      icon: Braces,
+      iconClass: "border-cyan-500/30 bg-cyan-500/12 text-cyan-400",
+    },
+    {
+      key: "svg",
+      toolKey: "svg_optimizer",
+      slug: "svg-optimizer",
+      icon: Palette,
+      iconClass: "border-pink-500/30 bg-pink-500/12 text-pink-400",
+    },
+  ]
 
   const toolCatalogGroups = categoryLinks.map((category) => {
     const menuGroup = menuGroups.find((group) => group.key === category.key)
@@ -220,34 +238,33 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
           </div>
         </section>
 
-        {/* Quick Navigation Cards - Compact Grid */}
+        {/* Scenario entry points */}
         <section
-          className="home-reveal grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+          className="home-reveal grid gap-3 sm:grid-cols-2 lg:grid-cols-5"
           style={{ animationDelay: "80ms" }}
         >
-          {heroCategoryLinks.map((item) => {
-            const Icon = categoryIcons[item.key]
+          {scenarioCards.map((item) => {
+            const Icon = item.icon
 
             return (
               <Link
                 key={item.key}
                 href={`/${locale}/${item.slug}`}
                 prefetch={false}
-                className="group relative overflow-hidden rounded-2xl border border-border/70 bg-card/60 p-5 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:bg-card/80 hover:shadow-xl hover:shadow-black/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45 dark:hover:shadow-black/25"
+                className="group relative min-w-0 overflow-hidden rounded-2xl border border-border/70 bg-card/60 p-4 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/40 hover:bg-card/80 hover:shadow-xl hover:shadow-black/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45 dark:hover:shadow-black/25"
               >
-                <div className="flex items-center gap-3 mb-2">
-                  <span className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${categoryIconClass[item.key]}`}>
+                <div className="mb-2 flex items-center gap-3">
+                  <span className={`inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border ${item.iconClass}`}>
                     <Icon className="h-5 w-5" />
                   </span>
-                  <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-foreground text-sm">{categoryNavLabels[item.key]}</div>
+                  <div className="min-w-0 flex-1">
+                    <div className="break-words text-sm font-semibold text-foreground">
+                      {getLocalizedToolTitle(item.toolKey)}
+                    </div>
                   </div>
-                  <span className="inline-flex min-h-6 items-center rounded-full border border-border/80 bg-background/75 px-2 text-xs font-medium text-muted-foreground">
-                    {item.toolCount}
-                  </span>
                 </div>
-                <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
-                  {categoryDescriptions[`${item.key}_desc`] || ''}
+                <p className="line-clamp-3 text-xs leading-relaxed text-muted-foreground">
+                  {getLocalizedToolDescription(item.toolKey)}
                 </p>
               </Link>
             )

@@ -26,6 +26,37 @@ Budgets live in `scripts/gates/performance-budgets.json` for these baseline rout
 - `/en/markdown-preview`
 - `/en/image-resizer`
 
+## All Tools Discovery Budget
+
+The All Tools page uses a hybrid incremental-rendering strategy instead of list virtualization. Each category group renders up to 6 rich cards by default, then keeps overflow tools as compact, crawlable links behind the same group. This preserves SEO coverage for every tool link while avoiding a full rich-card render for large inventories.
+
+Risk baseline: the catalog already has more than 100 tools and can grow past 200. Rendering every tool as a full card would scale card DOM, badges, descriptions, controls, and hover states linearly with catalog size. At the 300-tool acceptance target, an uncapped group would render 300 rich cards before any user interaction. Issue #244 tracks that risk even when the current page is not yet failing performance budgets.
+
+Current after state:
+
+- `src/features/tool-discovery/all-tools-discovery.tsx` sets `INITIAL_GROUP_TOOL_LIMIT = 6`.
+- `tests/component/all-tools-discovery.test.tsx` renders 300 synthetic tools and asserts the collapsed state stays at 6 rich cards plus 294 compact crawlable links.
+- The same test verifies filtering preserves the 6-card budget and exact search results collapse to 1 rich card with 0 compact overflow links.
+- Rich cards are marked with `data-all-tools-card="true"` and compact SEO links are marked with `data-all-tools-compact-link="true"`.
+- Expanded groups use `aria-expanded` and keep the full card list user-triggered.
+
+Latest local after-change route report from `npm run build:app && npm run build:post`:
+
+| Route | JS gzip | JS raw | Scripts | CSS gzip | HTML |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| `/en/all-tools` | 260.4 KiB / 278.3 KiB | 953.9 KiB / 1001.0 KiB | 19 / 20 | 26.8 KiB / 34.2 KiB | 454.4 KiB / 605.5 KiB |
+
+Route budget for `/en/all-tools` is enforced by `npm run check:performance-budget:report` after `npm run build:app`:
+
+- initial JS gzip: 285000 bytes
+- initial JS raw: 1025000 bytes
+- initial scripts: 20
+- CSS gzip: 35000 bytes
+- CSS raw: 220000 bytes
+- rendered HTML: 620000 bytes
+
+PRs that materially change All Tools card markup, filters, search, or category rendering should include the before and after `/en/all-tools` row from `npm run check:performance-budget:report` and confirm the 300-tool component budget still passes.
+
 ## Updating A Budget
 
 Only update a threshold when the route growth is intentional. The PR should include:
