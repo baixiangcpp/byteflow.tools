@@ -2622,6 +2622,7 @@
       "recipe_loaded": "Recipe を読み込みました",
       "recipe_deleted": "Recipe を削除しました",
       "recipe_exported": "Recipe をエクスポートしました",
+      "recipe_export_failed": "Recipe のエクスポートに失敗しました",
       "import_failed": "Recipe のインポートに失敗しました",
       "recipe_imported": "Recipe をインポートしました",
       "share_copied": "共有 URL をコピーしました",

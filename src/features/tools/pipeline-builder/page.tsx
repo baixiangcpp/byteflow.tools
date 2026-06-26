@@ -71,6 +71,7 @@ export function PipelineBuilderPage() {
     const [storageAvailable, setStorageAvailable] = React.useState(false)
     const [storageMessage, setStorageMessage] = React.useState<string | null>(null)
     const [importError, setImportError] = React.useState<string | null>(null)
+    const [actionAnnouncement, setActionAnnouncement] = React.useState("")
     const [onboardingDismissed, setOnboardingDismissed] = React.useState(false)
     const [pendingPrivacyAction, setPendingPrivacyAction] = React.useState<PendingPrivacyAction | null>(null)
 
@@ -296,22 +297,48 @@ export function PipelineBuilderPage() {
 
     const performExportRecipe = React.useCallback(() => {
         const filename = `${recipe.name.trim().replace(/[^\w.-]+/g, "-") || "byteflow-recipe"}.json`
-        downloadText(filename, exportRecipeToJson(recipe))
-        return downloadedFileFeedback(t, filename, text("recipe_exported"))
+        try {
+            downloadText(filename, exportRecipeToJson(recipe))
+        } catch (error) {
+            const message = error instanceof Error ? error.message : text("recipe_export_failed")
+            toast.error(text("recipe_export_failed"), { description: message })
+            setActionAnnouncement(`${text("recipe_export_failed")}. ${message}`)
+            return {
+                status: "failed" as const,
+                message: text("recipe_export_failed"),
+                description: message,
+            }
+        }
+
+        const feedback = downloadedFileFeedback(t, filename, text("recipe_exported"))
+        setActionAnnouncement(`${feedback.message}. ${feedback.description}`)
+        return feedback
     }, [recipe, t, text])
 
     const importRecipe = React.useCallback(async (file: File) => {
         const validation = validateFileAgainstPolicy(file, FILE_INPUT_POLICIES["recipe-json"])
         if (!validation.ok) {
             setImportError(validation.message)
+            toast.error(text("import_failed"), { description: validation.message })
+            setActionAnnouncement(`${text("import_failed")}. ${validation.message}`)
             return
         }
-        const source = await readTextFileWithPolicy(file, FILE_INPUT_POLICIES["recipe-json"])
+        let source = ""
+        try {
+            source = await readTextFileWithPolicy(file, FILE_INPUT_POLICIES["recipe-json"])
+        } catch (error) {
+            const message = error instanceof Error ? error.message : text("import_failed")
+            setImportError(message)
+            toast.error(text("import_failed"), { description: message })
+            setActionAnnouncement(`${text("import_failed")}. ${message}`)
+            return
+        }
         const imported = importRecipeFromJson(source)
         if (!imported.ok) {
             const message = imported.errors.join("\n")
             setImportError(message)
-            toast.error(text("import_failed"))
+            toast.error(text("import_failed"), { description: message })
+            setActionAnnouncement(`${text("import_failed")}. ${message}`)
             return
         }
         setRecipe(imported.recipe)
@@ -319,17 +346,20 @@ export function PipelineBuilderPage() {
         setResult(null)
         setImportError(null)
         toast.success(text("recipe_imported"))
+        setActionAnnouncement(text("recipe_imported"))
     }, [text])
 
     const performShareRecipe = React.useCallback(async () => {
         const encoded = encodeRecipeForShareUrl(recipe)
         const url = `${window.location.origin}/${lang}/pipeline-builder?${SHARE_PARAM}=${encodeURIComponent(encoded)}`
-        return copyTextWithToolFeedback(
+        const feedback = await copyTextWithToolFeedback(
             t,
             url,
             text("share_recipe"),
             recipeContainsRuntimeInput(recipe) ? text("share_copied_without_runtime_input") : text("share_copied"),
         )
+        setActionAnnouncement(feedback.description ? `${feedback.message}. ${feedback.description}` : feedback.message ?? text("share_recipe"))
+        return feedback
     }, [lang, recipe, t, text])
 
     const requestPrivacyPreview = React.useCallback((action: PendingPrivacyAction): ToolActionResult => {
@@ -407,6 +437,12 @@ export function PipelineBuilderPage() {
             <div className="rounded-lg border border-primary/20 bg-primary/5 p-3 text-sm text-muted-foreground">
                 {text("privacy_note")}
             </div>
+
+            {actionAnnouncement ? (
+                <span className="sr-only" role="status" aria-live="polite" aria-atomic="true" data-pipeline-action-status>
+                    {actionAnnouncement}
+                </span>
+            ) : null}
 
             {pendingPrivacyAction ? (
                 <PipelinePrivacyPreview

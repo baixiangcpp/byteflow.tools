@@ -1,0 +1,16 @@
+/* TEAM */
+Project: byteflow.tools
+Maintainer: baixiangcpp
+Site: https://byteflow.tools/
+Repository: https://github.com/baixiangcpp/byteflow.tools
+Contact: https://byteflow.tools/en/contact
+Security: https://byteflow.tools/.well-known/security.txt
+
+/* THANKS */
+Open-source contributors, issue reporters, and users testing privacy-first browser-local developer tools.
+
+/* SITE */
+Canonical: https://byteflow.tools/
+Sitemap: https://byteflow.tools/sitemap.xml
+Locales: en, zh-CN, zh-TW, ja, ko, de, fr
+Standards: Next.js, React, TypeScript, static export

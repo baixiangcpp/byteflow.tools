@@ -7,6 +7,10 @@ import type { Locale } from "@/core/i18n/i18n"
 import { PipelineStepList } from "@/features/tools/pipeline-builder/pipeline-step-list"
 
 const trackPipelineTemplateOpenedMock = vi.hoisted(() => vi.fn())
+const clipboardWriteMock = vi.hoisted(() => vi.fn())
+const downloadTextMock = vi.hoisted(() => vi.fn())
+const toastSuccessMock = vi.hoisted(() => vi.fn())
+const toastErrorMock = vi.hoisted(() => vi.fn())
 
 vi.mock("next/navigation", () => ({
     usePathname: () => "/en/pipeline-builder",
@@ -19,6 +23,22 @@ vi.mock("@/core/analytics/analytics", async (importOriginal) => {
         trackPipelineTemplateOpened: trackPipelineTemplateOpenedMock,
     }
 })
+
+vi.mock("@/core/clipboard/clipboard", () => ({
+    safeClipboardWrite: (value: string) => clipboardWriteMock(value),
+}))
+
+vi.mock("@/features/tools/pipeline-builder/browser-actions", () => ({
+    downloadText: (filename: string, content: string, type?: string) => downloadTextMock(filename, content, type),
+}))
+
+vi.mock("sonner", () => ({
+    toast: {
+        error: (...args: unknown[]) => toastErrorMock(...args),
+        info: vi.fn(),
+        success: (...args: unknown[]) => toastSuccessMock(...args),
+    },
+}))
 
 function installMemoryStorage() {
     const store = new Map<string, string>()
@@ -55,6 +75,12 @@ function renderWithLocale(locale: Locale, ui: React.ReactNode) {
 describe("phase 3 pipeline builder page", () => {
     beforeEach(() => {
         trackPipelineTemplateOpenedMock.mockReset()
+        clipboardWriteMock.mockReset()
+        downloadTextMock.mockReset()
+        toastSuccessMock.mockReset()
+        toastErrorMock.mockReset()
+        clipboardWriteMock.mockResolvedValue({ ok: true, method: "clipboard-api" })
+        downloadTextMock.mockReturnValue(undefined)
         installMemoryStorage()
         window.history.replaceState(null, "", "/en/pipeline-builder")
     })
@@ -212,6 +238,54 @@ describe("phase 3 pipeline builder page", () => {
         expect(screen.getByText("Initial runtime input")).toBeInTheDocument()
         expect(screen.getByText("Final output and intermediate step outputs")).toBeInTheDocument()
         expect(screen.getByRole("button", { name: "Export structure only" })).toBeInTheDocument()
+    })
+
+    it("announces Share URL success after privacy confirmation", async () => {
+        renderWithEnglish(<PipelineBuilderPage />)
+
+        fireEvent.click(screen.getByRole("button", { name: /^Share URL$/i }))
+        fireEvent.click(screen.getByRole("button", { name: "Copy structure-only URL" }))
+
+        await waitFor(() => {
+            expect(clipboardWriteMock).toHaveBeenCalledWith(expect.stringContaining("/en/pipeline-builder?recipe="))
+        })
+        expect(toastSuccessMock).toHaveBeenCalledWith("Copied to clipboard", {
+            description: "Share URL copied",
+        })
+        expect(screen.getByText("Copied to clipboard. Share URL copied")).toHaveAttribute("data-pipeline-action-status")
+    })
+
+    it("announces Export JSON success and downloads structure-only recipe JSON", async () => {
+        renderWithEnglish(<PipelineBuilderPage />)
+
+        fireEvent.click(screen.getAllByRole("button", { name: /^Export JSON$/i })[0])
+        fireEvent.click(screen.getByRole("button", { name: "Export structure only" }))
+
+        await waitFor(() => {
+            expect(downloadTextMock).toHaveBeenCalledWith("Untitled-pipeline.json", expect.stringContaining('"schemaVersion": 1'), undefined)
+        })
+        expect(downloadTextMock.mock.calls[0][1]).not.toContain("constantInput")
+        expect(toastSuccessMock).toHaveBeenCalledWith("Downloaded Untitled-pipeline.json", {
+            description: "Recipe exported",
+        })
+        expect(screen.getByText("Downloaded Untitled-pipeline.json. Recipe exported")).toHaveAttribute("data-pipeline-action-status")
+    })
+
+    it("announces Export JSON failure when the browser download cannot start", async () => {
+        downloadTextMock.mockImplementationOnce(() => {
+            throw new Error("Downloads are blocked")
+        })
+        renderWithEnglish(<PipelineBuilderPage />)
+
+        fireEvent.click(screen.getAllByRole("button", { name: /^Export JSON$/i })[0])
+        fireEvent.click(screen.getByRole("button", { name: "Export structure only" }))
+
+        await waitFor(() => {
+            expect(toastErrorMock).toHaveBeenCalledWith("Recipe export failed", {
+                description: "Downloads are blocked",
+            })
+        })
+        expect(screen.getByText("Recipe export failed. Downloads are blocked")).toHaveAttribute("data-pipeline-action-status")
     })
 
     it("loads and runs a built-in recipe template", async () => {
@@ -377,5 +451,26 @@ describe("phase 3 pipeline builder page", () => {
         expect(screen.getByLabelText("Description")).toHaveValue("Imported from a JSON file")
         expect(screen.getByLabelText("Step label")).toHaveValue("Pretty JSON")
         expect(screen.queryByText(/Recipe JSON is invalid/i)).not.toBeInTheDocument()
+        expect(toastSuccessMock).toHaveBeenCalledWith("Recipe imported")
+    })
+
+    it("shows actionable feedback for invalid imported recipe JSON", async () => {
+        const { container } = renderWithEnglish(<PipelineBuilderPage />)
+        const file = new File(["{\"schemaVersion\":"], "broken.json", { type: "application/json" })
+        Object.defineProperty(file, "text", {
+            value: async () => "{\"schemaVersion\":",
+        })
+        const input = container.querySelector('input[type="file"]')
+
+        expect(input).toBeInstanceOf(HTMLInputElement)
+        fireEvent.change(input!, { target: { files: [file] } })
+
+        await waitFor(() => {
+            expect(screen.getAllByText(/Recipe JSON is invalid/i).length).toBeGreaterThanOrEqual(2)
+        })
+        expect(screen.getByText(/Recipe import failed\. Recipe JSON is invalid/i)).toHaveAttribute("data-pipeline-action-status")
+        expect(toastErrorMock).toHaveBeenCalledWith("Recipe import failed", {
+            description: expect.stringContaining("Recipe JSON is invalid"),
+        })
     })
 })

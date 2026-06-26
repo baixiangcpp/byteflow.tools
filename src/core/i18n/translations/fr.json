@@ -2622,6 +2622,7 @@
       "recipe_loaded": "Recette chargée",
       "recipe_deleted": "Recette supprimée",
       "recipe_exported": "Recette exportée",
+      "recipe_export_failed": "Échec de l’export de recette",
       "import_failed": "Échec de l’import de recette",
       "recipe_imported": "Recette importée",
       "share_copied": "URL de partage copiée",

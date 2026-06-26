@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import { AlertTriangle, Home, Layers, Search, Wrench } from "lucide-react"
+import { AlertTriangle, Home, Layers, Search, ShieldAlert, Wrench } from "lucide-react"
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
 import { MENU_GROUP_DEFS } from "@/core/registry/menu-groups"
 import { DEFAULT_OG_IMAGE } from "@/core/seo/seo"
@@ -81,6 +81,14 @@ export default function RootNotFound() {
                         <Wrench className="h-4 w-4 text-primary" />
                         Web & API
                     </Link>
+                </div>
+                <div className="mt-6 border-t border-border/60 pt-4 text-sm text-muted-foreground">
+                    Need help with a broken link or security concern?{" "}
+                    <Link href="/en/contact" className="inline-flex items-center gap-1 font-medium text-foreground hover:text-primary">
+                        <ShieldAlert className="h-4 w-4" />
+                        Contact or report it
+                    </Link>
+                    .
                 </div>
             </section>
         </main>
