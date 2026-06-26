@@ -1,12 +1,22 @@
-"use client"
-
 import Link from "next/link"
-import { useLang } from "@/core/i18n/lang-provider"
+import { notFound } from "next/navigation"
 import { Github, Globe, Code2, Zap, Shield, ArrowUpRight } from "lucide-react"
+import { getGrowthIndex } from "@/core/growth/growth-pages"
+import { isValidLocale } from "@/core/i18n/i18n"
+import { getTranslation } from "@/core/i18n/translations/catalog"
 
-export default function AboutPage() {
-    const { t, lang } = useLang()
+export default async function AboutPage({ params }: { params: Promise<{ lang: string }> }) {
+    const { lang } = await params
+    if (!isValidLocale(lang)) {
+        notFound()
+    }
+
+    const t = getTranslation(lang)
     const p = t.pages
+    const compareIndex = getGrowthIndex("compare")
+    if (!compareIndex) {
+        throw new Error("[about] Missing compare growth index")
+    }
 
     const highlights = [
         { icon: Shield, title: p.about_privacy_title, desc: p.about_privacy_desc },
@@ -83,6 +93,13 @@ export default function AboutPage() {
                 >
                     <Shield className="h-4 w-4" />
                     Self-hosting
+                </Link>
+                <Link
+                    href={`/${lang}/compare`}
+                    className="inline-flex items-center gap-2 rounded-xl border border-border/75 bg-background/55 px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-foreground"
+                >
+                    <ArrowUpRight className="h-4 w-4" />
+                    {compareIndex.title[lang]}
                 </Link>
                 <Link
                     href={`/${lang}`}

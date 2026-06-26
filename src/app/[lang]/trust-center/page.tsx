@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { CheckCircle2, Database, ExternalLink, FileText, Github, LockKeyhole, Network, ShieldCheck, WifiOff } from "lucide-react"
 import { isValidLocale, requireTranslationValue } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
+import { getGrowthIndex } from "@/core/growth/growth-pages"
 import { TOOL_REGISTRY } from "@/core/registry"
 import { getExternalRequestToolDisclosures } from "@/core/registry/privacy"
 import { JsonLdScript } from "@/core/seo/components/json-ld-script"
@@ -50,6 +51,10 @@ export default async function TrustCenterPage({
     const t = getTranslation(locale)
     const p = t.pages
     const common = t.common
+    const compareIndex = getGrowthIndex("compare")
+    if (!compareIndex) {
+        throw new Error("[trust-center] Missing compare growth index")
+    }
     const toolCopy = t.tools as Record<string, { title?: string }>
     const externalTools = getExternalRequestToolDisclosures(TOOL_REGISTRY)
         .map((item) => ({
@@ -180,6 +185,13 @@ export default async function TrustCenterPage({
                     >
                         <Database className="h-4 w-4" aria-hidden="true" />
                         {common.local_data_controls.title}
+                    </Link>
+                    <Link
+                        href={`/${locale}/compare`}
+                        className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                        <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                        {compareIndex.title[locale]}
                     </Link>
                 </div>
             </section>
