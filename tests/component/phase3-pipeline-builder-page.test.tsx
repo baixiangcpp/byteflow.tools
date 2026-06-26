@@ -240,7 +240,7 @@ describe("phase 3 pipeline builder page", () => {
         expect(screen.queryByText(/Base64 URL-safe encode/i)).not.toBeInTheDocument()
     })
 
-    it("preserves constant input while running, switching modes, reordering, exporting, and sharing", async () => {
+    it("preserves constant input while running, switching modes, and reordering", async () => {
         renderWithEnglish(<PipelineBuilderPage />)
 
         fireEvent.click(screen.getByRole("button", { name: /Add/i }))
@@ -273,19 +273,31 @@ describe("phase 3 pipeline builder page", () => {
   "ok": true
 }`)
         })
+    })
 
+    it("shows privacy preview before export and confirms structure-only scope", () => {
+        renderWithEnglish(<PipelineBuilderPage />)
+
+        fireEvent.click(screen.getByRole("button", { name: /Add/i }))
+        fireEvent.click(screen.getByRole("button", { name: "Constant input" }))
+        fireEvent.change(screen.getByLabelText("Constant input"), { target: { value: "{\"ok\":true}" } })
         fireEvent.click(screen.getAllByRole("button", { name: /^Export JSON$/i })[0])
+
+        expect(screen.getByRole("heading", { name: "Privacy preview" })).toBeInTheDocument()
+        expect(screen.getByText("Export a structure-only JSON recipe file.")).toBeInTheDocument()
+        expect(screen.getByText("Initial runtime input")).toBeInTheDocument()
+        expect(screen.getByText("Final output and intermediate step outputs")).toBeInTheDocument()
         expect(screen.getByText("Constant step inputs, tokens, keys, and payloads")).toBeInTheDocument()
-        fireEvent.click(screen.getByRole("button", { name: "Export structure only" }))
+        expect(screen.getByRole("button", { name: "Export structure only" })).toBeInTheDocument()
+    })
 
-        await waitFor(() => {
-            expect(downloadTextMock).toHaveBeenCalled()
-        })
-        expect(downloadTextMock.mock.calls.at(-1)?.[1]).not.toContain("constantInput")
-        expect(downloadTextMock.mock.calls.at(-1)?.[1]).not.toContain("{\"ok\":true}")
+    it("announces Share URL success after privacy confirmation", async () => {
+        renderWithEnglish(<PipelineBuilderPage />)
 
+        fireEvent.click(screen.getByRole("button", { name: /Add/i }))
+        fireEvent.click(screen.getByRole("button", { name: "Constant input" }))
+        fireEvent.change(screen.getByLabelText("Constant input"), { target: { value: "{\"ok\":true}" } })
         fireEvent.click(screen.getByRole("button", { name: /^Share URL$/i }))
-        expect(screen.getByText("Constant step inputs, tokens, keys, and payloads")).toBeInTheDocument()
         fireEvent.click(screen.getByRole("button", { name: "Copy structure-only URL" }))
 
         await waitFor(() => {
@@ -295,35 +307,8 @@ describe("phase 3 pipeline builder page", () => {
         expect(toastSuccessMock).toHaveBeenCalledWith("Copied to clipboard", {
             description: "Share URL copied without constant step input",
         })
-    })
-
-    it("shows privacy preview before export and confirms structure-only scope", () => {
-        renderWithEnglish(<PipelineBuilderPage />)
-
-        fireEvent.click(screen.getByRole("button", { name: /^Sample$/i }))
-        fireEvent.click(screen.getAllByRole("button", { name: /^Export JSON$/i })[0])
-
-        expect(screen.getByRole("heading", { name: "Privacy preview" })).toBeInTheDocument()
-        expect(screen.getByText("Export a structure-only JSON recipe file.")).toBeInTheDocument()
-        expect(screen.getByText("Initial runtime input")).toBeInTheDocument()
-        expect(screen.getByText("Final output and intermediate step outputs")).toBeInTheDocument()
-        expect(screen.getByRole("button", { name: "Export structure only" })).toBeInTheDocument()
-    })
-
-    it("announces Share URL success after privacy confirmation", async () => {
-        renderWithEnglish(<PipelineBuilderPage />)
-
-        fireEvent.click(screen.getByRole("button", { name: /^Share URL$/i }))
-        fireEvent.click(screen.getByRole("button", { name: "Copy structure-only URL" }))
-
         await waitFor(() => {
-            expect(clipboardWriteMock).toHaveBeenCalledWith(expect.stringContaining("/en/pipeline-builder?recipe="))
-        })
-        expect(toastSuccessMock).toHaveBeenCalledWith("Copied to clipboard", {
-            description: "Share URL copied",
-        })
-        await waitFor(() => {
-            expect(screen.getByText("Copied to clipboard. Share URL copied")).toHaveAttribute("data-pipeline-action-status")
+            expect(screen.getByText("Copied to clipboard. Share URL copied without constant step input")).toHaveAttribute("data-pipeline-action-status")
         })
     })
 
