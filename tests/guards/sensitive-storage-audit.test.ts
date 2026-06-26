@@ -10,6 +10,10 @@ const SENSITIVE_AUDIT_TOOLS = [
     "log-scrubber",
     "har-viewer-sanitizer",
     "certificate-decoder",
+    "csp-parser",
+    "security-header-analyzer",
+    "env-parser",
+    "local-log-parser",
 ] as const
 
 const FORBIDDEN_FEATURE_PATTERNS = [

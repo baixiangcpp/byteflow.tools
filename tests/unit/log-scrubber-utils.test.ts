@@ -140,4 +140,22 @@ describe("scrubLogs", () => {
         expect(summary.email).toBe(2)
         expect(summary.ipv4).toBe(1)
     })
+
+    it("handles empty, malformed, and large inputs without leaking known secrets", () => {
+        expect(scrubLogs("").output).toBe("")
+        expect(scrubLogs("{{{{ not-json but still a log line").redactionCount).toBe(0)
+
+        const secret = joinTokenParts(["sk", "live", "largeinputsecret1234567890"], "_")
+        const largeInput = Array.from({ length: 1_000 }, (_, index) => (
+            `2026-06-10T10:${String(index % 60).padStart(2, "0")}:00Z ERROR user${index}@example.com token=${secret} ip=203.0.113.${index % 255}`
+        )).join("\n")
+        const result = scrubLogs(largeInput)
+
+        expect(result.redactionCount).toBe(3_000)
+        expect(result.output).not.toContain(secret)
+        expect(result.output).not.toContain("user999@example.com")
+        expect(result.output).toContain("[EMAIL_REDACTED]")
+        expect(result.output).toContain("[IP_REDACTED]")
+        expect(result.output).toContain("[TOKEN_REDACTED]")
+    })
 })

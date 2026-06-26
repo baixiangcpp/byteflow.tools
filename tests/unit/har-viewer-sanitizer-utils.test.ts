@@ -139,4 +139,42 @@ describe("HAR viewer and sanitizer utilities", () => {
         expect(result.error).toBeTruthy()
         expect(result.entries).toEqual([])
     })
+
+    it("handles empty, malformed, and large HAR inputs with sanitized exports", () => {
+        expect(parseHarSummary("").error).toBeTruthy()
+        expect(sanitizeHar("{not-json").error).toBeTruthy()
+
+        const entries = Array.from({ length: 250 }, (_, index) => ({
+            startedDateTime: "2026-06-10T10:00:00.000Z",
+            time: index,
+            request: {
+                method: "GET",
+                url: `https://api.example.com/items/${index}?token=secret-${index}&email=user${index}@example.com`,
+                headers: [{ name: "Authorization", value: `Bearer secret-${index}` }],
+                cookies: [{ name: "session", value: `cookie-${index}` }],
+                queryString: [
+                    { name: "token", value: `secret-${index}` },
+                    { name: "email", value: `user${index}@example.com` },
+                ],
+            },
+            response: {
+                status: index % 2 === 0 ? 200 : 500,
+                headers: [{ name: "Set-Cookie", value: `id=secret-${index}` }],
+                cookies: [{ name: "id", value: `secret-${index}` }],
+                content: { mimeType: "application/json", text: `{"token":"secret-${index}"}` },
+            },
+        }))
+        const input = JSON.stringify({ log: { entries } })
+        const summary = parseHarSummary(input)
+        const sanitized = sanitizeHar(input)
+
+        expect(summary.error).toBeUndefined()
+        expect(summary.totalRequests).toBe(250)
+        expect(summary.entries[249].url).not.toContain("secret-249")
+        expect(sanitized.error).toBeUndefined()
+        expect(sanitized.output).not.toContain("secret-249")
+        expect(sanitized.output).not.toContain("user249@example.com")
+        expect(sanitized.output).toContain("_byteflowSanitizerSummary")
+        expect(sanitized.redactionCount).toBeGreaterThan(1_000)
+    })
 })
