@@ -24,6 +24,7 @@ import { PopularToolsSection } from "@/features/home/components/popular-tools-se
 import { HomeCategoryPreview } from "@/features/home/components/home-category-preview"
 import { ALL_TOOLS_SECTION_ID } from "@/core/routing/all-tools-route"
 import { buildHomepageCanonicalUrl, buildLocalizedAlternates } from "@/core/seo/urls"
+import { getGrowthIndex } from "@/core/growth/growth-pages"
 
 type FeatureCard = {
   key: "privacy" | "speed" | "keyboard" | "tools"
@@ -63,6 +64,10 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   const heroSearchLabel = t.site.hero_search
   const commonLabels = t.common
   const installAppLinkLabel = requireTranslationValue(commonLabels.install_as_app, "common.install_as_app")
+  const compareIndex = getGrowthIndex("compare")
+  if (!compareIndex) {
+    throw new Error("[home] Missing compare growth index")
+  }
 
   const categoryLinks = MENU_GROUP_DEFS
 
@@ -209,6 +214,13 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
                 className="inline-flex min-h-11 items-center rounded-lg border border-border/60 bg-background/80 px-5 text-sm font-medium text-foreground backdrop-blur-sm transition-all hover:border-primary/30 hover:bg-background hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
               >
                 {installAppLinkLabel}
+              </Link>
+              <Link
+                href={`/${locale}/compare`}
+                prefetch={false}
+                className="inline-flex min-h-11 items-center rounded-lg border border-border/60 bg-background/80 px-5 text-sm font-medium text-foreground backdrop-blur-sm transition-all hover:border-primary/30 hover:bg-background hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+              >
+                {compareIndex.title[locale]}
               </Link>
             </div>
           </div>

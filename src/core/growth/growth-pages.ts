@@ -86,6 +86,81 @@ export type GrowthUiCopy = {
     trustBaselineDescription: string
 }
 
+const GROWTH_LOCALES: Locale[] = ["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr"]
+
+const REQUIRED_COMPARISON_DECISION_ROWS: GrowthComparisonRow[] = [
+    {
+        factor: "Privacy",
+        byteflow: "Use the Trust Center, tool trust labels, and sample inputs to verify whether sensitive data stays in the browser.",
+        other: "Review each alternative's runtime behavior, storage policy, analytics, and deployment owner before using production data.",
+        note: "No comparison page should be treated as permission to paste secrets without verification.",
+    },
+    {
+        factor: "Local execution",
+        byteflow: "Prefer browser-local tools for parsing, formatting, encoding, hashing, redaction, and snippet generation when a network call is unnecessary.",
+        other: "Some hosted tools may proxy, store, or execute work on a server even when the UI feels instant.",
+        note: "Use DevTools Network with sample data when the processing boundary matters.",
+    },
+    {
+        factor: "Offline use",
+        byteflow: "Use installable PWA flows and cached tool shells for workflows that should remain available without a live connection.",
+        other: "Many single-purpose online tools require a fresh network request for the page, scripts, or processing endpoint.",
+        note: "Offline availability still depends on the route and assets having been cached first.",
+    },
+    {
+        factor: "Open source",
+        byteflow: "Review the public repository, issues, and implementation when a workflow needs inspectable behavior.",
+        other: "Closed or opaque tools require more vendor trust because runtime and storage behavior may not be independently reviewable.",
+        note: "Open source does not replace verification, but it makes claims easier to audit.",
+    },
+    {
+        factor: "Workflow composition",
+        byteflow: "Combine focused tools, related links, and Pipeline Builder when a task needs repeatable multi-step handling.",
+        other: "Recipe workbenches or specialized sites may be faster when their composition model already matches the task.",
+        note: "Choose the model your team can document and repeat with the least ambiguity.",
+    },
+    {
+        factor: "Platform coverage",
+        byteflow: "Run the web app in modern desktop and mobile browsers, with installable app behavior where supported.",
+        other: "Native apps, extensions, CLI tools, and hosted sites can cover different device or automation needs.",
+        note: "Check the target platform before standardizing a team workflow.",
+    },
+    {
+        factor: "Pricing",
+        byteflow: "Use the public site and source without an account for the comparison workflows described here.",
+        other: "Some alternatives may add paid tiers, account requirements, usage limits, or hosted-team features.",
+        note: "Verify current pricing and limits before making a procurement decision.",
+    },
+]
+
+function localizeRequiredComparisonDecisionRows(locale: Locale): GrowthComparisonRow[] {
+    if (locale === "en") return REQUIRED_COMPARISON_DECISION_ROWS
+    const copy = getComparisonLocaleCopy()[locale]
+
+    return REQUIRED_COMPARISON_DECISION_ROWS.map((row) => ({
+        factor: `${localizeComparisonTerms(row.factor, locale)}${copy.factorSuffix}`,
+        byteflow: `${copy.byteflowPrefix}${localizeComparisonTerms(row.byteflow, locale)}`,
+        other: `${copy.otherPrefix}${localizeComparisonTerms(row.other, locale)}`,
+        note: `${copy.notePrefix}${localizeComparisonTerms(row.note, locale)}`,
+    }))
+}
+
+function withRequiredComparisonDecisionRows(copy: GrowthPageCopy, locale: Locale): GrowthPageCopy {
+    return {
+        ...copy,
+        comparisonRows: [
+            ...(copy.comparisonRows ?? []),
+            ...localizeRequiredComparisonDecisionRows(locale),
+        ],
+    }
+}
+
+function withRequiredComparisonCopy(copyByLocale: Record<Locale, GrowthPageCopy>): Record<Locale, GrowthPageCopy> {
+    return Object.fromEntries(
+        GROWTH_LOCALES.map((locale) => [locale, withRequiredComparisonDecisionRows(copyByLocale[locale], locale)]),
+    ) as Record<Locale, GrowthPageCopy>
+}
+
 export const GROWTH_UI_COPY: Record<Locale, GrowthUiCopy> = {
     en: {
         keyTakeaways: "Key takeaways",
@@ -333,7 +408,7 @@ export const GROWTH_PAGES: GrowthPage[] = [
         slug: "compare/byteflow-vs-cyberchef",
         kind: "comparison",
         relatedToolKeys: ["json_formatter", "base64_encode_decode", "hash_generator", "url_encode_decode"],
-        copy: {
+        copy: withRequiredComparisonCopy({
             en: {
                 eyebrow: "Comparison",
                 title: "Byteflow vs CyberChef",
@@ -768,13 +843,13 @@ export const GROWTH_PAGES: GrowthPage[] = [
                     },
                 ],
             },
-        },
+        }),
     },
     {
         slug: "compare/byteflow-vs-jwt-io",
         kind: "comparison",
         relatedToolKeys: ["jwt_decoder", "jwt_workbench", "jwt_verifier", "base64_encode_decode"],
-        copy: {
+        copy: withRequiredComparisonCopy({
             en: jwtPageCopy("Comparison", "Byteflow vs jwt.io"),
             "zh-CN": jwtPageCopyZhCN(),
             "zh-TW": jwtPageCopyZhTW(),
@@ -782,7 +857,7 @@ export const GROWTH_PAGES: GrowthPage[] = [
             ko: jwtPageCopyKo(),
             de: jwtPageCopyDe(),
             fr: jwtPageCopyFr(),
-        },
+        }),
     },
     {
         slug: "alternatives/json-formatter-privacy-first",
@@ -802,7 +877,7 @@ export const GROWTH_PAGES: GrowthPage[] = [
         slug: "compare/md5-vs-sha256",
         kind: "comparison",
         relatedToolKeys: ["hash_generator", "md5_generator", "base64_encode_decode", "jwt_decoder"],
-        copy: {
+        copy: withRequiredComparisonCopy({
             en: hashComparisonCopyEn(),
             "zh-CN": hashComparisonCopyZhCN(),
             "zh-TW": hashComparisonCopyZhTW(),
@@ -810,7 +885,7 @@ export const GROWTH_PAGES: GrowthPage[] = [
             ko: hashComparisonCopyKo(),
             de: hashComparisonCopyDe(),
             fr: hashComparisonCopyFr(),
-        },
+        }),
     },
     {
         slug: "compare/json-formatter-vs-json-validator",
@@ -1650,7 +1725,7 @@ function localizeComparisonSeed(seed: ComparisonSeed, locale: Locale): GrowthPag
 }
 
 function comparisonPageCopy(seed: ComparisonSeed): Record<Locale, GrowthPageCopy> {
-    return {
+    return withRequiredComparisonCopy({
         en: seed,
         "zh-CN": localizeComparisonSeed(seed, "zh-CN"),
         "zh-TW": localizeComparisonSeed(seed, "zh-TW"),
@@ -1658,7 +1733,7 @@ function comparisonPageCopy(seed: ComparisonSeed): Record<Locale, GrowthPageCopy
         ko: localizeComparisonSeed(seed, "ko"),
         de: localizeComparisonSeed(seed, "de"),
         fr: localizeComparisonSeed(seed, "fr"),
-    }
+    })
 }
 
 export function getGrowthPage(slug: GrowthPageSlug) {

@@ -1,6 +1,7 @@
 import { renderToStaticMarkup } from "react-dom/server"
 import { describe, expect, it } from "vitest"
 import fs from "node:fs"
+import { generateMetadata as generateCyberChefComparisonMetadata } from "@/app/[lang]/compare/byteflow-vs-cyberchef/page"
 import sitemap from "@/app/sitemap"
 import { LOCALES, type Locale } from "@/core/i18n/i18n"
 import { GROWTH_INDEXES, GROWTH_PAGES, GROWTH_UI_COPY, type GrowthPageCopy } from "@/core/growth/growth-pages"
@@ -14,6 +15,16 @@ const LOCALE_SCRIPT_REQUIREMENTS: Partial<Record<Locale, RegExp>> = {
     ja: /[\u3040-\u30FF\u3400-\u9FFF]/,
     ko: /[\uAC00-\uD7AF]/,
 }
+
+const REQUIRED_COMPARISON_DECISION_FACTORS = [
+    "privacy",
+    "local execution",
+    "offline use",
+    "open source",
+    "workflow composition",
+    "platform coverage",
+    "pricing",
+]
 
 function flattenCopy(copy: GrowthPageCopy): string[] {
     return [
@@ -91,11 +102,23 @@ describe("BF-028 growth content pages", () => {
 
         for (const page of comparisonPages) {
             const copy = page.copy.en
-            expect(copy.comparisonRows?.length, page.slug).toBeGreaterThanOrEqual(3)
+            expect(copy.comparisonRows?.length, page.slug).toBeGreaterThanOrEqual(7)
             expect(copy.sections.length, page.slug).toBeGreaterThanOrEqual(2)
             expect(copy.faq.length, page.slug).toBeGreaterThanOrEqual(2)
             expect(page.relatedToolKeys.length, page.slug).toBeGreaterThanOrEqual(2)
             expect(flattenCopy(copy).join(" "), page.slug).toMatch(/Use|Choose|Compare|Decide|Prefer|When/)
+        }
+    })
+
+    it("keeps every comparison decision table aligned with issue 242 criteria", () => {
+        const comparisonPages = GROWTH_PAGES.filter((page) => page.kind === "comparison")
+
+        for (const page of comparisonPages) {
+            const factors = (page.copy.en.comparisonRows ?? []).map((row) => row.factor.toLowerCase())
+
+            for (const factor of REQUIRED_COMPARISON_DECISION_FACTORS) {
+                expect(factors, `${page.slug} missing ${factor}`).toContain(factor)
+            }
         }
     })
 
@@ -174,6 +197,39 @@ describe("BF-028 growth content pages", () => {
                 expect(markup).toContain(`/en/${tool?.slug}`)
             }
         }
+    })
+
+    it("links homepage, About, and Trust Center source to comparison content", () => {
+        const sources = [
+            "src/app/[lang]/page.tsx",
+            "src/app/[lang]/about/page.tsx",
+            "src/app/[lang]/trust-center/page.tsx",
+        ]
+
+        for (const source of sources) {
+            const code = fs.readFileSync(source, "utf8")
+            expect(code, source).toContain("getGrowthIndex(\"compare\")")
+            expect(code, source).toMatch(/href=\{`\/\$\{(?:locale|lang)\}\/compare`\}/)
+        }
+    })
+
+    it("generates unique comparison metadata with canonical and social previews", async () => {
+        const metadata = await generateCyberChefComparisonMetadata({ params: Promise.resolve({ lang: "en" }) })
+
+        expect(metadata.title).toEqual("Byteflow vs CyberChef")
+        expect(metadata.description).toContain("Compare Byteflow and CyberChef")
+        expect(metadata.alternates?.canonical).toBe("https://byteflow.tools/en/compare/byteflow-vs-cyberchef")
+        expect(metadata.openGraph).toMatchObject({
+            title: "Byteflow vs CyberChef | byteflow.tools",
+            url: "https://byteflow.tools/en/compare/byteflow-vs-cyberchef",
+            type: "article",
+        })
+        expect(metadata.openGraph?.images).toEqual(["https://byteflow.tools/og/pages/en/compare/byteflow-vs-cyberchef.jpg"])
+        expect(metadata.twitter).toMatchObject({
+            card: "summary_large_image",
+            title: "Byteflow vs CyberChef | byteflow.tools",
+        })
+        expect(metadata.twitter?.images).toEqual(["https://byteflow.tools/og/pages/en/compare/byteflow-vs-cyberchef.jpg"])
     })
 
     it("renders matching Article or HowTo, BreadcrumbList, and FAQPage JSON-LD", () => {
