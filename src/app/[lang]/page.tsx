@@ -204,24 +204,18 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
               <Link
                 href={`/${locale}/pipeline-builder`}
                 prefetch={false}
-                className="inline-flex min-h-11 items-center rounded-lg border border-primary/35 bg-primary/12 px-5 text-sm font-medium text-primary backdrop-blur-sm transition-all hover:border-primary/50 hover:bg-primary/16 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                className="inline-flex min-h-11 items-center rounded-lg border border-primary/35 bg-primary/12 px-5 text-sm font-medium text-primary hover:border-primary/50 hover:bg-primary/16 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
               >
                 {getLocalizedToolTitle("pipeline_builder")}
               </Link>
               <Link
                 href={`/${locale}/install-app`}
                 prefetch={false}
-                className="inline-flex min-h-11 items-center rounded-lg border border-border/60 bg-background/80 px-5 text-sm font-medium text-foreground backdrop-blur-sm transition-all hover:border-primary/30 hover:bg-background hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+                className="inline-flex min-h-11 items-center rounded-lg border border-border/60 bg-background/80 px-5 text-sm font-medium text-foreground hover:border-primary/30 hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
               >
                 {installAppLinkLabel}
               </Link>
-              <Link
-                href={`/${locale}/compare`}
-                prefetch={false}
-                className="inline-flex min-h-11 items-center rounded-lg border border-border/60 bg-background/80 px-5 text-sm font-medium text-foreground backdrop-blur-sm transition-all hover:border-primary/30 hover:bg-background hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
-              >
-                {compareIndex.title[locale]}
-              </Link>
+              <Link href={`/${locale}/compare`}>{compareIndex.eyebrow[locale]}</Link>
             </div>
           </div>
         </section>
