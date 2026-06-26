@@ -76,7 +76,7 @@ export const TOOL_SEARCH_METADATA: Record<string, ToolSearchMetadata> = {
     json_formatter: {
         popularity: 100,
         aliases: ["json beautifier", "json prettifier", "json validator", "pretty json", "format json", "format payload"],
-        taskSynonyms: ["pretty print json", "format api payload", "validate json payload", "clean json"],
+        taskSynonyms: ["pretty print json", "json prettify", "json pretty print", "json lint", "format api payload", "validate json payload", "clean json"],
         categoryTerms: ["data", "api", "payload", "formatter", "validator"],
     },
     jwt_decoder: {
@@ -87,8 +87,8 @@ export const TOOL_SEARCH_METADATA: Record<string, ToolSearchMetadata> = {
     },
     base64_encode_decode: {
         popularity: 94,
-        aliases: ["base 64", "base64 decoder", "base64 encoder", "b64", "decode base64", "encode base64"],
-        taskSynonyms: ["decode text", "encode text", "decode payload", "convert base64"],
+        aliases: ["base 64", "base64 decoder", "base64 encoder", "base64 urlsafe", "base64url", "url safe base64", "b64", "decode base64", "encode base64"],
+        taskSynonyms: ["decode text", "encode text", "decode payload", "convert base64", "decode base64 urlsafe", "encode base64 url safe"],
         categoryTerms: ["encoder", "decoder", "conversion"],
     },
     regex_tester: {
@@ -111,8 +111,8 @@ export const TOOL_SEARCH_METADATA: Record<string, ToolSearchMetadata> = {
     },
     curl_to_code: {
         popularity: 86,
-        aliases: ["curl converter", "curl code generator", "convert curl", "curl to fetch", "curl to python"],
-        taskSynonyms: ["turn curl into code", "generate request code", "convert curl command"],
+        aliases: ["curl converter", "curl code generator", "convert curl", "curl generator", "curl to fetch", "curl to javascript", "curl to js", "curl to python", "curl to requests"],
+        taskSynonyms: ["turn curl into code", "generate request code", "convert curl command", "make fetch from curl"],
         categoryTerms: ["http", "api", "request", "code"],
     },
     openapi_viewer: {
@@ -303,4 +303,3 @@ export function getToolSearchMetadataTerms(toolKey: string | undefined, locale?:
         ...getToolLocalizedSearchAliases(toolKey, locale),
     ])
 }
-
