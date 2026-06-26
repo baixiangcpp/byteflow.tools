@@ -252,7 +252,9 @@ describe("phase 3 pipeline builder page", () => {
         expect(toastSuccessMock).toHaveBeenCalledWith("Copied to clipboard", {
             description: "Share URL copied",
         })
-        expect(screen.getByText("Copied to clipboard. Share URL copied")).toHaveAttribute("data-pipeline-action-status")
+        await waitFor(() => {
+            expect(screen.getByText("Copied to clipboard. Share URL copied")).toHaveAttribute("data-pipeline-action-status")
+        })
     })
 
     it("announces Export JSON success and downloads structure-only recipe JSON", async () => {
@@ -268,7 +270,9 @@ describe("phase 3 pipeline builder page", () => {
         expect(toastSuccessMock).toHaveBeenCalledWith("Downloaded Untitled-pipeline.json", {
             description: "Recipe exported",
         })
-        expect(screen.getByText("Downloaded Untitled-pipeline.json. Recipe exported")).toHaveAttribute("data-pipeline-action-status")
+        await waitFor(() => {
+            expect(screen.getByText("Downloaded Untitled-pipeline.json. Recipe exported")).toHaveAttribute("data-pipeline-action-status")
+        })
     })
 
     it("announces Export JSON failure when the browser download cannot start", async () => {
@@ -285,7 +289,9 @@ describe("phase 3 pipeline builder page", () => {
                 description: "Downloads are blocked",
             })
         })
-        expect(screen.getByText("Recipe export failed. Downloads are blocked")).toHaveAttribute("data-pipeline-action-status")
+        await waitFor(() => {
+            expect(screen.getByText("Recipe export failed. Downloads are blocked")).toHaveAttribute("data-pipeline-action-status")
+        })
     })
 
     it("loads and runs a built-in recipe template", async () => {
