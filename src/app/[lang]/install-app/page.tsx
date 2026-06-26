@@ -14,6 +14,7 @@ export default async function InstallAppPage({ params }: { params: Promise<{ lan
     const copy = getInstallPageCopy(locale)
     const allToolsLabel = t.common.all_tools
     const trustCenterLabel = t.pages.trust_center_title
+    const localDataControlsLabel = t.common.local_data_controls.title
     const offlineMatrixTitle = t.pages.trust_center_offline_matrix_title
     const offlineMatrixDescription = t.pages.trust_center_offline_matrix_install_desc
     const offlineMatrixLink = t.pages.trust_center_offline_matrix_link
@@ -24,6 +25,7 @@ export default async function InstallAppPage({ params }: { params: Promise<{ lan
             copy={copy}
             allToolsLabel={allToolsLabel}
             trustCenterLabel={trustCenterLabel}
+            localDataControlsLabel={localDataControlsLabel}
             offlineMatrixTitle={offlineMatrixTitle}
             offlineMatrixDescription={offlineMatrixDescription}
             offlineMatrixLink={offlineMatrixLink}

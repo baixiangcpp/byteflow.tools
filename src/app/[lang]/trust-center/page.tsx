@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { CheckCircle2, ExternalLink, FileText, Github, LockKeyhole, Network, ShieldCheck, WifiOff } from "lucide-react"
+import { CheckCircle2, Database, ExternalLink, FileText, Github, LockKeyhole, Network, ShieldCheck, WifiOff } from "lucide-react"
 import { isValidLocale, requireTranslationValue } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { TOOL_REGISTRY } from "@/core/registry"
@@ -174,6 +174,13 @@ export default async function TrustCenterPage({
                         <WifiOff className="h-4 w-4" aria-hidden="true" />
                         {p.trust_center_offline_matrix_link}
                     </a>
+                    <Link
+                        href={`/${locale}/privacy#local-data-controls`}
+                        className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                        <Database className="h-4 w-4" aria-hidden="true" />
+                        {common.local_data_controls.title}
+                    </Link>
                 </div>
             </section>
 

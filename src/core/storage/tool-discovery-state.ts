@@ -123,3 +123,11 @@ export function clearHistory() {
     writeStorageJson(RECENT_TOOL_KEYS_STORAGE_KEY, [])
     emitUpdateEvent()
 }
+
+export function getFavoriteToolStorageKey(): string {
+    return FAVORITE_TOOL_KEYS_STORAGE_KEY
+}
+
+export function getRecentToolStorageKey(): string {
+    return RECENT_TOOL_KEYS_STORAGE_KEY
+}

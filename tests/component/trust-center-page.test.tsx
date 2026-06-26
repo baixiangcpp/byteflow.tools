@@ -25,6 +25,7 @@ describe("TrustCenterPage", () => {
         expect(screen.getByText(/clear cached app files from the install page/i)).toBeInTheDocument()
         expect(screen.getByRole("heading", { name: "Offline support matrix" })).toBeInTheDocument()
         expect(screen.getByRole("link", { name: "Offline matrix" })).toHaveAttribute("href", "#offline-support-matrix")
+        expect(screen.getByRole("link", { name: "Local data controls" })).toHaveAttribute("href", "/en/privacy#local-data-controls")
         expect(screen.getByRole("rowheader", { name: "Browser-local tools" })).toBeInTheDocument()
         expect(screen.getByRole("rowheader", { name: "File-based tools" })).toBeInTheDocument()
         expect(screen.getByRole("rowheader", { name: "Pipeline Builder" })).toBeInTheDocument()
