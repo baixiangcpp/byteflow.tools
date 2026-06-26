@@ -111,43 +111,41 @@ export function PipelineStepDiagnostics({
 
                             <div className="mt-3 grid gap-3 lg:grid-cols-2">
                                 <details className="rounded-md border border-border/70 bg-muted/20">
-                                    <summary className="flex cursor-pointer list-none items-center justify-between gap-2 border-b border-border/70 px-3 py-2">
-                                        <span className="text-xs font-medium">{text("diagnostic_input_preview")}</span>
+                                    <summary className="cursor-pointer list-none border-b border-border/70 px-3 py-2 text-xs font-medium">
+                                        {text("diagnostic_input_preview")}
+                                    </summary>
+                                    <div className="flex justify-end border-b border-border/70 px-3 py-2">
                                         <Button
                                             type="button"
                                             size="sm"
                                             variant="outline"
                                             disabled={!inputPreview}
-                                            onClick={(event) => {
-                                                event.preventDefault()
-                                                if (execution) onCopyStepInput(execution)
-                                            }}
+                                            onClick={() => execution ? onCopyStepInput(execution) : undefined}
                                         >
                                             <Copy className="h-3.5 w-3.5" />
                                             {text("copy_step_input")}
                                         </Button>
-                                    </summary>
+                                    </div>
                                     <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-words p-3 text-xs text-muted-foreground">
                                         {inputPreview || text("diagnostic_input_empty")}
                                     </pre>
                                 </details>
                                 <details className="rounded-md border border-border/70 bg-muted/20">
-                                    <summary className="flex cursor-pointer list-none items-center justify-between gap-2 border-b border-border/70 px-3 py-2">
-                                        <span className="text-xs font-medium">{text("diagnostic_output_preview")}</span>
+                                    <summary className="cursor-pointer list-none border-b border-border/70 px-3 py-2 text-xs font-medium">
+                                        {text("diagnostic_output_preview")}
+                                    </summary>
+                                    <div className="flex justify-end border-b border-border/70 px-3 py-2">
                                         <Button
                                             type="button"
                                             size="sm"
                                             variant="outline"
                                             disabled={!outputPreview}
-                                            onClick={(event) => {
-                                                event.preventDefault()
-                                                if (execution) onCopyStepOutput(execution)
-                                            }}
+                                            onClick={() => execution ? onCopyStepOutput(execution) : undefined}
                                         >
                                             <Copy className="h-3.5 w-3.5" />
                                             {text("copy_step_output")}
                                         </Button>
-                                    </summary>
+                                    </div>
                                     <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-words p-3 text-xs text-muted-foreground">
                                         {outputPreview || text("diagnostic_output_empty")}
                                     </pre>
