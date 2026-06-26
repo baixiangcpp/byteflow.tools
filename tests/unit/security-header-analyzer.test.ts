@@ -47,4 +47,27 @@ x-frame-options: ALLOWALL
         expect(report).toContain("X-Content-Type-Options")
         expect(report).toContain("Recommendations")
     })
+
+    it("handles empty, malformed, duplicate, and large header blocks", () => {
+        const empty = analyzeSecurityHeaders("")
+        expect(empty.failCount).toBeGreaterThan(0)
+        expect(empty.percentage).toBeLessThan(50)
+
+        const malformed = analyzeSecurityHeaders("not a header\nx-frame-options DENY\nx-content-type-options: nosniff")
+        expect(malformed.assessments.find((item) => item.key === "X-Content-Type-Options")?.status).toBe("pass")
+        expect(malformed.assessments.find((item) => item.key === "X-Frame-Options")?.status).toBe("fail")
+
+        const duplicate = analyzeSecurityHeaders("x-frame-options: DENY\nx-frame-options: SAMEORIGIN")
+        expect(duplicate.assessments.find((item) => item.key === "X-Frame-Options")?.value).toBe("DENY, SAMEORIGIN")
+
+        const large = analyzeSecurityHeaders([
+            "HTTP/2 200",
+            ...Array.from({ length: 500 }, (_, index) => `x-debug-${index}: value-${index}`),
+            "content-security-policy: default-src 'self'; script-src 'self'; object-src 'none'",
+            "strict-transport-security: max-age=31536000; includeSubDomains",
+            "x-content-type-options: nosniff",
+        ].join("\n"))
+        expect(large.assessments.find((item) => item.key === "Content-Security-Policy")?.status).toBe("pass")
+        expect(formatSecurityHeaderReport(large)).toContain("Strict-Transport-Security")
+    })
 })

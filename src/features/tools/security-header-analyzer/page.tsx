@@ -33,10 +33,20 @@ const statusIcons: Record<HeaderStatus, React.ComponentType<{ className?: string
     fail: XCircle,
 }
 
+const FALLBACK_LABELS: Record<string, string> = {
+    copy_report: "Copy report",
+    header_input_hint: "Paste response headers only. Request or response bodies are not needed.",
+    header_input_label: "HTTP response headers",
+    header_input_placeholder: "HTTP/2 200\ncontent-security-policy: default-src 'self'; object-src 'none'\nstrict-transport-security: max-age=31536000; includeSubDomains",
+    sample_action: "Sample",
+    score_hint: "Warnings count as partial credit. Review each recommendation before changing production headers.",
+    score_label: "Security Header Score",
+}
+
 export function SecurityHeaderAnalyzerPage() {
     const { t } = useLang()
     const toolT = t.tools["security_header_analyzer"] as Record<string, string>
-    const text = React.useCallback((key: string) => toolT[key], [toolT])
+    const text = React.useCallback((key: string) => toolT[key] || FALLBACK_LABELS[key] || key, [toolT])
 
     const [input, setInput] = React.useState(SAMPLE_HEADERS)
     const summary = React.useMemo(() => analyzeSecurityHeaders(input), [input])

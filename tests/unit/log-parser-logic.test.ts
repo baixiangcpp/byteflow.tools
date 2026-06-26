@@ -115,6 +115,25 @@ ERROR: third`
         expect(result.entries[0].lineNumber).toBe(1)
         expect(result.entries[1].lineNumber).toBe(3)
     })
+
+    it("should handle malformed JSON-like lines and large log inputs", () => {
+        const large = Array.from({ length: 1_000 }, (_, index) => (
+            index % 10 === 0
+                ? `{"timestamp":"2026-06-10T10:00:00Z","level":"ERROR","message":"failed ${index}"}`
+                : `2026-06-10T10:00:00Z INFO request ${index}`
+        )).join("\n")
+        const result = parseLogs(`{not-json}\n${large}`)
+
+        expect(result.totalLines).toBe(1_001)
+        expect(result.entries).toHaveLength(1_001)
+        expect(result.entries[0]).toMatchObject({
+            lineNumber: 1,
+            level: undefined,
+            message: "{not-json}",
+        })
+        expect(result.levelCounts.ERROR).toBe(100)
+        expect(result.levelCounts.INFO).toBe(900)
+    })
 })
 
 describe("filterLogs", () => {
@@ -188,5 +207,17 @@ describe("exportToJSON", () => {
         expect(Array.isArray(parsed)).toBe(true)
         expect(parsed).toHaveLength(1)
         expect(parsed[0].level).toBe("INFO")
+    })
+
+    it("should export the filtered sanitized subset exactly", () => {
+        const entries = parseLogs(`INFO ok
+ERROR token=[REDACTED]
+WARN skipped`).entries
+        const filtered = filterLogs(entries, { levels: ["ERROR"] })
+
+        expect(exportToCSV(filtered)).toContain("token=[REDACTED]")
+        expect(exportToCSV(filtered)).not.toContain("WARN skipped")
+        expect(exportToJSON(filtered)).toContain("token=[REDACTED]")
+        expect(exportToJSON(filtered)).not.toContain("WARN skipped")
     })
 })
