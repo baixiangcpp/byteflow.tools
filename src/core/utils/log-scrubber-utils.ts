@@ -180,17 +180,52 @@ const RULES: ScrubRule[] = [
     },
 ]
 
+function getLineColumns(text: string, indexes: number[]): { line: number; column: number }[] {
+    const positions: { line: number; column: number }[] = []
+    let line = 1
+    let column = 1
+    let cursor = 0
+
+    for (const index of indexes) {
+        while (cursor < index) {
+            const codePoint = text.codePointAt(cursor)
+            if (codePoint === undefined) break
+
+            if (codePoint === 10) {
+                line += 1
+                column = 1
+            } else {
+                column += 1
+            }
+
+            cursor += codePoint > 0xffff ? 2 : 1
+        }
+
+        positions.push({ line, column })
+    }
+
+    return positions
+}
+
 function getLineColumn(text: string, index: number): { line: number; column: number } {
     let line = 1
     let column = 1
-    for (const char of Array.from(text.slice(0, index))) {
-        if (char === "\n") {
+    let cursor = 0
+
+    while (cursor < index) {
+        const codePoint = text.codePointAt(cursor)
+        if (codePoint === undefined) break
+
+        if (codePoint === 10) {
             line += 1
             column = 1
         } else {
             column += 1
         }
+
+        cursor += codePoint > 0xffff ? 2 : 1
     }
+
     return { line, column }
 }
 
@@ -239,8 +274,9 @@ function collectMatches(input: string, options: ScrubOptions): ScrubMatch[] {
 
 export function scrubLogs(input: string, options: ScrubOptions = DEFAULT_SCRUB_OPTIONS): ScrubResult {
     const matches = collectMatches(input, options)
-    const findings: ScrubFinding[] = matches.map((match) => {
-        const position = getLineColumn(input, match.start)
+    const positions = getLineColumns(input, matches.map((match) => match.start))
+    const findings: ScrubFinding[] = matches.map((match, index) => {
+        const position = positions[index] ?? getLineColumn(input, match.start)
         return {
             type: match.rule.type,
             label: match.rule.label,
