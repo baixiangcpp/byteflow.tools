@@ -32,13 +32,19 @@ export function ToolFavoriteControl({ toolKey }: ToolFavoriteControlProps) {
     }, [])
 
     return (
-        <div className="mb-4 flex flex-wrap items-center justify-end gap-2">
+        <div
+            className="mb-5 flex flex-wrap items-center justify-end gap-2 border-b border-border/70 pb-4"
+            role="group"
+            aria-label={`${addLabel} / ${removeLabel}`}
+            data-tool-global-actions
+        >
             <Button
                 type="button"
                 variant="outline"
                 size="sm"
-                className="min-h-10"
+                className="min-h-10 border-border bg-background shadow-xs"
                 aria-pressed={isFavorite}
+                title={isFavorite ? removeLabel : addLabel}
                 onClick={() => setFavoriteToolKeys(toggleFavoriteToolKey(toolKey))}
             >
                 <Heart className={cn("h-4 w-4", isFavorite ? "fill-primary text-primary" : "")} />
@@ -48,4 +54,3 @@ export function ToolFavoriteControl({ toolKey }: ToolFavoriteControlProps) {
         </div>
     )
 }
-

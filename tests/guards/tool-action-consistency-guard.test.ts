@@ -28,6 +28,8 @@ describe("tool action consistency guard", () => {
             "src/features/tools/uuid-generator/page.tsx",
             "src/features/tools/youtube-thumbnail-grabber/page.tsx",
             "src/features/tools/pipeline-builder/page.tsx",
+            "src/features/tools/http-request-builder/page.tsx",
+            "src/features/tools/log-scrubber/page.tsx",
         ]
 
         for (const file of auditedFiles) {
@@ -46,6 +48,8 @@ describe("tool action consistency guard", () => {
             "src/features/tools/uuid-generator/page.tsx",
             "src/features/tools/youtube-thumbnail-grabber/page.tsx",
             "src/features/tools/pipeline-builder/page.tsx",
+            "src/features/tools/http-request-builder/page.tsx",
+            "src/features/tools/log-scrubber/page.tsx",
         ]
 
         for (const file of auditedFiles) {
@@ -123,6 +127,8 @@ describe("tool action consistency guard", () => {
             "src/features/tools/image-resizer/page.tsx",
             "src/features/tools/uuid-generator/page.tsx",
             "src/features/tools/youtube-thumbnail-grabber/page.tsx",
+            "src/features/tools/http-request-builder/page.tsx",
+            "src/features/tools/log-scrubber/page.tsx",
         ]
 
         for (const file of auditedFiles) {
@@ -135,6 +141,9 @@ describe("tool action consistency guard", () => {
             "src/features/tools/base64-encode-decode/page.tsx",
             "src/features/tools/image-resizer/page.tsx",
             "src/features/tools/youtube-thumbnail-grabber/page.tsx",
+            "src/features/tools/jwt-decoder/page.tsx",
+            "src/features/tools/http-request-builder/page.tsx",
+            "src/features/tools/log-scrubber/page.tsx",
         ]
         for (const file of destructiveFiles) {
             expect(read(file), file).toContain("destructive: true")

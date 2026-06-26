@@ -2,9 +2,15 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { LangProvider } from "@/core/i18n/lang-provider"
 import { getTranslation } from "@/core/i18n/translations/catalog"
+import { RoutePageChrome } from "@/components/layout/route-page-chrome"
 import { HttpRequestBuilderPage } from "@/features/tools/http-request-builder/page"
 
 const clipboardWriteMock = vi.fn()
+const readFavoriteToolKeysMock = vi.fn(() => [])
+const toggleFavoriteToolKeyMock = vi.fn((toolKey: string) => {
+    void toolKey
+    return ["http_request_builder"]
+})
 
 vi.mock("next/navigation", () => ({
     usePathname: () => "/en/http-request-builder",
@@ -13,6 +19,15 @@ vi.mock("next/navigation", () => ({
 vi.mock("@/core/clipboard/clipboard", () => ({
     safeClipboardWrite: (value: string) => clipboardWriteMock(value),
 }))
+
+vi.mock("@/core/storage/tool-discovery-state", async (importOriginal) => {
+    const actual = await importOriginal() as typeof import("@/core/storage/tool-discovery-state")
+    return {
+        ...actual,
+        readFavoriteToolKeys: () => readFavoriteToolKeysMock(),
+        toggleFavoriteToolKey: (toolKey: string) => toggleFavoriteToolKeyMock(toolKey),
+    }
+})
 
 vi.mock("sonner", () => ({
     toast: {
@@ -29,10 +44,21 @@ function renderHttpBuilder() {
     )
 }
 
+function renderHttpBuilderWithChrome() {
+    return render(
+        <LangProvider lang="en" translations={getTranslation("en")}>
+            <RoutePageChrome pathname="/en/http-request-builder">
+                <HttpRequestBuilderPage />
+            </RoutePageChrome>
+        </LangProvider>,
+    )
+}
+
 describe("HttpRequestBuilderPage", () => {
     beforeEach(() => {
         vi.clearAllMocks()
         clipboardWriteMock.mockResolvedValue({ ok: true })
+        readFavoriteToolKeysMock.mockReturnValue([])
     })
 
     it("generates request code without sending a network request", () => {
@@ -93,5 +119,23 @@ describe("HttpRequestBuilderPage", () => {
         expect(screen.getAllByRole("button", { name: /Copy/ })[0]).toBeDisabled()
         fireEvent.click(screen.getAllByRole("button", { name: /Copy/ })[1])
         await waitFor(() => expect(clipboardWriteMock).not.toHaveBeenCalled())
+    })
+
+    it("keeps favorite toggles separated from structured header entry", () => {
+        renderHttpBuilderWithChrome()
+
+        expect(screen.getByRole("group", { name: "Add to favorites / Remove from favorites" })).toHaveAttribute("data-tool-global-actions")
+        expect(screen.getByRole("button", { name: "Add to favorites" })).toBeInTheDocument()
+        expect(screen.getByRole("toolbar", { name: "Tool actions" })).toBeInTheDocument()
+
+        fireEvent.click(screen.getByRole("button", { name: "Add Header" }))
+        fireEvent.change(screen.getAllByRole("textbox", { name: "Header name" })[1], {
+            target: { value: "Authorization" },
+        })
+        fireEvent.change(screen.getAllByRole("textbox", { name: "Value" })[1], {
+            target: { value: "Bearer TOKEN_PLACEHOLDER" },
+        })
+
+        expect(toggleFavoriteToolKeyMock).not.toHaveBeenCalled()
     })
 })

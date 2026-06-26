@@ -1,15 +1,14 @@
 "use client"
 
 import * as React from "react"
-import Link from "next/link"
-import { Copy, FileText, ShieldCheck, Workflow } from "lucide-react"
+import { Copy, Eraser, FileText, ShieldCheck, Workflow } from "lucide-react"
 import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
+import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildSensitiveToolHandoffLink } from "@/core/routing/tool-handoff"
 import {
@@ -89,6 +88,55 @@ password=hunter2`)
         setFindings([])
     }, [])
 
+    const handleClear = React.useCallback(() => {
+        setInput("")
+        setOutput("")
+        setFindings([])
+        setOptions(DEFAULT_SCRUB_OPTIONS)
+    }, [])
+
+    const actions: ToolAction[] = [
+        {
+            id: "sample",
+            label: t.common.sample,
+            icon: FileText,
+            onClick: loadExample,
+        },
+        {
+            id: "clear",
+            label: t.common.clear,
+            icon: Eraser,
+            onClick: handleClear,
+            destructive: true,
+        },
+        {
+            id: "run",
+            label: text("scrub_action"),
+            icon: ShieldCheck,
+            onClick: runScrub,
+            variant: "default",
+            disabled: !input.trim(),
+            disabledReason: t.common.action_disabled_input_required,
+        },
+        {
+            id: "copy",
+            label: t.common.copy,
+            icon: Copy,
+            onClick: () => void copyOutput(),
+            disabled: !output,
+            disabledReason: t.common.action_disabled_no_output,
+        },
+        {
+            id: "to_pipeline_builder",
+            label: (t.tools["pipeline_builder"] as Record<string, string> | undefined)?.title ?? "Pipeline Builder",
+            icon: Workflow,
+            href: pipelineHandoff.href,
+            onClick: pipelineHandoff.prime,
+            disabled: !handoffPayload.trim(),
+            disabledReason: t.common.action_disabled_no_output,
+        },
+    ]
+
     return (
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
@@ -99,37 +147,7 @@ password=hunter2`)
                     </h1>
                     <p className="mt-1 text-muted-foreground">{text("description")}</p>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                    <Button variant="outline" size="sm" onClick={loadExample}>
-                        <FileText className="mr-2 h-4 w-4" />
-                        {t.common.try_example}
-                    </Button>
-                    <Button size="sm" onClick={runScrub}>
-                        <ShieldCheck className="mr-2 h-4 w-4" />
-                        {text("scrub_action")}
-                    </Button>
-                    <Button variant="outline" size="sm" onClick={() => void copyOutput()} disabled={!output}>
-                        <Copy className="mr-2 h-4 w-4" />
-                        {t.common.copy}
-                    </Button>
-                    <Button variant="outline" size="sm" asChild>
-                        <Link
-                            href={pipelineHandoff.href}
-                            onClick={(event) => {
-                                if (!handoffPayload.trim()) {
-                                    event.preventDefault()
-                                    return
-                                }
-                                pipelineHandoff.prime()
-                            }}
-                            className={!handoffPayload.trim() ? "pointer-events-none opacity-50" : undefined}
-                            aria-disabled={!handoffPayload.trim()}
-                        >
-                            <Workflow className="mr-2 h-4 w-4" />
-                            {(t.tools["pipeline_builder"] as Record<string, string> | undefined)?.title ?? "Pipeline Builder"}
-                        </Link>
-                    </Button>
-                </div>
+                <ToolActionBar actions={actions} handoffPayload={handoffPayload} />
             </div>
 
             <SensitiveInputWarning variant="log" />

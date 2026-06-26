@@ -25,7 +25,7 @@ describe("phase 1 developer utility pages", () => {
 
         expect(screen.getByRole("heading", { name: "Log Scrubber" })).toBeInTheDocument()
         expect(screen.getByPlaceholderText("Paste logs, stack traces, env dumps, or config snippets that may contain secrets...")).toBeInTheDocument()
-        expect(screen.getByRole("button", { name: /Try example/i })).toBeInTheDocument()
+        expect(screen.getByRole("button", { name: /Sample/i })).toBeInTheDocument()
         expect(screen.getByRole("button", { name: /Scrub log/i })).toBeInTheDocument()
     })
 
