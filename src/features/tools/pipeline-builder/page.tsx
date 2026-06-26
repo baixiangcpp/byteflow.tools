@@ -1,16 +1,7 @@
 "use client"
 
 import * as React from "react"
-import {
-    Copy,
-    Download,
-    FileInput,
-    Link2,
-    ListChecks,
-    Play,
-    Save,
-    Workflow,
-} from "lucide-react"
+import { Copy, Download, FileInput, Link2, ListChecks, Play, Save, Workflow } from "lucide-react"
 import { toast } from "sonner"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -48,6 +39,7 @@ import { PipelineStepDiagnostics } from "./pipeline-step-diagnostics"
 import { PipelineStepInspector } from "./pipeline-step-inspector"
 import { PipelineStepList } from "./pipeline-step-list"
 import { PipelineTemplateList } from "./pipeline-template-list"
+import { PipelineUsageGuide } from "./pipeline-usage-guide"
 import type { OptionValue } from "./types"
 
 const ONBOARDING_DISMISSED_KEY = "byteflow:pipeline-builder:onboarding-dismissed"
@@ -538,6 +530,7 @@ export function PipelineBuilderPage() {
                         result={result}
                         text={text}
                     />
+                    <PipelineUsageGuide maxSteps={recipe.settings.maxSteps} text={text} />
                 </main>
 
                 <PipelineStepInspector

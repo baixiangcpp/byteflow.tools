@@ -504,6 +504,26 @@ describe("pipeline foundation", () => {
         expect(validateRecipe(recipe)).toEqual({ ok: true, errors: [] })
     })
 
+    it("rejects recipes above the configured step limit", () => {
+        const result = validateRecipe(buildRecipe({
+            steps: Array.from({ length: 3 }, (_value, index) => ({
+                id: `step_${index + 1}`,
+                toolKey: "multiple_whitespace_remover",
+                adapterVersion: 1,
+                inputMode: "previous_output",
+                options: {},
+            })),
+            edges: [],
+            settings: {
+                ...DEFAULT_RECIPE_SETTINGS,
+                maxSteps: 2,
+            },
+        }))
+
+        expect(result.ok).toBe(false)
+        expect(result.errors).toContain("Recipe has more than 2 steps.")
+    })
+
     it.each([
         ["self loop", [{ fromStepId: "format", toStepId: "format" }], "Edge format -> format is a self-loop."],
         ["branch", [{ fromStepId: "format", toStepId: "encode" }, { fromStepId: "format", toStepId: "scrub" }], "Step format has multiple outgoing edges."],
