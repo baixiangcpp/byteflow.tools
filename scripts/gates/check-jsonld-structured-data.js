@@ -98,6 +98,66 @@ function assertTypes({ scanDir, locale, slug, requiredTypes, label, failures }) 
     }
 }
 
+function findNodesByType(value, targetType, out = []) {
+    if (Array.isArray(value)) {
+        for (const item of value) findNodesByType(item, targetType, out)
+        return out
+    }
+
+    if (!value || typeof value !== "object") return out
+
+    const record = value
+    const type = record["@type"]
+    if (type === targetType || (Array.isArray(type) && type.includes(targetType))) {
+        out.push(record)
+    }
+
+    for (const child of Object.values(record)) findNodesByType(child, targetType, out)
+    return out
+}
+
+function assertToolWebApplicationFields({ scanDir, locale, slug, label, failures }) {
+    const filePath = htmlFileFor(scanDir, locale, slug)
+    if (!fs.existsSync(filePath)) {
+        failures.push(`${label}: missing built HTML at ${path.relative(process.cwd(), filePath)}`)
+        return
+    }
+
+    const html = fs.readFileSync(filePath, "utf8")
+    const blocks = parseJsonLdBlocks(html, filePath, failures)
+    const webApplications = findNodesByType(blocks, "WebApplication")
+    const app = webApplications[0]
+    if (!app) {
+        failures.push(`${label}: missing WebApplication JSON-LD`)
+        return
+    }
+
+    const requiredStringFields = [
+        "name",
+        "description",
+        "url",
+        "applicationCategory",
+        "operatingSystem",
+        "browserRequirements",
+        "inLanguage",
+    ]
+    for (const field of requiredStringFields) {
+        if (typeof app[field] !== "string" || app[field].trim().length === 0) {
+            failures.push(`${label}: WebApplication missing non-empty ${field}`)
+        }
+    }
+
+    if (app.isAccessibleForFree !== true) {
+        failures.push(`${label}: WebApplication must mark isAccessibleForFree=true`)
+    }
+    if (!app.offers || typeof app.offers !== "object" || app.offers.price !== "0" || app.offers.priceCurrency !== "USD") {
+        failures.push(`${label}: WebApplication must include free USD Offer`)
+    }
+    if (!app.publisher || typeof app.publisher !== "object" || app.publisher["@id"] !== "https://byteflow.tools/#organization") {
+        failures.push(`${label}: WebApplication must reference the site Organization publisher`)
+    }
+}
+
 function assertUniqueEnglishToolDescriptions(failures) {
     const translations = JSON.parse(fs.readFileSync(path.join(process.cwd(), "src/core/i18n/translations/en.json"), "utf8"))
     const tools = translations.tools ?? {}
@@ -209,6 +269,13 @@ function main() {
             locale: "en",
             slug,
             requiredTypes: ["WebApplication", "BreadcrumbList"],
+            label: `/en/${slug}`,
+            failures,
+        })
+        assertToolWebApplicationFields({
+            scanDir,
+            locale: "en",
+            slug,
             label: `/en/${slug}`,
             failures,
         })
