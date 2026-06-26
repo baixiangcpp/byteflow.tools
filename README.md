@@ -22,6 +22,7 @@
     <a href="https://byteflow.tools/en/roadmap">Roadmap</a> ·
     <a href="https://byteflow.tools/en/changelog">Changelog</a> ·
     <a href="https://byteflow.tools/en/self-hosting">Self-hosting</a> ·
+    <a href="docs/community-sustainability.md">Community Model</a> ·
     <a href="#contributing">Contributing</a> ·
     <a href="#license">License</a> ·
     <a href="#support">Support</a>
@@ -135,11 +136,13 @@ Byteflow's core tools are designed to process payloads in the browser. Tools mar
 
 Report vulnerabilities through the process in [SECURITY.md](SECURITY.md).
 
-Self-hosting guidance is available in [docs/deployment/self-hosting.md](docs/deployment/self-hosting.md). Future team deployment or commercial support must preserve local-first processing, no forced accounts, no cloud history, and no default payload storage.
+Self-hosting guidance is available in [docs/deployment/self-hosting.md](docs/deployment/self-hosting.md). The sustainability and support boundary is documented in [docs/community-sustainability.md](docs/community-sustainability.md): future team deployment or commercial support must preserve local-first processing, no forced accounts, no cloud history, and no default payload storage.
 
 ## Contributing
 
-Contributions are welcome when they preserve the local-first privacy model and the guarded architecture boundaries. Start with [CONTRIBUTING.md](CONTRIBUTING.md), follow the [Code of Conduct](CODE_OF_CONDUCT.md), and use the issue templates for bug reports or feature requests.
+Contributions are welcome when they preserve the local-first privacy model and the guarded architecture boundaries. Start with [CONTRIBUTING.md](CONTRIBUTING.md), follow the [Code of Conduct](CODE_OF_CONDUCT.md), and use the issue templates for bug reports, feature requests, recipe requests, docs requests, or localization fixes.
+
+Roadmap priority uses public signals from GitHub reactions, comments, duplicate issues, severity, privacy risk, and local-first product fit. See [docs/community-sustainability.md](docs/community-sustainability.md) for the full prioritization method.
 
 Before opening a pull request, run the checks that match your change. For user-facing, registry, i18n, or build-surface changes, run:
 

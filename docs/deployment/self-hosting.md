@@ -27,4 +27,8 @@ The PWA may cache versioned app shell files, icons, static assets, and tool chun
 
 ## Team Boundary
 
-Commercial support can focus on packaging, security review, internal deployment help, or sponsorship. It should not depend on forced accounts, hosted payload history, or processing user tool payloads on a backend.
+Commercial support can focus on packaging, security review, internal deployment help, custom local-first tool development, or sponsorship. It should not depend on forced accounts, hosted payload history, hosted workspaces, hosted APIs, or processing user tool payloads on a backend.
+
+There is no SLA-backed enterprise product, hosted paid plan, cloud workspace, synced history, or hosted tool-processing API today. Deployment owners are responsible for access control, hosting uptime, internal analytics policy, incident response, and reviewing any changes they add around the static export.
+
+See `docs/community-sustainability.md` for the full support, sponsorship, and prioritization decision.
