@@ -8,6 +8,7 @@
  */
 
 import taxonomy from "./taxonomy.json"
+import { isAnalyticsOptedOut } from "./preferences"
 
 type AnalyticsTaxonomy = typeof taxonomy
 type AnalyticsEventName = keyof AnalyticsTaxonomy["events"]
@@ -101,6 +102,7 @@ function safeSourcePage(value?: string | null): string | undefined {
 }
 
 export const isAnalyticsEnabled = (): boolean => false
+export { getAnalyticsPreference, isAnalyticsOptedOut, setAnalyticsOptOut } from "./preferences"
 
 export function detectInteractionAnalyticsAction(
     signal: string,
@@ -132,7 +134,12 @@ export function buildAnalyticsPayload(event: AnalyticsEventName, params: Analyti
     ) as AnalyticsPayload
 }
 
+export function shouldTrackAnalyticsEvent(enabled = isAnalyticsEnabled(), optedOut = isAnalyticsOptedOut()): boolean {
+    return enabled && !optedOut
+}
+
 export function trackAllowlistedEvent(_event: AnalyticsEventName, _params: AnalyticsPayload = {}): void {
+    if (!shouldTrackAnalyticsEvent()) return
     // No-op by design. Future providers must call buildAnalyticsPayload first.
     void _event
     void _params
