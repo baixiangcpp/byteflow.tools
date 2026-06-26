@@ -715,7 +715,13 @@
       "operation_encode": "编码",
       "operation_decode": "解码",
       "file_processing": "正在本地处理文件...",
-      "file_mode_hint": "文件模式使用 worker，且不会保存文件内容。"
+      "file_mode_hint": "文件模式使用 worker，且不会保存文件内容。",
+      "docs_standard_title": "标准 Base64",
+      "docs_standard_desc": "标准 Base64 适用于文本、HTTP 头、环境变量和接受 +、/ 以及可选 = 填充的二进制数据。",
+      "docs_url_safe_title": "URL 安全 Base64",
+      "docs_url_safe_desc": "URL 安全 Base64 适用于 JWT 片段、查询值和路径片段。它用 - 替代 +，用 _ 替代 /，可以省略填充。",
+      "docs_file_title": "文件模式",
+      "docs_file_desc": "文件模式在浏览器 worker 中读取本地文件、返回 Base64 输出，且不持久保存文件内容。"
     },
     "url_encode_decode": {
       "title": "URL 编码/解码",
@@ -1448,8 +1454,8 @@
       "token_placeholder": "在此粘贴 JWT 令牌",
       "secret_label": "密钥（用于 HMAC 验证）",
       "secret_placeholder": "输入你的密钥",
-      "result_valid": "签名有效（{alg}）",
-      "result_invalid": "签名无效（{alg}）",
+      "result_valid": "签名与提供的密钥匹配（{alg}）。这只证明该密钥下的完整性，不代表 token 整体可信。",
+      "result_invalid": "签名与提供的密钥不匹配（{alg}）。不要信任此密钥下的 token。",
       "header_section": "头部",
       "payload_section": "载荷",
       "claims_section": "声明校验",

@@ -206,6 +206,7 @@ export function JwtDecoderPage() {
                             placeholder={toolT.token_placeholder}
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
+                            aria-label={toolT.encoded_token_label}
                             spellCheck={false}
                         />
                     </div>

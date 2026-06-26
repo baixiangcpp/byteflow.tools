@@ -715,7 +715,13 @@
       "operation_encode": "인코딩",
       "operation_decode": "디코딩",
       "file_processing": "파일을 로컬에서 처리 중...",
-      "file_mode_hint": "파일 모드는 worker를 사용하며 파일 내용을 저장하지 않습니다."
+      "file_mode_hint": "파일 모드는 worker를 사용하며 파일 내용을 저장하지 않습니다.",
+      "docs_standard_title": "표준 Base64",
+      "docs_standard_desc": "표준 Base64는 텍스트, HTTP 헤더, 환경 변수, +, / 및 선택적 = 패딩을 허용하는 바이너리 데이터에 사용합니다.",
+      "docs_url_safe_title": "URL 안전 Base64",
+      "docs_url_safe_desc": "URL 안전 Base64는 JWT 세그먼트, 쿼리 값, 경로 조각에 사용합니다. +를 -로, /를 _로 바꾸며 패딩을 생략할 수 있습니다.",
+      "docs_file_title": "파일 모드",
+      "docs_file_desc": "파일 모드는 브라우저 worker에서 로컬 파일을 읽고 Base64 출력을 반환하며 파일 내용을 영구 저장하지 않습니다."
     },
     "url_encode_decode": {
       "title": "URL 인코딩/디코딩",
@@ -1448,8 +1454,8 @@
       "token_placeholder": "여기에 JWT 토큰을 붙여 넣으세요",
       "secret_label": "비밀 키(HMAC 검증용)",
       "secret_placeholder": "비밀 키 입력",
-      "result_valid": "서명이 유효합니다({alg})",
-      "result_invalid": "서명이 유효하지 않습니다({alg})",
+      "result_valid": "서명이 제공된 secret과 일치합니다({alg}). 이는 해당 secret 기준의 무결성만 증명하며 token 전체 신뢰를 의미하지 않습니다.",
+      "result_invalid": "서명이 제공된 secret과 일치하지 않습니다({alg}). 이 키로는 이 token을 신뢰하지 마세요.",
       "header_section": "헤더",
       "payload_section": "페이로드",
       "claims_section": "클레임 검증",

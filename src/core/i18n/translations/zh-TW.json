@@ -715,7 +715,13 @@
       "operation_encode": "編碼",
       "operation_decode": "解碼",
       "file_processing": "正在本機處理檔案...",
-      "file_mode_hint": "檔案模式使用 worker，且不會儲存檔案內容。"
+      "file_mode_hint": "檔案模式使用 worker，且不會儲存檔案內容。",
+      "docs_standard_title": "標準 Base64",
+      "docs_standard_desc": "標準 Base64 適用於文字、HTTP 標頭、環境變數，以及接受 +、/ 和可選 = 填充的二進位資料。",
+      "docs_url_safe_title": "URL 安全 Base64",
+      "docs_url_safe_desc": "URL 安全 Base64 適用於 JWT 片段、查詢值和路徑片段。它用 - 取代 +，用 _ 取代 /，可省略填充。",
+      "docs_file_title": "檔案模式",
+      "docs_file_desc": "檔案模式會在瀏覽器 worker 中讀取本機檔案、回傳 Base64 輸出，且不會持久儲存檔案內容。"
     },
     "url_encode_decode": {
       "title": "URL 編碼/解碼",
@@ -1448,8 +1454,8 @@
       "token_placeholder": "在此貼上 JWT 權杖",
       "secret_label": "密鑰（用於 HMAC 驗證）",
       "secret_placeholder": "輸入你的密鑰",
-      "result_valid": "簽章有效（{alg}）",
-      "result_invalid": "簽章無效（{alg}）",
+      "result_valid": "簽章與提供的金鑰相符（{alg}）。這只證明該金鑰下的完整性，不代表 token 整體可信。",
+      "result_invalid": "簽章與提供的金鑰不相符（{alg}）。不要信任此金鑰下的 token。",
       "header_section": "標頭",
       "payload_section": "酬載",
       "claims_section": "聲明驗證",

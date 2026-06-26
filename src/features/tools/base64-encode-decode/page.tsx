@@ -214,7 +214,11 @@ export function Base64Page() {
                 setError(null)
                 setDecodedBlob(null)
             },
-            onError: () => setError(text("error_encode_failed")),
+            onError: () => {
+                setOutput("")
+                setError(text("error_encode_failed"))
+                setDecodedBlob(null)
+            },
         })
     }
 
@@ -240,6 +244,7 @@ export function Base64Page() {
                 },
                 onError: () => {
                     setError(text("error_invalid_base64"))
+                    setOutput("")
                     setDecodedBlob(null)
                 },
             })
@@ -256,6 +261,7 @@ export function Base64Page() {
                 setDecodedBlob(null)
             },
             onError: () => {
+                setOutput("")
                 setError(mode === "url-safe" ? text("error_invalid_base64url") : text("error_invalid_base64"))
                 setDecodedBlob(null)
             },
@@ -349,6 +355,21 @@ export function Base64Page() {
             </div>
 
             <div className="flex flex-col gap-4">
+                <div className="grid gap-3 rounded-lg border border-border/70 bg-muted/20 p-4 text-sm text-muted-foreground md:grid-cols-3">
+                    <div>
+                        <p className="font-medium text-foreground">{text("docs_standard_title")}</p>
+                        <p className="mt-1">{text("docs_standard_desc")}</p>
+                    </div>
+                    <div>
+                        <p className="font-medium text-foreground">{text("docs_url_safe_title")}</p>
+                        <p className="mt-1">{text("docs_url_safe_desc")}</p>
+                    </div>
+                    <div>
+                        <p className="font-medium text-foreground">{text("docs_file_title")}</p>
+                        <p className="mt-1">{text("docs_file_desc")}</p>
+                    </div>
+                </div>
+
                 <div className="grid gap-3 rounded-lg border border-border/70 bg-card/40 p-4 sm:grid-cols-[1.2fr_1fr]">
                     <div className="rounded-lg border border-primary/30 bg-primary/5 p-3">
                         <ModeSelector label={text("operation_label")} value={operation} options={operationOptions} onChange={handleOperationChange} />
