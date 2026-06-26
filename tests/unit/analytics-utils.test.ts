@@ -1,7 +1,27 @@
-import { describe, expect, it } from "vitest"
-import { buildAnalyticsPayload, detectInteractionAnalyticsAction } from "@/core/analytics/analytics"
+import { beforeEach, describe, expect, it } from "vitest"
+import { buildAnalyticsPayload, detectInteractionAnalyticsAction, getAnalyticsPreference, isAnalyticsOptedOut, setAnalyticsOptOut, shouldTrackAnalyticsEvent } from "@/core/analytics/analytics"
+
+function installMemoryStorage() {
+    const store = new Map<string, string>()
+    Object.defineProperty(window, "localStorage", {
+        configurable: true,
+        value: {
+            getItem: (key: string) => (store.has(key) ? store.get(key)! : null),
+            setItem: (key: string, value: string) => {
+                store.set(key, value)
+            },
+            removeItem: (key: string) => {
+                store.delete(key)
+            },
+        },
+    })
+}
 
 describe("analytics interaction detection", () => {
+    beforeEach(() => {
+        installMemoryStorage()
+    })
+
     it("detects copy interactions across localized labels", () => {
         expect(detectInteractionAnalyticsAction("Copy output")).toBe("copy_output")
         expect(detectInteractionAnalyticsAction("复制输出")).toBe("copy_output")
@@ -32,5 +52,22 @@ describe("analytics interaction detection", () => {
             results_count: 4,
             query_length_bucket: "medium",
         })
+    })
+
+    it("stores a local opt-out preference and blocks future provider dispatch", () => {
+        expect(getAnalyticsPreference()).toBe("default")
+        expect(isAnalyticsOptedOut()).toBe(false)
+        expect(shouldTrackAnalyticsEvent(true, false)).toBe(true)
+
+        setAnalyticsOptOut(true)
+
+        expect(getAnalyticsPreference()).toBe("opted_out")
+        expect(isAnalyticsOptedOut()).toBe(true)
+        expect(shouldTrackAnalyticsEvent(true, true)).toBe(false)
+
+        setAnalyticsOptOut(false)
+
+        expect(getAnalyticsPreference()).toBe("default")
+        expect(isAnalyticsOptedOut()).toBe(false)
     })
 })
