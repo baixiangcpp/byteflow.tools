@@ -1,0 +1,49 @@
+name: Recipe request
+description: Suggest a reusable Pipeline Builder recipe or workflow.
+title: "recipe: "
+labels:
+  - enhancement
+  - recipe
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Request recipes with sanitized examples only. Do not post production secrets, private payloads, customer data, tokens, logs, HAR files, private URLs, request bodies, response bodies, prompts, generated output, or screenshots containing sensitive content.
+  - type: textarea
+    id: workflow
+    attributes:
+      label: Workflow
+      description: What repeatable workflow should the recipe help with?
+      placeholder: Normalize a webhook JSON payload, redact sensitive fields, then encode a share-safe sample.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Proposed steps
+      description: List the tools or transformations that should run in order.
+      placeholder: |
+        1. JSON Formatter
+        2. Log Scrubber
+        3. Base64 Encode/Decode
+    validations:
+      required: true
+  - type: textarea
+    id: sanitized_example
+    attributes:
+      label: Sanitized example
+      description: Optional fake input or output that contains no real payloads, secrets, tokens, customer data, or private URLs.
+    validations:
+      required: false
+  - type: dropdown
+    id: sharing
+    attributes:
+      label: Sharing model
+      description: Should this recipe be shareable as structure-only JSON or URL state without runtime input?
+      options:
+        - Structure-only share URL
+        - Structure-only JSON export
+        - Built-in template only
+        - Not sure
+    validations:
+      required: true

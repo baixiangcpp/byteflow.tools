@@ -1,0 +1,31 @@
+name: Docs request
+description: Suggest documentation, guide, comparison, or onboarding improvements.
+title: "docs: "
+labels:
+  - documentation
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use public, sanitized examples only. Do not include production secrets, private payloads, customer data, tokens, logs, HAR files, private URLs, request bodies, response bodies, prompts, generated output, or screenshots containing sensitive content.
+  - type: textarea
+    id: gap
+    attributes:
+      label: Documentation gap
+      description: What page, workflow, or user question is missing or unclear?
+    validations:
+      required: true
+  - type: textarea
+    id: audience
+    attributes:
+      label: Audience and intent
+      description: Who needs this content and what decision or task should it support?
+    validations:
+      required: true
+  - type: textarea
+    id: links
+    attributes:
+      label: Related pages or issues
+      description: Link relevant Byteflow pages, tools, roadmap items, or public references.
+    validations:
+      required: false
