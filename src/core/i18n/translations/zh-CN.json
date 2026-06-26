@@ -2775,7 +2775,22 @@
       "privacy_scope_outputs": "最终输出和中间步骤输出",
       "privacy_scope_logs": "运行日志、诊断信息和错误",
       "privacy_scope_files": "上传的文件内容",
-      "privacy_scope_constants": "固定步骤输入、令牌、密钥和载荷"
+      "privacy_scope_constants": "固定步骤输入、令牌、密钥和载荷",
+      "step_count_summary": "Pipeline 步骤计数",
+      "edit_steps": "编辑步骤",
+      "run_summary_title": "运行摘要",
+      "run_summary_description": "查看最近一次运行，并跳转到步骤诊断。",
+      "run_summary_empty": "运行 recipe 后查看状态、耗时、跳过步骤和输出大小。",
+      "run_summary_waiting": "未运行",
+      "run_summary_total_steps": "总步骤",
+      "run_summary_succeeded": "成功",
+      "run_summary_failed": "失败",
+      "run_summary_skipped": "已跳过",
+      "run_summary_output_size": "输出大小",
+      "run_summary_duration": "总耗时",
+      "run_summary_step_link": "步骤 {index}：{status}",
+      "bytes_label": "字节",
+      "constant_input_persistence_hint": "固定输入会在当前浏览器会话中随此步骤保留，编辑或重排时不会丢失。保存、导出 JSON 和分享 URL 前会先剥离它。"
     },
     "saml_decoder": {
       "title": "SAML 解码器",

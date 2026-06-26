@@ -2775,7 +2775,22 @@
       "privacy_scope_outputs": "最終出力と中間ステップ出力",
       "privacy_scope_logs": "実行ログ、診断、エラー",
       "privacy_scope_files": "アップロードされたファイル内容",
-      "privacy_scope_constants": "固定ステップ入力、トークン、キー、ペイロード"
+      "privacy_scope_constants": "固定ステップ入力、トークン、キー、ペイロード",
+      "step_count_summary": "Pipeline ステップ数",
+      "edit_steps": "ステップを編集",
+      "run_summary_title": "実行サマリー",
+      "run_summary_description": "直近の実行を確認し、ステップ診断へ移動します。",
+      "run_summary_empty": "recipe を実行すると、状態、時間、スキップ、出力サイズを確認できます。",
+      "run_summary_waiting": "未実行",
+      "run_summary_total_steps": "総ステップ数",
+      "run_summary_succeeded": "成功",
+      "run_summary_failed": "失敗",
+      "run_summary_skipped": "スキップ",
+      "run_summary_output_size": "出力サイズ",
+      "run_summary_duration": "合計時間",
+      "run_summary_step_link": "ステップ {index}: {status}",
+      "bytes_label": "バイト",
+      "constant_input_persistence_hint": "固定入力は現在のブラウザーセッションでこのステップに保持され、編集や並べ替えでは失われません。保存、JSON 書き出し、共有 URL の前に削除されます。"
     },
     "saml_decoder": {
       "title": "SAML デコーダー",

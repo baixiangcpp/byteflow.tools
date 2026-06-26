@@ -2775,7 +2775,22 @@
       "privacy_scope_outputs": "최종 출력과 중간 단계 출력",
       "privacy_scope_logs": "실행 로그, 진단, 오류",
       "privacy_scope_files": "업로드된 파일 내용",
-      "privacy_scope_constants": "고정 단계 입력, 토큰, 키, 페이로드"
+      "privacy_scope_constants": "고정 단계 입력, 토큰, 키, 페이로드",
+      "step_count_summary": "Pipeline 단계 수",
+      "edit_steps": "단계 편집",
+      "run_summary_title": "실행 요약",
+      "run_summary_description": "최근 실행을 확인하고 단계 진단으로 이동합니다.",
+      "run_summary_empty": "recipe를 실행하면 상태, 시간, 건너뛴 단계, 출력 크기를 볼 수 있습니다.",
+      "run_summary_waiting": "미실행",
+      "run_summary_total_steps": "전체 단계",
+      "run_summary_succeeded": "성공",
+      "run_summary_failed": "실패",
+      "run_summary_skipped": "건너뜀",
+      "run_summary_output_size": "출력 크기",
+      "run_summary_duration": "총 시간",
+      "run_summary_step_link": "단계 {index}: {status}",
+      "bytes_label": "바이트",
+      "constant_input_persistence_hint": "고정 입력은 현재 브라우저 세션에서 이 단계와 함께 유지되며 편집하거나 순서를 바꿔도 사라지지 않습니다. 저장, JSON 내보내기, 공유 URL 전에는 제거됩니다."
     },
     "saml_decoder": {
       "title": "SAML 디코더",

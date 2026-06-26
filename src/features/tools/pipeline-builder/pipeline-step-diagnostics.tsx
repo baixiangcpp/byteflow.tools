@@ -60,7 +60,9 @@ export function PipelineStepDiagnostics({
                     return (
                         <article
                             key={recipeStep.id}
-                            className="rounded-md border border-border/75 bg-background/65 p-3"
+                            id={`pipeline-diagnostic-${recipeStep.id}`}
+                            className={`scroll-mt-24 rounded-md border p-3 ${execution?.ok === false ? "border-destructive/35 bg-destructive/5" : "border-border/75 bg-background/65"}`}
+                            tabIndex={-1}
                         >
                             <div className="flex flex-wrap items-start justify-between gap-3">
                                 <div className="min-w-0">
@@ -108,9 +110,11 @@ export function PipelineStepDiagnostics({
                             ) : null}
 
                             <div className="mt-3 grid gap-3 lg:grid-cols-2">
-                                <div className="rounded-md border border-border/70 bg-muted/20">
-                                    <div className="flex items-center justify-between gap-2 border-b border-border/70 px-3 py-2">
-                                        <span className="text-xs font-medium">{text("diagnostic_input_preview")}</span>
+                                <details className="rounded-md border border-border/70 bg-muted/20">
+                                    <summary className="cursor-pointer list-none border-b border-border/70 px-3 py-2 text-xs font-medium">
+                                        {text("diagnostic_input_preview")}
+                                    </summary>
+                                    <div className="flex justify-end border-b border-border/70 px-3 py-2">
                                         <Button
                                             type="button"
                                             size="sm"
@@ -125,10 +129,12 @@ export function PipelineStepDiagnostics({
                                     <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-words p-3 text-xs text-muted-foreground">
                                         {inputPreview || text("diagnostic_input_empty")}
                                     </pre>
-                                </div>
-                                <div className="rounded-md border border-border/70 bg-muted/20">
-                                    <div className="flex items-center justify-between gap-2 border-b border-border/70 px-3 py-2">
-                                        <span className="text-xs font-medium">{text("diagnostic_output_preview")}</span>
+                                </details>
+                                <details className="rounded-md border border-border/70 bg-muted/20">
+                                    <summary className="cursor-pointer list-none border-b border-border/70 px-3 py-2 text-xs font-medium">
+                                        {text("diagnostic_output_preview")}
+                                    </summary>
+                                    <div className="flex justify-end border-b border-border/70 px-3 py-2">
                                         <Button
                                             type="button"
                                             size="sm"
@@ -143,7 +149,7 @@ export function PipelineStepDiagnostics({
                                     <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-words p-3 text-xs text-muted-foreground">
                                         {outputPreview || text("diagnostic_output_empty")}
                                     </pre>
-                                </div>
+                                </details>
                             </div>
                         </article>
                     )
