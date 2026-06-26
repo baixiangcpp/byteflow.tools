@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest"
 import TrustCenterPage from "@/app/[lang]/trust-center/page"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { TOOL_REGISTRY } from "@/core/registry"
+import { getExternalRequestToolDisclosures } from "@/core/registry/privacy"
 
 vi.mock("next/link", () => ({
     default: ({ href, children, ...props }: { href: string; children: React.ReactNode }) => (
@@ -29,14 +30,14 @@ describe("TrustCenterPage", () => {
         expect(screen.getByRole("rowheader", { name: "Pipeline Builder" })).toBeInTheDocument()
         expect(screen.getByRole("rowheader", { name: "External-request tools" })).toBeInTheDocument()
 
-        const externalTools = TOOL_REGISTRY.filter((tool) => tool.privacy.externalRequest.required)
+        const externalTools = getExternalRequestToolDisclosures(TOOL_REGISTRY)
         const toolCopy = getTranslation("en").tools as Record<string, { title?: string }>
         const table = screen.getByRole("table", { name: "External request tools" })
 
-        for (const tool of externalTools) {
+        for (const { tool, hosts } of externalTools) {
             const title = toolCopy[tool.key]?.title ?? tool.slug
             expect(within(table).getByRole("link", { name: title })).toHaveAttribute("href", `/en/${tool.slug}`)
-            for (const domain of tool.privacy.externalRequest.domains ?? []) {
+            for (const domain of hosts) {
                 expect(within(table).getByText(new RegExp(domain.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")))).toBeInTheDocument()
             }
         }

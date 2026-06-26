@@ -198,4 +198,12 @@ describe("tool network access metadata", () => {
 
         expect(offenders).toEqual([])
     })
+
+    it("keeps Privacy Policy and Trust Center external request lists on the shared disclosure source", () => {
+        const trustCenterPage = fs.readFileSync(path.join(ROOT, "src/app/[lang]/trust-center/page.tsx"), "utf8")
+        const privacyPage = fs.readFileSync(path.join(ROOT, "src/app/[lang]/privacy/page.tsx"), "utf8")
+
+        expect(trustCenterPage).toContain("getExternalRequestToolDisclosures(TOOL_REGISTRY)")
+        expect(privacyPage).toContain("getExternalRequestToolDisclosures(TOOL_REGISTRY)")
+    })
 })
