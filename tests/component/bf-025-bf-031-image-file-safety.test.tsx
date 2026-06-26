@@ -152,7 +152,7 @@ describe("BF-025/BF-031 image file safety", () => {
 
         await waitFor(() => expect(runImageResizeTaskMock).toHaveBeenCalled())
         expect(outputValue()).toContain("Source: 1280 x 720")
-        expect(screen.getByRole("button", { name: "Download" })).not.toBeDisabled()
+        await waitFor(() => expect(screen.getByRole("button", { name: "Download" })).not.toBeDisabled())
 
         runImageResizeTaskMock.mockReturnValueOnce(new Promise(() => undefined))
         fireEvent.click(screen.getByRole("button", { name: "Sample" }))
