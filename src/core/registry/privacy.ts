@@ -30,3 +30,26 @@ export function getToolPrivacyNetworkMetadata(privacy: ToolPrivacyManifest): Too
         externalDataSent: privacy.externalRequest.userDataSent as ToolExternalDataSent | undefined,
     }
 }
+
+export type ExternalRequestToolDisclosure = {
+    tool: ToolMeta
+    hosts: readonly string[]
+    purposeKey: string
+    dataSent: ToolExternalDataSent
+    disclosure: string
+}
+
+export function getExternalRequestToolDisclosures(tools: readonly ToolMeta[]): ExternalRequestToolDisclosure[] {
+    return tools
+        .filter((tool) => tool.privacy.externalRequest.required)
+        .map((tool) => {
+            const externalRequest = tool.privacy.externalRequest
+            return {
+                tool,
+                hosts: externalRequest.domains ?? [],
+                purposeKey: externalRequest.purposeKey ?? "",
+                dataSent: externalRequest.userDataSent ?? "none",
+                disclosure: externalRequest.disclosure ?? "",
+            }
+        })
+}

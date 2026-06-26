@@ -4,6 +4,7 @@ import { CheckCircle2, ExternalLink, FileText, Github, LockKeyhole, Network, Shi
 import { isValidLocale, requireTranslationValue } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { TOOL_REGISTRY } from "@/core/registry"
+import { getExternalRequestToolDisclosures } from "@/core/registry/privacy"
 import { JsonLdScript } from "@/core/seo/components/json-ld-script"
 import { SITE_URL, buildCanonicalUrl } from "@/core/seo/urls"
 
@@ -50,17 +51,12 @@ export default async function TrustCenterPage({
     const p = t.pages
     const common = t.common
     const toolCopy = t.tools as Record<string, { title?: string }>
-    const externalTools = TOOL_REGISTRY
-        .filter((tool) => tool.privacy.externalRequest.required)
-        .map((tool) => ({
-            tool,
-            title: requireTranslationValue(toolCopy[tool.key]?.title, `tools.${tool.key}.title`),
-            purpose: tool.privacy.externalRequest.purposeKey
-                ? common.external_network_notice.purposes?.[tool.privacy.externalRequest.purposeKey as keyof typeof common.external_network_notice.purposes]
-                : undefined,
-            dataSent: tool.privacy.externalRequest.userDataSent
-                ? common.external_network_notice.external_data?.[tool.privacy.externalRequest.userDataSent as keyof typeof common.external_network_notice.external_data]
-                : undefined,
+    const externalTools = getExternalRequestToolDisclosures(TOOL_REGISTRY)
+        .map((item) => ({
+            ...item,
+            title: requireTranslationValue(toolCopy[item.tool.key]?.title, `tools.${item.tool.key}.title`),
+            purpose: common.external_network_notice.purposes?.[item.purposeKey as keyof typeof common.external_network_notice.purposes],
+            dataSentLabel: common.external_network_notice.external_data?.[item.dataSent as keyof typeof common.external_network_notice.external_data],
         }))
         .sort((a, b) => a.title.localeCompare(b.title, locale))
 
@@ -279,7 +275,7 @@ export default async function TrustCenterPage({
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border/70 bg-card/35">
-                            {externalTools.map(({ tool, title, purpose, dataSent }) => (
+                            {externalTools.map(({ tool, title, hosts, purpose, dataSentLabel, disclosure }) => (
                                 <tr key={tool.key}>
                                     <td className="px-3 py-3 font-medium text-foreground">
                                         <Link className="hover:text-primary" href={`/${locale}/${tool.slug}`}>
@@ -287,10 +283,10 @@ export default async function TrustCenterPage({
                                         </Link>
                                     </td>
                                     <td className="px-3 py-3 font-mono text-xs text-muted-foreground">
-                                        {(tool.privacy.externalRequest.domains ?? []).join(", ")}
+                                        {hosts.join(", ")}
                                     </td>
-                                    <td className="px-3 py-3 text-muted-foreground">{purpose ?? tool.privacy.externalRequest.disclosure}</td>
-                                    <td className="px-3 py-3 text-muted-foreground">{dataSent}</td>
+                                    <td className="px-3 py-3 text-muted-foreground">{purpose ?? disclosure}</td>
+                                    <td className="px-3 py-3 text-muted-foreground">{dataSentLabel}</td>
                                 </tr>
                             ))}
                         </tbody>

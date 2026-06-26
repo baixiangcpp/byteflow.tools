@@ -1,6 +1,6 @@
 export { CATEGORIES, type ToolCategory } from "./categories"
 export { TOOL_MANIFESTS } from "./manifests"
-export { getToolPrivacyNetworkMetadata } from "./privacy"
+export { getExternalRequestToolDisclosures, getToolPrivacyNetworkMetadata } from "./privacy"
 export { getRelatedTools } from "./related-tools"
 export { TOOL_REGISTRY, TOOL_REGISTRY_ORDER, TOOLS_BY_KEY, getToolByKey, getToolBySlug, getToolsByCategory } from "./registry"
 export { formatToolRegistryStatsTemplate, getToolRegistryStats, type ToolRegistryStats } from "./stats"

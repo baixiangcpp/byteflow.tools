@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { useLang } from "@/core/i18n/lang-provider"
 import { TOOL_REGISTRY } from "@/core/registry"
+import { getExternalRequestToolDisclosures } from "@/core/registry/privacy"
 import { LocalDataControls } from "@/features/privacy/local-data-controls"
 
 export default function PrivacyPage() {
@@ -17,7 +18,14 @@ export default function PrivacyPage() {
         { title: p.privacy_contact_title, desc: p.privacy_contact_desc },
     ]
     const toolTranslations = t.tools as Record<string, { title?: string }>
-    const externalRequestTools = TOOL_REGISTRY.filter((tool) => tool.privacy.externalRequest.required)
+    const externalRequestTools = getExternalRequestToolDisclosures(TOOL_REGISTRY)
+        .map((item) => ({
+            ...item,
+            title: toolTranslations[item.tool.key]?.title ?? item.tool.slug,
+            purpose: t.common.external_network_notice.purposes?.[item.purposeKey as keyof typeof t.common.external_network_notice.purposes],
+            dataSentLabel: t.common.external_network_notice.external_data?.[item.dataSent as keyof typeof t.common.external_network_notice.external_data],
+        }))
+        .sort((a, b) => a.title.localeCompare(b.title, lang))
 
     return (
         <div className="mx-auto w-full max-w-5xl space-y-6">
@@ -43,19 +51,33 @@ export default function PrivacyPage() {
                     <h2 className="text-lg font-semibold">{p.privacy_external_request_tools_title}</h2>
                     <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.privacy_external_request_tools_desc}</p>
                     <div className="mt-4 grid gap-3">
-                        {externalRequestTools.map((tool) => (
+                        {externalRequestTools.map(({ tool, title, hosts, purpose, dataSentLabel, disclosure }) => (
                             <div key={tool.key} className="rounded-xl border border-border/70 bg-card/45 p-3">
                                 <div className="flex flex-wrap items-center justify-between gap-2">
-                                    <p className="text-sm font-medium">{toolTranslations[tool.key]?.title ?? tool.slug}</p>
+                                    <p className="text-sm font-medium">{title}</p>
                                     <span className="rounded-md border border-amber-500/35 bg-amber-500/10 px-2 py-0.5 text-xs text-amber-700 dark:text-amber-300">
                                         {t.common.capability_external_request}
                                     </span>
                                 </div>
                                 <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
-                                    {tool.privacy.externalRequest.disclosure}
+                                    {disclosure}
                                 </p>
-                                <p className="mt-2 font-mono text-xs text-muted-foreground">
-                                    {(tool.privacy.externalRequest.domains ?? []).join(", ")}
+                                <dl className="mt-2 grid gap-1 text-xs text-muted-foreground sm:grid-cols-3">
+                                    <div>
+                                        <dt className="font-medium text-foreground">{t.common.external_network_notice.hosts_label}</dt>
+                                        <dd className="mt-1 font-mono">{hosts.join(", ")}</dd>
+                                    </div>
+                                    <div>
+                                        <dt className="font-medium text-foreground">{t.common.external_network_notice.purpose_label}</dt>
+                                        <dd className="mt-1">{purpose}</dd>
+                                    </div>
+                                    <div>
+                                        <dt className="font-medium text-foreground">{t.common.external_network_notice.data_sent_label}</dt>
+                                        <dd className="mt-1">{dataSentLabel}</dd>
+                                    </div>
+                                </dl>
+                                <p className="mt-2 text-xs text-muted-foreground">
+                                    {t.common.external_network_notice.consent_required_message}
                                 </p>
                             </div>
                         ))}
