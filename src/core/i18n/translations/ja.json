@@ -715,7 +715,13 @@
       "operation_encode": "エンコード",
       "operation_decode": "デコード",
       "file_processing": "ファイルをローカルで処理しています...",
-      "file_mode_hint": "ファイルモードは worker を使用し、ファイル内容を保存しません。"
+      "file_mode_hint": "ファイルモードは worker を使用し、ファイル内容を保存しません。",
+      "docs_standard_title": "標準 Base64",
+      "docs_standard_desc": "標準 Base64 はテキスト、HTTP ヘッダー、環境変数、バイナリデータに使います。+、/、任意の = パディングを受け付けます。",
+      "docs_url_safe_title": "URL セーフ Base64",
+      "docs_url_safe_desc": "URL セーフ Base64 は JWT セグメント、クエリ値、パス断片に使います。+ を -、/ を _ に置き換えます。",
+      "docs_file_title": "ファイルモード",
+      "docs_file_desc": "ファイルモードはブラウザー worker でローカルファイルを読み取り、Base64 出力を返し、内容を永続保存しません。"
     },
     "url_encode_decode": {
       "title": "URL エンコード/デコード",
@@ -1448,8 +1454,8 @@
       "token_placeholder": "JWT トークンをここに貼り付け",
       "secret_label": "シークレットキー（HMAC 検証用）",
       "secret_placeholder": "秘密鍵を入力",
-      "result_valid": "署名は有効です（{alg}）",
-      "result_invalid": "署名は無効です（{alg}）",
+      "result_valid": "署名は指定したシークレットと一致します（{alg}）。これはそのシークレットでの完全性を示すだけで、token 全体の信頼性は証明しません。",
+      "result_invalid": "署名は指定したシークレットと一致しません（{alg}）。このキーでこの token を信頼しないでください。",
       "header_section": "ヘッダー",
       "payload_section": "ペイロード",
       "claims_section": "クレーム検証",

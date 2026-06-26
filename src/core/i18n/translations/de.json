@@ -715,7 +715,13 @@
       "operation_encode": "Kodieren",
       "operation_decode": "Dekodieren",
       "file_processing": "Datei wird lokal verarbeitet...",
-      "file_mode_hint": "Der Dateimodus nutzt den Worker und speichert keine Dateiinhalte."
+      "file_mode_hint": "Der Dateimodus nutzt den Worker und speichert keine Dateiinhalte.",
+      "docs_standard_title": "Standard-Base64",
+      "docs_standard_desc": "Standard-Base64 eignet sich fuer Text, HTTP-Header, Umgebungsvariablen und Binaerdaten, die +, / und optionale =-Auffuellung akzeptieren.",
+      "docs_url_safe_title": "URL-sicheres Base64",
+      "docs_url_safe_desc": "URL-sicheres Base64 eignet sich fuer JWT-Segmente, Query-Werte und Pfadfragmente. Es ersetzt + durch - und / durch _ und kann Auffuellung weglassen.",
+      "docs_file_title": "Dateimodus",
+      "docs_file_desc": "Der Dateimodus liest die lokale Datei im Browser-Worker, gibt Base64 aus und speichert keine Dateiinhalte dauerhaft."
     },
     "url_encode_decode": {
       "title": "URL kodieren/dekodieren",
@@ -1448,8 +1454,8 @@
       "token_placeholder": "JWT-Token hier einfuegen",
       "secret_label": "Geheimer Schluessel (fuer HMAC-Verifikation)",
       "secret_placeholder": "geheimen-schluessel-eingeben",
-      "result_valid": "Signatur gueltig ({alg})",
-      "result_invalid": "Signatur ungueltig ({alg})",
+      "result_valid": "Die Signatur passt zum angegebenen Secret ({alg}). Das belegt Integritaet fuer dieses Secret, nicht das gesamte Token-Vertrauen.",
+      "result_invalid": "Die Signatur passt nicht zum angegebenen Secret ({alg}). Vertraue diesem Token fuer diesen Schluessel nicht.",
       "header_section": "JWT-Header",
       "payload_section": "JWT-Payload",
       "claims_section": "Claims-Pruefung",

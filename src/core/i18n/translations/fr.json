@@ -715,7 +715,13 @@
       "operation_encode": "Encoder",
       "operation_decode": "Décoder",
       "file_processing": "Traitement local du fichier...",
-      "file_mode_hint": "Le mode fichier utilise le worker et ne stocke pas le contenu du fichier."
+      "file_mode_hint": "Le mode fichier utilise le worker et ne stocke pas le contenu du fichier.",
+      "docs_standard_title": "Base64 standard",
+      "docs_standard_desc": "Le Base64 standard convient au texte, aux en-tetes HTTP, aux variables d environnement et aux donnees binaires qui acceptent +, / et le remplissage = facultatif.",
+      "docs_url_safe_title": "Base64 compatible URL",
+      "docs_url_safe_desc": "Le Base64 compatible URL convient aux segments JWT, aux valeurs de requete et aux fragments de chemin. Il remplace + par - et / par _, et peut omettre le remplissage.",
+      "docs_file_title": "Mode fichier",
+      "docs_file_desc": "Le mode fichier lit le fichier local dans le worker du navigateur, renvoie une sortie Base64 et ne persiste pas le contenu du fichier."
     },
     "url_encode_decode": {
       "title": "Encodage/Décodage URL",
@@ -1448,8 +1454,8 @@
       "token_placeholder": "Collez le jeton JWT ici",
       "secret_label": "Clé secrète (pour la vérification HMAC)",
       "secret_placeholder": "entrez-votre-cle-secrete",
-      "result_valid": "Signature valide ({alg})",
-      "result_invalid": "Signature invalide ({alg})",
+      "result_valid": "La signature correspond au secret fourni ({alg}). Cela prouve l integrite pour ce secret, pas la confiance globale dans le token.",
+      "result_invalid": "La signature ne correspond pas au secret fourni ({alg}). Ne faites pas confiance a ce token pour cette cle.",
       "header_section": "En-tete",
       "payload_section": "Charge utile",
       "claims_section": "Validation des claims",

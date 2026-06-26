@@ -178,7 +178,14 @@ export function JwtVerifierPage() {
 
             <div className="space-y-2">
                 <label className="text-sm font-medium">{toolT.token_label}</label>
-                <Textarea className="min-h-[120px] font-mono text-xs leading-5" placeholder={toolT.token_placeholder} value={token} onChange={(e) => setToken(e.target.value)} spellCheck={false} />
+                <Textarea
+                    aria-label={toolT.token_label}
+                    className="min-h-[120px] font-mono text-xs leading-5"
+                    placeholder={toolT.token_placeholder}
+                    value={token}
+                    onChange={(e) => setToken(e.target.value)}
+                    spellCheck={false}
+                />
             </div>
 
             <div className="space-y-2">
