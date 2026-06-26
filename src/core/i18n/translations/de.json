@@ -2775,7 +2775,22 @@
       "privacy_scope_outputs": "Endausgabe und Zwischenoutputs",
       "privacy_scope_logs": "Ausführungslogs, Diagnosen und Fehler",
       "privacy_scope_files": "Hochgeladene Dateiinhalte",
-      "privacy_scope_constants": "Konstante Schritteingaben, Tokens, Schlüssel und Nutzdaten"
+      "privacy_scope_constants": "Konstante Schritteingaben, Tokens, Schlüssel und Nutzdaten",
+      "step_count_summary": "Pipeline-Schrittanzahl",
+      "edit_steps": "Schritte bearbeiten",
+      "run_summary_title": "Ausführungsübersicht",
+      "run_summary_description": "Letzten Lauf prüfen und zur Schrittdiagnose springen.",
+      "run_summary_empty": "Recipe ausführen, um Status, Dauer, übersprungene Schritte und Ausgabegröße zu sehen.",
+      "run_summary_waiting": "Nicht ausgeführt",
+      "run_summary_total_steps": "Schritte gesamt",
+      "run_summary_succeeded": "Erfolgreich",
+      "run_summary_failed": "Fehlgeschlagen",
+      "run_summary_skipped": "Übersprungen",
+      "run_summary_output_size": "Ausgabegröße",
+      "run_summary_duration": "Gesamtdauer",
+      "run_summary_step_link": "Schritt {index}: {status}",
+      "bytes_label": "Bytes",
+      "constant_input_persistence_hint": "Konstante Eingaben bleiben in dieser Browser-Sitzung am Schritt erhalten und gehen beim Bearbeiten oder Sortieren nicht verloren. Speichern, JSON-Export und Share-URL entfernen sie vor dem Schreiben oder Kopieren."
     },
     "saml_decoder": {
       "title": "SAML-Dekoder",

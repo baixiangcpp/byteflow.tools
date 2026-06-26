@@ -2775,7 +2775,22 @@
       "privacy_scope_outputs": "Sortie finale et sorties intermédiaires",
       "privacy_scope_logs": "Journaux d'exécution, diagnostics et erreurs",
       "privacy_scope_files": "Contenu des fichiers téléversés",
-      "privacy_scope_constants": "Entrées constantes d'étape, jetons, clés et charges utiles"
+      "privacy_scope_constants": "Entrées constantes d'étape, jetons, clés et charges utiles",
+      "step_count_summary": "Nombre d’étapes Pipeline",
+      "edit_steps": "Modifier les étapes",
+      "run_summary_title": "Résumé d’exécution",
+      "run_summary_description": "Consultez la dernière exécution et ouvrez le diagnostic d’une étape.",
+      "run_summary_empty": "Exécutez la recipe pour voir statut, durée, étapes ignorées et taille de sortie.",
+      "run_summary_waiting": "Non exécuté",
+      "run_summary_total_steps": "Étapes totales",
+      "run_summary_succeeded": "Réussies",
+      "run_summary_failed": "Échouées",
+      "run_summary_skipped": "Ignorées",
+      "run_summary_output_size": "Taille de sortie",
+      "run_summary_duration": "Durée totale",
+      "run_summary_step_link": "Étape {index} : {status}",
+      "bytes_label": "octets",
+      "constant_input_persistence_hint": "L’entrée constante reste attachée à cette étape dans la session actuelle du navigateur et n’est pas perdue lors de l’édition ou du réordonnancement. Save, Export JSON et Share URL la retirent avant d’écrire ou copier la recipe."
     },
     "saml_decoder": {
       "title": "Décodeur SAML",

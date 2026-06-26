@@ -81,7 +81,7 @@ export function PipelineStepInspector({
                                     type="button"
                                     size="sm"
                                     variant={selectedStep.inputMode === "previous_output" ? "default" : "outline"}
-                                    onClick={() => onUpdateStep(selectedStep.id, (step) => ({ ...step, inputMode: "previous_output", constantInput: undefined }))}
+                                    onClick={() => onUpdateStep(selectedStep.id, (step) => ({ ...step, inputMode: "previous_output" }))}
                                 >
                                     {text("previous_output")}
                                 </Button>
@@ -96,7 +96,7 @@ export function PipelineStepInspector({
                             </div>
                         </div>
                         {selectedStep.inputMode === "constant" ? (
-                            <div>
+                            <div className="space-y-2">
                                 <Label htmlFor="constant-input">{text("constant_input")}</Label>
                                 <Textarea
                                     id="constant-input"
@@ -105,6 +105,9 @@ export function PipelineStepInspector({
                                     placeholder={text("constant_input_placeholder")}
                                     className="min-h-[120px] font-mono text-xs"
                                 />
+                                <p className="rounded-md border border-amber-300/60 bg-amber-50 p-2 text-xs leading-5 text-amber-900 dark:border-amber-500/30 dark:bg-amber-950/30 dark:text-amber-100">
+                                    {text("constant_input_persistence_hint")}
+                                </p>
                             </div>
                         ) : null}
                         <div className="space-y-3 rounded-md border p-3">

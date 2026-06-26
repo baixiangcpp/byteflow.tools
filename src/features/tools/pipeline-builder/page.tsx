@@ -6,6 +6,7 @@ import {
     Download,
     FileInput,
     Link2,
+    ListChecks,
     Play,
     Save,
     Workflow,
@@ -39,6 +40,7 @@ import { exportPipelineRecipe, importPipelineRecipeFile, sharePipelineRecipe } f
 import { FIRST_ADAPTER, SHARE_PARAM } from "./constants"
 import { createId, createRecipe, createStep, getStepCompatibilityHints, updateRecipeTimestamp } from "./logic"
 import { PipelineRunLog } from "./pipeline-run-log"
+import { PipelineRunSummary } from "./pipeline-run-summary"
 import { PipelineOnboarding } from "./pipeline-onboarding"
 import { PipelinePrivacyPreview } from "./pipeline-privacy-preview"
 import { PipelineSavedRecipes } from "./pipeline-saved-recipes"
@@ -77,6 +79,7 @@ export function PipelineBuilderPage() {
     const validation = React.useMemo(() => validateRecipe(recipe), [recipe])
     const compatibilityHints = React.useMemo(() => getStepCompatibilityHints(recipe.steps), [recipe.steps])
     const finalOutput = result?.finalOutput ?? ""
+    const stepCountLabel = `${recipe.steps.length}/${recipe.settings.maxSteps} ${text("steps_count_label")}`
 
     const refreshSavedRecipes = React.useCallback(async () => {
         if (!storageAvailable) {
@@ -377,7 +380,21 @@ export function PipelineBuilderPage() {
                     </h1>
                     <p className="mt-1 max-w-3xl text-muted-foreground">{text("description")}</p>
                 </div>
-                <ToolActionBar actions={actions} />
+                <div className="flex flex-col items-start gap-2 md:items-end">
+                    <div className="flex flex-wrap items-center gap-2 text-sm">
+                        <span className="rounded-full border border-border bg-muted/40 px-3 py-1 font-medium text-foreground" aria-label={text("step_count_summary")}>
+                            {stepCountLabel}
+                        </span>
+                        <a
+                            href="#pipeline-steps"
+                            className="inline-flex h-8 items-center justify-center gap-1.5 rounded-md border bg-background px-3 text-sm font-medium shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        >
+                            <ListChecks className="h-4 w-4" aria-hidden="true" />
+                            {text("edit_steps")}
+                        </a>
+                    </div>
+                    <ToolActionBar actions={actions} />
+                </div>
             </div>
 
             <PipelineOnboarding
@@ -431,12 +448,6 @@ export function PipelineBuilderPage() {
                         </div>
                     </section>
 
-                    <PipelineTemplateList
-                        onLoadTemplate={loadTemplate}
-                        templates={PIPELINE_RECIPE_TEMPLATES}
-                        text={text}
-                    />
-
                     <PipelineStepList
                         adapterOptions={PIPELINE_TOOL_ADAPTERS.map((adapter) => ({
                             externalRequestRequired: getToolByKey(adapter.toolKey)?.privacy.externalRequest.required === true,
@@ -456,6 +467,12 @@ export function PipelineBuilderPage() {
                         pendingToolKey={pendingToolKey}
                         selectedStepId={selectedStep?.id ?? null}
                         steps={recipe.steps}
+                        text={text}
+                    />
+
+                    <PipelineTemplateList
+                        onLoadTemplate={loadTemplate}
+                        templates={PIPELINE_RECIPE_TEMPLATES}
                         text={text}
                     />
 
@@ -507,6 +524,12 @@ export function PipelineBuilderPage() {
                         />
                     </section>
 
+                    <PipelineRunSummary
+                        isRunning={isRunning}
+                        recipe={recipe}
+                        result={result}
+                        text={text}
+                    />
                     <PipelineRunLog result={result} text={text} />
                     <PipelineStepDiagnostics
                         onCopyStepInput={(step) => void copyStepInput(step)}

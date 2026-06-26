@@ -809,6 +809,51 @@ describe("pipeline foundation", () => {
         expect(exported).not.toContain('"apiKey"')
     })
 
+    it("keeps constant input in local recipe objects while stripping save, export, and share payloads", async () => {
+        const recipe = buildRecipe({
+            steps: [
+                {
+                    id: "constant_json",
+                    toolKey: "json_formatter",
+                    adapterVersion: 1,
+                    inputMode: "constant",
+                    constantInput: "{\"session\":\"debug-secret\"}",
+                    options: { mode: "minify", indent: 2 },
+                },
+                {
+                    id: "encode",
+                    toolKey: "base64_encode_decode",
+                    adapterVersion: 1,
+                    inputMode: "previous_output",
+                    options: { operation: "encode", urlSafe: false },
+                },
+            ],
+            edges: [],
+        })
+        const reordered = {
+            ...recipe,
+            steps: [recipe.steps[1], recipe.steps[0]],
+        }
+
+        expect(recipe.steps[0].constantInput).toBe("{\"session\":\"debug-secret\"}")
+        expect(reordered.steps[1].constantInput).toBe("{\"session\":\"debug-secret\"}")
+
+        const result = await runRecipe(recipe, "ignored initial input")
+        const record = createSavedRecipeRecord(recipe, {}, "2026-06-10T01:00:00.000Z")
+        const exported = exportRecipeToJson(recipe)
+        const decodedShare = decodeRecipeFromUrlParam(encodeRecipeForShareUrl(recipe))
+
+        expect(result.ok).toBe(true)
+        expect(result.steps[0].input).toBe("{\"session\":\"debug-secret\"}")
+        expect(JSON.stringify(record)).not.toContain("debug-secret")
+        expect(exported).not.toContain("debug-secret")
+        expect(decodedShare.ok).toBe(true)
+        if (decodedShare.ok) {
+            expect(JSON.stringify(decodedShare.recipe)).not.toContain("debug-secret")
+            expect(decodedShare.recipe.steps.every((step) => step.inputMode === "previous_output")).toBe(true)
+        }
+    })
+
     it("preserves visible step order through structure-only export and import", () => {
         const recipe = buildRecipe({
             steps: [

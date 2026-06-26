@@ -77,10 +77,15 @@ export function PipelineStepList({
     }, [announceOrder, onReorderStep, steps])
 
     return (
-        <section className="rounded-lg border bg-card p-4">
+        <section
+            id="pipeline-steps"
+            className="scroll-mt-24 rounded-lg border bg-card p-4"
+            aria-labelledby="pipeline-steps-title"
+            tabIndex={-1}
+        >
             <div className="flex items-center justify-between gap-2">
-                <h2 className="text-sm font-semibold">{text("steps_title")}</h2>
-                <span className="text-xs text-muted-foreground">{steps.length}/{maxSteps}</span>
+                <h2 id="pipeline-steps-title" className="text-sm font-semibold">{text("steps_title")}</h2>
+                <span className="text-xs text-muted-foreground" aria-label={text("step_count_summary")}>{steps.length}/{maxSteps}</span>
             </div>
             <div className="mt-3 flex gap-2">
                 <select

@@ -121,6 +121,19 @@ describe("phase 3 pipeline builder page", () => {
         expect(screen.getByRole("button", { name: /Share URL/i })).toBeInTheDocument()
     })
 
+    it("shows a top step-management entry point and keyboard target", () => {
+        renderWithEnglish(<PipelineBuilderPage />)
+
+        const editSteps = screen.getByRole("link", { name: "Edit steps" })
+        const stepsPanel = document.querySelector("#pipeline-steps")
+
+        expect(editSteps).toHaveAttribute("href", "#pipeline-steps")
+        expect(screen.getAllByLabelText("Pipeline step count")[0]).toHaveTextContent("0/12 steps")
+        expect(stepsPanel).toBeInTheDocument()
+        expect(stepsPanel).toHaveAttribute("tabindex", "-1")
+        expect(document.querySelector("#pipeline-steps-title")).toHaveTextContent("Steps")
+    })
+
     it("tracks template opens with safe template metadata only", () => {
         renderWithEnglish(<PipelineBuilderPage />)
 
@@ -227,6 +240,63 @@ describe("phase 3 pipeline builder page", () => {
         expect(screen.queryByText(/Base64 URL-safe encode/i)).not.toBeInTheDocument()
     })
 
+    it("preserves constant input while running, switching modes, reordering, exporting, and sharing", async () => {
+        renderWithEnglish(<PipelineBuilderPage />)
+
+        fireEvent.click(screen.getByRole("button", { name: /Add/i }))
+        fireEvent.click(screen.getByRole("button", { name: "Constant input" }))
+        fireEvent.change(screen.getByLabelText("Constant input"), { target: { value: "{\"ok\":true}" } })
+
+        expect(screen.getByText(/Constant input stays with this step/i)).toBeInTheDocument()
+
+        fireEvent.click(screen.getByRole("button", { name: "Previous output" }))
+        fireEvent.click(screen.getByRole("button", { name: "Constant input" }))
+
+        expect(screen.getByLabelText("Constant input")).toHaveValue("{\"ok\":true}")
+
+        fireEvent.change(screen.getByLabelText("Select tool adapter"), { target: { value: "base64_encode_decode" } })
+        fireEvent.click(screen.getByRole("button", { name: /Add/i }))
+        fireEvent.click(screen.getByRole("button", { name: /1\. json formatter/i }))
+
+        const enabledMoveDown = screen
+            .getAllByRole("button", { name: "Move step down" })
+            .find((button) => !button.hasAttribute("disabled"))
+        expect(enabledMoveDown).toBeDefined()
+        fireEvent.click(enabledMoveDown!)
+
+        expect(screen.getByLabelText("Constant input")).toHaveValue("{\"ok\":true}")
+
+        fireEvent.click(screen.getByRole("button", { name: /Run Recipe/i }))
+
+        await waitFor(() => {
+            expect(screen.getByPlaceholderText("Run the recipe to generate output...")).toHaveValue(`{
+  "ok": true
+}`)
+        })
+
+        fireEvent.click(screen.getAllByRole("button", { name: /^Export JSON$/i })[0])
+        expect(screen.getByText("Constant step inputs, tokens, keys, and payloads")).toBeInTheDocument()
+        fireEvent.click(screen.getByRole("button", { name: "Export structure only" }))
+
+        await waitFor(() => {
+            expect(downloadTextMock).toHaveBeenCalled()
+        })
+        expect(downloadTextMock.mock.calls.at(-1)?.[1]).not.toContain("constantInput")
+        expect(downloadTextMock.mock.calls.at(-1)?.[1]).not.toContain("{\"ok\":true}")
+
+        fireEvent.click(screen.getByRole("button", { name: /^Share URL$/i }))
+        expect(screen.getByText("Constant step inputs, tokens, keys, and payloads")).toBeInTheDocument()
+        fireEvent.click(screen.getByRole("button", { name: "Copy structure-only URL" }))
+
+        await waitFor(() => {
+            expect(clipboardWriteMock).toHaveBeenCalledWith(expect.stringContaining("/en/pipeline-builder?recipe="))
+        })
+        expect(clipboardWriteMock.mock.calls.at(-1)?.[0]).not.toContain("{\"ok\":true}")
+        expect(toastSuccessMock).toHaveBeenCalledWith("Copied to clipboard", {
+            description: "Share URL copied without constant step input",
+        })
+    })
+
     it("shows privacy preview before export and confirms structure-only scope", () => {
         renderWithEnglish(<PipelineBuilderPage />)
 
@@ -312,12 +382,49 @@ describe("phase 3 pipeline builder page", () => {
   "active": true
 }`)
         })
+        expect(screen.getByRole("heading", { name: "Run summary" })).toBeInTheDocument()
+        expect(screen.getByText("Review the latest run and jump to a step diagnostic.")).toBeInTheDocument()
+        expect(screen.getByText("Total steps")).toBeInTheDocument()
+        expect(screen.getByText("Output size")).toBeInTheDocument()
+        expect(screen.getByRole("link", { name: "Step 1: OK" })).toHaveAttribute("href", expect.stringMatching(/^#pipeline-diagnostic-/))
         expect(document.querySelector("#pipeline-run-log-status")).toHaveTextContent("OK: 2 Run log")
         expect(screen.getByRole("table", { name: "Run log" })).toBeInTheDocument()
         expect(screen.getByText("Recipe is valid for the linear MVP executor.")).toBeInTheDocument()
         expect(screen.getAllByText("Input preview").length).toBeGreaterThan(0)
         expect(screen.getAllByText("%7B%22user%22%3A%22alice%40example.com%22%2C%22active%22%3Atrue%7D").length).toBeGreaterThan(0)
         expect(screen.getAllByRole("button", { name: "Copy step input" }).length).toBeGreaterThan(0)
+    })
+
+    it("summarizes failed runs and empty-input runs with diagnostic jump links", async () => {
+        renderWithEnglish(<PipelineBuilderPage />)
+
+        expect(screen.getByRole("heading", { name: "Run summary" })).toBeInTheDocument()
+        expect(screen.getByText("Run the recipe to see status, duration, skipped steps, and output size.")).toBeInTheDocument()
+
+        fireEvent.click(screen.getByRole("button", { name: /Add/i }))
+        fireEvent.change(screen.getByLabelText("Initial input"), { target: { value: "{broken json" } })
+        fireEvent.click(screen.getByRole("button", { name: /Run Recipe/i }))
+
+        await waitFor(() => {
+            expect(screen.getByRole("link", { name: "Step 1: Failed" })).toBeInTheDocument()
+        })
+        expect(screen.getByRole("link", { name: "Step 1: Failed" })).toHaveAttribute("href", expect.stringMatching(/^#pipeline-diagnostic-/))
+        expect(screen.getByText("Skipped")).toBeInTheDocument()
+        expect(screen.getAllByText(/Unexpected token|Expected property name/i).length).toBeGreaterThan(0)
+
+        fireEvent.change(screen.getByLabelText("Select tool adapter"), { target: { value: "base64_encode_decode" } })
+        fireEvent.click(screen.getByRole("button", { name: /Add/i }))
+        fireEvent.click(screen.getByRole("button", { name: /2\. base64 encode decode/i }))
+        fireEvent.click(screen.getByRole("button", { name: "Constant input" }))
+        fireEvent.change(screen.getByLabelText("Constant input"), { target: { value: "" } })
+        fireEvent.change(screen.getByLabelText("Initial input"), { target: { value: "{}" } })
+        fireEvent.click(screen.getByRole("button", { name: /Run Recipe/i }))
+
+        await waitFor(() => {
+            expect(screen.getByRole("link", { name: "Step 1: OK" })).toBeInTheDocument()
+            expect(screen.getByRole("link", { name: "Step 2: OK" })).toBeInTheDocument()
+        })
+        expect(screen.getByText("0 bytes")).toBeInTheDocument()
     })
 
     it.each([
