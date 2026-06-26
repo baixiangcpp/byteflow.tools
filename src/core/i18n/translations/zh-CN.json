@@ -1359,7 +1359,19 @@
       "body_type_raw": "原始内容",
       "body_type_form_urlencoded": "表单 URL 编码",
       "generated_code": "生成代码",
-      "code_type_fetch": "JS Fetch 代码"
+      "code_type_fetch": "JS Fetch 代码",
+      "query_params": "查询参数",
+      "add_query_param": "添加查询参数",
+      "no_query_params": "无查询参数",
+      "query_param_name_placeholder": "查询名称",
+      "query_param_value_placeholder": "值",
+      "query_param_enabled": "启用查询参数",
+      "remove_query_param": "移除查询参数",
+      "body_input_label": "请求正文",
+      "query_param_value_label": "查询值",
+      "error_url_empty": "请输入绝对 HTTP 或 HTTPS URL。",
+      "error_url_invalid": "请输入有效的绝对 URL，例如 https://api.example.com/users。",
+      "error_url_unsupported_protocol": "请使用 http:// 或 https:// URL。"
     },
     "curl_to_code": {
       "title": "cURL 转代码",

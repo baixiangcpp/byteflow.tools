@@ -1359,7 +1359,19 @@
       "body_type_raw": "원본",
       "body_type_form_urlencoded": "폼 URL 인코딩",
       "generated_code": "생성 코드",
-      "code_type_fetch": "JS Fetch 코드"
+      "code_type_fetch": "JS Fetch 코드",
+      "query_params": "쿼리 매개변수",
+      "add_query_param": "쿼리 추가",
+      "no_query_params": "쿼리 매개변수 없음",
+      "query_param_name_placeholder": "쿼리 이름",
+      "query_param_value_placeholder": "값",
+      "query_param_enabled": "쿼리 매개변수 사용",
+      "remove_query_param": "쿼리 매개변수 제거",
+      "body_input_label": "요청 본문",
+      "query_param_value_label": "쿼리 값",
+      "error_url_empty": "절대 HTTP 또는 HTTPS URL을 입력하세요.",
+      "error_url_invalid": "유효한 절대 URL을 입력하세요. 예: https://api.example.com/users",
+      "error_url_unsupported_protocol": "http:// 또는 https:// URL을 사용하세요."
     },
     "curl_to_code": {
       "title": "cURL → 코드 변환",

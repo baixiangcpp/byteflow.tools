@@ -1387,7 +1387,19 @@
       "body_type_raw": "Raw",
       "body_type_form_urlencoded": "Form URL Encoded",
       "generated_code": "Generated Code",
-      "code_type_fetch": "JS Fetch"
+      "code_type_fetch": "JS Fetch",
+      "query_params": "Query parameters",
+      "add_query_param": "Add Query Param",
+      "no_query_params": "No query parameters",
+      "query_param_name_placeholder": "Query name",
+      "query_param_value_placeholder": "Value",
+      "query_param_enabled": "Enable query parameter",
+      "remove_query_param": "Remove query parameter",
+      "body_input_label": "Request body",
+      "query_param_value_label": "Query value",
+      "error_url_empty": "Enter an absolute HTTP or HTTPS URL.",
+      "error_url_invalid": "Enter a valid absolute URL, for example https://api.example.com/users.",
+      "error_url_unsupported_protocol": "Use an http:// or https:// URL."
     },
     "curl_to_code": {
       "title": "cURL to Code",

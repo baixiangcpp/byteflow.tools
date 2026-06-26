@@ -16,8 +16,23 @@ export interface HeaderEntry {
     enabled: boolean
 }
 
+export interface QueryEntry {
+    id: string
+    key: string
+    value: string
+    enabled: boolean
+}
+
+export type UrlValidationResult =
+    | { ok: true; url: string }
+    | { ok: false; reason: "empty" | "invalid" | "unsupported_protocol"; message: string }
+
 function enabledHeaders(headers: HeaderEntry[]): HeaderEntry[] {
     return headers.filter((header) => header.enabled && header.key.trim())
+}
+
+function enabledQueryParams(queryParams: QueryEntry[]): QueryEntry[] {
+    return queryParams.filter((param) => param.enabled && param.key.trim())
 }
 
 function headersObject(headers: HeaderEntry[], bodyType?: BodyType): Record<string, string> {
@@ -28,6 +43,42 @@ function headersObject(headers: HeaderEntry[], bodyType?: BodyType): Record<stri
     if (bodyType === "json") result["Content-Type"] = "application/json"
     if (bodyType === "form-urlencoded") result["Content-Type"] = "application/x-www-form-urlencoded"
     return result
+}
+
+export function validateRequestUrl(url: string): UrlValidationResult {
+    if (!url.trim()) {
+        return {
+            ok: false,
+            reason: "empty",
+            message: "Enter an absolute HTTP or HTTPS URL.",
+        }
+    }
+
+    try {
+        const parsed = new URL(url)
+        if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
+            return {
+                ok: false,
+                reason: "unsupported_protocol",
+                message: "Use an http:// or https:// URL.",
+            }
+        }
+        return { ok: true, url: parsed.toString() }
+    } catch {
+        return {
+            ok: false,
+            reason: "invalid",
+            message: "Enter a valid absolute URL, for example https://api.example.com/users.",
+        }
+    }
+}
+
+export function buildUrlWithQueryParams(url: string, queryParams: QueryEntry[]): string {
+    const parsed = new URL(url)
+    for (const param of enabledQueryParams(queryParams)) {
+        parsed.searchParams.append(param.key, param.value)
+    }
+    return parsed.toString()
 }
 
 export function generateCurl(method: HttpMethod, url: string, headers: HeaderEntry[], bodyType: BodyType, body: string): string {
@@ -76,7 +127,7 @@ export function generateFetch(method: HttpMethod, url: string, headers: HeaderEn
 
 export function generatePythonRequests(method: HttpMethod, url: string, headers: HeaderEntry[], bodyType: BodyType, body: string): string {
     const lines = ["import requests"]
-    const headersObj = headersObject(headers)
+    const headersObj = headersObject(headers, bodyType)
     const methodLower = method.toLowerCase()
     const callArgs = [pythonStringLiteral(url)]
 
