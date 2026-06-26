@@ -1359,7 +1359,19 @@
       "body_type_raw": "原始內容",
       "body_type_form_urlencoded": "表單 URL 編碼",
       "generated_code": "產生程式碼",
-      "code_type_fetch": "JS Fetch 程式碼"
+      "code_type_fetch": "JS Fetch 程式碼",
+      "query_params": "查詢參數",
+      "add_query_param": "新增查詢參數",
+      "no_query_params": "無查詢參數",
+      "query_param_name_placeholder": "查詢名稱",
+      "query_param_value_placeholder": "值",
+      "query_param_enabled": "啟用查詢參數",
+      "remove_query_param": "移除查詢參數",
+      "body_input_label": "請求本文",
+      "query_param_value_label": "查詢值",
+      "error_url_empty": "請輸入絕對 HTTP 或 HTTPS URL。",
+      "error_url_invalid": "請輸入有效的絕對 URL，例如 https://api.example.com/users。",
+      "error_url_unsupported_protocol": "請使用 http:// 或 https:// URL。"
     },
     "curl_to_code": {
       "title": "cURL 轉程式碼",

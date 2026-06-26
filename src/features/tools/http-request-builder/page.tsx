@@ -22,9 +22,12 @@ import {
     generateCurl,
     generateFetch,
     generatePythonRequests,
+    buildUrlWithQueryParams,
+    validateRequestUrl,
     type BodyType,
     type HeaderEntry,
     type HttpMethod,
+    type QueryEntry,
 } from "./logic"
 
 let nextId = 0
@@ -37,12 +40,17 @@ function createDefaultHeaders(): HeaderEntry[] {
     return [{ id: `h_${nextId++}`, key: "Accept", value: "application/json", enabled: true }]
 }
 
+function createDefaultQueryParams(): QueryEntry[] {
+    return []
+}
+
 export function HttpRequestBuilderPage() {
     const { t } = useLang()
     const toolT = t.tools["http_request_builder"] as Record<string, string>
     const urlInputId = React.useId()
     const [method, setMethod] = React.useState<HttpMethod>("GET")
     const [url, setUrl] = React.useState(DEFAULT_URL)
+    const [queryParams, setQueryParams] = React.useState<QueryEntry[]>(() => createDefaultQueryParams())
     const [headers, setHeaders] = React.useState<HeaderEntry[]>(() => createDefaultHeaders())
     const [bodyType, setBodyType] = React.useState<BodyType>("none")
     const [body, setBody] = React.useState("")
@@ -56,6 +64,18 @@ export function HttpRequestBuilderPage() {
         setHeaders((prev) => prev.filter((h) => h.id !== id))
     }
 
+    const addQueryParam = () => {
+        setQueryParams((prev) => [...prev, { id: `q_${nextId++}`, key: "", value: "", enabled: true }])
+    }
+
+    const removeQueryParam = (id: string) => {
+        setQueryParams((prev) => prev.filter((param) => param.id !== id))
+    }
+
+    const updateQueryParam = (id: string, field: "key" | "value" | "enabled", val: string | boolean) => {
+        setQueryParams((prev) => prev.map((param) => (param.id === id ? { ...param, [field]: val } : param)))
+    }
+
     const updateHeader = (id: string, field: "key" | "value" | "enabled", val: string | boolean) => {
         setHeaders((prev) => prev.map((h) => (h.id === id ? { ...h, [field]: val } : h)))
     }
@@ -63,20 +83,34 @@ export function HttpRequestBuilderPage() {
     const handleClear = () => {
         setMethod("GET")
         setUrl(DEFAULT_URL)
+        setQueryParams(createDefaultQueryParams())
         setHeaders(createDefaultHeaders())
         setBodyType("none")
         setBody("")
     }
 
+    const urlValidation = React.useMemo(() => validateRequestUrl(url), [url])
+    const urlValidationMessage = React.useMemo(() => {
+        if (urlValidation.ok) return ""
+        const key = `error_url_${urlValidation.reason}`
+        return toolT[key] || urlValidation.message
+    }, [toolT, urlValidation])
+    const requestUrl = React.useMemo(() => {
+        if (!urlValidation.ok) return url
+        return buildUrlWithQueryParams(urlValidation.url, queryParams)
+    }, [queryParams, url, urlValidation])
+
     const generatedCode = React.useMemo(() => {
+        if (!urlValidation.ok) return urlValidationMessage
         switch (codeType) {
-            case "curl": return generateCurl(method, url, headers, bodyType, body)
-            case "fetch": return generateFetch(method, url, headers, bodyType, body)
-            case "python": return generatePythonRequests(method, url, headers, bodyType, body)
+            case "curl": return generateCurl(method, requestUrl, headers, bodyType, body)
+            case "fetch": return generateFetch(method, requestUrl, headers, bodyType, body)
+            case "python": return generatePythonRequests(method, requestUrl, headers, bodyType, body)
         }
-    }, [codeType, method, url, headers, bodyType, body])
+    }, [body, bodyType, codeType, headers, method, requestUrl, urlValidation, urlValidationMessage])
 
     const handleCopy = async () => {
+        if (!urlValidation.ok) return
         const result = await safeClipboardWrite(generatedCode)
         if (!result.ok) {
             toast.error(t.common.copy_failed)
@@ -98,6 +132,8 @@ export function HttpRequestBuilderPage() {
             label: t.common.copy,
             icon: Copy,
             onClick: () => void handleCopy(),
+            disabled: !urlValidation.ok,
+            disabledReason: urlValidation.ok ? undefined : urlValidationMessage,
         },
     ]
 
@@ -154,16 +190,73 @@ export function HttpRequestBuilderPage() {
                 <Input
                     id={urlInputId}
                     aria-label={toolT.url_label}
+                    aria-invalid={!urlValidation.ok}
+                    aria-describedby={!urlValidation.ok ? `${urlInputId}-error` : undefined}
                     className="flex-1 font-mono text-sm"
                     placeholder={DEFAULT_URL}
                     value={url}
                     onChange={(e) => setUrl(e.target.value)}
                 />
             </div>
+            {!urlValidation.ok ? (
+                <div id={`${urlInputId}-error`} role="alert" className="rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+                    {urlValidationMessage}
+                </div>
+            ) : null}
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                 {/* Left: Headers + Body */}
                 <div className="space-y-6">
+                    <div className="p-5 border rounded-lg bg-card shadow-sm space-y-4">
+                        <div className="flex items-center justify-between">
+                            <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">{toolT.query_params}</h3>
+                            <Button variant="outline" size="sm" onClick={addQueryParam}>
+                                <Plus className="mr-1 h-3.5 w-3.5" />{toolT.add_query_param}
+                            </Button>
+                        </div>
+                        {queryParams.length === 0 ? (
+                            <p className="text-sm text-muted-foreground italic text-center py-2">{toolT.no_query_params}</p>
+                        ) : (
+                            <div className="space-y-2">
+                                {queryParams.map((param) => (
+                                    <div key={param.id} className="flex items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            checked={param.enabled}
+                                            onChange={(e) => updateQueryParam(param.id, "enabled", e.target.checked)}
+                                            className="rounded border-input"
+                                            aria-label={toolT.query_param_enabled}
+                                        />
+                                        <Input
+                                            className="flex-1 font-mono text-xs"
+                                            aria-label={toolT.query_param_name_placeholder}
+                                            placeholder={toolT.query_param_name_placeholder}
+                                            value={param.key}
+                                            onChange={(e) => updateQueryParam(param.id, "key", e.target.value)}
+                                        />
+                                        <Input
+                                            className="flex-1 font-mono text-xs"
+                                            aria-label={toolT.query_param_value_label}
+                                            placeholder={toolT.query_param_value_placeholder}
+                                            value={param.value}
+                                            onChange={(e) => updateQueryParam(param.id, "value", e.target.value)}
+                                        />
+                                        <Button
+                                            variant="ghost"
+                                            size="icon"
+                                            className="h-8 w-8 shrink-0"
+                                            onClick={() => removeQueryParam(param.id)}
+                                            aria-label={toolT.remove_query_param}
+                                        >
+                                            <Trash2 className="h-4 w-4 text-muted-foreground hover:text-destructive" />
+                                            <span className="sr-only">{toolT.remove_query_param}</span>
+                                        </Button>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
                     {/* Headers */}
                     <div className="p-5 border rounded-lg bg-card shadow-sm space-y-4">
                         <div className="flex items-center justify-between">
@@ -231,6 +324,7 @@ export function HttpRequestBuilderPage() {
                         </div>
                         {bodyType !== "none" && (
                             <Textarea
+                                aria-label={toolT.body_input_label}
                                 className="min-h-[150px] font-mono text-sm"
                                 placeholder={bodyType === "json" ? JSON_BODY_PLACEHOLDER : FORM_BODY_PLACEHOLDER}
                                 value={body}
@@ -261,6 +355,7 @@ export function HttpRequestBuilderPage() {
                                 size="sm"
                                 onClick={() => void handleCopy()}
                                 aria-label={`${t.common.copy}: ${toolT.generated_code}`}
+                                disabled={!urlValidation.ok}
                             >
                                 <Copy className="mr-2 h-4 w-4" />{t.common.copy}
                             </Button>

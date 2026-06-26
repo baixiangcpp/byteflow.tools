@@ -1359,7 +1359,19 @@
       "body_type_raw": "Rohdaten",
       "body_type_form_urlencoded": "Form-URL-kodiert",
       "generated_code": "Generierter Code",
-      "code_type_fetch": "JS-Fetch-Code"
+      "code_type_fetch": "JS-Fetch-Code",
+      "query_params": "Query-Parameter",
+      "add_query_param": "Query-Parameter hinzufuegen",
+      "no_query_params": "Keine Query-Parameter",
+      "query_param_name_placeholder": "Query-Name",
+      "query_param_value_placeholder": "Wert",
+      "query_param_enabled": "Query-Parameter aktivieren",
+      "remove_query_param": "Query-Parameter entfernen",
+      "body_input_label": "Request-Body",
+      "query_param_value_label": "Query-Wert",
+      "error_url_empty": "Geben Sie eine absolute HTTP- oder HTTPS-URL ein.",
+      "error_url_invalid": "Geben Sie eine gueltige absolute URL ein, zum Beispiel https://api.example.com/users.",
+      "error_url_unsupported_protocol": "Verwenden Sie eine http://- oder https://-URL."
     },
     "curl_to_code": {
       "title": "cURL → Code",

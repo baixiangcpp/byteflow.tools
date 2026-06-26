@@ -1359,7 +1359,19 @@
       "body_type_raw": "生データ",
       "body_type_form_urlencoded": "フォーム URL エンコード",
       "generated_code": "生成コード",
-      "code_type_fetch": "JS Fetch コード"
+      "code_type_fetch": "JS Fetch コード",
+      "query_params": "クエリパラメータ",
+      "add_query_param": "クエリを追加",
+      "no_query_params": "クエリパラメータなし",
+      "query_param_name_placeholder": "クエリ名",
+      "query_param_value_placeholder": "値",
+      "query_param_enabled": "クエリパラメータを有効化",
+      "remove_query_param": "クエリパラメータを削除",
+      "body_input_label": "リクエスト本文",
+      "query_param_value_label": "クエリ値",
+      "error_url_empty": "絶対 HTTP または HTTPS URL を入力してください。",
+      "error_url_invalid": "有効な絶対 URL を入力してください。例: https://api.example.com/users",
+      "error_url_unsupported_protocol": "http:// または https:// URL を使ってください。"
     },
     "curl_to_code": {
       "title": "cURL→コード変換",
