@@ -20,6 +20,7 @@ export function ServerFooter({
 
     const pageLinks = [
         { key: "install-app", slug: "install-app", label: requireTranslationValue(translations.common.install_app_label, "common.install_app_label") },
+        { key: "local-data-controls", slug: "privacy#local-data-controls", label: requireTranslationValue(translations.common.local_data_controls.title, "common.local_data_controls.title") },
         { key: "about", slug: "about", label: requireTranslationValue(translations.pages.about_title, "pages.about_title") },
         { key: "privacy", slug: "privacy", label: requireTranslationValue(translations.pages.privacy_title, "pages.privacy_title") },
         { key: "trust-center", slug: "trust-center", label: requireTranslationValue(translations.pages.trust_center_title, "pages.trust_center_title") },

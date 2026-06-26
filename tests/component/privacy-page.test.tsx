@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react"
+import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import PrivacyPage from "@/app/[lang]/privacy/page"
 import { LangProvider } from "@/core/i18n/lang-provider"
@@ -80,5 +80,72 @@ describe("PrivacyPage", () => {
         expect(window.localStorage.getItem("byteflow:analytics:opt-out")).toBe("1")
         expect(screen.getByText("Locally opted out")).toBeInTheDocument()
         expect(screen.getByText("Analytics opt-out saved on this browser.")).toBeInTheDocument()
+    })
+
+    it("shows local data categories and clears favorites and recents independently", async () => {
+        window.localStorage.setItem("byteflow:tools:favorites", JSON.stringify([{ toolKey: "json-formatter", updatedAt: "2026-01-01T00:00:00.000Z" }]))
+        window.localStorage.setItem("byteflow:tools:recent", JSON.stringify([{ toolKey: "jwt-decoder", updatedAt: "2026-01-01T00:00:00.000Z" }]))
+        window.localStorage.setItem("byteflow:preferred-locale", "en")
+        window.localStorage.setItem("byteflow:analytics:opt-out", "1")
+
+        render(
+            <LangProvider lang="en" translations={getTranslation("en")}>
+                <PrivacyPage />
+            </LangProvider>,
+        )
+
+        expect(screen.getByRole("link", { name: "Local data controls" })).toHaveAttribute("href", "#local-data-controls")
+        expect(screen.getByRole("heading", { name: "Local data controls" })).toBeInTheDocument()
+        expect(screen.getByRole("heading", { name: "Favorites" })).toBeInTheDocument()
+        expect(screen.getByRole("heading", { name: "Recent tools" })).toBeInTheDocument()
+        expect(screen.getByRole("heading", { name: "Safe preferences" })).toBeInTheDocument()
+        await waitFor(() => expect(screen.getAllByText("1 saved").length).toBeGreaterThanOrEqual(3))
+        expect(screen.getByText(/Tool input, output, files, logs, tokens/)).toBeInTheDocument()
+        expect(screen.getByRole("link", { name: "Install App cache controls" })).toHaveAttribute("href", "/en/install-app")
+        expect(screen.getByRole("link", { name: "DevTools verification steps" })).toHaveAttribute("href", "/en/trust-center#verify-local-processing")
+
+        fireEvent.click(screen.getByRole("button", { name: "Clear favorites" }))
+        await waitFor(() => expect(window.localStorage.getItem("byteflow:tools:favorites")).toBe("[]"))
+        expect(JSON.parse(window.localStorage.getItem("byteflow:tools:recent") ?? "[]")).toHaveLength(1)
+        expect(screen.getByText("Cleared 1 favorite tools.")).toBeInTheDocument()
+
+        fireEvent.click(screen.getByRole("button", { name: "Clear recent tools" }))
+        await waitFor(() => expect(window.localStorage.getItem("byteflow:tools:recent")).toBe("[]"))
+        expect(screen.getByText("Cleared 1 recent tools.")).toBeInTheDocument()
+
+        fireEvent.click(screen.getByRole("button", { name: "Clear preferences" }))
+        await waitFor(() => expect(window.localStorage.getItem("byteflow:preferred-locale")).toBeNull())
+        expect(window.localStorage.getItem("byteflow:analytics:opt-out")).toBe("1")
+        expect(screen.getByText("Cleared 1 preference items.")).toBeInTheDocument()
+    })
+
+    it("clears only byteflow PWA cache buckets from local data controls", async () => {
+        const deleteCache = vi.fn().mockResolvedValue(true)
+        Object.defineProperty(window, "caches", {
+            configurable: true,
+            value: {
+                keys: vi.fn().mockResolvedValue([
+                    "byteflow-app-shell-vtest",
+                    "byteflow-runtime-vtest",
+                    "third-party-cache",
+                ]),
+                delete: deleteCache,
+            },
+        })
+
+        render(
+            <LangProvider lang="en" translations={getTranslation("en")}>
+                <PrivacyPage />
+            </LangProvider>,
+        )
+
+        fireEvent.click(screen.getByRole("button", { name: "Clear cached app files" }))
+
+        await waitFor(() => {
+            expect(deleteCache).toHaveBeenCalledWith("byteflow-app-shell-vtest")
+            expect(deleteCache).toHaveBeenCalledWith("byteflow-runtime-vtest")
+        })
+        expect(deleteCache).not.toHaveBeenCalledWith("third-party-cache")
+        expect(await screen.findByText("Cached app files cleared.")).toBeInTheDocument()
     })
 })

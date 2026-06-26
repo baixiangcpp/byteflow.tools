@@ -112,3 +112,12 @@ export async function deleteSavedRecipe(id: string): Promise<RecipeStoreResult<v
     return withStore<undefined>("readwrite", (store) => store.delete(id))
         .then((result) => result.ok ? { ok: true, value: undefined } : result)
 }
+
+export async function countSavedRecipes(): Promise<RecipeStoreResult<number>> {
+    return withStore<number>("readonly", (store) => store.count())
+}
+
+export async function clearSavedRecipes(): Promise<RecipeStoreResult<void>> {
+    return withStore<undefined>("readwrite", (store) => store.clear())
+        .then((result) => result.ok ? { ok: true, value: undefined } : result)
+}

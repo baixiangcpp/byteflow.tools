@@ -38,6 +38,12 @@ export default function PrivacyPage() {
                 >
                     {p.trust_center_title}
                 </Link>
+                <Link
+                    href="#local-data-controls"
+                    className="mt-4 ml-2 inline-flex min-h-10 items-center rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                >
+                    {t.common.local_data_controls.title}
+                </Link>
             </section>
 
             <section className="grid gap-4">

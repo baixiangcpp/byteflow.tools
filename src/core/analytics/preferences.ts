@@ -4,6 +4,10 @@ export type AnalyticsPreference = "default" | "opted_out"
 
 const ANALYTICS_OPT_OUT_KEY = "byteflow:analytics:opt-out"
 
+export function getAnalyticsOptOutStorageKey(): string {
+    return ANALYTICS_OPT_OUT_KEY
+}
+
 export function getAnalyticsPreference(): AnalyticsPreference {
     return readStorageString(ANALYTICS_OPT_OUT_KEY) === "1" ? "opted_out" : "default"
 }

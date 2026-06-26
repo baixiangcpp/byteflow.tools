@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
 import type { Locale } from "@/core/i18n/i18n"
 import { JsonLdScript } from "@/core/seo/components/json-ld-script"
+import { clearByteflowPwaCaches } from "@/core/storage/pwa-cache-controls"
 import type { GuidePlatform, InstallPageCopy } from "@/core/utils/install-app-copy"
 
 type BeforeInstallPromptEvent = Event & {
@@ -28,51 +29,13 @@ const BENEFIT_ICON_BY_KEY = {
     works_offline: WifiOff,
     local_first: Shield,
 } as const
-const BYTEFLOW_CACHE_PREFIX = "byteflow-"
-const SERVICE_WORKER_CACHE_CLEAR_TIMEOUT_MS = 1500
-
-async function deleteByteflowCacheBuckets() {
-    if (typeof window === "undefined" || !("caches" in window)) {
-        throw new Error("CacheStorage unavailable")
-    }
-    const cacheKeys = await window.caches.keys()
-    await Promise.all(
-        cacheKeys
-            .filter((key) => key.startsWith(BYTEFLOW_CACHE_PREFIX))
-            .map((key) => window.caches.delete(key)),
-    )
-}
-
-async function requestServiceWorkerCacheClear() {
-    if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) return
-    const controller = navigator.serviceWorker.controller
-    if (!controller) return
-
-    await new Promise<void>((resolve) => {
-        const cleanup = () => {
-            window.clearTimeout(timeoutId)
-            navigator.serviceWorker.removeEventListener("message", handleMessage)
-        }
-        const handleMessage = (event: MessageEvent) => {
-            if (event.data?.type !== "BYTEFLOW_CACHES_CLEARED") return
-            cleanup()
-            resolve()
-        }
-        const timeoutId = window.setTimeout(() => {
-            cleanup()
-            resolve()
-        }, SERVICE_WORKER_CACHE_CLEAR_TIMEOUT_MS)
-
-        navigator.serviceWorker.addEventListener("message", handleMessage)
-        controller.postMessage({ type: "CLEAR_BYTEFLOW_CACHES" })
-    })
-}
 
 type InstallAppClientProps = {
     locale: Locale
     copy: InstallPageCopy
     allToolsLabel: string
     trustCenterLabel: string
+    localDataControlsLabel: string
     offlineMatrixTitle: string
     offlineMatrixDescription: string
     offlineMatrixLink: string
@@ -83,6 +46,7 @@ export function InstallAppClient({
     copy,
     allToolsLabel,
     trustCenterLabel,
+    localDataControlsLabel,
     offlineMatrixTitle,
     offlineMatrixDescription,
     offlineMatrixLink,
@@ -169,9 +133,7 @@ export function InstallAppClient({
     const handleClearCachedAppFiles = async () => {
         setCacheClearPending(true)
         try {
-            await deleteByteflowCacheBuckets()
-            await requestServiceWorkerCacheClear()
-            await deleteByteflowCacheBuckets()
+            await clearByteflowPwaCaches()
             setCacheClearStatus("success")
         } catch {
             setCacheClearStatus("unavailable")
@@ -349,6 +311,12 @@ export function InstallAppClient({
                         <Link href={`/${locale}/trust-center`}>
                             <Shield className="mr-2 h-4 w-4" />
                             {trustCenterLabel}
+                        </Link>
+                    </Button>
+                    <Button asChild variant="outline">
+                        <Link href={`/${locale}/privacy#local-data-controls`}>
+                            <Trash2 className="mr-2 h-4 w-4" />
+                            {localDataControlsLabel}
                         </Link>
                     </Button>
                     <Button asChild variant="outline">
