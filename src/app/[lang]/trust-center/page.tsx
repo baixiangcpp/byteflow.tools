@@ -253,6 +253,10 @@ export default async function TrustCenterPage({
                         </li>
                     ))}
                 </ol>
+                <div id="in-app-verification-mode" className="mt-4 rounded-lg border border-border/70 bg-background/55 p-4">
+                    <h3 className="text-sm font-semibold">{p.trust_center_verification_mode_title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.trust_center_verification_mode_desc}</p>
+                </div>
             </section>
 
             <section id="offline-support-matrix" className="rounded-lg border border-border/70 bg-background/55 p-5 sm:p-6">

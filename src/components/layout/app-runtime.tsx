@@ -7,6 +7,7 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { requireTranslationValue } from "@/core/i18n/i18n"
 import { useLang } from "@/core/i18n/lang-provider"
+import { VerificationModePanel } from "./verification-mode-panel"
 
 const PWA_INSTALL_VISIT_COUNT_KEY = "byteflow:pwa-install:visit-count"
 const PWA_INSTALL_DISMISSED_UNTIL_KEY = "byteflow:pwa-install:dismissed-until"
@@ -267,6 +268,7 @@ export function AppRuntime({ pathname }: { pathname: string }) {
                     <ArrowUp className="h-4 w-4" />
                 </Button>
             ) : null}
+            <VerificationModePanel pathname={pathname} />
         </>
     )
 }
