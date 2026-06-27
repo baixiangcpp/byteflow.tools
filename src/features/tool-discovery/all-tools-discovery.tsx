@@ -64,12 +64,21 @@ type DiscoveryWorkflow = {
     title: string
 }
 
+type DiscoveryGuide = {
+    href: string
+    id: string
+    title: string
+    description: string
+    tags: string[]
+}
+
 type AllToolsDiscoveryLabels = {
     activeFilters: string
     allFamilies: string
     clearFilters: string
     clearFavorites: string
     commonWorkflows: string
+    guideLibrary: string
     favorites: string
     filterByCategory: string
     filterByExecution: string
@@ -117,6 +126,7 @@ type AllToolsDiscoveryProps = {
     locale: string
     tags: string[]
     totalTools: number
+    guides: DiscoveryGuide[]
     workflows: DiscoveryWorkflow[]
 }
 
@@ -401,6 +411,7 @@ export function AllToolsDiscovery({
     locale,
     tags,
     totalTools,
+    guides,
     workflows,
 }: AllToolsDiscoveryProps) {
     const [query, setQuery] = React.useState("")
@@ -1027,6 +1038,44 @@ export function AllToolsDiscovery({
                                 </span>
                                 <span className="mt-2 flex flex-wrap gap-1">
                                     {workflow.tags.slice(0, 3).map((tag) => (
+                                        <span key={tag} className="rounded border border-border/70 px-1.5 py-0.5 text-[11px] text-muted-foreground">
+                                            {tag}
+                                        </span>
+                                    ))}
+                                </span>
+                            </Link>
+                        ))}
+                    </div>
+                </section>
+            ) : null}
+
+            {guides.length > 0 ? (
+                <section className="min-w-0 rounded-xl border border-border/70 bg-card/55 p-4 backdrop-blur-sm">
+                    <div className="flex flex-wrap items-center justify-between gap-2">
+                        <h2 className="text-sm font-semibold">{labels.guideLibrary}</h2>
+                        <Link
+                            href={`/${locale}/how-to`}
+                            className="inline-flex min-h-9 items-center rounded-md border border-border/70 bg-background/55 px-2.5 text-xs font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
+                        >
+                            {labels.open}
+                        </Link>
+                    </div>
+                    <div className="mt-3 grid gap-2 md:grid-cols-3">
+                        {guides.map((guide) => (
+                            <Link
+                                key={guide.id}
+                                href={guide.href}
+                                className="group min-w-0 rounded-lg border border-border/70 bg-background/55 p-3 text-sm transition-colors hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
+                            >
+                                <span className="inline-flex items-center gap-2 font-medium text-foreground group-hover:text-primary">
+                                    <FileText className="h-4 w-4" />
+                                    {guide.title}
+                                </span>
+                                <span className="mt-1 line-clamp-2 block text-xs leading-relaxed text-muted-foreground">
+                                    {guide.description}
+                                </span>
+                                <span className="mt-2 flex flex-wrap gap-1">
+                                    {guide.tags.slice(0, 3).map((tag) => (
                                         <span key={tag} className="rounded border border-border/70 px-1.5 py-0.5 text-[11px] text-muted-foreground">
                                             {tag}
                                         </span>

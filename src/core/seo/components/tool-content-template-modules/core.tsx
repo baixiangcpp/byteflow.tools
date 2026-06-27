@@ -3,6 +3,7 @@ import type { Locale } from "@/core/i18n/i18n"
 import { requireTranslationValue } from "@/core/i18n/i18n"
 import { getToolBySlug } from "@/core/registry"
 import { getRelatedTools } from "@/core/registry/related-tools"
+import { getGuidesForTool } from "@/core/growth/guide-index"
 import { JsonLdScript } from "@/core/seo/components/json-ld-script"
 import { ToolContentTemplateSurface } from "@/core/seo/components/tool-content-template-surface"
 import { getLocalizedWorkflowCopy, getWorkflowsForToolKey } from "@/core/workflows/workflow-hubs"
@@ -95,6 +96,11 @@ export function buildToolTemplateModel({
             description: copy.description,
         }
     })
+    const relatedGuides = getGuidesForTool(content.toolKey, lang).map((guide) => ({
+        slug: guide.slug,
+        title: guide.title,
+        description: guide.description,
+    }))
 
     return {
         toolSlug,
@@ -104,6 +110,7 @@ export function buildToolTemplateModel({
         copy: getTemplateCopy(lang),
         relatedTools,
         relatedWorkflows,
+        relatedGuides,
         workflowSteps: localizedEntry?.workflowSteps ?? intentProfile?.workflow?.(title) ?? pack.workflow(title),
         qualityChecklist: localizedEntry?.qualityChecklist ?? intentProfile?.checklist?.(title) ?? pack.checklist(title),
         operationalNote: localizedEntry?.operationalNote ?? intentProfile?.operational?.(title) ?? pack.operational(title),
@@ -245,6 +252,24 @@ export function ToolContentTemplateSection({
                                     >
                                         <p className="text-sm font-medium text-foreground">{workflow.title}</p>
                                         <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-muted-foreground">{workflow.description}</p>
+                                    </Link>
+                                ))}
+                            </div>
+                        </section>
+                    ) : null}
+
+                    {model.relatedGuides.length > 0 ? (
+                        <section className="space-y-3">
+                            <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground">{model.copy.relatedGuides}</h3>
+                            <div className="grid gap-3 sm:grid-cols-2">
+                                {model.relatedGuides.map((guide) => (
+                                    <Link
+                                        key={guide.slug}
+                                        href={`/${model.locale}/${guide.slug}`}
+                                        className="rounded-lg border border-border/60 bg-background/60 p-3 transition-colors hover:border-primary/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
+                                    >
+                                        <p className="text-sm font-medium text-foreground">{guide.title}</p>
+                                        <p className="mt-1 line-clamp-2 text-sm leading-relaxed text-muted-foreground">{guide.description}</p>
                                     </Link>
                                 ))}
                             </div>

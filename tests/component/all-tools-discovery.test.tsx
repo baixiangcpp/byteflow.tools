@@ -16,6 +16,7 @@ const labels = {
     clearFilters: "Clear filters",
     clearFavorites: "Clear favorites",
     commonWorkflows: "Common workflows",
+    guideLibrary: "Guide library",
     favorites: "Favorites",
     filterByCategory: "Category",
     filterByExecution: "Execution",
@@ -209,6 +210,7 @@ function renderDiscovery() {
             locale="en"
             tags={["json", "base64", "http", "image", "pipeline-ready"]}
             totalTools={10}
+            guides={[]}
             workflows={[{ id: "api", title: "API payload cleanup", href: "/en/pipeline-builder", tags: ["json", "pipeline-ready"] }]}
         />,
     )
@@ -241,6 +243,7 @@ function renderLargeInventoryDiscovery() {
             locale="en"
             tags={["bulk", "json", "pipeline-ready"]}
             totalTools={LARGE_INVENTORY_TOOL_COUNT}
+            guides={[]}
             workflows={[]}
         />,
     )
