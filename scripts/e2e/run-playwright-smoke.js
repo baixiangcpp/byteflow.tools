@@ -1117,7 +1117,7 @@ async function assertPwaShellJourney(browser, baseUrl) {
     page.on("pageerror", (error) => runtimeErrors.push(error.message));
 
     try {
-        await page.goto(`${baseUrl}/en`, { waitUntil: "networkidle" });
+        await page.goto(`${baseUrl}/en`, { waitUntil: "domcontentloaded" });
         await page.waitForSelector("main", { timeout: 15_000 });
 
         const manifestHref = await page.locator('link[rel="manifest"]').first().getAttribute("href");
@@ -1159,14 +1159,14 @@ async function assertPwaShellJourney(browser, baseUrl) {
 
         let isControlled = await waitForController();
         if (!isControlled) {
-            await page.reload({ waitUntil: "networkidle" });
+            await page.reload({ waitUntil: "domcontentloaded" });
             isControlled = await waitForController();
         }
         if (!isControlled) {
             throw new Error("Service worker is active but did not control the PWA smoke page.");
         }
 
-        await page.goto(`${baseUrl}/en/json-formatter`, { waitUntil: "networkidle" });
+        await page.goto(`${baseUrl}/en/json-formatter`, { waitUntil: "domcontentloaded" });
         await page.waitForSelector("main", { timeout: 15_000 });
         isControlled = await waitForController();
         if (!isControlled) {
@@ -1177,7 +1177,7 @@ async function assertPwaShellJourney(browser, baseUrl) {
             "/en/pipeline-builder",
             "/en/youtube-thumbnail-grabber",
         ]) {
-            await page.goto(`${baseUrl}${warmedRoute}`, { waitUntil: "networkidle" });
+            await page.goto(`${baseUrl}${warmedRoute}`, { waitUntil: "domcontentloaded" });
             await page.waitForSelector("main", { timeout: 15_000 });
         }
 
@@ -1319,7 +1319,7 @@ async function assertPwaShellJourney(browser, baseUrl) {
             contextOffline = false;
         }
 
-        await page.goto(`${baseUrl}/en/install-app`, { waitUntil: "networkidle" });
+        await page.goto(`${baseUrl}/en/install-app`, { waitUntil: "domcontentloaded" });
         await page.getByRole("button", { name: /Clear cached app files/i }).click();
         await page.getByText("Cached app files cleared.").waitFor({ state: "visible", timeout: 15_000 });
         const cacheBucketsAfterClear = await page.evaluate(async () =>

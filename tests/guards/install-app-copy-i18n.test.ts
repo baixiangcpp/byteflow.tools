@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 import { LOCALES, type Locale } from "@/core/i18n/i18n"
 import { getInstallPageCopy } from "@/core/utils/install-app-copy"
 
-const GUIDE_KEYS = ["chrome_desktop", "android", "ios", "edge", "firefox"] as const
+const GUIDE_KEYS = ["chrome_desktop", "safari_desktop", "edge", "firefox", "android", "ios"] as const
 
 describe("install-app copy localization", () => {
     it("has complete copy shape for every supported locale", () => {
@@ -13,6 +13,12 @@ describe("install-app copy localization", () => {
             expect(copy.title.trim().length).toBeGreaterThan(0)
             expect(copy.subtitle.trim().length).toBeGreaterThan(0)
             expect(copy.guidePreviewLabel.trim().length).toBeGreaterThan(0)
+            expect(copy.guides.chrome_desktop.label).toContain("Chrome")
+            expect(copy.guides.safari_desktop.label).toContain("Safari")
+            expect(copy.guides.edge.label).toContain("Edge")
+            expect(copy.guides.firefox.label).toContain("Firefox")
+            expect(copy.guides.android.label).toContain("Android")
+            expect(copy.guides.ios.label).toContain("iOS")
 
             expect(copy.benefits).toHaveLength(3)
             for (const benefit of copy.benefits) {

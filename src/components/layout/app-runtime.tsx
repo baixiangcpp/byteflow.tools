@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react"
 import Link from "next/link"
-import { ArrowUp, Download } from "lucide-react"
+import { ArrowUp, Download, WifiOff } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { requireTranslationValue } from "@/core/i18n/i18n"
@@ -51,6 +51,7 @@ export function AppRuntime({ pathname }: { pathname: string }) {
     const [deferredInstallPrompt, setDeferredInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null)
     const [showInstallPrompt, setShowInstallPrompt] = useState(false)
     const [showBackToTop, setShowBackToTop] = useState(false)
+    const [isOffline, setIsOffline] = useState(false)
 
     const dismissInstallPrompt = useCallback(() => {
         setShowInstallPrompt(false)
@@ -81,6 +82,20 @@ export function AppRuntime({ pathname }: { pathname: string }) {
             setDeferredInstallPrompt(null)
         }
     }, [deferredInstallPrompt])
+
+    useEffect(() => {
+        const syncOnlineStatus = () => {
+            setIsOffline(navigator.onLine === false)
+        }
+
+        syncOnlineStatus()
+        window.addEventListener("online", syncOnlineStatus)
+        window.addEventListener("offline", syncOnlineStatus)
+        return () => {
+            window.removeEventListener("online", syncOnlineStatus)
+            window.removeEventListener("offline", syncOnlineStatus)
+        }
+    }, [])
 
     useEffect(() => {
         const handleBeforeInstallPrompt = (event: Event) => {
@@ -228,6 +243,9 @@ export function AppRuntime({ pathname }: { pathname: string }) {
         later: requireTranslationValue(t.common.later, "common.later"),
     }
     const backToTopLabel = requireTranslationValue(t.common.back_to_top, "common.back_to_top")
+    const offlineBannerTitle = requireTranslationValue(t.common.offline_banner_title, "common.offline_banner_title")
+    const offlineBannerMessage = requireTranslationValue(t.common.offline_banner_message, "common.offline_banner_message")
+    const offlineBannerAction = requireTranslationValue(t.common.offline_banner_action, "common.offline_banner_action")
 
     const handleBackToTop = () => {
         window.scrollTo({ top: 0, behavior: "smooth" })
@@ -235,6 +253,29 @@ export function AppRuntime({ pathname }: { pathname: string }) {
 
     return (
         <>
+            {isOffline ? (
+                <div
+                    role="status"
+                    aria-live="polite"
+                    className="fixed inset-x-0 top-0 z-50 border-b border-amber-300/70 bg-amber-50 px-4 py-3 text-amber-950 shadow-sm dark:border-amber-500/45 dark:bg-amber-950 dark:text-amber-50"
+                >
+                    <div className="mx-auto flex max-w-6xl flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
+                        <div className="flex items-start gap-2">
+                            <WifiOff className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
+                            <div>
+                                <p className="font-semibold">{offlineBannerTitle}</p>
+                                <p className="text-amber-900/80 dark:text-amber-100/80">{offlineBannerMessage}</p>
+                            </div>
+                        </div>
+                        <Link
+                            href={`/${lang}/trust-center#offline-support-matrix`}
+                            className="text-sm font-semibold underline underline-offset-4"
+                        >
+                            {offlineBannerAction}
+                        </Link>
+                    </div>
+                </div>
+            ) : null}
             {showInstallPrompt && deferredInstallPrompt ? (
                 <div className="fixed bottom-6 left-4 z-40 max-w-sm rounded-xl border border-border/70 bg-background/95 p-4 shadow-lg backdrop-blur sm:left-6">
                     <p className="text-sm font-semibold text-foreground">{pwaInstallCopy.title}</p>

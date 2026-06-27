@@ -1,6 +1,7 @@
 import type { Locale } from "@/core/i18n/i18n"
 
-export type GuidePlatform = "chrome_desktop" | "android" | "ios" | "edge" | "firefox"
+export type GuidePlatform = "chrome_desktop" | "safari_desktop" | "edge" | "firefox" | "android" | "ios"
+type AuthoredGuidePlatform = Exclude<GuidePlatform, "safari_desktop">
 
 type InstallBenefitKey = "instant_launch" | "works_offline" | "local_first"
 
@@ -49,13 +50,44 @@ export type InstallPageCopy = {
 
 const GUIDE_SCREENSHOTS: Record<GuidePlatform, string> = {
     chrome_desktop: "/pwa-screenshots/install-chrome-desktop.png",
-    android: "/pwa-screenshots/install-android.png",
-    ios: "/pwa-screenshots/install-ios-safari.png",
+    safari_desktop: "/pwa-screenshots/install-ios-safari.png",
     edge: "/pwa-screenshots/install-edge.png",
     firefox: "/pwa-screenshots/install-firefox.png",
+    android: "/pwa-screenshots/install-android.png",
+    ios: "/pwa-screenshots/install-ios-safari.png",
 }
 
-export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
+type AuthoredInstallPageCopy = Omit<InstallPageCopy, "guides"> & {
+    guides: Record<AuthoredGuidePlatform, InstallGuide>
+}
+
+const SAFARI_DESKTOP_GUIDE: InstallGuide = {
+    label: "Safari",
+    title: "Install on macOS Safari",
+    steps: [
+        "Open byteflow.tools in Safari on macOS.",
+        "Open Share or File, then choose Add to Dock.",
+        "Confirm the name and launch from the Dock or Launchpad.",
+    ],
+    screenshot: GUIDE_SCREENSHOTS.safari_desktop,
+}
+
+function withSafariDesktopGuide(copy: AuthoredInstallPageCopy): InstallPageCopy {
+    const { chrome_desktop, edge, firefox, android, ios } = copy.guides
+    return {
+        ...copy,
+        guides: {
+            chrome_desktop,
+            safari_desktop: SAFARI_DESKTOP_GUIDE,
+            edge,
+            firefox,
+            android,
+            ios,
+        },
+    }
+}
+
+export const INSTALL_PAGE_COPY: Record<Locale, AuthoredInstallPageCopy> = {
     en: {
         badge: "Installable PWA",
         title: "Install byteflow.tools as an app",
@@ -843,5 +875,5 @@ export const INSTALL_PAGE_COPY: Record<Locale, InstallPageCopy> = {
 }
 
 export function getInstallPageCopy(locale: Locale): InstallPageCopy {
-    return INSTALL_PAGE_COPY[locale] || INSTALL_PAGE_COPY.en
+    return withSafariDesktopGuide(INSTALL_PAGE_COPY[locale] || INSTALL_PAGE_COPY.en)
 }
