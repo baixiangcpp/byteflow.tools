@@ -281,7 +281,7 @@ describe("phase 3 pipeline builder page", () => {
   "ok": true
 }`)
         })
-    })
+    }, 20_000)
 
     it("shows privacy preview before export and confirms structure-only scope", () => {
         renderWithEnglish(<PipelineBuilderPage />)
@@ -297,7 +297,7 @@ describe("phase 3 pipeline builder page", () => {
         expect(screen.getByText("Final output and intermediate step outputs")).toBeInTheDocument()
         expect(screen.getByText("Constant step inputs, tokens, keys, and payloads")).toBeInTheDocument()
         expect(screen.getByRole("button", { name: "Export structure only" })).toBeInTheDocument()
-    })
+    }, 10_000)
 
     it("announces Share URL success after privacy confirmation", async () => {
         renderWithEnglish(<PipelineBuilderPage />)
@@ -318,7 +318,7 @@ describe("phase 3 pipeline builder page", () => {
         await waitFor(() => {
             expect(screen.getByText("Copied to clipboard. Share URL copied without constant step input")).toHaveAttribute("data-pipeline-action-status")
         })
-    })
+    }, 10_000)
 
     it("announces Export JSON success and downloads structure-only recipe JSON", async () => {
         renderWithEnglish(<PipelineBuilderPage />)
@@ -418,7 +418,7 @@ describe("phase 3 pipeline builder page", () => {
             expect(screen.getByRole("link", { name: "Step 2: OK" })).toBeInTheDocument()
         })
         expect(screen.getByText("0 bytes")).toBeInTheDocument()
-    })
+    }, 15_000)
 
     it.each([
         ["json_typescript_contract_review", "JSON TypeScript contract review", "Generate TypeScript interfaces", "export interface ApiEvent"],

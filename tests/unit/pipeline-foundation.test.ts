@@ -1039,9 +1039,14 @@ describe("pipeline foundation", () => {
                 "api_payload_cleanup",
                 "security_token_review",
                 "log_scrub_before_sharing",
+                "yaml_config_to_json_review",
+                "csv_fixture_to_json_contract",
+                "ndjson_log_batch_review",
+                "html_release_notes_markdown",
+                "openapi_change_review",
             ]),
         )
-        expect(PIPELINE_RECIPE_TEMPLATES.length).toBeGreaterThanOrEqual(3)
+        expect(PIPELINE_RECIPE_TEMPLATES.length).toBeGreaterThanOrEqual(12)
 
         for (const template of PIPELINE_RECIPE_TEMPLATES) {
             const generated = createRecipeFromTemplate(template, {
@@ -1054,6 +1059,7 @@ describe("pipeline foundation", () => {
             expect(generated.initialInput).toBe(template.sampleInput)
             expect(template.categoryKey).toMatch(/^recipe_category_/)
             expect(template.difficultyKey).toMatch(/^recipe_difficulty_/)
+            expect(template.inputTypeKey).toMatch(/^recipe_input_/)
             expect(template.privacyBoundaryKey).toBe("recipe_privacy_structure_only")
             expect(template.tags.length).toBeGreaterThan(0)
             expect(validateRecipe(generated.recipe)).toEqual({ ok: true, errors: [] })

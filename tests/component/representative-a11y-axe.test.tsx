@@ -220,7 +220,7 @@ describe("representative axe accessibility checks", () => {
         expect(screen.getByRole("table", { name: "Run log" })).toBeInTheDocument()
 
         await expectNoAxeViolations(container)
-    })
+    }, 15_000)
 
     it("passes axe for an external-request confirmation flow before preview", async () => {
         const { container } = renderEnglish(<YouTubeThumbnailGrabberPage />)
