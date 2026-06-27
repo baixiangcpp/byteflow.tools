@@ -9,6 +9,13 @@ import { Input } from "@/components/ui/input"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import type { Locale } from "@/core/i18n/i18n"
 import cronstrue from "cronstrue/i18n.js"
+import {
+    getCronFieldDefinitions,
+    parseCronParts,
+    updateCronPart,
+    validateCronExpression,
+    type CronFieldKey,
+} from "./logic"
 
 const CRONSTRUE_LOCALE_BY_LANG: Record<Locale, string> = {
     en: "en",
@@ -36,13 +43,24 @@ export function CrontabGeneratorPage() {
     const [description, setDescription] = React.useState("")
     const [error, setError] = React.useState<string | null>(null)
 
-    // Parse the cron string to parts
-    const parts = cronString.split(" ")
-    const pMinute = parts[0] || ""
-    const pHour = parts[1] || ""
-    const pDom = parts[2] || ""
-    const pMonth = parts[3] || ""
-    const pDow = parts[4] || ""
+    const parts = parseCronParts(cronString)
+    const fieldDefinitions = getCronFieldDefinitions(parts.length)
+    const fieldLabelByKey: Record<CronFieldKey, string> = {
+        seconds: toolT.field_seconds,
+        minute: toolT.field_minute,
+        hour: toolT.field_hour,
+        day_month: toolT.field_day_month,
+        month: toolT.field_month,
+        day_week: toolT.field_day_week,
+    }
+    const fieldHintByKey: Record<CronFieldKey, string> = {
+        seconds: toolT.hint_seconds,
+        minute: toolT.hint_minute,
+        hour: toolT.hint_hour,
+        day_month: toolT.hint_day_month,
+        month: toolT.hint_month,
+        day_week: toolT.hint_day_week,
+    }
 
     React.useEffect(() => {
         if (!cronString.trim()) {
@@ -52,21 +70,18 @@ export function CrontabGeneratorPage() {
         }
 
         try {
-            // Validate length roughly
-            const parts = cronString.trim().split(/\s+/)
-            if (parts.length < 5 || parts.length > 6) {
-                throw new Error(toolT.invalid_expression)
-            }
+            const validation = validateCronExpression(cronString, toolT.invalid_expression)
+            if (!validation.ok) throw new Error(validation.error)
 
-            const humanReadable = cronstrue.toString(cronString, {
+            const humanReadable = cronstrue.toString(validation.normalized, {
                 use24HourTimeFormat: true,
                 locale: cronLocale,
             })
             setDescription(humanReadable)
             setError(null)
-        } catch {
+        } catch (err) {
             setDescription("")
-            setError(toolT.invalid_expression)
+            setError(err instanceof Error ? err.message : toolT.invalid_expression)
         }
     }, [cronLocale, cronString, toolT.invalid_expression])
 
@@ -87,12 +102,7 @@ export function CrontabGeneratorPage() {
     }
 
     const updatePart = (index: number, val: string) => {
-        const p = cronString.split(" ")
-        // Fill array if too short
-        while (p.length < 5) p.push("*")
-
-        p[index] = val || "*"
-        setCronString(p.slice(0, 5).join(" "))
+        setCronString(updateCronPart(cronString, index, val))
     }
 
     return (
@@ -139,12 +149,16 @@ export function CrontabGeneratorPage() {
                 </div>
 
                 {/* Editor Grid */}
-                <div className="grid grid-cols-5 gap-2 sm:gap-4 md:px-0">
-                    <CronPartInput label={toolT.field_minute} value={pMinute} onChange={(v) => updatePart(0, v)} hint={toolT.hint_minute} />
-                    <CronPartInput label={toolT.field_hour} value={pHour} onChange={(v) => updatePart(1, v)} hint={toolT.hint_hour} />
-                    <CronPartInput label={toolT.field_day_month} value={pDom} onChange={(v) => updatePart(2, v)} hint={toolT.hint_day_month} />
-                    <CronPartInput label={toolT.field_month} value={pMonth} onChange={(v) => updatePart(3, v)} hint={toolT.hint_month} />
-                    <CronPartInput label={toolT.field_day_week} value={pDow} onChange={(v) => updatePart(4, v)} hint={toolT.hint_day_week} />
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-4 lg:grid-cols-6 md:px-0">
+                    {fieldDefinitions.map((field, index) => (
+                        <CronPartInput
+                            key={field.key}
+                            label={fieldLabelByKey[field.key]}
+                            value={parts[index] || ""}
+                            onChange={(v) => updatePart(index, v)}
+                            hint={fieldHintByKey[field.key]}
+                        />
+                    ))}
                 </div>
 
                 <div className="space-y-2 mt-4">

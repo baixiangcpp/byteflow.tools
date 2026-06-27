@@ -1,3 +1,5 @@
+import { base64UrlToText } from "@/core/jwt/base64url"
+
 export type JwtJsonObject = Record<string, unknown>
 
 export type JwtDecodeErrorCode =
@@ -39,7 +41,6 @@ export type JwtDecodeResult = {
     semantics: JwtSemanticSummary
 }
 
-const BASE64URL_PATTERN = /^[A-Za-z0-9_-]*$/
 const TIMESTAMP_MIN_SECONDS = 0
 const TIMESTAMP_MAX_SECONDS = 253_402_300_799
 
@@ -58,22 +59,12 @@ function isJsonObject(value: unknown): value is JwtJsonObject {
 }
 
 function decodeBase64UrlText(segment: string): string {
-    if (!segment || !BASE64URL_PATTERN.test(segment) || segment.length % 4 === 1) {
+    if (!segment) {
         throw new JwtDecodeError("invalid_base64url")
     }
 
-    const base64 = segment
-        .replace(/-/g, "+")
-        .replace(/_/g, "/")
-        .padEnd(Math.ceil(segment.length / 4) * 4, "=")
-
     try {
-        const binary = atob(base64)
-        const bytes = new Uint8Array(binary.length)
-        for (let index = 0; index < binary.length; index += 1) {
-            bytes[index] = binary.charCodeAt(index)
-        }
-        return new TextDecoder().decode(bytes)
+        return base64UrlToText(segment)
     } catch {
         throw new JwtDecodeError("invalid_base64url")
     }

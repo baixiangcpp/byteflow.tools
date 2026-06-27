@@ -79,6 +79,25 @@ describe("csv json task logic", () => {
         expect(result.output).toBe("id,name\n1,Ada")
     })
 
+    it("serializes nested arrays and objects as JSON cells when converting to CSV", () => {
+        const result = runCsvJsonTaskSync({
+            input: JSON.stringify([
+                {
+                    id: 1,
+                    tags: ["a", "b"],
+                    events: [{ type: "login" }],
+                    profile: { name: "Ada", roles: ["admin"] },
+                },
+            ]),
+            direction: "json-to-csv",
+            delimiter: ",",
+            hasHeader: true,
+            typeInference: true,
+        })
+
+        expect(result.output).toBe('id,tags,events,profile.name,profile.roles\n1,"[""a"",""b""]","[{""type"":""login""}]",Ada,"[""admin""]"')
+    })
+
     it("keeps json-to-csv validation errors stable", () => {
         expect(() => runCsvJsonTaskSync({
             input: "{\"id\":1}",

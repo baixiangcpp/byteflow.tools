@@ -1217,7 +1217,9 @@
       "preset_every_sunday": "Chaque dimanche",
       "preset_every_monday_9am": "Chaque lundi à 9 h",
       "preset_every_month_first": "Le 1er de chaque mois",
-      "invalid_expression": "Expression cron invalide."
+      "invalid_expression": "Expression cron invalide.",
+      "field_seconds": "Secondes",
+      "hint_seconds": "0-59 s"
     },
     "user_agent_parser": {
       "title": "Analyseur User-Agent",
@@ -1524,7 +1526,9 @@
       "claim_iat": "iat (Émis à)",
       "claim_iss": "iss (Émetteur)",
       "claim_sub": "sub (Sujet)",
-      "claim_aud": "aud (Destinataire)"
+      "claim_aud": "aud (Destinataire)",
+      "result_unsupported": "Algorithme JWT non pris en charge ({alg}). Utilisez JWT Workbench ou le flux de verification JWKS pour les tokens RS*, ES*, PS* ou EdDSA.",
+      "result_none_warning": "Ce token declare alg: none. Traitez-le comme non signe ; ce verificateur ne le marque pas valide ou invalide par signature."
     },
     "jwt_workbench": {
       "title": "Atelier JWT",

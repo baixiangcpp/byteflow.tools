@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest"
-import { checkClaims, parseUnixTimestampClaim, type JwtClaimLabels } from "@/features/tools/jwt-verifier/logic"
+import {
+    checkClaims,
+    classifyJwtVerificationAlgorithm,
+    parseUnixTimestampClaim,
+    verifyJwtSignature,
+    type JwtClaimLabels,
+} from "@/features/tools/jwt-verifier/logic"
+import { signHmac, encodeJsonSegment } from "@/features/tools/jwt-workbench/logic"
 
 const labels: JwtClaimLabels = {
     exp: "exp",
@@ -40,5 +47,24 @@ describe("jwt verifier claims", () => {
             seconds: 1_704_067_200,
             iso: "2024-01-01T00:00:00.000Z",
         })
+    })
+
+    it("classifies supported, unsupported, and unsigned JWT algorithms distinctly", () => {
+        expect(classifyJwtVerificationAlgorithm("HS256")).toBe("hmac")
+        expect(classifyJwtVerificationAlgorithm("RS256")).toBe("unsupported")
+        expect(classifyJwtVerificationAlgorithm("ES256")).toBe("unsupported")
+        expect(classifyJwtVerificationAlgorithm("none")).toBe("unsigned")
+    })
+
+    it("verifies HMAC signatures without treating unsupported algorithms as invalid", async () => {
+        const header = encodeJsonSegment({ alg: "HS256", typ: "JWT" })
+        const payload = encodeJsonSegment({ sub: "alice" })
+        const signingInput = `${header}.${payload}`
+        const token = `${signingInput}.${await signHmac(signingInput, "correct", "HS256")}`
+
+        await expect(verifyJwtSignature(token, "correct", "HS256")).resolves.toEqual({ status: "valid", algorithm: "HS256" })
+        await expect(verifyJwtSignature(token, "wrong", "HS256")).resolves.toEqual({ status: "invalid", algorithm: "HS256" })
+        await expect(verifyJwtSignature(token, "ignored", "RS256")).resolves.toEqual({ status: "unsupported", algorithm: "RS256" })
+        await expect(verifyJwtSignature(`${encodeJsonSegment({ alg: "none" })}.${payload}.`, "", "none")).resolves.toEqual({ status: "unsigned", algorithm: "none" })
     })
 })

@@ -1,3 +1,5 @@
+import { base64UrlToBytes, base64UrlToJson, bytesToBase64Url } from "@/core/jwt/base64url"
+
 export type JwtClaimLabels = {
     exp: string
     nbf: string
@@ -6,6 +8,14 @@ export type JwtClaimLabels = {
     sub: string
     aud: string
 }
+
+export type SupportedHmacJwtAlgorithm = "HS256" | "HS384" | "HS512"
+
+export type JwtSignatureVerificationResult =
+    | { status: "valid"; algorithm: SupportedHmacJwtAlgorithm }
+    | { status: "invalid"; algorithm: SupportedHmacJwtAlgorithm }
+    | { status: "unsupported"; algorithm: string }
+    | { status: "unsigned"; algorithm: "none" }
 
 export type JwtClaimCheck = {
     label: string
@@ -17,25 +27,18 @@ const MIN_UNIX_SECONDS = 0
 const MAX_UNIX_SECONDS = 253_402_300_799 // 9999-12-31T23:59:59Z
 
 export function base64UrlDecode(str: string): Uint8Array {
-    const padded = str.replace(/-/g, "+").replace(/_/g, "/")
-    const binary = atob(padded)
-    const bytes = new Uint8Array(binary.length)
-    for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index)
-    return bytes
+    return base64UrlToBytes(str)
 }
 
 export function base64UrlEncode(bytes: Uint8Array): string {
-    let binary = ""
-    for (const byte of bytes) binary += String.fromCharCode(byte)
-    return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "")
+    return bytesToBase64Url(bytes)
 }
 
 export function decodePayload(token: string): Record<string, unknown> | null {
     try {
         const parts = token.split(".")
         if (parts.length !== 3) return null
-        const payload = JSON.parse(new TextDecoder().decode(base64UrlDecode(parts[1])))
-        return payload
+        return base64UrlToJson<Record<string, unknown>>(parts[1])
     } catch { return null }
 }
 
@@ -43,8 +46,50 @@ export function decodeHeader(token: string): Record<string, unknown> | null {
     try {
         const parts = token.split(".")
         if (parts.length !== 3) return null
-        return JSON.parse(new TextDecoder().decode(base64UrlDecode(parts[0])))
+        return base64UrlToJson<Record<string, unknown>>(parts[0])
     } catch { return null }
+}
+
+function isSupportedHmacAlgorithm(algorithm: string): algorithm is SupportedHmacJwtAlgorithm {
+    return algorithm === "HS256" || algorithm === "HS384" || algorithm === "HS512"
+}
+
+function hashForHmacAlgorithm(algorithm: SupportedHmacJwtAlgorithm): "SHA-256" | "SHA-384" | "SHA-512" {
+    if (algorithm === "HS384") return "SHA-384"
+    if (algorithm === "HS512") return "SHA-512"
+    return "SHA-256"
+}
+
+export function classifyJwtVerificationAlgorithm(algorithm: string): "hmac" | "unsupported" | "unsigned" {
+    if (algorithm.toLowerCase() === "none") return "unsigned"
+    if (isSupportedHmacAlgorithm(algorithm)) return "hmac"
+    return "unsupported"
+}
+
+async function verifyHmacJwt(token: string, secret: string, algorithm: SupportedHmacJwtAlgorithm): Promise<boolean> {
+    const parts = token.split(".")
+    if (parts.length !== 3) return false
+    const signingInput = `${parts[0]}.${parts[1]}`
+    const key = await crypto.subtle.importKey(
+        "raw",
+        new TextEncoder().encode(secret),
+        { name: "HMAC", hash: hashForHmacAlgorithm(algorithm) },
+        false,
+        ["sign"],
+    )
+    const signature = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(signingInput))
+    return bytesToBase64Url(new Uint8Array(signature)) === parts[2]
+}
+
+export async function verifyJwtSignature(token: string, secret: string, algorithm: string): Promise<JwtSignatureVerificationResult | null> {
+    const classification = classifyJwtVerificationAlgorithm(algorithm)
+    if (classification === "unsigned") return { status: "unsigned", algorithm: "none" }
+    if (classification === "unsupported") return { status: "unsupported", algorithm }
+    if (!secret.trim()) return null
+    if (!isSupportedHmacAlgorithm(algorithm)) return { status: "unsupported", algorithm }
+
+    const valid = await verifyHmacJwt(token, secret, algorithm)
+    return { status: valid ? "valid" : "invalid", algorithm }
 }
 
 export function parseUnixTimestampClaim(value: unknown): { ok: true; seconds: number; iso: string } | { ok: false; error: string } {

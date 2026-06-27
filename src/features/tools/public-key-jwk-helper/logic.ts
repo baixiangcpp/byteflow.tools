@@ -5,6 +5,7 @@ import type {
     PublicKeyOutputFormat,
     PublicKeySummary,
 } from "./types"
+import { bytesToBase64Url } from "@/core/jwt/base64url"
 
 const RSA_HASH_ALGORITHMS = ["SHA-256", "SHA-384", "SHA-512"] as const
 const EC_CURVES = ["P-256", "P-384", "P-521"] as const
@@ -32,10 +33,6 @@ function base64ToBytes(value: string): Uint8Array<ArrayBuffer> {
         bytes[index] = binary.charCodeAt(index)
     }
     return bytes
-}
-
-function bytesToBase64Url(bytes: Uint8Array): string {
-    return bytesToBase64(bytes).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "")
 }
 
 function formatPem(label: string, bytes: Uint8Array): string {

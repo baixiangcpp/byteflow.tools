@@ -1,18 +1,5 @@
 import type { JwksKeySummary, JwksVerificationOptions, JwtJwksVerificationReport, PkcePair } from "./types"
-
-function bytesToBase64Url(bytes: Uint8Array): string {
-    let binary = ""
-    for (const byte of bytes) binary += String.fromCharCode(byte)
-    return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "")
-}
-
-function base64UrlToBytes(input: string): Uint8Array {
-    const base64 = input.replace(/-/g, "+").replace(/_/g, "/").padEnd(Math.ceil(input.length / 4) * 4, "=")
-    const binary = atob(base64)
-    const bytes = new Uint8Array(binary.length)
-    for (let index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index)
-    return bytes
-}
+import { base64UrlToBytes, base64UrlToJson, bytesToBase64Url } from "@/core/jwt/base64url"
 
 function asBufferSource(bytes: Uint8Array): Uint8Array<ArrayBuffer> {
     const copy = new Uint8Array(new ArrayBuffer(bytes.byteLength))
@@ -36,7 +23,7 @@ export async function generatePkcePair(byteLength = 64): Promise<PkcePair> {
 function parseJwtHeader(token: string): Record<string, unknown> {
     const parts = token.trim().split(".")
     if (parts.length !== 3) throw new Error("JWT must contain header, payload, and signature.")
-    return JSON.parse(new TextDecoder().decode(base64UrlToBytes(parts[0]))) as Record<string, unknown>
+    return base64UrlToJson<Record<string, unknown>>(parts[0])
 }
 
 export function summarizeJwks(jwksInput: string): JwksKeySummary[] {
