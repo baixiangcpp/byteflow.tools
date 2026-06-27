@@ -70,8 +70,12 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   const commonLabels = t.common
   const installAppLinkLabel = requireTranslationValue(commonLabels.install_as_app, "common.install_as_app")
   const compareIndex = getGrowthIndex("compare")
+  const howToIndex = getGrowthIndex("how-to")
   if (!compareIndex) {
     throw new Error("[home] Missing compare growth index")
+  }
+  if (!howToIndex) {
+    throw new Error("[home] Missing how-to growth index")
   }
 
   const categoryLinks = MENU_GROUP_DEFS
@@ -234,6 +238,12 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
                 {installAppLinkLabel}
               </Link>
               <Link href={`/${locale}/compare`}>{compareIndex.eyebrow[locale]}</Link>
+              <Link
+                href={`/${locale}/how-to`}
+                className="inline-flex min-h-11 items-center rounded-lg border border-border/60 bg-background/80 px-5 text-sm font-medium text-foreground hover:border-primary/30 hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+              >
+                {howToIndex.eyebrow[locale]}
+              </Link>
             </div>
           </div>
         </section>

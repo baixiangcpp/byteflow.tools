@@ -89,6 +89,7 @@ const discoveryLabels = {
     clearFilters: "Clear filters",
     clearFavorites: "Clear favorites",
     commonWorkflows: "Common workflows",
+    guideLibrary: "Guide library",
     favorites: "Favorites",
     filterByCategory: "Category",
     filterByExecution: "Execution",
@@ -195,6 +196,7 @@ describe("representative axe accessibility checks", () => {
                 locale="en"
                 tags={["json", "pipeline-ready"]}
                 totalTools={1}
+                guides={[]}
                 workflows={[{ id: "api", title: "API payload cleanup", href: "/en/pipeline-builder", tags: ["json"] }]}
             />,
         )

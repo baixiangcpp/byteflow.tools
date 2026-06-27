@@ -77,6 +77,7 @@ export type TemplateCopy = {
     operationalNotes: string
     relatedTools: string
     relatedWorkflows: string
+    relatedGuides: string
     frequentlyAskedQuestions: string
     trustCenterPrivacyNote: {
         beforeLink: string
@@ -97,6 +98,11 @@ export type ToolTemplateRenderModel = {
         description: string
     }>
     relatedWorkflows: Array<{
+        slug: string
+        title: string
+        description: string
+    }>
+    relatedGuides: Array<{
         slug: string
         title: string
         description: string

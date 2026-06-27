@@ -4,6 +4,7 @@ import { getTranslation } from "@/core/i18n/translations/catalog"
 import { getMenuGroups } from "@/core/registry/menu-groups"
 import { getToolRegistryStats } from "@/core/registry/stats"
 import { TOOL_CAPABILITY_LABELS, TOOL_FAMILY_LABELS, type ToolCapability, type ToolFamily } from "@/core/registry"
+import { getGuideIndexCopy, getGuideIndexItems } from "@/core/growth/guide-index"
 import { AllToolsDiscovery } from "@/features/tool-discovery/all-tools-discovery"
 import { AllToolsQueryRobots } from "@/features/tool-discovery/all-tools-query-robots"
 
@@ -57,6 +58,8 @@ export default async function AllToolsPage({ params }: { params: Promise<{ lang:
     const t = getTranslation(locale)
     const groups = getMenuGroups()
     const registryStats = getToolRegistryStats()
+    const guideCopy = getGuideIndexCopy(locale)
+    const guideItems = getGuideIndexItems(locale).slice(0, 6)
     const toolTranslations = t.tools as Record<string, { title?: string; description?: string }>
     const commonTranslations = t.common as unknown as Record<string, string>
     const familyLabels = Object.fromEntries(
@@ -115,6 +118,7 @@ export default async function AllToolsPage({ params }: { params: Promise<{ lang:
                     clearFilters: requireTranslationValue(t.common.clear_filters, "common.clear_filters"),
                     clearFavorites: requireTranslationValue(t.common.clear_favorites, "common.clear_favorites"),
                     commonWorkflows: requireTranslationValue(t.common.common_workflows, "common.common_workflows"),
+                    guideLibrary: guideCopy.curatedGuides,
                     favorites: requireTranslationValue(t.common.favorites, "common.favorites"),
                     filterByCategory: requireTranslationValue(t.common.filter_by_category, "common.filter_by_category"),
                     filterByExecution: requireTranslationValue(t.common.filter_by_execution, "common.filter_by_execution"),
@@ -157,6 +161,13 @@ export default async function AllToolsPage({ params }: { params: Promise<{ lang:
                 locale={locale}
                 totalTools={registryStats.totalTools}
                 tags={POPULAR_DISCOVERY_TAGS}
+                guides={guideItems.map((guide) => ({
+                    id: guide.slug,
+                    title: guide.title,
+                    description: guide.description,
+                    href: `/${locale}/${guide.slug}`,
+                    tags: [guideCopy.guideCategoryLabel(guide.category), ...guide.relatedToolKeys.slice(0, 2)],
+                }))}
                 workflows={COMMON_WORKFLOWS.map((workflow) => ({
                     id: workflow.id,
                     title: requireTranslationValue(commonTranslations[workflow.titleKey], `common.${workflow.titleKey}`),

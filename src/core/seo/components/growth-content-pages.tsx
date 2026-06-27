@@ -12,6 +12,7 @@ import {
     type GrowthPageCopy,
     type GrowthPageSlug,
 } from "@/core/growth/growth-pages"
+import { getGuideIndexCopy, getGuideIndexItems, getGuideRelatedTools } from "@/core/growth/guide-index"
 import { getToolByKey } from "@/core/registry"
 import { ArticleJsonLd, CollectionPageJsonLd, HowToJsonLd } from "@/core/seo/components/page-json-ld"
 import { JsonLdScript } from "@/core/seo/components/json-ld-script"
@@ -315,11 +316,24 @@ export function GrowthContentPage({ locale, slug }: { locale: Locale; slug: Grow
 export function GrowthIndexPage({ locale, slug }: { locale: Locale; slug: GrowthIndexSlug }) {
     const index = requireGrowthIndex(slug)
     const ui = GROWTH_UI_COPY[locale]
+    const guideCopy = getGuideIndexCopy(locale)
+    const guideItems = slug === "how-to" ? getGuideIndexItems(locale) : []
     const pages = getGrowthPagesByKind(index.kind)
     const breadcrumb = breadcrumbJsonLd({
         locale,
         items: [{ name: index.title[locale], slug: index.slug }],
     })
+    const collectionItems = slug === "how-to"
+        ? guideItems.map((guide) => ({
+            name: guide.title,
+            description: guide.description,
+            url: buildCanonicalUrl(locale, guide.slug),
+        }))
+        : pages.map((page) => ({
+            name: page.copy[locale].title,
+            description: page.copy[locale].description,
+            url: buildCanonicalUrl(locale, page.slug),
+        }))
 
     return (
         <div className="mx-auto w-full max-w-6xl space-y-6">
@@ -328,11 +342,7 @@ export function GrowthIndexPage({ locale, slug }: { locale: Locale; slug: Growth
                 slug={slug}
                 title={index.title[locale]}
                 description={index.description[locale]}
-                items={pages.map((page) => ({
-                    name: page.copy[locale].title,
-                    description: page.copy[locale].description,
-                    url: buildCanonicalUrl(locale, page.slug),
-                }))}
+                items={collectionItems}
             />
             <JsonLdScript data-jsonld="growth-index-breadcrumb" jsonLd={breadcrumb} />
 
@@ -344,6 +354,62 @@ export function GrowthIndexPage({ locale, slug }: { locale: Locale; slug: Growth
                 </p>
             </header>
 
+            {slug === "how-to" ? (
+                <section className="grid gap-4 md:grid-cols-2" aria-label={guideCopy.curatedGuides}>
+                    {guideItems.map((guide) => {
+                        const relatedTools = getGuideRelatedTools(locale, guide)
+                        return (
+                            <article
+                                key={guide.slug}
+                                className="rounded-lg border border-border/70 bg-background/65 p-5"
+                            >
+                                <div className="flex flex-wrap items-center gap-2">
+                                    <Badge>{guideCopy.guideCategoryLabel(guide.category)}</Badge>
+                                    <Badge>{ui.toolCount(guide.relatedToolKeys.length)}</Badge>
+                                </div>
+                                <h2 className="mt-4 text-xl font-semibold tracking-tight">
+                                    <Link
+                                        href={`/${locale}/${guide.slug}`}
+                                        className="hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                    >
+                                        {guide.title}
+                                    </Link>
+                                </h2>
+                                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{guide.description}</p>
+                                <div className="mt-4 flex flex-wrap gap-2">
+                                    {relatedTools.map((tool) => (
+                                        <Link
+                                            key={tool.key}
+                                            href={`/${locale}/${tool.slug}`}
+                                            className="inline-flex min-h-9 items-center rounded-md border border-border/70 bg-card/45 px-2.5 text-xs font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                        >
+                                            {tool.title}
+                                        </Link>
+                                    ))}
+                                </div>
+                                {guide.relatedRecipeSlugs.length > 0 ? (
+                                    <div className="mt-4 border-t border-border/60 pt-3">
+                                        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+                                            {guideCopy.relatedRecipes}
+                                        </p>
+                                        <div className="mt-2 flex flex-wrap gap-2">
+                                            {guide.relatedRecipeSlugs.map((recipeSlug) => (
+                                                <Link
+                                                    key={recipeSlug}
+                                                    href={`/${locale}/workflows/${recipeSlug}`}
+                                                    className="inline-flex min-h-9 items-center rounded-md border border-border/70 bg-background/55 px-2.5 text-xs font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                                                >
+                                                    {recipeSlug}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ) : null}
+                            </article>
+                        )
+                    })}
+                </section>
+            ) : (
             <section className="grid gap-4 md:grid-cols-2" aria-label={index.title[locale]}>
                 {pages.map((page) => {
                     const copy = page.copy[locale]
@@ -363,6 +429,7 @@ export function GrowthIndexPage({ locale, slug }: { locale: Locale; slug: Growth
                     )
                 })}
             </section>
+            )}
 
             <section className="rounded-lg border border-border/70 bg-card/55 p-5 sm:p-6">
                 <h2 className="text-xl font-semibold tracking-tight">{ui.trustBaselineTitle}</h2>
