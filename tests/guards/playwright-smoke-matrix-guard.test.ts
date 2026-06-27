@@ -14,6 +14,8 @@ describe("playwright smoke matrix guard", () => {
         expect(SMOKE_SOURCE).toContain("assertMonacoFallbackJourney")
         expect(SMOKE_SOURCE).toContain("assertMobileCommandPaletteJourney")
         expect(SMOKE_SOURCE).toContain("assertMobileToolPageJourneys")
+        expect(SMOKE_SOURCE).toContain("assertMobileReviewMatrix")
+        expect(SMOKE_SOURCE).toContain("assertAxeSeriousCriticalMatrix")
         expect(SMOKE_SOURCE).toContain("assertBasicAccessibility")
     })
 
@@ -35,6 +37,9 @@ describe("playwright smoke matrix guard", () => {
         expect(SMOKE_SOURCE).toContain('getByRole("dialog", { name: /Show filters/i })')
         expect(SMOKE_SOURCE).toContain("assertNoHorizontalOverflow")
         expect(SMOKE_SOURCE).toContain("clickCopyAndExpectToast")
+        expect(SMOKE_SOURCE).toContain("MOBILE_REVIEW_ROUTES")
+        expect(SMOKE_SOURCE).toContain('"/en/install-app"')
+        expect(SMOKE_SOURCE).toContain('"/en/trust-center"')
     })
 
     it("keeps PWA smoke opt-in so CI can cover service worker behavior after export", () => {

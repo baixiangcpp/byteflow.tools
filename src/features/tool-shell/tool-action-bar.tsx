@@ -50,11 +50,11 @@ export type ToolAction = {
 type AnalyticsAction = "tool_run" | "copy_output" | "download_output" | null
 
 const ACTION_BASE_CLASS =
-    "inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 sm:min-h-9"
+    "inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 lg:min-h-9"
 
 const ACTION_SIZE_CLASS: Record<ActionSize, string> = {
-    sm: "px-3 py-2 sm:h-9 sm:py-0",
-    icon: "w-11 sm:h-9 sm:w-9",
+    sm: "px-3 py-2 lg:h-9 lg:py-0",
+    icon: "w-11 lg:h-9 lg:w-9",
 }
 
 const ACTION_VARIANT_CLASS: Record<ActionVariant, string> = {

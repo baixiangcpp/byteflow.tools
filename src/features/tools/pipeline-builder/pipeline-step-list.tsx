@@ -90,7 +90,7 @@ export function PipelineStepList({
             <div className="mt-3 flex gap-2">
                 <select
                     aria-label={text("adapter_select")}
-                    className="h-9 min-w-0 flex-1 rounded-md border bg-background px-2 text-sm"
+                    className="h-11 min-w-0 flex-1 rounded-md border bg-background px-2 text-sm lg:h-9"
                     value={pendingToolKey}
                     onChange={(event) => onPendingToolKeyChange(event.target.value)}
                 >
@@ -177,7 +177,7 @@ export function PipelineStepList({
                             <div className="flex shrink-0 gap-1">
                                 <button
                                     type="button"
-                                    className="rounded p-1 hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
+                                    className="inline-flex min-h-11 min-w-11 items-center justify-center rounded hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40 lg:min-h-8 lg:min-w-8"
                                     onClick={(event) => {
                                         event.stopPropagation()
                                         moveAndAnnounce(step, index, -1)
@@ -189,7 +189,7 @@ export function PipelineStepList({
                                 </button>
                                 <button
                                     type="button"
-                                    className="rounded p-1 hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40"
+                                    className="inline-flex min-h-11 min-w-11 items-center justify-center rounded hover:bg-muted disabled:cursor-not-allowed disabled:opacity-40 lg:min-h-8 lg:min-w-8"
                                     onClick={(event) => {
                                         event.stopPropagation()
                                         moveAndAnnounce(step, index, 1)
@@ -201,7 +201,7 @@ export function PipelineStepList({
                                 </button>
                                 <button
                                     type="button"
-                                    className="rounded p-1 text-destructive hover:bg-destructive/10"
+                                    className="inline-flex min-h-11 min-w-11 items-center justify-center rounded text-destructive hover:bg-destructive/10 lg:min-h-8 lg:min-w-8"
                                     onClick={(event) => {
                                         event.stopPropagation()
                                         onRemoveStep(step.id)

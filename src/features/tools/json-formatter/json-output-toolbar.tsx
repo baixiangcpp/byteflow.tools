@@ -52,14 +52,14 @@ export function JsonOutputToolbar({
                     <button
                         type="button"
                         onClick={() => onViewModeChange("text")}
-                        className={`rounded px-2 py-1 text-[11px] transition-colors ${viewMode === "text" ? "bg-background text-foreground" : "text-muted-foreground"}`}
+                        className={`min-h-11 rounded px-3 text-sm transition-colors lg:min-h-7 lg:px-2 lg:text-[11px] ${viewMode === "text" ? "bg-background text-foreground" : "text-muted-foreground"}`}
                     >
                         {labels.viewText}
                     </button>
                     <button
                         type="button"
                         onClick={() => onViewModeChange("tree")}
-                        className={`rounded px-2 py-1 text-[11px] transition-colors ${viewMode === "tree" ? "bg-background text-foreground" : "text-muted-foreground"}`}
+                        className={`min-h-11 rounded px-3 text-sm transition-colors lg:min-h-7 lg:px-2 lg:text-[11px] ${viewMode === "tree" ? "bg-background text-foreground" : "text-muted-foreground"}`}
                     >
                         <span className="inline-flex items-center gap-1">
                             <ListTree className="h-3.5 w-3.5" />
