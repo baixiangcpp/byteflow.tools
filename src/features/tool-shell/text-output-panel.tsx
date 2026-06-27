@@ -80,7 +80,7 @@ export function OutputWrapModeControl({
                         onClick={() => onChange(option.value)}
                         onKeyDown={handleKeyDown}
                         className={cn(
-                            "inline-flex min-h-8 items-center gap-1 rounded px-2 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+                            "inline-flex min-h-11 items-center gap-1 rounded px-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 lg:min-h-8 lg:px-2 lg:text-xs",
                             active ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:text-foreground",
                         )}
                     >

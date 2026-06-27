@@ -59,7 +59,7 @@ export function StepOptions({
                             <Label htmlFor={`${step.id}-${key}`}>{text(`option_${key}`)}</Label>
                             <select
                                 id={`${step.id}-${key}`}
-                                className="mt-1 h-9 w-full rounded-md border bg-background px-2 text-sm"
+                                className="mt-1 h-11 w-full rounded-md border bg-background px-2 text-sm lg:h-9"
                                 value={String(value)}
                                 onChange={(event) => updateOption(key, event.target.value)}
                             >

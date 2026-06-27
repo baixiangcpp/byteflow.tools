@@ -3,6 +3,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import axe from "axe-core";
 import { chromium } from "playwright";
 import serveHandler from "serve-handler";
 
@@ -22,6 +23,29 @@ const DEFAULT_ROUTES = [
 const MOBILE_TOOL_VIEWPORTS = [
     { width: 390, height: 844 },
     { width: 430, height: 932 },
+];
+const MOBILE_REVIEW_VIEWPORTS = [
+    { width: 360, height: 740 },
+    { width: 390, height: 844 },
+    { width: 430, height: 932 },
+    { width: 768, height: 1024 },
+];
+const MOBILE_REVIEW_ROUTES = [
+    "/en",
+    "/en/all-tools",
+    "/en/data-code-formats",
+    "/en/json-formatter",
+    "/en/pipeline-builder",
+    "/en/trust-center",
+    "/en/install-app",
+];
+const AXE_REVIEW_ROUTES = [
+    "/en",
+    "/en/all-tools",
+    "/en/json-formatter",
+    "/en/pipeline-builder",
+    "/en/trust-center",
+    "/en/install-app",
 ];
 const ALL_TOOLS_FILTER_INTERACTION_BUDGET_MS = 2000;
 const ALL_TOOLS_MOBILE_SCROLL_BUDGET_MS = 3500;
@@ -623,6 +647,82 @@ async function assertMobileToolJourney(context, baseUrl, viewport, route, runJou
         runtime.assertClean();
     } finally {
         await page.close();
+    }
+}
+
+async function assertMobileReviewMatrix(browser, baseUrl) {
+    for (const viewport of MOBILE_REVIEW_VIEWPORTS) {
+        const context = await browser.newContext({
+            serviceWorkers: "block",
+            viewport,
+            isMobile: viewport.width < 768,
+        });
+
+        try {
+            for (const route of MOBILE_REVIEW_ROUTES) {
+                const page = await context.newPage();
+                const routeLabel = `${route} mobile review ${viewport.width}x${viewport.height}`;
+                const runtime = createRuntimeObserver(page, routeLabel, baseUrl);
+
+                try {
+                    await page.goto(`${baseUrl}${route}`, { waitUntil: "domcontentloaded" });
+                    await page.waitForSelector("main", { timeout: 15_000 });
+                    await assertBasicAccessibility(page, routeLabel);
+                    await assertMobileTouchTargets(page, routeLabel);
+                    await assertNoHorizontalOverflow(page, routeLabel);
+                    runtime.assertClean();
+                } finally {
+                    await page.close();
+                }
+            }
+        } finally {
+            await context.close();
+        }
+    }
+}
+
+async function assertAxeSeriousCriticalMatrix(browser, baseUrl) {
+    const context = await browser.newContext({ serviceWorkers: "block" });
+
+    try {
+        for (const route of AXE_REVIEW_ROUTES) {
+            const page = await context.newPage();
+            const runtime = createRuntimeObserver(page, `Axe review ${route}`, baseUrl);
+
+            try {
+                await page.goto(`${baseUrl}${route}`, { waitUntil: "domcontentloaded" });
+                await page.waitForSelector("main", { timeout: 15_000 });
+                await page.addScriptTag({ content: axe.source });
+                const violations = await page.evaluate(async () => {
+                    const result = await window.axe.run(document, {
+                        resultTypes: ["violations"],
+                        rules: {
+                            "color-contrast": { enabled: false },
+                        },
+                    });
+
+                    return result.violations
+                        .filter((violation) => violation.impact === "serious" || violation.impact === "critical")
+                        .map((violation) => {
+                            const targets = violation.nodes
+                                .slice(0, 3)
+                                .flatMap((node) => node.target)
+                                .join(", ");
+                            return `${violation.id} (${violation.impact}): ${violation.help}${targets ? ` [${targets}]` : ""}`;
+                        });
+                });
+
+                if (violations.length > 0) {
+                    throw new Error(`Axe serious/critical violations for ${route}:\n- ${violations.join("\n- ")}`);
+                }
+
+                runtime.assertClean();
+            } finally {
+                await page.close();
+            }
+        }
+    } finally {
+        await context.close();
     }
 }
 
@@ -1391,6 +1491,12 @@ async function runSmoke(baseUrl) {
 
         await assertMobileToolPageJourneys(browser, baseUrl);
         console.log("[playwright-smoke] PASS mobile journeys: JSON/Base64/JWT/Regex/Cron tool pages");
+
+        await assertMobileReviewMatrix(browser, baseUrl);
+        console.log("[playwright-smoke] PASS mobile review matrix: no overflow or touch-target regressions");
+
+        await assertAxeSeriousCriticalMatrix(browser, baseUrl);
+        console.log("[playwright-smoke] PASS accessibility: no serious or critical axe violations on representative pages");
     } finally {
         await context.close();
         await browser.close();
