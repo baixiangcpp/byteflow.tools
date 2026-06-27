@@ -4,7 +4,6 @@ export function SearchButton({ label }: { label: string }) {
     return (
         <button
             type="button"
-            aria-label={label}
             data-command-palette-trigger
             className="group relative inline-flex min-h-12 w-full max-w-xl items-center gap-3 overflow-hidden rounded-2xl border border-border/70 bg-card/80 px-4 py-3 text-sm text-muted-foreground shadow-xl shadow-black/10 backdrop-blur-md transition-[transform,border-color,background-color,color,box-shadow] duration-300 hover:-translate-y-0.5 hover:border-primary/45 hover:bg-card hover:text-foreground hover:shadow-2xl hover:shadow-cyan-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45 dark:shadow-black/35"
         >

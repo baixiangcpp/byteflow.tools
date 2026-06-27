@@ -17,11 +17,15 @@ function TrustPill({
     icon,
     title,
     description,
+    titleAs = "h3",
 }: {
     icon: React.ReactNode
     title: string
     description: string
+    titleAs?: "h2" | "h3"
 }) {
+    const Title = titleAs
+
     return (
         <article className="rounded-lg border border-border/70 bg-background/55 p-4">
             <div className="flex gap-3">
@@ -29,7 +33,7 @@ function TrustPill({
                     {icon}
                 </span>
                 <div>
-                    <h3 className="text-sm font-semibold">{title}</h3>
+                    <Title className="text-sm font-semibold">{title}</Title>
                     <p className="mt-1.5 text-sm leading-relaxed text-muted-foreground">{description}</p>
                 </div>
             </div>
@@ -201,16 +205,19 @@ export default async function TrustCenterPage({
                     icon={<ShieldCheck className="h-5 w-5" />}
                     title={p.trust_center_summary_local_title}
                     description={p.trust_center_summary_local_desc}
+                    titleAs="h2"
                 />
                 <TrustPill
                     icon={<Network className="h-5 w-5" />}
                     title={p.trust_center_summary_network_title}
                     description={p.trust_center_summary_network_desc}
+                    titleAs="h2"
                 />
                 <TrustPill
                     icon={<LockKeyhole className="h-5 w-5" />}
                     title={p.trust_center_summary_security_title}
                     description={p.trust_center_summary_security_desc}
+                    titleAs="h2"
                 />
             </section>
 

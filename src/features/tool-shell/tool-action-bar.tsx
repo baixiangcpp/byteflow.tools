@@ -258,7 +258,7 @@ export function ToolActionBar({
                         ? "pending"
                         : lastActionStatus[action.id] || "idle"
                 const variantClass = isDestructive
-                    ? "border border-destructive/35 bg-background text-destructive shadow-xs hover:bg-destructive/10 dark:bg-input/30"
+                    ? "border border-destructive/35 bg-background text-destructive shadow-xs hover:bg-destructive/10 dark:border-red-400/45 dark:bg-red-950/25 dark:text-red-200 dark:hover:bg-red-950/45"
                     : ACTION_VARIANT_CLASS[action.variant ?? "outline"]
 
                 if (action.href) {

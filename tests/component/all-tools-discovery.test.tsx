@@ -318,7 +318,10 @@ describe("AllToolsDiscovery", () => {
     it("keeps tool cards compact with only key badges", () => {
         renderDiscovery()
 
-        const card = screen.getByRole("link", { name: "JSON Formatter" })
+        const card = screen.getAllByRole("link", { name: /JSON Formatter/ })
+            .find((link) => link.getAttribute("href") === "/en/json-formatter")
+
+        if (!card) throw new Error("JSON Formatter card link was not found")
         expect(card.closest("article")).toContainElement(screen.getByRole("button", { name: "Add to favorites: JSON Formatter" }))
         const badges = within(card).getAllByText(/Data formats|Browser-local|File input|Offline capable|Pipeline ready/)
         expect(badges.length).toBeLessThanOrEqual(3)
