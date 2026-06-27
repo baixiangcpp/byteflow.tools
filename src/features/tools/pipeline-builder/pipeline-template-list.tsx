@@ -25,6 +25,7 @@ export function PipelineTemplateList({ onLoadTemplate, templates, text }: Pipeli
             text(template.descriptionKey),
             text(template.categoryKey),
             text(template.difficultyKey),
+            text(template.inputTypeKey),
             ...template.tags,
         ].join(" ").toLowerCase()
 
@@ -86,6 +87,9 @@ export function PipelineTemplateList({ onLoadTemplate, templates, text }: Pipeli
                                     </span>
                                     <span className="rounded-full border border-border bg-muted/30 px-2 py-0.5">
                                         {text(template.difficultyKey)}
+                                    </span>
+                                    <span className="rounded-full border border-border bg-muted/30 px-2 py-0.5">
+                                        {text(template.inputTypeKey)}
                                     </span>
                                     <span className="rounded-full border border-primary/25 bg-primary/10 px-2 py-0.5 text-primary">
                                         {text(template.privacyBoundaryKey)}

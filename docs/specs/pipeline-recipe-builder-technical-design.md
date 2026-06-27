@@ -33,7 +33,7 @@ The Pipeline / Recipe Builder is the strategic core for turning standalone tools
 
 - No backend persistence.
 - No collaborative editing.
-- No public recipe gallery.
+- No user-submitted public recipe gallery.
 - No scheduled/background runs.
 - No AI-generated recipes.
 - No arbitrary JavaScript execution.
@@ -381,9 +381,11 @@ Required gates:
 ### Phase 5A: Recipe Template Layer
 
 - Added built-in recipe templates in `src/features/pipeline/recipe-templates.ts`.
+- Expanded the curated gallery to 12 built-in templates covering API, security, logs, text cleanup, image metadata, and schema workflows.
 - Templates reuse the existing deterministic adapter set instead of introducing new public tools.
 - Template sample input loads into the current browser session only; shared recipe URLs still encode structure and public options without runtime input.
 - Added foundation and page tests so templates stay valid, executable, and visible in the public Pipeline Builder UI.
+- Community recipe submissions are deferred from in-app publishing. The first version is curated-only, with requests collected through `.github/ISSUE_TEMPLATE/recipe_request.yml`, so maintainers can review privacy boundaries, adapter safety, localization copy, and static indexability before adding a workflow.
 
 ## 16. Merge-Ready Criteria for First Public MVP
 

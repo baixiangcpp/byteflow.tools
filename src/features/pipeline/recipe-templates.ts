@@ -13,6 +13,7 @@ export interface PipelineRecipeTemplate {
     descriptionKey: string
     categoryKey: string
     difficultyKey: string
+    inputTypeKey: string
     privacyBoundaryKey: string
     tags: readonly string[]
     workflowSlug?: string
@@ -32,6 +33,7 @@ export const PIPELINE_RECIPE_TEMPLATES = [
         descriptionKey: "template_api_payload_cleanup_description",
         categoryKey: "recipe_category_api",
         difficultyKey: "recipe_difficulty_easy",
+        inputTypeKey: "recipe_input_json",
         privacyBoundaryKey: "recipe_privacy_structure_only",
         tags: ["json", "api", "base64", "payload"],
         workflowSlug: "api-payload-cleanup",
@@ -55,6 +57,7 @@ export const PIPELINE_RECIPE_TEMPLATES = [
         descriptionKey: "template_url_json_cleanup_description",
         categoryKey: "recipe_category_api",
         difficultyKey: "recipe_difficulty_easy",
+        inputTypeKey: "recipe_input_url_encoded_json",
         privacyBoundaryKey: "recipe_privacy_structure_only",
         tags: ["url", "json", "decode", "review"],
         sampleInput: "%7B%22user%22%3A%22alice%40example.com%22%2C%22active%22%3Atrue%7D",
@@ -77,6 +80,7 @@ export const PIPELINE_RECIPE_TEMPLATES = [
         descriptionKey: "template_security_token_review_description",
         categoryKey: "recipe_category_security",
         difficultyKey: "recipe_difficulty_medium",
+        inputTypeKey: "recipe_input_jwt",
         privacyBoundaryKey: "recipe_privacy_structure_only",
         tags: ["jwt", "token", "claims", "security"],
         workflowSlug: "security-token-review",
@@ -98,8 +102,9 @@ export const PIPELINE_RECIPE_TEMPLATES = [
         id: "log_scrub_before_sharing",
         titleKey: "template_log_scrub_before_sharing_title",
         descriptionKey: "template_log_scrub_before_sharing_description",
-        categoryKey: "recipe_category_security",
+        categoryKey: "recipe_category_logs",
         difficultyKey: "recipe_difficulty_medium",
+        inputTypeKey: "recipe_input_logs",
         privacyBoundaryKey: "recipe_privacy_structure_only",
         tags: ["logs", "redaction", "secrets", "sharing"],
         workflowSlug: "log-scrub-before-sharing",
@@ -127,6 +132,7 @@ export const PIPELINE_RECIPE_TEMPLATES = [
         descriptionKey: "template_clean_copied_config_description",
         categoryKey: "recipe_category_text",
         difficultyKey: "recipe_difficulty_easy",
+        inputTypeKey: "recipe_input_text",
         privacyBoundaryKey: "recipe_privacy_structure_only",
         tags: ["config", "invisible", "whitespace", "text"],
         sampleInput: "API_KEY\u200b=\u00a0sample_value\nNAME\u3000=\tByteflow",
@@ -151,8 +157,9 @@ export const PIPELINE_RECIPE_TEMPLATES = [
         id: "json_typescript_contract_review",
         titleKey: "template_json_typescript_contract_review_title",
         descriptionKey: "template_json_typescript_contract_review_description",
-        categoryKey: "recipe_category_api",
+        categoryKey: "recipe_category_schema",
         difficultyKey: "recipe_difficulty_medium",
+        inputTypeKey: "recipe_input_json",
         privacyBoundaryKey: "recipe_privacy_structure_only",
         tags: ["json", "typescript", "contract", "schema"],
         workflowSlug: "json-typescript-contract-review",
@@ -176,6 +183,7 @@ export const PIPELINE_RECIPE_TEMPLATES = [
         descriptionKey: "template_image_resize_social_export_description",
         categoryKey: "recipe_category_image",
         difficultyKey: "recipe_difficulty_easy",
+        inputTypeKey: "recipe_input_manifest",
         privacyBoundaryKey: "recipe_privacy_structure_only",
         tags: ["image", "social", "export", "checksum"],
         workflowSlug: "image-resize-social-export",
@@ -190,6 +198,139 @@ export const PIPELINE_RECIPE_TEMPLATES = [
                 toolKey: "hash_generator",
                 labelKey: "template_step_generate_manifest_checksum",
                 options: { algorithm: "sha256" },
+            },
+        ],
+    },
+    {
+        id: "yaml_config_to_json_review",
+        titleKey: "template_yaml_config_to_json_review_title",
+        descriptionKey: "template_yaml_config_to_json_review_description",
+        categoryKey: "recipe_category_schema",
+        difficultyKey: "recipe_difficulty_easy",
+        inputTypeKey: "recipe_input_yaml",
+        privacyBoundaryKey: "recipe_privacy_structure_only",
+        tags: ["yaml", "json", "config", "schema"],
+        sampleInput: "service: api\nreplicas: 2\nfeatures:\n  audit: true\n  beta: false\n",
+        steps: [
+            {
+                toolKey: "yaml_json_converter",
+                labelKey: "template_step_yaml_to_json",
+                options: { mode: "yaml-to-json" },
+            },
+            {
+                toolKey: "json_formatter",
+                labelKey: "template_step_pretty_json",
+                options: { mode: "pretty", indent: 2 },
+            },
+        ],
+    },
+    {
+        id: "csv_fixture_to_json_contract",
+        titleKey: "template_csv_fixture_to_json_contract_title",
+        descriptionKey: "template_csv_fixture_to_json_contract_description",
+        categoryKey: "recipe_category_schema",
+        difficultyKey: "recipe_difficulty_easy",
+        inputTypeKey: "recipe_input_csv",
+        privacyBoundaryKey: "recipe_privacy_structure_only",
+        tags: ["csv", "json", "fixture", "contract"],
+        sampleInput: "id,email,active\n1,alice@example.com,true\n2,bob@example.com,false",
+        steps: [
+            {
+                toolKey: "csv_json_converter",
+                labelKey: "template_step_csv_to_json",
+                options: { direction: "csv-to-json", delimiter: "auto", hasHeader: true, typeInference: true },
+            },
+            {
+                toolKey: "json_formatter",
+                labelKey: "template_step_pretty_json",
+                options: { mode: "pretty", indent: 2 },
+            },
+        ],
+    },
+    {
+        id: "ndjson_log_batch_review",
+        titleKey: "template_ndjson_log_batch_review_title",
+        descriptionKey: "template_ndjson_log_batch_review_description",
+        categoryKey: "recipe_category_logs",
+        difficultyKey: "recipe_difficulty_medium",
+        inputTypeKey: "recipe_input_ndjson",
+        privacyBoundaryKey: "recipe_privacy_structure_only",
+        tags: ["ndjson", "logs", "json", "batch"],
+        sampleInput: "{\"level\":\"warn\",\"message\":\"slow request\",\"duration_ms\":1200}\n{\"level\":\"error\",\"message\":\"timeout\",\"duration_ms\":3000}",
+        steps: [
+            {
+                toolKey: "ndjson_formatter",
+                labelKey: "template_step_ndjson_to_array",
+                options: { mode: "to-array" },
+            },
+            {
+                toolKey: "json_formatter",
+                labelKey: "template_step_pretty_json",
+                options: { mode: "pretty", indent: 2 },
+            },
+        ],
+    },
+    {
+        id: "html_release_notes_markdown",
+        titleKey: "template_html_release_notes_markdown_title",
+        descriptionKey: "template_html_release_notes_markdown_description",
+        categoryKey: "recipe_category_text",
+        difficultyKey: "recipe_difficulty_easy",
+        inputTypeKey: "recipe_input_html",
+        privacyBoundaryKey: "recipe_privacy_structure_only",
+        tags: ["html", "markdown", "release-notes", "content"],
+        sampleInput: "<h2>Release notes</h2><ul><li>Added local exports</li><li>Fixed malformed input handling</li></ul>",
+        steps: [
+            {
+                toolKey: "html_to_markdown",
+                labelKey: "template_step_html_to_markdown",
+                options: {},
+            },
+            {
+                toolKey: "invisible_chars_detector",
+                labelKey: "template_step_clean_invisible_chars",
+                options: {
+                    removeZeroWidth: true,
+                    normalizeSpaces: true,
+                    removeControlExceptNewlineTab: true,
+                },
+            },
+        ],
+    },
+    {
+        id: "openapi_change_review",
+        titleKey: "template_openapi_change_review_title",
+        descriptionKey: "template_openapi_change_review_description",
+        categoryKey: "recipe_category_api",
+        difficultyKey: "recipe_difficulty_medium",
+        inputTypeKey: "recipe_input_openapi_pair",
+        privacyBoundaryKey: "recipe_privacy_structure_only",
+        tags: ["openapi", "api", "diff", "contract"],
+        sampleInput: JSON.stringify({
+            before: {
+                openapi: "3.0.0",
+                info: { title: "Billing API", version: "1.0.0" },
+                paths: {
+                    "/invoices": {
+                        get: { responses: { "200": { description: "OK" } } },
+                    },
+                },
+            },
+            after: {
+                openapi: "3.0.0",
+                info: { title: "Billing API", version: "1.1.0" },
+                paths: {
+                    "/invoices": {
+                        post: { responses: { "201": { description: "Created" } } },
+                    },
+                },
+            },
+        }, null, 2),
+        steps: [
+            {
+                toolKey: "openapi_diff",
+                labelKey: "template_step_compare_openapi_specs",
+                options: {},
             },
         ],
     },
