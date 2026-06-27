@@ -61,9 +61,9 @@ export function FooterContent({
                     </div>
 
                     <nav className="md:col-span-4" aria-label={navigationLabel}>
-                        <h4 className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
                             {navigationLabel}
-                        </h4>
+                        </p>
                         <ul className="space-y-1">
                             {pageLinks.map((page) => (
                                 <li key={page.key}>

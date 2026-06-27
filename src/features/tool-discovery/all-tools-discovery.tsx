@@ -1130,7 +1130,6 @@ export function AllToolsDiscovery({
                                         <div className="flex items-start justify-between gap-3">
                                             <Link
                                                 href={`/${locale}/${tool.slug}`}
-                                                aria-label={tool.title}
                                                 className="min-w-0 flex-1 rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
                                             >
                                                 <ToolCardBadges capabilityLabels={capabilityLabels} tool={tool} />
