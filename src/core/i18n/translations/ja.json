@@ -1217,7 +1217,9 @@
       "preset_every_sunday": "毎週日曜",
       "preset_every_monday_9am": "毎週月曜 9:00",
       "preset_every_month_first": "毎月 1 日",
-      "invalid_expression": "無効な cron 式です。"
+      "invalid_expression": "無効な cron 式です。",
+      "field_seconds": "?",
+      "hint_seconds": "0-59 sec"
     },
     "user_agent_parser": {
       "title": "User-Agent 解析",
@@ -1524,7 +1526,9 @@
       "claim_iat": "iat（発行時刻）",
       "claim_iss": "iss（発行者）",
       "claim_sub": "sub（件名）",
-      "claim_aud": "aud（対象者）"
+      "claim_aud": "aud（対象者）",
+      "result_unsupported": "Mitaio JWT algorithm ({alg}). Use JWT Workbench or the JWKS verification workflow for RS*, ES*, PS*, or EdDSA tokens.",
+      "result_none_warning": "Kono token declares alg: none. Treat it as unsigned; this verifier will not mark it valid or invalid by signature."
     },
     "jwt_workbench": {
       "title": "JWTワークベンチ",

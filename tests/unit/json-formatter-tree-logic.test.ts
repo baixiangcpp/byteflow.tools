@@ -32,9 +32,10 @@ describe("json formatter tree logic", () => {
         expect(getValueAtPath(sample, ["user", "roles", 1])).toBe("editor")
     })
 
-    it("returns the root value when a path cannot be traversed", () => {
-        expect(getValueAtPath(sample, ["user", 0])).toBe(sample)
-        expect(getValueAtPath(sample, ["count", "nested"])).toBe(sample)
+    it("returns undefined when a path cannot be traversed", () => {
+        expect(getValueAtPath(sample, ["user", 0])).toBeUndefined()
+        expect(getValueAtPath(sample, ["count", "nested"])).toBeUndefined()
+        expect(getValueAtPath(sample, ["user", "missing"])).toBeUndefined()
     })
 
     it("updates nested values immutably", () => {

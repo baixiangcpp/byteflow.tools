@@ -1245,7 +1245,9 @@
       "preset_every_sunday": "Every Sunday",
       "preset_every_monday_9am": "Every Monday at 9AM",
       "preset_every_month_first": "Every Month on the 1st",
-      "invalid_expression": "Invalid cron expression."
+      "invalid_expression": "Invalid cron expression.",
+      "field_seconds": "Seconds",
+      "hint_seconds": "0-59 seconds"
     },
     "user_agent_parser": {
       "title": "User-Agent Parser",
@@ -1552,7 +1554,9 @@
       "claim_iat": "iat (Issued At)",
       "claim_iss": "iss (Issuer)",
       "claim_sub": "sub (Subject)",
-      "claim_aud": "aud (Audience)"
+      "claim_aud": "aud (Audience)",
+      "result_unsupported": "Unsupported JWT algorithm ({alg}). Use JWT Workbench or the JWKS verification workflow for RS*, ES*, PS*, or EdDSA tokens.",
+      "result_none_warning": "This token declares alg: none. Treat it as unsigned; this verifier will not mark it valid or invalid by signature."
     },
     "jwt_workbench": {
       "title": "JWT Workbench",

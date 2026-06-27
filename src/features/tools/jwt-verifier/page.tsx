@@ -11,10 +11,11 @@ import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-war
 import { JwtSecretField } from "@/features/tools/jwt-workbench/jwt-secret-field"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import {
-    base64UrlEncode,
     checkClaims,
     decodeHeader,
     decodePayload,
+    verifyJwtSignature,
+    type JwtSignatureVerificationResult,
 } from "./logic"
 
 const ICON_BUTTON_CLASS =
@@ -28,40 +29,6 @@ async function loadToast() {
 }
 
 // ─── JWT Verification Engine (HMAC-SHA256 only, client-side) ────────────────
-
-async function verifyHS256(token: string, secret: string): Promise<boolean> {
-    const parts = token.split(".")
-    if (parts.length !== 3) return false
-    const signingInput = `${parts[0]}.${parts[1]}`
-    const key = await crypto.subtle.importKey(
-        "raw",
-        new TextEncoder().encode(secret),
-        { name: "HMAC", hash: "SHA-256" },
-        false,
-        ["sign"]
-    )
-    const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(signingInput))
-    const expected = base64UrlEncode(new Uint8Array(sig))
-    return expected === parts[2]
-}
-
-async function verifyHS384(token: string, secret: string): Promise<boolean> {
-    const parts = token.split(".")
-    if (parts.length !== 3) return false
-    const signingInput = `${parts[0]}.${parts[1]}`
-    const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-384" }, false, ["sign"])
-    const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(signingInput))
-    return base64UrlEncode(new Uint8Array(sig)) === parts[2]
-}
-
-async function verifyHS512(token: string, secret: string): Promise<boolean> {
-    const parts = token.split(".")
-    if (parts.length !== 3) return false
-    const signingInput = `${parts[0]}.${parts[1]}`
-    const key = await crypto.subtle.importKey("raw", new TextEncoder().encode(secret), { name: "HMAC", hash: "SHA-512" }, false, ["sign"])
-    const sig = await crypto.subtle.sign("HMAC", key, new TextEncoder().encode(signingInput))
-    return base64UrlEncode(new Uint8Array(sig)) === parts[2]
-}
 
 export function JwtVerifierPage() {
     const { t, lang } = useLang()
@@ -90,8 +57,7 @@ export function JwtVerifierPage() {
     const [token, setToken] = React.useState("")
     const [secret, setSecret] = React.useState("")
     const [secretVisible, setSecretVisible] = React.useState(false)
-    const [verifyResult, setVerifyResult] = React.useState<"valid" | "invalid" | null>(null)
-    const [algorithm, setAlgorithm] = React.useState("")
+    const [verifyResult, setVerifyResult] = React.useState<JwtSignatureVerificationResult | null>(null)
     const [header, setHeader] = React.useState<Record<string, unknown> | null>(null)
     const [payload, setPayload] = React.useState<Record<string, unknown> | null>(null)
     const [claims, setClaims] = React.useState<{ label: string; status: string; value: string }[]>([])
@@ -104,21 +70,10 @@ export function JwtVerifierPage() {
         setHeader(h)
         setPayload(p)
         const alg = h?.alg as string || "unknown"
-        setAlgorithm(alg)
 
         if (p) setClaims(checkClaims(p, claimLabels))
 
-        if (!secret.trim()) {
-            setVerifyResult(null)
-            return
-        }
-
-        let valid = false
-        if (alg === "HS256") valid = await verifyHS256(token, secret)
-        else if (alg === "HS384") valid = await verifyHS384(token, secret)
-        else if (alg === "HS512") valid = await verifyHS512(token, secret)
-
-        setVerifyResult(valid ? "valid" : "invalid")
+        setVerifyResult(await verifyJwtSignature(token, secret, alg))
     }
     const clearAll = () => {
         setToken("")
@@ -204,12 +159,16 @@ export function JwtVerifierPage() {
 
             {/* Verification Result */}
             {verifyResult && (
-                <div className={`p-4 rounded-lg flex items-center gap-3 ${verifyResult === "valid" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-red-500/10 text-red-600 dark:text-red-400"}`}>
-                    {verifyResult === "valid" ? <CheckCircle className="h-5 w-5" /> : <ShieldAlert className="h-5 w-5" />}
+                <div className={`p-4 rounded-lg flex items-center gap-3 ${verifyResult.status === "valid" ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : verifyResult.status === "invalid" ? "bg-red-500/10 text-red-600 dark:text-red-400" : "bg-amber-500/10 text-amber-700 dark:text-amber-300"}`}>
+                    {verifyResult.status === "valid" ? <CheckCircle className="h-5 w-5" /> : <ShieldAlert className="h-5 w-5" />}
                     <span className="font-medium">
-                        {verifyResult === "valid"
-                            ? toolT.result_valid.replace("{alg}", algorithm)
-                            : toolT.result_invalid.replace("{alg}", algorithm)}
+                        {verifyResult.status === "valid"
+                            ? toolT.result_valid.replace("{alg}", verifyResult.algorithm)
+                            : verifyResult.status === "invalid"
+                                ? toolT.result_invalid.replace("{alg}", verifyResult.algorithm)
+                                : verifyResult.status === "unsigned"
+                                    ? toolT.result_none_warning
+                                    : toolT.result_unsupported.replace("{alg}", verifyResult.algorithm)}
                     </span>
                 </div>
             )}

@@ -1,6 +1,6 @@
 import type { JsonPath, JsonValue } from "./types"
 
-export function isJsonObject(value: JsonValue): value is { [key: string]: JsonValue } {
+export function isJsonObject(value: unknown): value is { [key: string]: JsonValue } {
     return typeof value === "object" && value !== null && !Array.isArray(value)
 }
 
@@ -9,18 +9,20 @@ export function pathKey(path: JsonPath): string {
     return path.map((part) => String(part)).join("__")
 }
 
-export function getValueAtPath(root: JsonValue, path: JsonPath): JsonValue {
+export function getValueAtPath(root: JsonValue, path: JsonPath): JsonValue | undefined {
     let current: JsonValue = root
     for (const part of path) {
         if (Array.isArray(current) && typeof part === "number") {
+            if (part < 0 || part >= current.length) return undefined
             current = current[part]
             continue
         }
         if (isJsonObject(current) && typeof part === "string") {
+            if (!Object.prototype.hasOwnProperty.call(current, part)) return undefined
             current = current[part]
             continue
         }
-        return root
+        return undefined
     }
     return current
 }

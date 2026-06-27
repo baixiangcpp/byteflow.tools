@@ -1,34 +1,12 @@
 import type { JwtAlg } from "./types"
-
-function bytesToBase64Url(bytes: Uint8Array): string {
-    let binary = ""
-    for (const byte of bytes) {
-        binary += String.fromCharCode(byte)
-    }
-    return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "")
-}
-
-function base64UrlToBytes(input: string): Uint8Array {
-    const base64 = input
-        .replace(/-/g, "+")
-        .replace(/_/g, "/")
-        .padEnd(Math.ceil(input.length / 4) * 4, "=")
-    const binary = atob(base64)
-    const bytes = new Uint8Array(binary.length)
-    for (let i = 0; i < binary.length; i++) {
-        bytes[i] = binary.charCodeAt(i)
-    }
-    return bytes
-}
+import { base64UrlToJson, bytesToBase64Url, jsonToBase64Url } from "@/core/jwt/base64url"
 
 export function encodeJsonSegment(value: unknown): string {
-    return bytesToBase64Url(new TextEncoder().encode(JSON.stringify(value)))
+    return jsonToBase64Url(value)
 }
 
 export function decodeJsonSegment<T = Record<string, unknown>>(segment: string): T {
-    const bytes = base64UrlToBytes(segment)
-    const text = new TextDecoder().decode(bytes)
-    return JSON.parse(text) as T
+    return base64UrlToJson<T>(segment)
 }
 
 export async function signHmac(signingInput: string, secret: string, algorithm: JwtAlg): Promise<string> {

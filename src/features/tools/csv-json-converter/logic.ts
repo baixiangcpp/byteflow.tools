@@ -113,10 +113,17 @@ function flattenObject(obj: Record<string, unknown>, prefix = ""): Record<string
         if (value !== null && typeof value === "object" && !Array.isArray(value)) {
             Object.assign(result, flattenObject(value as Record<string, unknown>, fullKey))
         } else {
-            result[fullKey] = value === null || value === undefined ? "" : String(value)
+            result[fullKey] = value === null || value === undefined ? "" : serializeCsvCell(value)
         }
     }
     return result
+}
+
+function serializeCsvCell(value: unknown): string {
+    if (Array.isArray(value) || (value !== null && typeof value === "object")) {
+        return JSON.stringify(value)
+    }
+    return String(value)
 }
 
 export function jsonToCsv(json: string, delimiter: string, includeHeader: boolean): string {
@@ -149,7 +156,7 @@ export function jsonToCsv(json: string, delimiter: string, includeHeader: boolea
     for (const row of parsed) {
         if (Array.isArray(row)) {
             lines.push(
-                row.map((v: unknown) => escapeCSVField(String(v ?? ""), effectiveDelimiter)).join(effectiveDelimiter)
+                row.map((v: unknown) => escapeCSVField(v === null || v === undefined ? "" : serializeCsvCell(v), effectiveDelimiter)).join(effectiveDelimiter)
             )
         } else {
             lines.push(escapeCSVField(String(row), effectiveDelimiter))

@@ -46,6 +46,10 @@ async function signedToken(secret: string) {
     return `${signingInput}.${await signHmac(signingInput, secret, "HS256")}`
 }
 
+function unsignedToken(algorithm: string) {
+    return `${encodeJsonSegment({ alg: algorithm, typ: "JWT" })}.${encodeJsonSegment({ sub: "alice" })}.signature`
+}
+
 describe("JwtVerifierPage", () => {
     beforeEach(() => {
         vi.clearAllMocks()
@@ -73,6 +77,31 @@ describe("JwtVerifierPage", () => {
         await waitFor(() => {
             expect(screen.getByText(/Signature does not match the supplied secret \(HS256\)/)).toBeInTheDocument()
             expect(screen.getByText(/Do not trust this token for that key/)).toBeInTheDocument()
+        })
+    })
+
+    it("shows unsupported algorithms without reporting an invalid signature", async () => {
+        renderJwtVerifier()
+
+        fireEvent.change(screen.getByRole("textbox", { name: "JWT Token" }), { target: { value: unsignedToken("RS256") } })
+        fireEvent.change(screen.getByLabelText("Secret Key (for HMAC verification)"), { target: { value: "ignored" } })
+        fireEvent.click(screen.getByRole("button", { name: "Verify" }))
+
+        await waitFor(() => {
+            expect(screen.getByText(/Unsupported JWT algorithm \(RS256\)/)).toBeInTheDocument()
+            expect(screen.queryByText(/Signature does not match/)).not.toBeInTheDocument()
+        })
+    })
+
+    it("shows alg none as an unsigned warning", async () => {
+        renderJwtVerifier()
+
+        fireEvent.change(screen.getByRole("textbox", { name: "JWT Token" }), { target: { value: unsignedToken("none") } })
+        fireEvent.click(screen.getByRole("button", { name: "Verify" }))
+
+        await waitFor(() => {
+            expect(screen.getByText(/declares alg: none/)).toBeInTheDocument()
+            expect(screen.queryByText(/Signature does not match/)).not.toBeInTheDocument()
         })
     })
 })
