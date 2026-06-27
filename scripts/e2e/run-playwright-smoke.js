@@ -42,6 +42,45 @@ function getExpectedToolCount() {
 
 const EXPECTED_TOOL_COUNT = getExpectedToolCount();
 
+function createRuntimeObserver(page, label, baseUrl = "") {
+    const runtimeErrors = [];
+    const appOrigin = baseUrl ? new URL(baseUrl).origin : "";
+    const criticalResourceTypes = new Set(["document", "script", "stylesheet", "image", "font"]);
+
+    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+    page.on("console", (message) => {
+        const text = message.text();
+        if (message.type() === "error" && !text.startsWith("Failed to load resource:")) {
+            runtimeErrors.push(`console.error: ${message.text()}`);
+        }
+    });
+    page.on("requestfailed", (request) => {
+        const url = request.url();
+        const sameOrigin = appOrigin && url.startsWith(`${appOrigin}/`);
+        const errorText = request.failure()?.errorText || "unknown";
+        if ((sameOrigin || url.startsWith("/") || url.includes("/_next/")) && errorText !== "net::ERR_ABORTED") {
+            runtimeErrors.push(`request failed: ${request.method()} ${url} (${errorText})`);
+        }
+    });
+    page.on("response", (response) => {
+        const request = response.request();
+        const url = response.url();
+        const sameOrigin = appOrigin && url.startsWith(`${appOrigin}/`);
+        if (sameOrigin && response.status() >= 400 && criticalResourceTypes.has(request.resourceType())) {
+            runtimeErrors.push(`response failed: ${response.status()} ${request.method()} ${url}`);
+        }
+    });
+
+    return {
+        errors: runtimeErrors,
+        assertClean() {
+            if (runtimeErrors.length > 0) {
+                throw new Error(`${label} triggered runtime, console, or request errors:\n- ${runtimeErrors.join("\n- ")}`);
+            }
+        },
+    };
+}
+
 function parseArgs(argv) {
     const args = {
         port: DEFAULT_PORT,
@@ -149,8 +188,7 @@ async function stopServer(server) {
 
 async function assertRouteRenders(context, baseUrl, route) {
     const page = await context.newPage();
-    const runtimeErrors = [];
-    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+    const runtime = createRuntimeObserver(page, `Route ${route}`, baseUrl);
 
     const targetUrl = `${baseUrl}${route}`;
     const response = await page.goto(targetUrl, { waitUntil: "domcontentloaded" });
@@ -159,17 +197,14 @@ async function assertRouteRenders(context, baseUrl, route) {
     }
 
     await page.waitForSelector("main", { timeout: 15_000 });
-    if (runtimeErrors.length > 0) {
-        throw new Error(`Route ${route} triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
-    }
+    runtime.assertClean();
 
     await page.close();
 }
 
 async function assertHomeNavigation(context, baseUrl, locale) {
     const page = await context.newPage();
-    const runtimeErrors = [];
-    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+    const runtime = createRuntimeObserver(page, `Navigation smoke for ${locale}`, baseUrl);
 
     await page.goto(`${baseUrl}/${locale}`, { waitUntil: "domcontentloaded" });
     await page.waitForSelector("main", { timeout: 15_000 });
@@ -184,9 +219,7 @@ async function assertHomeNavigation(context, baseUrl, locale) {
     ]);
 
     await page.waitForSelector("main", { timeout: 15_000 });
-    if (runtimeErrors.length > 0) {
-        throw new Error(`Navigation smoke for ${locale} triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
-    }
+    runtime.assertClean();
 
     await page.close();
 }
@@ -229,8 +262,7 @@ async function openCommandPalette(page) {
 
 async function assertCommandPaletteJourney(context, baseUrl, locale) {
     const page = await context.newPage();
-    const runtimeErrors = [];
-    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+    const runtime = createRuntimeObserver(page, `Command palette journey for ${locale}`, baseUrl);
 
     const homeUrl = `${baseUrl}/${locale}`;
     await page.goto(homeUrl, { waitUntil: "domcontentloaded" });
@@ -255,17 +287,14 @@ async function assertCommandPaletteJourney(context, baseUrl, locale) {
     ]);
 
     await page.waitForSelector("main", { timeout: 15_000 });
-    if (runtimeErrors.length > 0) {
-        throw new Error(`Command palette journey for ${locale} triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
-    }
+    runtime.assertClean();
 
     await page.close();
 }
 
 async function assertInputProcessCopyJourney(context, baseUrl, locale) {
     const page = await context.newPage();
-    const runtimeErrors = [];
-    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+    const runtime = createRuntimeObserver(page, `Input/process/copy journey for ${locale}`, baseUrl);
 
     const toolRoute = `${baseUrl}/${locale}/list-randomizer`;
     await page.goto(toolRoute, { waitUntil: "domcontentloaded" });
@@ -301,9 +330,7 @@ async function assertInputProcessCopyJourney(context, baseUrl, locale) {
     const copiedToast = page.getByText(/copied/i).first();
     await copiedToast.waitFor({ state: "visible", timeout: 5_000 });
 
-    if (runtimeErrors.length > 0) {
-        throw new Error(`Input/process/copy journey for ${locale} triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
-    }
+    runtime.assertClean();
 
     await page.close();
 }
@@ -413,8 +440,7 @@ async function assertBasicAccessibility(page, routeLabel) {
 
 async function assertSkipLinkKeyboardPath(context, baseUrl) {
     const page = await context.newPage();
-    const runtimeErrors = [];
-    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+    const runtime = createRuntimeObserver(page, "Skip link keyboard path", baseUrl);
 
     try {
         await page.goto(`${baseUrl}/en/all-tools`, { waitUntil: "domcontentloaded" });
@@ -432,9 +458,7 @@ async function assertSkipLinkKeyboardPath(context, baseUrl) {
         await page.keyboard.press("Enter");
         await page.waitForFunction(() => document.activeElement?.id === "main-content", null, { timeout: 5_000 });
 
-        if (runtimeErrors.length > 0) {
-            throw new Error(`Skip link keyboard path triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
-        }
+        runtime.assertClean();
     } finally {
         await page.close();
     }
@@ -442,8 +466,7 @@ async function assertSkipLinkKeyboardPath(context, baseUrl) {
 
 async function assertHeaderKeyboardPaths(context, baseUrl) {
     const page = await context.newPage();
-    const runtimeErrors = [];
-    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+    const runtime = createRuntimeObserver(page, "Header keyboard paths", baseUrl);
 
     try {
         await page.goto(`${baseUrl}/en/json-formatter?keyboard=1`, { waitUntil: "domcontentloaded" });
@@ -461,9 +484,7 @@ async function assertHeaderKeyboardPaths(context, baseUrl) {
             return active instanceof HTMLElement && active.getAttribute("aria-label")?.startsWith("Language:");
         }, null, { timeout: 5_000 });
 
-        if (runtimeErrors.length > 0) {
-            throw new Error(`Header keyboard paths triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
-        }
+        runtime.assertClean();
     } finally {
         await page.close();
     }
@@ -476,8 +497,7 @@ async function assertMobileNavigationKeyboardPath(browser, baseUrl) {
         isMobile: true,
     });
     const page = await context.newPage();
-    const runtimeErrors = [];
-    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+    const runtime = createRuntimeObserver(page, "Mobile navigation keyboard path", baseUrl);
 
     try {
         await page.goto(`${baseUrl}/en`, { waitUntil: "domcontentloaded" });
@@ -508,9 +528,7 @@ async function assertMobileNavigationKeyboardPath(browser, baseUrl) {
             return active instanceof HTMLElement && /Open Navigation/i.test(active.textContent || active.getAttribute("aria-label") || "");
         }, null, { timeout: 5_000 });
 
-        if (runtimeErrors.length > 0) {
-            throw new Error(`Mobile navigation keyboard path triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
-        }
+        runtime.assertClean();
     } finally {
         await page.close();
         await context.close();
@@ -590,9 +608,8 @@ async function clickCopyAndExpectToast(page, button, label) {
 
 async function assertMobileToolJourney(context, baseUrl, viewport, route, runJourney) {
     const page = await context.newPage();
-    const runtimeErrors = [];
     const routeLabel = `${route} mobile ${viewport.width}x${viewport.height}`;
-    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+    const runtime = createRuntimeObserver(page, routeLabel, baseUrl);
 
     try {
         await page.goto(`${baseUrl}${route}`, { waitUntil: "domcontentloaded" });
@@ -603,9 +620,7 @@ async function assertMobileToolJourney(context, baseUrl, viewport, route, runJou
         await assertMobileTouchTargets(page, routeLabel);
         await assertNoHorizontalOverflow(page, routeLabel);
 
-        if (runtimeErrors.length > 0) {
-            throw new Error(`${routeLabel} triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
-        }
+        runtime.assertClean();
     } finally {
         await page.close();
     }
@@ -850,8 +865,7 @@ async function assertMobileToolPageJourneys(browser, baseUrl) {
 
 async function assertBase64PipelineSafeNavigationJourney(context, baseUrl) {
     const page = await context.newPage();
-    const runtimeErrors = [];
-    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+    const runtime = createRuntimeObserver(page, "Base64 -> Pipeline Builder safe navigation", baseUrl);
 
     await page.goto(`${baseUrl}/en/base64-encode-decode`, { waitUntil: "domcontentloaded" });
     await page.waitForSelector("main", { timeout: 15_000 });
@@ -887,9 +901,7 @@ async function assertBase64PipelineSafeNavigationJourney(context, baseUrl) {
     await expectTextareaValueAbsent(page, /aGVsbG8gcGlwZWxpbmU=|hello pipeline/, "pipeline safe navigation");
     await assertBasicAccessibility(page, "/en/pipeline-builder safe navigation");
 
-    if (runtimeErrors.length > 0) {
-        throw new Error(`Base64 -> Pipeline Builder safe navigation triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
-    }
+    runtime.assertClean();
 
     await page.close();
 }
@@ -926,8 +938,7 @@ async function expectTextareaValue(page, pattern, label) {
 
 async function assertPipelineRecipeJourney(context, baseUrl) {
     const page = await context.newPage();
-    const runtimeErrors = [];
-    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+    const runtime = createRuntimeObserver(page, "Pipeline recipe journey", baseUrl);
 
     await page.goto(`${baseUrl}/en/pipeline-builder`, { waitUntil: "domcontentloaded" });
     await page.waitForSelector("main", { timeout: 15_000 });
@@ -1016,17 +1027,14 @@ async function assertPipelineRecipeJourney(context, baseUrl) {
     await page.waitForFunction(() => document.body.innerText.includes("OK"), null, { timeout: 15_000 });
     await assertBasicAccessibility(page, "/en/pipeline-builder recipe");
 
-    if (runtimeErrors.length > 0) {
-        throw new Error(`Pipeline recipe journey triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
-    }
+    runtime.assertClean();
 
     await page.close();
 }
 
 async function assertMonacoFallbackJourney(context, baseUrl) {
     const page = await context.newPage();
-    const runtimeErrors = [];
-    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+    const runtime = createRuntimeObserver(page, "Monaco fallback journey", baseUrl);
 
     await page.goto(`${baseUrl}/en/csv-json-converter`, { waitUntil: "domcontentloaded" });
     await page.waitForSelector("main", { timeout: 15_000 });
@@ -1038,9 +1046,7 @@ async function assertMonacoFallbackJourney(context, baseUrl) {
     await expectTextareaValue(page, /"name": "Ada"/, "csv-json converter output");
     await assertBasicAccessibility(page, "/en/csv-json-converter");
 
-    if (runtimeErrors.length > 0) {
-        throw new Error(`Monaco fallback journey triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
-    }
+    runtime.assertClean();
 
     await page.close();
 }
@@ -1052,8 +1058,7 @@ async function assertMobileCommandPaletteJourney(browser, baseUrl) {
         isMobile: true,
     });
     const page = await context.newPage();
-    const runtimeErrors = [];
-    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+    const runtime = createRuntimeObserver(page, "Mobile command palette journey", baseUrl);
 
     try {
         await page.goto(`${baseUrl}/en`, { waitUntil: "domcontentloaded" });
@@ -1069,9 +1074,7 @@ async function assertMobileCommandPaletteJourney(browser, baseUrl) {
         await page.waitForSelector("main", { timeout: 15_000 });
         await assertBasicAccessibility(page, "/en mobile command palette");
 
-        if (runtimeErrors.length > 0) {
-            throw new Error(`Mobile command palette journey triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
-        }
+        runtime.assertClean();
     } finally {
         await page.close();
         await context.close();
@@ -1080,8 +1083,7 @@ async function assertMobileCommandPaletteJourney(browser, baseUrl) {
 
 async function assertLocaleSwitchJourney(context, baseUrl) {
     const page = await context.newPage();
-    const runtimeErrors = [];
-    page.on("pageerror", (error) => runtimeErrors.push(error.message));
+    const runtime = createRuntimeObserver(page, "Locale switch journey", baseUrl);
 
     await page.goto(`${baseUrl}/en/json-formatter?smoke=1`, { waitUntil: "domcontentloaded" });
     await page.waitForSelector("main", { timeout: 15_000 });
@@ -1102,9 +1104,7 @@ async function assertLocaleSwitchJourney(context, baseUrl) {
     ]);
 
     await page.waitForSelector("main", { timeout: 15_000 });
-    if (runtimeErrors.length > 0) {
-        throw new Error(`Locale switch journey triggered runtime errors:\n- ${runtimeErrors.join("\n- ")}`);
-    }
+    runtime.assertClean();
 
     await page.close();
 }

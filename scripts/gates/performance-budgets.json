@@ -21,6 +21,16 @@
       "maxHtmlBytes": 620000
     },
     {
+      "route": "/en/pipeline-builder",
+      "label": "Pipeline Builder",
+      "maxInitialJsGzipBytes": 430000,
+      "maxInitialJsRawBytes": 1500000,
+      "maxInitialScriptFiles": 30,
+      "maxCssGzipBytes": 35000,
+      "maxCssRawBytes": 220000,
+      "maxHtmlBytes": 360000
+    },
+    {
       "route": "/en/json-formatter",
       "label": "JSON Formatter",
       "maxInitialJsGzipBytes": 350000,

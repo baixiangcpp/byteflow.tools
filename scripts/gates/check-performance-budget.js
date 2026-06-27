@@ -7,7 +7,7 @@ import zlib from "node:zlib";
 const ROOT = process.cwd();
 const OUT_DIR = path.join(ROOT, "out");
 const CONFIG_PATH = path.join(ROOT, "scripts/gates/performance-budgets.json");
-const REQUIRED_ROUTES = ["/", "/en/all-tools", "/en/json-formatter", "/en/markdown-preview", "/en/image-resizer"];
+const REQUIRED_ROUTES = ["/", "/en/all-tools", "/en/pipeline-builder", "/en/json-formatter", "/en/markdown-preview", "/en/image-resizer"];
 const BUDGET_KEYS = [
     "maxInitialJsGzipBytes",
     "maxInitialJsRawBytes",

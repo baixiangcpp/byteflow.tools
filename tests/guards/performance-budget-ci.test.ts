@@ -3,7 +3,7 @@ import path from "node:path"
 import { describe, expect, it } from "vitest"
 
 const ROOT = process.cwd()
-const REQUIRED_ROUTES = ["/", "/en/all-tools", "/en/json-formatter", "/en/markdown-preview", "/en/image-resizer"]
+const REQUIRED_ROUTES = ["/", "/en/all-tools", "/en/pipeline-builder", "/en/json-formatter", "/en/markdown-preview", "/en/image-resizer"]
 
 function read(relativePath: string) {
     return fs.readFileSync(path.join(ROOT, relativePath), "utf8")
