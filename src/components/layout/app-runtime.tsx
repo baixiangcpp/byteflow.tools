@@ -301,7 +301,7 @@ export function AppRuntime({ pathname }: { pathname: string }) {
                     type="button"
                     size="icon"
                     variant="secondary"
-                    className="fixed bottom-24 right-4 z-40 h-10 w-10 rounded-full border border-border/70 shadow-md sm:right-6"
+                    className="fixed bottom-24 right-4 z-40 rounded-full border border-border/70 shadow-md sm:right-6"
                     onClick={handleBackToTop}
                     aria-label={backToTopLabel}
                     title={backToTopLabel}

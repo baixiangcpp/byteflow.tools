@@ -386,7 +386,7 @@ function FavoriteButton({
         <button
             type="button"
             className={cn(
-                "inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-md border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45",
+                "inline-flex size-11 shrink-0 items-center justify-center rounded-md border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45 lg:size-10",
                 active
                     ? "border-primary/35 bg-primary/10 text-primary"
                     : "border-border/70 bg-background/55 text-muted-foreground hover:border-primary/35 hover:text-primary",
