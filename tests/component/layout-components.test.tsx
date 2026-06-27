@@ -7,6 +7,7 @@ import { NavbarMobileMenu } from "@/components/layout/navbar-mobile-menu"
 import { Sidebar } from "@/components/layout/sidebar"
 import { Footer } from "@/components/layout/footer"
 import { CommandPalette } from "@/components/layout/command-palette"
+import { AppRuntime } from "@/components/layout/app-runtime"
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
 
 const mocks = vi.hoisted(() => ({
@@ -53,6 +54,16 @@ function createMockLangValue(lang: string) {
     const common: Record<string, string> = {
         all_tools: "All tools",
         install_app_label: "Install app",
+        install: "Install",
+        install_guide: "Install guide",
+        later: "Later",
+        install_prompt_message: "Install byteflow.tools for quicker access and offline usage.",
+        update_available: "New version available",
+        reload: "Refresh",
+        back_to_top: "Back to top",
+        offline_banner_title: "You are offline",
+        offline_banner_message: "Cached browser-local tools may keep working after warm-up. External-request actions need network access.",
+        offline_banner_action: "View offline support",
         footer_copyright: "Copyright {year} byteflow.tools. All rights reserved.",
         no_results: "No results",
         favorites: "Favorites",
@@ -140,6 +151,14 @@ vi.mock("@/components/layout/theme-toggle", () => ({
 
 vi.mock("@/components/layout/language-switcher", () => ({
     LanguageSwitcher: () => <button type="button">Language</button>,
+}))
+
+vi.mock("@/components/layout/verification-mode-panel", () => ({
+    VerificationModePanel: () => null,
+}))
+
+vi.mock("sonner", () => ({
+    toast: vi.fn(),
 }))
 
 vi.mock("@/components/ui/dropdown-menu", () => ({
@@ -368,6 +387,29 @@ describe("layout components", () => {
         })
 
         expect(screen.queryByTestId("command-dialog")).not.toBeInTheDocument()
+    })
+
+    it("shows an offline support banner while the browser is offline", async () => {
+        Object.defineProperty(navigator, "onLine", {
+            configurable: true,
+            value: false,
+        })
+
+        render(<AppRuntime pathname="/en/json-formatter" />)
+
+        expect(await screen.findByRole("status")).toHaveTextContent("You are offline")
+        expect(screen.getByText(/External-request actions need network access/)).toBeInTheDocument()
+        expect(screen.getByRole("link", { name: "View offline support" })).toHaveAttribute(
+            "href",
+            "/en/trust-center#offline-support-matrix",
+        )
+
+        Object.defineProperty(navigator, "onLine", {
+            configurable: true,
+            value: true,
+        })
+        fireEvent(window, new Event("online"))
+        await waitFor(() => expect(screen.queryByText("You are offline")).not.toBeInTheDocument())
     })
 
     it("fails fast when visible i18n labels are missing", () => {
