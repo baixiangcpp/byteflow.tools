@@ -1,6 +1,6 @@
 # Performance Budget
 
-BF-025 adds a route-level performance budget gate for the exported app. The budget is intentionally small and explicit: it covers the root page, English home, All Tools, JSON Formatter, Markdown Preview, and Image Resizer.
+BF-025 adds a route-level performance budget gate for the exported app. Issue #261 expands that gate to include Pipeline Builder and ties route budgets, heavy-worker safeguards, and release Core Web Vitals checks into one performance audit boundary. The budget is intentionally small and explicit: it covers the root page, All Tools, Pipeline Builder, JSON Formatter, Markdown Preview, and Image Resizer.
 
 ## CI Behavior
 
@@ -20,11 +20,33 @@ The report fails when any route exceeds its configured budget. The current budge
 Budgets live in `scripts/gates/performance-budgets.json` for these baseline routes:
 
 - `/`
-- `/en`
 - `/en/all-tools`
+- `/en/pipeline-builder`
 - `/en/json-formatter`
 - `/en/markdown-preview`
 - `/en/image-resizer`
+
+## Performance Audit Targets
+
+Issue #261 uses these release targets:
+
+- LCP p75: 2.5 seconds or faster for major route families.
+- CLS p75: 0.10 or lower for major route families.
+- INP p75: 200 ms or faster for major route families.
+- Large local inputs: representative 256 KB+ text/SVG payloads and 4 MB image buffers must route through workers or explicit runtime budgets instead of blocking the main thread.
+- Representative browser smoke: home, All Tools, Pipeline Builder, JSON Formatter, Base64, CSV/JSON, and locale navigation must complete without uncaught runtime errors, console errors, or failed same-origin app requests.
+
+CI enforces route bundle budgets in `npm run build:post`, worker and runtime-budget coverage in unit/guard tests, and representative no-console/no-failed-request smoke coverage in `npm run test:e2e:smoke`. Field Core Web Vitals are reviewed after release in the dashboard runbook. Any route family leaving the LCP, CLS, or INP targets above should get a follow-up performance issue before traffic changes are interpreted as content demand.
+
+## Worker And Runtime Coverage
+
+The current heavy-work boundary is:
+
+- `tests/guards/monaco-editors-defer-source-guard.test.ts` keeps Monaco deferred behind desktop interaction.
+- `tests/guards/bf-heavy-worker-safeguards.test.ts` keeps image edit, image resize, scanned PDF, SVG, compression, and regex-heavy work on worker tasks with abort/timeout handling.
+- `tests/unit/heavy-worker-representative-inputs.test.ts` runs representative large inputs through workers and verifies timeout paths do not fall back to main-thread work.
+- `tests/guards/tool-runtime-budget-guard.test.ts` keeps high-risk parser and diff tools on centralized byte, row, endpoint, and node budgets.
+- `tests/guards/csv-json-converter-performance-guard.test.ts` keeps CSV/JSON conversion behind a worker and abortable request flow.
 
 ## All Tools Discovery Budget
 
