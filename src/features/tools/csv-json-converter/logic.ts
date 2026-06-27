@@ -1,36 +1,50 @@
 import { JSON_ARRAY_REQUIRED_ERROR } from "./constants"
 
-function parseCSVLine(line: string, delimiter: string): string[] {
-    const fields: string[] = []
-    let current = ""
+function parseCSVRecords(csv: string, delimiter: string): string[][] {
+    const records: string[][] = []
+    let currentField = ""
+    let currentRecord: string[] = []
     let inQuotes = false
 
-    for (let i = 0; i < line.length; i++) {
-        const ch = line[i]
+    for (let i = 0; i < csv.length; i++) {
+        const ch = csv[i]
+
         if (inQuotes) {
             if (ch === '"') {
-                if (i + 1 < line.length && line[i + 1] === '"') {
-                    current += '"'
+                if (i + 1 < csv.length && csv[i + 1] === '"') {
+                    currentField += '"'
                     i++
                 } else {
                     inQuotes = false
                 }
             } else {
-                current += ch
+                currentField += ch
             }
+            continue
+        }
+
+        if (ch === '"') {
+            inQuotes = true
+        } else if (ch === delimiter) {
+            currentRecord.push(currentField)
+            currentField = ""
+        } else if (ch === "\n" || ch === "\r") {
+            currentRecord.push(currentField)
+            records.push(currentRecord)
+            currentField = ""
+            currentRecord = []
+            if (ch === "\r" && csv[i + 1] === "\n") i++
         } else {
-            if (ch === '"') {
-                inQuotes = true
-            } else if (ch === delimiter) {
-                fields.push(current)
-                current = ""
-            } else {
-                current += ch
-            }
+            currentField += ch
         }
     }
-    fields.push(current)
-    return fields
+
+    if (currentField.length > 0 || currentRecord.length > 0) {
+        currentRecord.push(currentField)
+        records.push(currentRecord)
+    }
+
+    return records.filter((record) => record.some((field) => field.trim() !== ""))
 }
 
 function detectDelimiter(csv: string): string {
@@ -48,25 +62,28 @@ function detectDelimiter(csv: string): string {
     return best
 }
 
+const STRICT_DECIMAL_NUMBER_PATTERN = /^-?(?:0|[1-9]\d*)(?:\.\d+)?$/
+
 function inferType(value: string): string | number | boolean | null {
     if (value === "") return null
     if (value.toLowerCase() === "true") return true
     if (value.toLowerCase() === "false") return false
+    if (!STRICT_DECIMAL_NUMBER_PATTERN.test(value)) return value
     const num = Number(value)
-    if (!isNaN(num) && value.trim() !== "") return num
-    return value
+    if (!Number.isFinite(num)) return value
+    if (String(num) !== value) return value
+    if (Number.isInteger(num) && !Number.isSafeInteger(num)) return value
+    return num
 }
 
 export function csvToJson(csv: string, delimiter: string, hasHeader: boolean, typeInference: boolean): string {
-    const lines = csv.split(/\r?\n/).filter((l) => l.trim() !== "")
-    if (lines.length === 0) return "[]"
-
     const effectiveDelimiter = delimiter === "auto" ? detectDelimiter(csv) : delimiter
+    const records = parseCSVRecords(csv, effectiveDelimiter)
+    if (records.length === 0) return "[]"
 
     if (hasHeader) {
-        const headers = parseCSVLine(lines[0], effectiveDelimiter)
-        const result = lines.slice(1).map((line) => {
-            const values = parseCSVLine(line, effectiveDelimiter)
+        const headers = records[0]
+        const result = records.slice(1).map((values) => {
             const obj: Record<string, unknown> = {}
             headers.forEach((h, i) => {
                 const raw = values[i] ?? ""
@@ -76,10 +93,7 @@ export function csvToJson(csv: string, delimiter: string, hasHeader: boolean, ty
         })
         return JSON.stringify(result, null, 2)
     } else {
-        const result = lines.map((line) => {
-            const values = parseCSVLine(line, effectiveDelimiter)
-            return values.map((v) => (typeInference ? inferType(v) : v))
-        })
+        const result = records.map((values) => values.map((v) => (typeInference ? inferType(v) : v)))
         return JSON.stringify(result, null, 2)
     }
 }
