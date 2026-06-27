@@ -21,6 +21,8 @@ describe("TrustCenterPage", () => {
         expect(screen.getByRole("heading", { name: "Privacy and Trust Center", level: 1 })).toBeInTheDocument()
         expect(screen.getByRole("heading", { name: "Verify local processing in DevTools" })).toBeInTheDocument()
         expect(screen.getByText("Open the tool page, then open DevTools and select the Network panel.")).toBeInTheDocument()
+        expect(screen.getByRole("heading", { name: "In-app verification mode" })).toBeInTheDocument()
+        expect(screen.getByText(/It is an aid only; use browser DevTools and source review/i)).toBeInTheDocument()
         expect(screen.getAllByText(/External-request responses are network-only/i).length).toBeGreaterThanOrEqual(1)
         expect(screen.getByText(/clear cached app files from the install page/i)).toBeInTheDocument()
         expect(screen.getByRole("heading", { name: "Offline support matrix" })).toBeInTheDocument()
