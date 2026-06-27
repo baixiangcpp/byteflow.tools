@@ -618,6 +618,10 @@ async function assertMobileTouchTargets(page, routeLabel) {
 async function clickCopyAndExpectToast(page, button, label) {
     await button.waitFor({ state: "visible", timeout: 15_000 });
     await page.waitForTimeout(2500);
+    await button.scrollIntoViewIfNeeded();
+    await button.evaluate((element) => {
+        element.scrollIntoView({ block: "center", inline: "nearest" });
+    });
     await button.click();
 
     const copiedToast = page.getByText(/copied/i).first();
