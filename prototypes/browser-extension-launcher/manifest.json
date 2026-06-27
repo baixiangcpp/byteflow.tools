@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Byteflow Tools Launcher",
+  "description": "R&D popup prototype for opening common byteflow.tools utilities without permissions.",
+  "version": "0.0.1",
+  "action": {
+    "default_title": "Byteflow Tools",
+    "default_popup": "popup.html"
+  },
+  "permissions": [],
+  "host_permissions": []
+}
