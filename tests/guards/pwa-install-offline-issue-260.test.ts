@@ -66,4 +66,18 @@ describe("issue #260 PWA install, offline state, cache, and update UX", () => {
         expect(appRuntime).toContain('navigator.serviceWorker.addEventListener("controllerchange"')
         expect(appRuntime).toContain("window.location.reload()")
     })
+
+    it("keeps the remaining real-device PWA closure checklist documented", () => {
+        const runbook = read("docs/accessibility/audit-23-25-26-manual-closure-runbook.md")
+
+        expect(runbook).toContain("Issue #260")
+        expect(runbook).toContain("Chrome Desktop")
+        expect(runbook).toContain("Microsoft Edge")
+        expect(runbook).toContain("Android Chrome")
+        expect(runbook).toContain("iOS Safari")
+        expect(runbook).toContain("Add to Home Screen")
+        expect(runbook).toContain("Clear cached app files")
+        expect(runbook).toContain("Update behavior")
+        expect(runbook).toContain("Do not close #260, #262, or #263 from automation alone")
+    })
 })

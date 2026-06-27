@@ -69,3 +69,5 @@ The following checks still require real device or assistive-technology verificat
 - Lighthouse accessibility score verification on representative pages in a stable Chrome/Lighthouse environment.
 - Screen-reader output in NVDA, VoiceOver, or TalkBack for Pipeline Builder and external-request confirmation flows.
 - Software keyboard overlap on physical mobile devices for multiline tool inputs.
+
+Use `docs/accessibility/audit-23-25-26-manual-closure-runbook.md` for the required closure procedure and issue comment template.

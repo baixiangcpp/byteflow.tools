@@ -47,6 +47,7 @@ describe("issues #262/#263 mobile and accessibility audit coverage", () => {
 
     it("keeps the audit matrix documented with automated and manual boundaries", () => {
         const doc = read("docs/accessibility/audit-25-26-mobile-a11y-matrix.md")
+        const runbook = read("docs/accessibility/audit-23-25-26-manual-closure-runbook.md")
 
         expect(doc).toContain("360x740")
         expect(doc).toContain("/en/pipeline-builder")
@@ -54,5 +55,13 @@ describe("issues #262/#263 mobile and accessibility audit coverage", () => {
         expect(doc).toContain("Android Chrome PWA install")
         expect(doc).toContain("iOS Safari Add to Home Screen")
         expect(doc).toContain("Screen-reader output")
+        expect(doc).toContain("audit-23-25-26-manual-closure-runbook.md")
+        expect(runbook).toContain("Issue #262")
+        expect(runbook).toContain("Issue #263")
+        expect(runbook).toContain("Lighthouse")
+        expect(runbook).toContain("NVDA")
+        expect(runbook).toContain("VoiceOver")
+        expect(runbook).toContain("TalkBack")
+        expect(runbook).toContain("Software keyboard")
     })
 })
