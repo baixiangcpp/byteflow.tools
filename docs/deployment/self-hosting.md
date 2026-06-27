@@ -12,6 +12,7 @@ byteflow.tools is a static Next.js export for privacy-first browser-local develo
 - Static host or CDN: serve the exported app and static assets.
 - Internal object storage: publish the `out/` build behind internal access controls.
 - Container wrapper: use a minimal static server only for files; do not add an API that processes tool payloads.
+- Local automation prototype: `scripts/prototypes/byteflow-local-cli.mjs` can be evaluated on a workstation or CI runner for stdin/stdout transformations. Keep it local to the runner; do not expose it as a hosted payload-processing endpoint.
 
 ## Privacy-Safe Analytics
 
@@ -32,3 +33,4 @@ Commercial support can focus on packaging, security review, internal deployment 
 There is no SLA-backed enterprise product, hosted paid plan, cloud workspace, synced history, or hosted tool-processing API today. Deployment owners are responsible for access control, hosting uptime, internal analytics policy, incident response, and reviewing any changes they add around the static export.
 
 See `docs/community-sustainability.md` for the full support, sponsorship, and prioritization decision.
+See `docs/growth/integration-rd.md` for the integration R&D decision and CLI prototype scope.
