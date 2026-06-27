@@ -173,7 +173,7 @@ export function VerificationModePanel({ pathname }: VerificationModePanelProps) 
                 type="button"
                 size="icon"
                 variant={enabled ? "default" : "secondary"}
-                className="fixed bottom-4 right-4 z-40 h-10 w-10 rounded-full border border-border/70 shadow-md"
+                className="fixed bottom-4 right-4 z-40 rounded-full border border-border/70 shadow-md"
                 onClick={() => setExpanded(true)}
                 aria-label={copy.ariaLabel}
                 aria-expanded={false}
