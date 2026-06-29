@@ -36,6 +36,7 @@ type InstallAppClientProps = {
     allToolsLabel: string
     trustCenterLabel: string
     localDataControlsLabel: string
+    distributionResearchLabel: string
     offlineMatrixTitle: string
     offlineMatrixDescription: string
     offlineMatrixLink: string
@@ -47,6 +48,7 @@ export function InstallAppClient({
     allToolsLabel,
     trustCenterLabel,
     localDataControlsLabel,
+    distributionResearchLabel,
     offlineMatrixTitle,
     offlineMatrixDescription,
     offlineMatrixLink,
@@ -322,7 +324,7 @@ export function InstallAppClient({
                     <Button asChild variant="outline">
                         <Link href={`/${locale}/distribution-research`}>
                             <MonitorDown className="mr-2 h-4 w-4" />
-                            Extension and desktop research
+                            {distributionResearchLabel}
                         </Link>
                     </Button>
                 </div>

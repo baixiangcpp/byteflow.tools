@@ -21,8 +21,8 @@ export default function ContactPage() {
     const links = [
         { icon: Github, title: "GitHub", desc: p.contact_github_desc, href: GITHUB_REPOSITORY_URL, external: true },
         { icon: MessageSquare, title: p.contact_issues_title, desc: p.contact_issues_desc, href: GITHUB_ISSUES_URL, external: true },
-        { icon: Map, title: t.common.request_tool, desc: "Open a sanitized request for a local-first tool or workflow.", href: GITHUB_FEATURE_REQUEST_URL, external: true },
-        { icon: ThumbsUp, title: t.common.vote_on_requests, desc: "Use GitHub reactions to signal demand without sharing payloads.", href: GITHUB_REQUEST_VOTING_URL, external: true },
+        { icon: Map, title: t.common.request_tool, desc: p.contact_request_tool_desc, href: GITHUB_FEATURE_REQUEST_URL, external: true },
+        { icon: ThumbsUp, title: t.common.vote_on_requests, desc: p.contact_vote_requests_desc, href: GITHUB_REQUEST_VOTING_URL, external: true },
         { icon: ShieldCheck, title: p.contact_security_title, desc: p.contact_security_desc, href: SECURITY_ADVISORY_URL, external: true },
     ]
 
@@ -74,28 +74,28 @@ export default function ContactPage() {
             </section>
 
             <section className="rounded-2xl border border-primary/30 bg-primary/10 p-5">
-                <h2 className="text-lg font-semibold">Public planning</h2>
+                <h2 className="text-lg font-semibold">{p.contact_public_planning_title}</h2>
                 <p className="mt-2 max-w-3xl text-sm leading-relaxed text-muted-foreground">
-                    Use public requests only with sanitized examples. Do not post real secrets, private payloads, HAR files, private URLs, logs, prompts, generated output, request bodies, or response bodies.
+                    {p.contact_public_planning_desc}
                 </p>
                 <div className="mt-4 flex flex-wrap gap-2">
                     <Link
                         href={`/${lang}/roadmap`}
                         className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                        Roadmap
+                        {p.contact_roadmap_link}
                     </Link>
                     <Link
                         href={`/${lang}/distribution-research`}
                         className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                        Extension and desktop research
+                        {p.contact_distribution_research_link}
                     </Link>
                     <Link
                         href={`/${lang}/self-hosting`}
                         className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                        Self-hosting
+                        {p.contact_self_hosting_link}
                     </Link>
                 </div>
             </section>
