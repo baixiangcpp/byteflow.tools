@@ -18,15 +18,40 @@ export const RECIPE_STRUCTURE_PRIVACY_SCOPE: RecipePrivacyScope = {
         "privacy_scope_logs",
         "privacy_scope_files",
         "privacy_scope_constants",
+        "privacy_scope_user_authored_options",
     ],
 }
 
-function sanitizeOptions(toolKey: string, options: Record<string, unknown>): Record<string, unknown> {
+export const SUSPICIOUS_PERSISTENT_OPTION_KEY_PARTS = [
+    "token",
+    "secret",
+    "key",
+    "url",
+    "header",
+    "body",
+    "payload",
+    "input",
+    "output",
+    "example",
+    "default",
+    "const",
+    "query",
+    "endpoint",
+    "host",
+    "schema",
+    "pattern",
+] as const
+
+export function getPersistentOptionKeys(toolKey: string): readonly string[] {
     const adapter = getPipelineAdapter(toolKey)
-    if (!adapter) return {}
+    return adapter?.persistentOptionKeys ?? adapter?.publicOptionKeys ?? []
+}
+
+function sanitizeOptions(toolKey: string, options: Record<string, unknown>): Record<string, unknown> {
+    const persistentOptionKeys = getPersistentOptionKeys(toolKey)
 
     return Object.fromEntries(
-        adapter.publicOptionKeys
+        persistentOptionKeys
             .filter((key) => Object.prototype.hasOwnProperty.call(options, key))
             .map((key) => [key, options[key]]),
     )

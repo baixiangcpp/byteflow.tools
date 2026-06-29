@@ -21,6 +21,17 @@ describe("pipeline builder privacy preview guard", () => {
         expect(storeSource).toContain("sanitizeRecipeForPersistence(recipe)")
         expect(sanitizerSource).toContain("constantInput")
         expect(sanitizerSource).toContain('inputMode: "previous_output"')
-        expect(sanitizerSource).toContain("publicOptionKeys")
+        expect(sanitizerSource).toContain("persistentOptionKeys")
+        expect(sanitizerSource).toContain("SUSPICIOUS_PERSISTENT_OPTION_KEY_PARTS")
+        expect(sanitizerSource).not.toContain("adapter.publicOptionKeys")
+    })
+
+    it("names user-authored options as excluded in the privacy preview scope", () => {
+        const sanitizerSource = readFileSync("src/features/pipeline/recipe-sanitizer.ts", "utf8")
+        const previewSource = readFileSync("src/features/tools/pipeline-builder/pipeline-privacy-preview.tsx", "utf8")
+
+        expect(sanitizerSource).toContain("privacy_scope_user_authored_options")
+        expect(previewSource).toContain("scope.included")
+        expect(previewSource).toContain("scope.excluded")
     })
 })

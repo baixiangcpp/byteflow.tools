@@ -141,6 +141,8 @@ export interface PipelineToolAdapter<Input = string, Output = string> {
   warnings: readonly string[]
   defaultOptions: Record<string, unknown>
   publicOptionKeys: readonly string[]
+  persistentOptionKeys?: readonly string[]
+  persistentOptionReview?: Record<string, string>
   validateOptions(options: Record<string, unknown>): AdapterValidationResult
   run(input: Input, options: Record<string, unknown>): Promise<AdapterRunResult<Output>> | AdapterRunResult<Output>
 }
@@ -173,7 +175,19 @@ Adapter rules:
 - `warnings` must describe persistent adapter-level caveats shown or available to UI surfaces.
 - Adapters must return structured warnings instead of throwing for expected user errors.
 - Adapters must have unit tests covering success and failure paths.
-- `publicOptionKeys` controls which options are allowed into shared recipe URLs.
+- `publicOptionKeys` controls which options are editable or visible in the Pipeline Builder UI.
+- `persistentOptionKeys` controls which reviewed options are allowed into saved recipes, exported recipe JSON, and shared recipe URLs. If omitted, it defaults to `publicOptionKeys` for backwards compatibility.
+- `persistentOptionReview` must document any persisted option whose key looks sensitive even when the persisted value is a safe scalar, such as `urlSafe` or a boolean scrub-rule toggle.
+
+Option persistence taxonomy:
+
+| Persistence | Meaning | Examples |
+|-------------|---------|----------|
+| Safe | Reviewed scalar configuration that does not carry user-authored payload content. | `mode`, `indent`, `format`, `operation`, bounded numeric limits, boolean toggles. |
+| Sensitive | User-authored text, structured data, or values likely to contain private contract details. These are excluded by default. | `schema`, regex `pattern`, headers, bodies, URLs, payloads, examples, defaults, constants. |
+| Reviewed exception | A safe scalar whose key contains a suspicious substring and therefore needs an explicit reason. | `urlSafe`, boolean log scrubber toggles such as `apiKeys` or `bearerTokens`. |
+
+Guard tests must prevent new suspicious persistent option keys containing `token`, `secret`, `key`, `url`, `header`, `body`, `payload`, `input`, `output`, `example`, `default`, `const`, `query`, `endpoint`, `host`, `schema`, or `pattern` unless `persistentOptionReview` explains why the value is safe to persist.
 
 ## 6. Adapter Sets
 
@@ -240,7 +254,8 @@ Recipe URL sharing should encode recipe structure only:
 Rules:
 
 - Do not include runtime input by default.
-- Do not include unknown adapter options; share URLs keep only keys declared in each adapter's `publicOptionKeys`.
+- Do not include unknown adapter options; share URLs keep only keys declared in each adapter's `persistentOptionKeys` or the fallback persistent key set.
+- Do not include user-authored schemas, regex patterns, examples, defaults, URLs, headers, bodies, or payload-like options by default.
 - If a user explicitly chooses to include sample input, show a privacy warning.
 - Enforce a URL length budget and fall back to export JSON when the recipe is too large.
 - Reuse base64url behavior consistent with `tool-handoff`.
@@ -311,6 +326,7 @@ Failure states must be explicit:
 - Runtime payloads stay in React state or browser storage only when the user explicitly saves a recipe with sample input.
 - Share URLs must not include payloads by default.
 - Analytics must never include recipe input, step output, secrets, or raw options that could contain data.
+- Saved, exported, and shared recipes persist reviewed safe options only. User-authored schemas, regex patterns, examples, defaults, URLs, headers, bodies, and payload-like options stay out of the structure-only recipe boundary by default.
 - Export should be user-triggered only.
 - Imported recipes should never auto-run.
 
@@ -412,7 +428,7 @@ Required gates:
 Continue workbench hardening after the public MVP stays green:
 
 1. Run browser QA across the built-in templates in all supported locales.
-2. Add more deterministic adapters only after each has explicit validation and `publicOptionKeys`.
+2. Add more deterministic adapters only after each has explicit validation, `publicOptionKeys`, and reviewed `persistentOptionKeys` for save/export/share behavior.
 3. Add direct "Send to Pipeline" actions from selected mature tool pages.
 4. Evaluate worker-based execution only if large recipes make main-thread execution a real problem.
 5. Keep branching/merge graph execution out of scope until a separate graph executor design exists.

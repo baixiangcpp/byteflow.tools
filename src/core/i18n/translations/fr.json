@@ -2849,7 +2849,7 @@
       "privacy_preview_confirm_share": "Copier l’URL structure seule",
       "privacy_preview_cancel": "Annuler",
       "privacy_scope_recipe_metadata": "Nom et description de la recette",
-      "privacy_scope_steps_options": "Ordre des étapes, ID des outils, libellés et options publiques",
+      "privacy_scope_steps_options": "Ordre des étapes, ID des outils, libellés et options persistantes vérifiées",
       "privacy_scope_settings": "Paramètres de sécurité comme l'arrêt sur erreur et les limites locales en octets",
       "privacy_scope_runtime_input": "Entrée d'exécution initiale",
       "privacy_scope_outputs": "Sortie finale et sorties intermédiaires",
@@ -2889,7 +2889,8 @@
       "usage_guide_composition_title": "Regles de composition",
       "usage_guide_composition_body": "Les outils peuvent se repeter. La validation verifie versions d'adaptateur et options, tandis que les indications de compatibilite signalent les passages comme une sortie texte vers une entree JSON.",
       "usage_guide_privacy_title": "Limite de confidentialite",
-      "usage_guide_privacy_body": "Save, Export JSON et Share URL conservent uniquement la structure et les options publiques. Entrees d'execution, sorties, logs, fichiers et entrees constantes sont retires."
+      "usage_guide_privacy_body": "Save, Export JSON et Share URL conservent uniquement la structure et les options persistantes verifiees. Entrees d'execution, sorties, logs, fichiers, entrees constantes, schemas et motifs regex sont retires.",
+      "privacy_scope_user_authored_options": "Schémas, motifs regex, exemples, valeurs par défaut, URL, en-têtes, corps et charges utiles rédigés par l'utilisateur"
     },
     "saml_decoder": {
       "title": "Décodeur SAML",
