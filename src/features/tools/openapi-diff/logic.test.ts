@@ -182,4 +182,226 @@ describe("openapi-diff logic", () => {
             expect.objectContaining({ kind: "added", target: "Security scheme oauth" }),
         ]))
     })
+
+    it("flags request body requiredness and request media type removals", () => {
+        const before = JSON.stringify({
+            paths: {
+                "/pets": {
+                    post: {
+                        requestBody: {
+                            required: false,
+                            content: {
+                                "application/json": { schema: { type: "object" } },
+                                "application/xml": { schema: { type: "object" } },
+                            },
+                        },
+                        responses: { "201": {} },
+                    },
+                    put: {
+                        responses: { "200": {} },
+                    },
+                },
+            },
+        })
+        const after = JSON.stringify({
+            paths: {
+                "/pets": {
+                    post: {
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": { schema: { type: "object" } },
+                            },
+                        },
+                        responses: { "201": {} },
+                    },
+                    put: {
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": { schema: { type: "object" } },
+                            },
+                        },
+                        responses: { "200": {} },
+                    },
+                },
+            },
+        })
+
+        const report = diffOpenApiSpecs(before, after)
+
+        expect(report.items).toEqual(expect.arrayContaining([
+            expect.objectContaining({
+                kind: "breaking",
+                target: "POST /pets",
+                message: "requestBody requiredness changed: optional -> required",
+            }),
+            expect.objectContaining({
+                kind: "breaking",
+                target: "POST /pets",
+                message: "request media type removed: application/xml",
+            }),
+            expect.objectContaining({
+                kind: "breaking",
+                target: "PUT /pets",
+                message: "required requestBody added.",
+            }),
+        ]))
+    })
+
+    it("flags response media type removals and schema compatibility risks", () => {
+        const before = JSON.stringify({
+            paths: {
+                "/pets": {
+                    get: {
+                        responses: {
+                            "200": {
+                                content: {
+                                    "application/json": {
+                                        schema: {
+                                            type: "object",
+                                            properties: {
+                                                id: { type: "integer" },
+                                                status: { type: "string", enum: ["available", "sold"] },
+                                                name: { type: "string" },
+                                            },
+                                            required: ["id"],
+                                        },
+                                    },
+                                    "application/xml": { schema: { type: "object" } },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        })
+        const after = JSON.stringify({
+            paths: {
+                "/pets": {
+                    get: {
+                        responses: {
+                            "200": {
+                                content: {
+                                    "application/json": {
+                                        schema: {
+                                            type: "object",
+                                            properties: {
+                                                id: { type: "string" },
+                                                status: { type: "string", enum: ["available"] },
+                                            },
+                                            required: ["id", "name"],
+                                        },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        })
+
+        const report = diffOpenApiSpecs(before, after)
+
+        expect(report.items).toEqual(expect.arrayContaining([
+            expect.objectContaining({
+                kind: "breaking",
+                target: "GET /pets response 200",
+                message: "response media type removed: application/xml",
+            }),
+            expect.objectContaining({
+                kind: "breaking",
+                target: "GET /pets response 200 application/json $.name",
+                message: "response schema property removed.",
+            }),
+            expect.objectContaining({
+                kind: "breaking",
+                target: "GET /pets response 200 application/json $.id",
+                message: "schema type changed: integer -> string",
+            }),
+            expect.objectContaining({
+                kind: "breaking",
+                target: "GET /pets response 200 application/json $.status",
+                message: "schema enum narrowed.",
+            }),
+        ]))
+    })
+
+    it("resolves local refs for parameters and request body schema compatibility", () => {
+        const before = JSON.stringify({
+            paths: {
+                "/pets": {
+                    get: {
+                        parameters: [{ $ref: "#/components/parameters/TenantId" }],
+                        responses: { "200": {} },
+                    },
+                    post: {
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": { schema: { $ref: "#/components/schemas/PetInput" } },
+                            },
+                        },
+                        responses: { "201": {} },
+                    },
+                },
+            },
+            components: {
+                parameters: {
+                    TenantId: { in: "header", name: "X-Tenant", required: false },
+                },
+                schemas: {
+                    PetInput: {
+                        type: "object",
+                        properties: { name: { type: "string" } },
+                    },
+                },
+            },
+        })
+        const after = JSON.stringify({
+            paths: {
+                "/pets": {
+                    get: {
+                        parameters: [{ $ref: "#/components/parameters/TenantId" }],
+                        responses: { "200": {} },
+                    },
+                    post: {
+                        requestBody: {
+                            required: true,
+                            content: {
+                                "application/json": { schema: { $ref: "#/components/schemas/PetInput" } },
+                            },
+                        },
+                        responses: { "201": {} },
+                    },
+                },
+            },
+            components: {
+                parameters: {
+                    TenantId: { in: "header", name: "X-Tenant", required: true },
+                },
+                schemas: {
+                    PetInput: {
+                        type: "object",
+                        properties: { name: { type: "string" }, category: { type: "string" } },
+                        required: ["category"],
+                    },
+                },
+            },
+        })
+
+        const report = diffOpenApiSpecs(before, after)
+
+        expect(report.items).toEqual(expect.arrayContaining([
+            expect.objectContaining({
+                kind: "breaking",
+                message: 'parameter requiredness changed: header parameter "X-Tenant" optional -> required',
+            }),
+            expect.objectContaining({
+                kind: "breaking",
+                target: "POST /pets request application/json $.category",
+                message: "request schema added required property.",
+            }),
+        ]))
+    })
 })

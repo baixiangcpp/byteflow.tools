@@ -3021,7 +3021,7 @@
     },
     "json_schema_workbench": {
       "title": "JSON Schema ワークベンチ",
-      "description": "ブラウザ内で JSON から初期 Schema を生成し、貼り付けた Schema で payload を検証します。",
+      "description": "ブラウザ内で JSON から初期 Schema を生成し、対応済みの基本 Schema チェックを実行します。",
       "mode_label": "JSON Schema モード",
       "mode_generate": "Schema を生成",
       "mode_validate": "payload を検証",

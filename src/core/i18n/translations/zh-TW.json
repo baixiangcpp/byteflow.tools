@@ -3021,7 +3021,7 @@
     },
     "json_schema_workbench": {
       "title": "JSON Schema 工作台",
-      "description": "在瀏覽器本機從 JSON 產生起始 Schema，並用貼上的 Schema 驗證 payload。",
+      "description": "在瀏覽器本機從 JSON 產生起始 Schema，並執行基礎支援的 Schema 檢查。",
       "mode_label": "JSON Schema 模式",
       "mode_generate": "產生 Schema",
       "mode_validate": "驗證 payload",

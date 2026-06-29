@@ -16,8 +16,8 @@ export const toolManifest = {
     },
     sampleInput: "{\"user\":{\"id\":1001,\"email\":\"alice@example.com\",\"active\":true}}",
     sampleMode: "generate-schema",
-    keywords: ["json schema generator", "json schema validator", "json schema workbench", "validate json schema"],
-    searchKeywords: ["schema", "json schema", "validator", "draft 7", "contract"],
+    keywords: ["json schema generator", "basic json schema checks", "json schema workbench", "validate json schema"],
+    searchKeywords: ["schema", "json schema", "basic validator", "contract"],
     persistInput: false,
     networkAccess: "none",
 } satisfies ToolMeta

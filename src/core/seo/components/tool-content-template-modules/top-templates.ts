@@ -5106,10 +5106,10 @@ export const TOP_TOOL_CONTENT_TEMPLATES: Record<string, ToolContentTemplateData>
     },
     "json-schema-workbench": {
         toolKey: "json_schema_workbench",
-        intro: "Generate starter JSON Schema documents from representative payloads and validate JSON against pasted schemas locally, with path-level errors that make API contract drift easier to review.",
+        intro: "Generate starter JSON Schema documents from representative payloads and run basic supported schema checks locally, with path-level errors and unsupported-keyword warnings that make API contract drift easier to review.",
         whatThisToolDoes: [
             "It infers a practical Draft 2020-12 starter schema from objects, arrays, primitives, and nested payload samples.",
-            "It validates pasted JSON against a schema and reports each problem with a concrete JSON-style path and fix hint.",
+            "It runs basic supported schema checks against pasted JSON and warns when schemas use keywords this lightweight mode does not enforce.",
             "It supports both direct tool usage and Pipeline Builder steps for schema generation and validation handoffs.",
             "It keeps payloads and schemas in the browser, which is useful when contract samples include staging fields or private identifiers.",
         ],

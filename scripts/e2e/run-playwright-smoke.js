@@ -529,6 +529,10 @@ async function assertMobileNavigationKeyboardPath(browser, baseUrl) {
 
         const menuTrigger = page.getByRole("button", { name: /Open Navigation/i }).first();
         await menuTrigger.waitFor({ state: "visible", timeout: 15_000 });
+        await page.waitForFunction(() => {
+            const buttons = Array.from(document.querySelectorAll("button"));
+            return buttons.some((button) => /Open Navigation/i.test(button.textContent || button.getAttribute("aria-label") || "") && !button.disabled);
+        }, null, { timeout: 15_000 });
         await menuTrigger.focus();
         await page.keyboard.press("Enter");
 

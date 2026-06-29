@@ -1,4 +1,5 @@
 export type JsonSchemaValue = {
+    $ref?: string
     type?: string | string[]
     properties?: Record<string, JsonSchemaValue>
     required?: string[]
@@ -9,6 +10,7 @@ export type JsonSchemaValue = {
     maximum?: number
     minLength?: number
     maxLength?: number
+    [keyword: string]: unknown
 }
 
 export type JsonSchemaValidationIssue = {
@@ -20,6 +22,12 @@ export type JsonSchemaValidationIssue = {
 export type JsonSchemaValidationReport = {
     valid: boolean
     issues: JsonSchemaValidationIssue[]
+    warnings: JsonSchemaValidationWarning[]
     summary: string
 }
 
+export type JsonSchemaValidationWarning = {
+    path: string
+    keyword: string
+    message: string
+}
