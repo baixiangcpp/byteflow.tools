@@ -3225,6 +3225,7 @@
     "verification_mode_aria_label": "Verification mode",
     "verification_mode_title": "Verification mode",
     "verification_mode_description": "Browser-only aid. It records request hosts and storage keys, not payloads, headers, query strings, or values.",
+    "verification_mode_scope": "Scope: fetch, sendBeacon, and storage changes only. Use DevTools Network for browser-loaded images, scripts, downloads, and other resource loads.",
     "verification_mode_on": "On",
     "verification_mode_off": "Off",
     "verification_mode_browser_local_tool": "Browser-local tool",

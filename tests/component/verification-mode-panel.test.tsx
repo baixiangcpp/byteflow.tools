@@ -3,6 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { LangProvider } from "@/core/i18n/lang-provider"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { VerificationModePanel } from "@/components/layout/verification-mode-panel"
+import { isAllowedVerificationStorageKey } from "@/core/trust/verification-mode"
 
 vi.mock("next/link", () => ({
     default: ({ href, children, ...props }: { href: string; children: React.ReactNode }) => (
@@ -50,6 +51,7 @@ describe("VerificationModePanel", () => {
         expect(screen.getByText("Browser-local tool")).toBeInTheDocument()
         expect(screen.getByText("0 requests observed")).toBeInTheDocument()
         expect(screen.getByText("External hosts: No external hosts observed")).toBeInTheDocument()
+        expect(screen.getByText(/Scope: fetch, sendBeacon, and storage changes only/)).toBeInTheDocument()
         expect(screen.getByRole("link", { name: "Trust Center verification steps" })).toHaveAttribute(
             "href",
             "/en/trust-center#verify-local-processing",
@@ -81,10 +83,12 @@ describe("VerificationModePanel", () => {
         openPanel()
 
         fireEvent.click(screen.getByRole("button", { name: "Off" }))
-        window.localStorage.setItem("byteflow:test:key", "secret-value")
+        window.localStorage.setItem("byteflow:tools:favorites", "secret-value")
+        window.localStorage.setItem("byteflow:jwt-input", "token-like-value")
         window.sessionStorage.setItem("third-party:key", "another-secret-value")
 
-        await waitFor(() => expect(screen.getByText(/localStorage\.setItem\(byteflow:test:key\) allowed/)).toBeInTheDocument())
+        await waitFor(() => expect(screen.getByText(/localStorage\.setItem\(byteflow:tools:favorites\) allowed/)).toBeInTheDocument())
+        expect(screen.getByText(/localStorage\.setItem\(byteflow:jwt-input\) review/)).toBeInTheDocument()
         expect(screen.getByText(/sessionStorage\.setItem\(third-party:key\) review/)).toBeInTheDocument()
         expect(document.body).not.toHaveTextContent("secret-value")
         expect(document.body).not.toHaveTextContent("another-secret-value")
@@ -93,6 +97,15 @@ describe("VerificationModePanel", () => {
 
         expect(screen.getByText("0 requests observed")).toBeInTheDocument()
         expect(screen.getByText("No storage changes observed.")).toBeInTheDocument()
+    })
+
+    it("allows only reviewed safe storage keys", () => {
+        expect(isAllowedVerificationStorageKey("byteflow:tools:favorites")).toBe(true)
+        expect(isAllowedVerificationStorageKey("byteflow:analytics:opt-out")).toBe(true)
+        expect(isAllowedVerificationStorageKey("theme")).toBe(true)
+        expect(isAllowedVerificationStorageKey("byteflow:payload")).toBe(false)
+        expect(isAllowedVerificationStorageKey("byteflow:jwt-input")).toBe(false)
+        expect(isAllowedVerificationStorageKey("byteflow:unknown-preference")).toBe(false)
     })
 
     it("does not render on non-tool routes", () => {

@@ -15,13 +15,69 @@ export type VerificationStorageEntry = {
     timestamp: string
 }
 
-export const ALLOWED_STORAGE_KEY_PREFIXES = [
-    "byteflow:",
-    "theme",
+export type VerificationStorageKeyPolicy = {
+    exactKeys: readonly string[]
+    safePrefixes: readonly string[]
+    reviewSubstrings: readonly string[]
+}
+
+export const VERIFICATION_STORAGE_KEY_POLICY: VerificationStorageKeyPolicy = {
+    exactKeys: [
+        "theme",
+        "byteflow:analytics:opt-out",
+        "byteflow:tools:favorites",
+        "byteflow:tools:recent",
+        "byteflow:preferred-locale",
+        "byteflow:pwa-install:visit-count",
+        "byteflow:pwa-install:dismissed-until",
+        "byteflow:pwa-install:session-prompted",
+        "byteflow:pwa-install:installed",
+        "byteflow:base64:mode",
+        "byteflow:base64:operation",
+        "byteflow:csv-json-converter:direction",
+        "byteflow:csv-json-converter:delimiter",
+        "byteflow:csv-json-converter:has-header",
+        "byteflow:csv-json-converter:type-inference",
+        "byteflow:json-formatter:view-mode",
+        "byteflow:jwt-workbench:algorithm",
+        "byteflow:pipeline-builder:onboarding-dismissed",
+        "byteflow:url-encode-decode:strategy",
+        "byteflow:url-encode-decode:operation",
+        "byteflow:yaml-json-converter:mode",
+        "byteflow:yaml-json-converter:from-format",
+        "byteflow:yaml-json-converter:to-format",
+    ],
+    safePrefixes: [],
+    reviewSubstrings: [
+        "input",
+        "output",
+        "payload",
+        "token",
+        "jwt",
+        "secret",
+        "password",
+        "file",
+        "blob",
+        "image",
+        "log",
+        "har",
+        "request",
+        "response",
+        "body",
+        "content",
+    ],
+} as const
+
+const REVIEW_STORAGE_KEY_SUBSTRINGS = [
+    ...VERIFICATION_STORAGE_KEY_POLICY.reviewSubstrings,
 ] as const
 
 export function isAllowedVerificationStorageKey(key: string): boolean {
-    return ALLOWED_STORAGE_KEY_PREFIXES.some((prefix) => key === prefix || key.startsWith(prefix))
+    const normalized = key.trim().toLowerCase()
+    if (!normalized) return false
+    if (REVIEW_STORAGE_KEY_SUBSTRINGS.some((substring) => normalized.includes(substring))) return false
+    if (VERIFICATION_STORAGE_KEY_POLICY.exactKeys.some((allowedKey) => allowedKey.toLowerCase() === normalized)) return true
+    return VERIFICATION_STORAGE_KEY_POLICY.safePrefixes.some((prefix) => normalized.startsWith(prefix.toLowerCase()))
 }
 
 export function sanitizeVerificationUrl(input: unknown, baseHref: string) {

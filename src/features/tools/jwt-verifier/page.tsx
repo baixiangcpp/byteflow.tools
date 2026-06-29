@@ -15,6 +15,7 @@ import {
     decodeHeader,
     decodePayload,
     verifyJwtSignature,
+    normalizeJwtAlgorithm,
     type JwtSignatureVerificationResult,
 } from "./logic"
 
@@ -63,17 +64,18 @@ export function JwtVerifierPage() {
     const [claims, setClaims] = React.useState<{ label: string; status: string; value: string }[]>([])
 
     const verify = async () => {
-        if (!token.trim()) return
+        if (!token.trim()) return { status: "failed" as const, message: toolT.token_label }
 
         const h = decodeHeader(token)
         const p = decodePayload(token)
         setHeader(h)
         setPayload(p)
-        const alg = h?.alg as string || "unknown"
+        const alg = normalizeJwtAlgorithm(h?.alg)
 
         if (p) setClaims(checkClaims(p, claimLabels))
 
         setVerifyResult(await verifyJwtSignature(token, secret, alg))
+        return { status: "success" as const }
     }
     const clearAll = () => {
         setToken("")
@@ -103,8 +105,10 @@ export function JwtVerifierPage() {
             id: "verify",
             label: toolT.verify_action,
             icon: ShieldCheck,
-            onClick: () => { void verify() },
+            onClick: verify,
             variant: "default",
+            disabled: !token.trim(),
+            disabledReason: toolT.token_label,
         },
     ]
 

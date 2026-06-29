@@ -18,7 +18,7 @@ import {
     readFavoriteToolKeys,
     readRecentToolKeys,
 } from "@/core/storage/tool-discovery-state"
-import { clearByteflowLocalData } from "@/core/storage/tool-persistence-policy"
+import { clearByteflowBrowserData } from "@/core/storage/tool-persistence-policy"
 import { clearSavedRecipes, countSavedRecipes, isRecipeStoreAvailable } from "@/features/pipeline/recipe-store"
 
 type LocalDataSummary = {
@@ -98,7 +98,10 @@ export function LocalDataControls() {
 
     const clearData = async () => {
         setPendingAction("all")
-        const removed = clearByteflowLocalData()
+        const removed = clearByteflowBrowserData({
+            preserveAnalyticsOptOut: true,
+            includeSessionStorage: true,
+        })
         let recipeCount = 0
         if (isRecipeStoreAvailable()) {
             const countResult = await countSavedRecipes()

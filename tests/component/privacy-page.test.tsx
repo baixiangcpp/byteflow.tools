@@ -14,21 +14,29 @@ vi.mock("next/link", () => ({
 
 function installMemoryStorage() {
     const store = new Map<string, string>()
+    const createStorage = (storageStore: Map<string, string>) => ({
+        getItem: (key: string) => (storageStore.has(key) ? storageStore.get(key)! : null),
+        setItem: (key: string, value: string) => {
+            storageStore.set(key, value)
+        },
+        removeItem: (key: string) => {
+            storageStore.delete(key)
+        },
+        clear: () => {
+            storageStore.clear()
+        },
+        key: (index: number) => Array.from(storageStore.keys())[index] ?? null,
+        get length() {
+            return storageStore.size
+        },
+    })
     Object.defineProperty(window, "localStorage", {
         configurable: true,
-        value: {
-            getItem: (key: string) => (store.has(key) ? store.get(key)! : null),
-            setItem: (key: string, value: string) => {
-                store.set(key, value)
-            },
-            removeItem: (key: string) => {
-                store.delete(key)
-            },
-            key: (index: number) => Array.from(store.keys())[index] ?? null,
-            get length() {
-                return store.size
-            },
-        },
+        value: createStorage(store),
+    })
+    Object.defineProperty(window, "sessionStorage", {
+        configurable: true,
+        value: createStorage(new Map<string, string>()),
     })
 }
 
@@ -117,6 +125,29 @@ describe("PrivacyPage", () => {
         await waitFor(() => expect(window.localStorage.getItem("byteflow:preferred-locale")).toBeNull())
         expect(window.localStorage.getItem("byteflow:analytics:opt-out")).toBe("1")
         expect(screen.getByText("Cleared 1 preference items.")).toBeInTheDocument()
+    })
+
+    it("clears all Byteflow data while preserving analytics opt-out and clearing session state", async () => {
+        window.localStorage.setItem("byteflow:analytics:opt-out", "1")
+        window.localStorage.setItem("byteflow:preferred-locale", "en")
+        window.localStorage.setItem("byteflow:tools:favorites", JSON.stringify([{ toolKey: "json-formatter", updatedAt: "2026-01-01T00:00:00.000Z" }]))
+        window.sessionStorage.setItem("byteflow:pwa-install:session-prompted", "1")
+        window.sessionStorage.setItem("third-party:state", "keep")
+
+        render(
+            <LangProvider lang="en" translations={getTranslation("en")}>
+                <PrivacyPage />
+            </LangProvider>,
+        )
+
+        fireEvent.click(screen.getByRole("button", { name: "Clear saved tool data" }))
+
+        await waitFor(() => expect(window.localStorage.getItem("byteflow:preferred-locale")).toBeNull())
+        expect(window.localStorage.getItem("byteflow:tools:favorites")).toBeNull()
+        expect(window.localStorage.getItem("byteflow:analytics:opt-out")).toBe("1")
+        expect(window.sessionStorage.getItem("byteflow:pwa-install:session-prompted")).toBeNull()
+        expect(window.sessionStorage.getItem("third-party:state")).toBe("keep")
+        expect(screen.getByLabelText("Opt out of analytics on this browser")).toBeChecked()
     })
 
     it("clears only byteflow PWA cache buckets from local data controls", async () => {

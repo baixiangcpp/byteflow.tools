@@ -51,6 +51,7 @@ export function VerificationModePanel({ pathname }: VerificationModePanelProps) 
         ariaLabel: requireTranslationValue(t.pages.verification_mode_aria_label, "pages.verification_mode_aria_label"),
         title: requireTranslationValue(t.pages.verification_mode_title, "pages.verification_mode_title"),
         description: requireTranslationValue(t.pages.verification_mode_description, "pages.verification_mode_description"),
+        scope: requireTranslationValue(t.pages.verification_mode_scope, "pages.verification_mode_scope"),
         on: requireTranslationValue(t.pages.verification_mode_on, "pages.verification_mode_on"),
         off: requireTranslationValue(t.pages.verification_mode_off, "pages.verification_mode_off"),
         browserLocalTool: requireTranslationValue(t.pages.verification_mode_browser_local_tool, "pages.verification_mode_browser_local_tool"),
@@ -198,6 +199,9 @@ export function VerificationModePanel({ pathname }: VerificationModePanelProps) 
                     </p>
                     <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
                         {copy.description}
+                    </p>
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                        {copy.scope}
                     </p>
                 </div>
                 <div className="flex items-center gap-1">

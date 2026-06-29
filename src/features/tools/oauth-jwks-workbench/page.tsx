@@ -49,43 +49,59 @@ export function OauthJwksWorkbenchPage() {
         }
     }, [keyOptions, mode, selectedKey])
 
-    const run = React.useCallback(() => {
+    const run = React.useCallback(async () => {
         setError(null)
         if (mode === "pkce") {
-            void generatePkcePair().then((pair) => setOutput(JSON.stringify(pair, null, 2))).catch((runError: unknown) => setError(runError instanceof Error ? runError.message : String(runError)))
-            return
+            try {
+                const pair = await generatePkcePair()
+                setOutput(JSON.stringify(pair, null, 2))
+                return { status: "success" as const }
+            } catch (runError: unknown) {
+                setError(runError instanceof Error ? runError.message : String(runError))
+                return { status: "failed" as const }
+            }
         }
         try {
             const keys = summarizeJwks(jwks)
             setOutput(JSON.stringify({ keys }, null, 2))
-            void verifyJwtWithJwks(token, jwks, { selectedKey })
-                .then((report) => setOutput(JSON.stringify({ keys, verification: report }, null, 2)))
-                .catch((verifyError: unknown) => {
-                    setOutput(JSON.stringify({ keys, verification: { valid: false, message: verifyError instanceof Error ? verifyError.message : String(verifyError) } }, null, 2))
-                })
+            try {
+                const report = await verifyJwtWithJwks(token, jwks, { selectedKey })
+                setOutput(JSON.stringify({ keys, verification: report }, null, 2))
+            } catch (verifyError: unknown) {
+                setOutput(JSON.stringify({ keys, verification: { valid: false, message: verifyError instanceof Error ? verifyError.message : String(verifyError) } }, null, 2))
+            }
+            return { status: "success" as const }
         } catch (runError) {
             setOutput("")
             setError(runError instanceof Error ? runError.message : String(runError))
+            return { status: "failed" as const }
         }
     }, [jwks, mode, selectedKey, token])
 
     const copyOutput = async () => {
-        if (!output) return
+        if (!output) {
+            return { status: "failed" as const }
+        }
         const result = await safeClipboardWrite(output)
         if (!result.ok) {
             toast.error(t.common.copy_failed)
-            return
+            return { status: "failed" as const, message: t.common.copy_failed }
         }
         toast.success(t.common.copied)
+        return { status: "success" as const, message: t.common.copied }
     }
 
+    /*
+     * ToolActionBar depends on async actions returning their Promise so pending
+     * and failure announcements reflect the actual browser work.
+     */
     const actions: ToolAction[] = [
         ...(mode === "jwks"
             ? [{ id: "sample", label: t.common.sample, icon: RotateCcw, onClick: () => { setJwks(SAMPLE_INPUT); setToken(SAMPLE_JWT); setSelectedKey("sample-rsa-key"); setOutput(""); setError(null) } } satisfies ToolAction]
             : []),
         { id: "clear", label: t.common.clear, icon: Eraser, onClick: () => { if (mode === "jwks") { setJwks(""); setToken(""); setSelectedKey("") } setOutput(""); setError(null) } },
         { id: "run", label: mode === "pkce" ? toolT.generate_pkce_action : toolT.inspect_jwks_action, icon: Play, onClick: run, variant: "default" },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void copyOutput(), disabled: !output },
+        { id: "copy", label: t.common.copy, icon: Copy, onClick: copyOutput, disabled: !output },
     ]
 
     return (

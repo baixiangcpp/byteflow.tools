@@ -54,6 +54,8 @@ describe("jwt verifier claims", () => {
         expect(classifyJwtVerificationAlgorithm("RS256")).toBe("unsupported")
         expect(classifyJwtVerificationAlgorithm("ES256")).toBe("unsupported")
         expect(classifyJwtVerificationAlgorithm("none")).toBe("unsigned")
+        expect(classifyJwtVerificationAlgorithm(123)).toBe("unsupported")
+        expect(classifyJwtVerificationAlgorithm({ name: "HS256" })).toBe("unsupported")
     })
 
     it("verifies HMAC signatures without treating unsupported algorithms as invalid", async () => {
@@ -65,6 +67,7 @@ describe("jwt verifier claims", () => {
         await expect(verifyJwtSignature(token, "correct", "HS256")).resolves.toEqual({ status: "valid", algorithm: "HS256" })
         await expect(verifyJwtSignature(token, "wrong", "HS256")).resolves.toEqual({ status: "invalid", algorithm: "HS256" })
         await expect(verifyJwtSignature(token, "ignored", "RS256")).resolves.toEqual({ status: "unsupported", algorithm: "RS256" })
+        await expect(verifyJwtSignature(token, "ignored", 123)).resolves.toEqual({ status: "unsupported", algorithm: "non-string alg" })
         await expect(verifyJwtSignature(`${encodeJsonSegment({ alg: "none" })}.${payload}.`, "", "none")).resolves.toEqual({ status: "unsigned", algorithm: "none" })
     })
 })

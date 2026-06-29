@@ -3225,6 +3225,7 @@
     "verification_mode_aria_label": "Mode de vérification",
     "verification_mode_title": "Mode de vérification",
     "verification_mode_description": "Aide dans le navigateur. Il enregistre les hôtes de requête et clés de stockage, pas les payloads, headers, chaînes de requête ni valeurs.",
+    "verification_mode_scope": "Portée : fetch, sendBeacon et changements de stockage seulement. Utilisez DevTools Network pour les images, scripts, téléchargements et autres ressources chargés par le navigateur.",
     "verification_mode_on": "Activé",
     "verification_mode_off": "Désactivé",
     "verification_mode_browser_local_tool": "Outil local au navigateur",
