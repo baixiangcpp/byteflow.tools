@@ -223,7 +223,7 @@ export function TextToHandwritingConverterPage() {
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: handleSample },
         { id: "rerender", label: toolT.render_action, icon: RefreshCw, onClick: () => setInput((value) => value) },
         { id: "reset", label: t.common.reset, icon: Eraser, onClick: handleReset },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy() },
+        { id: "copy", label: t.common.copy, icon: Copy, onClick: handleCopy },
         { id: "download", label: toolT.download_png_action, icon: Download, onClick: handleDownload, disabled: !dataUrl },
     ]
 

@@ -140,7 +140,7 @@ function getResultAnnouncement(action: ToolAction, result: ToolActionResult | vo
         const message = result.message || (result.status === "success"
             ? formatActionStatus(t.common.action_status_success, action.label, "completed")
             : formatActionStatus(t.common.action_status_failed, action.label, "failed"))
-        return result.description ? `${message}. ${result.description}` : message
+        return result.description ? `${message}${/[.!?]$/.test(message) ? "" : "."} ${result.description}` : message
     }
 
     return formatActionStatus(t.common.action_status_success, action.label, "completed")
@@ -219,11 +219,16 @@ export function ToolActionBar({
                 setLastActionStatus((current) => ({ ...current, [action.id]: "pending" }))
                 setActionAnnouncement(formatActionStatus(t.common.action_status_pending, action.label, "in progress"))
                 const awaitedResult = await maybeResult
-                setLastActionStatus((current) => ({
-                    ...current,
-                    [action.id]: isActionResult(awaitedResult) ? awaitedResult.status : "success",
-                }))
-                setActionAnnouncement(getResultAnnouncement(action, awaitedResult, t))
+                if (isActionResult(awaitedResult)) {
+                    setLastActionStatus((current) => ({
+                        ...current,
+                        [action.id]: awaitedResult.status,
+                    }))
+                    setActionAnnouncement(getResultAnnouncement(action, awaitedResult, t))
+                } else {
+                    setLastActionStatus((current) => ({ ...current, [action.id]: "idle" }))
+                    setActionAnnouncement("")
+                }
             } catch {
                 setLastActionStatus((current) => ({ ...current, [action.id]: "failed" }))
                 setActionAnnouncement(formatActionStatus(t.common.action_status_failed, action.label, "failed"))

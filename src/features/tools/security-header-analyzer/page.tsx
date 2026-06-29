@@ -94,9 +94,7 @@ export function SecurityHeaderAnalyzerPage() {
             id: "copy_output",
             label: t.common.copy,
             icon: Copy,
-            onClick: () => {
-                void handleCopyReport()
-            },
+            onClick: handleCopyReport,
         },
     ]
 

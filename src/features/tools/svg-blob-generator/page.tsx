@@ -96,7 +96,7 @@ export function SvgBlobGeneratorPage() {
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: handleSample },
         { id: "random", label: toolT.random_action, icon: Sparkles, onClick: handleRandomize },
         { id: "reset", label: t.common.reset, icon: Eraser, onClick: handleReset },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy() },
+        { id: "copy", label: t.common.copy, icon: Copy, onClick: handleCopy },
         { id: "download", label: t.common.download, icon: Download, onClick: handleDownload },
     ]
 

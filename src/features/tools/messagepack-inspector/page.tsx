@@ -47,7 +47,7 @@ export function MessagepackInspectorPage() {
 
     const actions: ToolAction[] = [
         { id: "run", label: toolT.decode_action, icon: Play, onClick: run, variant: "default", disabled: !input.trim() },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void copyOutput(), disabled: !output },
+        { id: "copy", label: t.common.copy, icon: Copy, onClick: copyOutput, disabled: !output },
         { id: "sample", label: t.common.sample, icon: RotateCcw, onClick: () => { setInput(SAMPLE_INPUT); setOutput(""); setSummary(""); setError(null) } },
         { id: "clear", label: t.common.clear, icon: Eraser, onClick: () => { setInput(""); setOutput(""); setSummary(""); setError(null) } },
     ]

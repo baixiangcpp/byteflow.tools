@@ -1,11 +1,31 @@
-import { readFileSync } from "node:fs"
+import { readdirSync, readFileSync, statSync } from "node:fs"
+import { join } from "node:path"
 import { describe, expect, it } from "vitest"
 
 function read(path: string) {
     return readFileSync(path, "utf8")
 }
 
+function listFiles(dir: string): string[] {
+    return readdirSync(dir).flatMap((entry) => {
+        const path = join(dir, entry)
+        return statSync(path).isDirectory() ? listFiles(path) : [path]
+    })
+}
+
 describe("tool action consistency guard", () => {
+    it("prevents shared ToolAction handlers from hiding async work behind void wrappers", () => {
+        const files = listFiles("src/features")
+            .filter((file) => file.endsWith(".tsx"))
+            .filter((file) => read(file).includes("ToolAction"))
+
+        for (const file of files) {
+            const source = read(file)
+            expect(source, file).not.toMatch(/onClick:\s*\(\)\s*=>\s*void\s+[A-Za-z_$][\w$]*\s*\(/)
+            expect(source, file).not.toMatch(/onClick:\s*\(\)\s*=>\s*\{\s*void\s+[A-Za-z_$][\w$]*\s*\(/)
+        }
+    })
+
     it("documents shared Sample, Clear, Reset, disabled, and destructive action semantics", () => {
         const designSystem = read("docs/specs/design-system.md")
 

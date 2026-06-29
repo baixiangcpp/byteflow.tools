@@ -101,7 +101,7 @@ export function ReactNativeShadowGeneratorPage() {
     const actions: ToolAction[] = [
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: handleSample },
         { id: "reset", label: t.common.reset, icon: Eraser, onClick: handleReset },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy() },
+        { id: "copy", label: t.common.copy, icon: Copy, onClick: handleCopy },
     ]
 
     return (

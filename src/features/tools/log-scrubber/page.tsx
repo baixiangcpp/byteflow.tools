@@ -122,7 +122,7 @@ password=hunter2`)
             id: "copy",
             label: t.common.copy,
             icon: Copy,
-            onClick: () => void copyOutput(),
+            onClick: copyOutput,
             disabled: !output,
             disabledReason: t.common.action_disabled_no_output,
         },

@@ -88,7 +88,7 @@ export function JsonPathPlaygroundPage() {
 
     const actions: ToolAction[] = [
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: handleSample },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopyResult(), disabled: !result },
+        { id: "copy", label: t.common.copy, icon: Copy, onClick: handleCopyResult, disabled: !result },
         { id: "clear", label: t.common.clear, icon: Trash2, onClick: () => { setJson(""); setPath(""); } },
     ]
 

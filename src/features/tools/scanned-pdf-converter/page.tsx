@@ -298,10 +298,10 @@ export function ScannedPdfConverterPage() {
     }
 
     const actions: ToolAction[] = [
-        { id: "sample", label: t.common.sample, icon: TestTube2, onClick: () => void handleSample() },
+        { id: "sample", label: t.common.sample, icon: TestTube2, onClick: handleSample },
         { id: "reset", label: t.common.reset, icon: Eraser, onClick: handleReset },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy() },
-        { id: "download", label: isBusy ? toolT.exporting : t.common.download, icon: Download, onClick: () => void handleDownload(), disabled: pages.length === 0 || isBusy },
+        { id: "copy", label: t.common.copy, icon: Copy, onClick: handleCopy },
+        { id: "download", label: isBusy ? toolT.exporting : t.common.download, icon: Download, onClick: handleDownload, disabled: pages.length === 0 || isBusy },
     ]
 
     return (

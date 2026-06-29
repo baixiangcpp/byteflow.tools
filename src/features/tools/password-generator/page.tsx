@@ -192,7 +192,7 @@ export function PasswordGeneratorPage() {
             id: "copyAll",
             label: text("copy_all"),
             icon: Copy,
-            onClick: () => void handleCopyAll(),
+            onClick: handleCopyAll,
             disabled: !results.length,
             variant: "default",
         },

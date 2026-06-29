@@ -200,9 +200,9 @@ export function BarcodeGeneratorPage() {
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: handleSample },
         { id: "generate", label: toolT.generate_action, icon: Play, onClick: handleGenerate },
         { id: "reset", label: t.common.reset, icon: Eraser, onClick: handleReset },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy() },
+        { id: "copy", label: t.common.copy, icon: Copy, onClick: handleCopy },
         { id: "svg", label: "SVG", icon: Download, onClick: handleDownloadSvg, disabled: !canExport },
-        { id: "png", label: "PNG", icon: Download, onClick: () => void handleDownloadPng(), disabled: !canExport },
+        { id: "png", label: "PNG", icon: Download, onClick: handleDownloadPng, disabled: !canExport },
     ]
 
     return (

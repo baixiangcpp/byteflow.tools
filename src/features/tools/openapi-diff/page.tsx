@@ -57,7 +57,7 @@ export function OpenapiDiffPage() {
 
     const actions: ToolAction[] = [
         { id: "run", label: toolT.compare_action, icon: Play, onClick: run, variant: "default", disabled: !before.trim() || !after.trim() },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void copyOutput(), disabled: !output },
+        { id: "copy", label: t.common.copy, icon: Copy, onClick: copyOutput, disabled: !output },
         { id: "download", label: t.common.download, icon: Download, onClick: () => downloadText("openapi-diff-report.txt", output), disabled: !output },
         { id: "sample", label: t.common.sample, icon: RotateCcw, onClick: loadSample },
         { id: "clear", label: t.common.clear, icon: Eraser, onClick: clear },

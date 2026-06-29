@@ -70,7 +70,7 @@ export function CssCubicBezierGeneratorPage() {
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: handleSample },
         { id: "run", label: toolT.run_action, icon: Play, onClick: () => setRun((v) => !v) },
         { id: "reset", label: t.common.reset, icon: Eraser, onClick: handleReset },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy() },
+        { id: "copy", label: t.common.copy, icon: Copy, onClick: handleCopy },
         { id: "download", label: t.common.download, icon: Download, onClick: handleDownload },
     ]
 
