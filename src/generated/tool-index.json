@@ -2,7 +2,7 @@
   "counts": {
     "canonicalTools": 131,
     "aliasRoutes": 2,
-    "routeDirs": 199,
+    "routeDirs": 200,
     "unknownRouteDirs": 0
   },
   "canonicalTools": [
@@ -6993,6 +6993,14 @@
       "targetSlug": null,
       "inHubGroup": false,
       "inStaticGroup": false
+    },
+    {
+      "slug": "support",
+      "hasPage": true,
+      "kind": "static-content",
+      "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": true
     },
     {
       "slug": "svg-blob-generator",

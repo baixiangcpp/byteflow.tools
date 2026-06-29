@@ -15,7 +15,7 @@ import { getRouteToolBySlug } from "@/generated/route-tool-lookup"
 import { ToolTrustHeader } from "@/features/tool-shell/tool-trust-header"
 import { ToolFavoriteControl } from "./tool-favorite-control"
 
-const EXCLUDED_CONTENT_INTRO_SLUGS = new Set(["about", "pricing", "contact", "privacy", "terms", "install-app"])
+const EXCLUDED_CONTENT_INTRO_SLUGS = new Set(["about", "pricing", "contact", "privacy", "terms", "install-app", "support"])
 
 type RoutePageChromeProps = {
     children: React.ReactNode

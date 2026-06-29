@@ -94,6 +94,7 @@
     "sha256-digest-generator",
     "sha384-digest-generator",
     "sha512-digest-generator",
+    "support",
     "svg-optimization-and-conversion-best-practices",
     "terms",
     "trust-center",

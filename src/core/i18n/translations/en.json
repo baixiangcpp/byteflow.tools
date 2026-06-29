@@ -3304,6 +3304,21 @@
     "contact_public_planning_desc": "Use public requests only with sanitized examples. Do not post real secrets, private payloads, HAR files, private URLs, logs, prompts, generated output, request bodies, or response bodies.",
     "contact_roadmap_link": "Roadmap",
     "contact_distribution_research_link": "Extension and desktop research",
-    "contact_self_hosting_link": "Self-hosting"
+    "contact_self_hosting_link": "Self-hosting",
+    "support_title": "Privacy-safe support",
+    "support_intro": "Support byteflow.tools through plain sponsorship inquiries or private deployment help while keeping the core tools free, open source, browser-local, and account-free.",
+    "support_badge": "Support without ad tracking",
+    "support_sponsor_title": "Sponsor placements",
+    "support_sponsor_desc": "Sponsorships are plain-text or logo placements with normal links only. They do not use tracking pixels, personalized ads, ad scripts, or behavioral profiling.",
+    "support_private_deployment_title": "Private deployment support",
+    "support_private_deployment_desc": "Deployment support can cover static hosting, internal deployment, security review, packaging, maintenance, and offline distribution guidance without requiring a cloud account.",
+    "support_boundaries_title": "Privacy boundaries",
+    "support_boundary_free": "Core tools remain free and open source.",
+    "support_boundary_no_tracking": "Sponsor placements use no tracking pixels, no personalized ads, and no ad scripts.",
+    "support_boundary_no_payload": "Sponsors do not receive payload access, query text, user identifiers, or behavioral profiles.",
+    "support_boundary_no_account": "No cloud account or hosted payload history is required for support or private deployment help.",
+    "support_cta_email": "Contact support",
+    "support_cta_github": "Review the source",
+    "contact_support_desc": "Ask about sponsorship, private deployment, security review, packaging, or maintenance without sharing private payloads."
   }
 }

@@ -86,15 +86,12 @@ export default function PricingPage() {
                     <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                         {p.pricing_support_desc}
                     </p>
-                    <a
-                        href="https://github.com/baixiangcpp/byteflow.tools"
-                        target="_blank"
-                        rel="noopener noreferrer"
+                    <Link
+                        href={`/${lang}/support`}
                         className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
-                        {p.pricing_github_project}
-                        <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                    </a>
+                        {p.support_title}
+                    </Link>
                 </article>
                 <article className="rounded-2xl border border-border/70 bg-background/55 p-5">
                     <ServerCog className="h-5 w-5 text-primary" aria-hidden="true" />
@@ -110,7 +107,7 @@ export default function PricingPage() {
                             {p.self_hosting_title}
                         </Link>
                         <Link
-                            href={`/${lang}/contact`}
+                            href={`/${lang}/support`}
                             className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                         >
                             <Mail className="h-3.5 w-3.5" aria-hidden="true" />

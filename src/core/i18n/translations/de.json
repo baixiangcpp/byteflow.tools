@@ -3304,6 +3304,21 @@
     "contact_public_planning_desc": "Nutzen Sie oeffentliche Anfragen nur mit bereinigten Beispielen. Posten Sie keine echten Secrets, privaten Payloads, HAR-Dateien, privaten URLs, Logs, Prompts, generierten Ausgaben, Request-Bodies oder Response-Bodies.",
     "contact_roadmap_link": "Fahrplan",
     "contact_distribution_research_link": "Erweiterungs- und Desktop-Recherche",
-    "contact_self_hosting_link": "Selbsthosting"
+    "contact_self_hosting_link": "Selbsthosting",
+    "support_title": "Datenschutzsichere Unterstützung",
+    "support_intro": "Unterstützen Sie byteflow.tools über einfache Sponsoring-Anfragen oder private Deployment-Hilfe, während die Kern-Tools kostenlos, Open Source, browser-lokal und ohne Konto bleiben.",
+    "support_badge": "Unterstützung ohne Ad-Tracking",
+    "support_sponsor_title": "Sponsoring-Platzierungen",
+    "support_sponsor_desc": "Sponsoring nutzt nur Plain-Text- oder Logo-Platzierungen mit normalen Links. Es gibt keine Tracking-Pixel, personalisierte Werbung, Ad-Skripte oder Verhaltensprofile.",
+    "support_private_deployment_title": "Private Deployment-Unterstützung",
+    "support_private_deployment_desc": "Deployment-Hilfe kann statisches Hosting, interne Bereitstellung, Sicherheitsprüfung, Packaging, Wartung und Offline-Distribution abdecken, ohne ein Cloud-Konto zu verlangen.",
+    "support_boundaries_title": "Datenschutzgrenzen",
+    "support_boundary_free": "Die Kern-Tools bleiben kostenlos und Open Source.",
+    "support_boundary_no_tracking": "Sponsoring-Platzierungen verwenden keine Tracking-Pixel, keine personalisierte Werbung und keine Ad-Skripte.",
+    "support_boundary_no_payload": "Sponsoren erhalten keinen Payload-Zugriff, keine Suchtexte, keine Nutzerkennungen und keine Verhaltensprofile.",
+    "support_boundary_no_account": "Für Support oder private Deployment-Hilfe ist kein Cloud-Konto und kein gehosteter Payload-Verlauf erforderlich.",
+    "support_cta_email": "Support kontaktieren",
+    "support_cta_github": "Quellcode prüfen",
+    "contact_support_desc": "Fragen Sie zu Sponsoring, privatem Deployment, Sicherheitsprüfung, Packaging oder Wartung an, ohne private Payloads zu teilen."
   }
 }

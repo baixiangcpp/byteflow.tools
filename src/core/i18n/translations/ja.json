@@ -3304,6 +3304,21 @@
     "pricing_internal_deployment_title": "内部デプロイの相談",
     "pricing_internal_deployment_desc": "セルフホストでもクラウド履歴なしの約束を保ちます。ホスト型アカウント、payload 同期、サーバー側のツール payload 処理はありません。",
     "pricing_internal_deployment_cta": "内部デプロイを相談",
-    "pricing_self_hosting_guide": "セルフホストガイド"
+    "pricing_self_hosting_guide": "セルフホストガイド",
+    "support_title": "プライバシー安全なサポート",
+    "support_intro": "通常のスポンサー問い合わせやプライベート導入支援で byteflow.tools を支援できます。中核ツールは無料、オープンソース、ブラウザ内処理、アカウント不要のままです。",
+    "support_badge": "広告追跡なしの支援",
+    "support_sponsor_title": "スポンサー掲載",
+    "support_sponsor_desc": "スポンサー掲載はプレーンテキストまたはロゴと通常リンクのみです。追跡ピクセル、パーソナライズ広告、広告スクリプト、行動プロファイルは使いません。",
+    "support_private_deployment_title": "プライベート導入支援",
+    "support_private_deployment_desc": "導入支援は静的ホスティング、社内導入、セキュリティレビュー、パッケージング、保守、オフライン配布の相談を扱い、クラウドアカウントは不要です。",
+    "support_boundaries_title": "プライバシー境界",
+    "support_boundary_free": "中核ツールは無料でオープンソースのままです。",
+    "support_boundary_no_tracking": "スポンサー掲載は追跡ピクセル、パーソナライズ広告、広告スクリプトを使いません。",
+    "support_boundary_no_payload": "スポンサーは payload へのアクセス、検索文、ユーザー識別子、行動プロファイルを受け取りません。",
+    "support_boundary_no_account": "サポートやプライベート導入支援にクラウドアカウントやホストされた payload 履歴は必要ありません。",
+    "support_cta_email": "サポートに連絡",
+    "support_cta_github": "ソースを確認",
+    "contact_support_desc": "スポンサー、プライベート導入、セキュリティレビュー、パッケージング、保守について、非公開 payload を共有せずに相談できます。"
   }
 }

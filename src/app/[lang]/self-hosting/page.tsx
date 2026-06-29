@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { Server, ShieldCheck, WifiOff } from "lucide-react"
+import { HeartHandshake, Server, ShieldCheck, WifiOff } from "lucide-react"
 import type { Locale } from "@/core/i18n/i18n"
 import { isValidLocale } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
@@ -160,6 +160,10 @@ export default async function SelfHostingPage({ params }: { params: Promise<{ la
                         <ShieldCheck className="h-4 w-4" aria-hidden="true" />
                         {t.pages.trust_center_title}
                     </Link>
+                    <Link className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href={`/${lang}/support`}>
+                        <HeartHandshake className="h-4 w-4" aria-hidden="true" />
+                        {t.pages.support_title}
+                    </Link>
                 </div>
             </section>
 
@@ -189,6 +193,10 @@ export default async function SelfHostingPage({ params }: { params: Promise<{ la
                     <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                         {copy.boundaryBody}
                     </p>
+                    <Link className="mt-4 inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring" href={`/${lang}/support`}>
+                        <HeartHandshake className="h-3.5 w-3.5" aria-hidden="true" />
+                        {t.pages.support_private_deployment_title}
+                    </Link>
                 </article>
             </section>
         </div>

@@ -27,6 +27,7 @@ export function ServerFooter({
         { key: "roadmap", slug: "roadmap", label: requireTranslationValue(translations.pages.roadmap_title, "pages.roadmap_title") },
         { key: "changelog", slug: "changelog", label: requireTranslationValue(translations.pages.changelog_title, "pages.changelog_title") },
         { key: "self-hosting", slug: "self-hosting", label: requireTranslationValue(translations.pages.self_hosting_title, "pages.self_hosting_title") },
+        { key: "support", slug: "support", label: requireTranslationValue(translations.pages.support_title, "pages.support_title") },
         { key: "terms", slug: "terms", label: requireTranslationValue(translations.pages.terms_title, "pages.terms_title") },
         { key: "contact", slug: "contact", label: requireTranslationValue(translations.pages.contact_title, "pages.contact_title") },
     ].map((page) => ({

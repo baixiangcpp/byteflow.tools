@@ -3304,6 +3304,21 @@
     "pricing_internal_deployment_title": "내부 배포 안내",
     "pricing_internal_deployment_desc": "자체 호스팅은 클라우드 기록 없음 약속을 유지합니다. 호스팅 계정, payload 동기화, 서버 측 도구 payload 처리가 없습니다.",
     "pricing_internal_deployment_cta": "내부 배포 문의",
-    "pricing_self_hosting_guide": "자체 호스팅 가이드"
+    "pricing_self_hosting_guide": "자체 호스팅 가이드",
+    "support_title": "개인정보 보호형 지원",
+    "support_intro": "일반 스폰서 문의나 비공개 배포 지원으로 byteflow.tools를 도울 수 있으며, 핵심 도구는 무료, 오픈소스, 브라우저 로컬, 계정 불필요 상태를 유지합니다.",
+    "support_badge": "광고 추적 없는 지원",
+    "support_sponsor_title": "스폰서 표시",
+    "support_sponsor_desc": "스폰서 표시는 일반 텍스트 또는 로고와 일반 링크만 사용합니다. 추적 픽셀, 개인화 광고, 광고 스크립트, 행동 프로필은 사용하지 않습니다.",
+    "support_private_deployment_title": "비공개 배포 지원",
+    "support_private_deployment_desc": "배포 지원은 정적 호스팅, 내부 배포, 보안 검토, 패키징, 유지보수, 오프라인 배포 안내를 다루며 클라우드 계정을 요구하지 않습니다.",
+    "support_boundaries_title": "개인정보 경계",
+    "support_boundary_free": "핵심 도구는 계속 무료이며 오픈소스입니다.",
+    "support_boundary_no_tracking": "스폰서 표시는 추적 픽셀, 개인화 광고, 광고 스크립트를 사용하지 않습니다.",
+    "support_boundary_no_payload": "스폰서는 payload 접근 권한, 검색 텍스트, 사용자 식별자, 행동 프로필을 받지 않습니다.",
+    "support_boundary_no_account": "지원이나 비공개 배포 도움에는 클라우드 계정 또는 호스팅된 payload 기록이 필요하지 않습니다.",
+    "support_cta_email": "지원 문의",
+    "support_cta_github": "소스 확인",
+    "contact_support_desc": "비공개 payload 공유 없이 스폰서십, 비공개 배포, 보안 검토, 패키징, 유지보수를 문의하세요."
   }
 }

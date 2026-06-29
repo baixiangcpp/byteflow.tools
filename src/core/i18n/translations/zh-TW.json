@@ -3304,6 +3304,21 @@
     "pricing_internal_deployment_title": "內部部署指引",
     "pricing_internal_deployment_desc": "自託管會保留無雲端歷史承諾：無託管帳號、無 payload 同步，也沒有服務端工具 payload 處理。",
     "pricing_internal_deployment_cta": "諮詢內部部署",
-    "pricing_self_hosting_guide": "自託管指南"
+    "pricing_self_hosting_guide": "自託管指南",
+    "support_title": "隱私安全支持",
+    "support_intro": "透過普通贊助洽詢或私有部署協助支持 byteflow.tools，同時維持核心工具免費、開源、瀏覽器本地處理且無需帳號。",
+    "support_badge": "無廣告追蹤的支持",
+    "support_sponsor_title": "贊助展示",
+    "support_sponsor_desc": "贊助展示僅使用純文字或 logo 與普通連結，不使用追蹤像素、個人化廣告、廣告腳本或行為輪廓。",
+    "support_private_deployment_title": "私有部署支持",
+    "support_private_deployment_desc": "部署支持可涵蓋靜態託管、內部部署、安全審查、打包、維護和離線分發指引，且不要求雲端帳號。",
+    "support_boundaries_title": "隱私邊界",
+    "support_boundary_free": "核心工具保持免費且開源。",
+    "support_boundary_no_tracking": "贊助展示不使用追蹤像素、個人化廣告或廣告腳本。",
+    "support_boundary_no_payload": "贊助方不會取得 payload 存取權、查詢文字、使用者識別或行為輪廓。",
+    "support_boundary_no_account": "支持或私有部署協助不需要雲端帳號或託管 payload 歷史。",
+    "support_cta_email": "聯絡支持",
+    "support_cta_github": "查看原始碼",
+    "contact_support_desc": "洽詢贊助、私有部署、安全審查、打包或維護，不需要分享私有 payload。"
   }
 }

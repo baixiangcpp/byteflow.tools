@@ -3304,6 +3304,21 @@
     "contact_public_planning_desc": "Utilisez les demandes publiques uniquement avec des exemples nettoyes. Ne publiez pas de vrais secrets, payloads prives, fichiers HAR, URL privees, logs, prompts, sorties generees, corps de requete ou corps de reponse.",
     "contact_roadmap_link": "Feuille de route",
     "contact_distribution_research_link": "Recherche extension et desktop",
-    "contact_self_hosting_link": "Auto-hebergement"
+    "contact_self_hosting_link": "Auto-hebergement",
+    "support_title": "Soutien respectueux de la vie privée",
+    "support_intro": "Soutenez byteflow.tools avec des demandes de sponsoring simples ou une aide au deploiement prive, tout en gardant les outils principaux gratuits, open source, locaux au navigateur et sans compte.",
+    "support_badge": "Soutien sans suivi publicitaire",
+    "support_sponsor_title": "Emplacements sponsorises",
+    "support_sponsor_desc": "Les sponsors utilisent seulement du texte ou un logo avec des liens ordinaires. Aucun pixel de suivi, aucune publicite personnalisee, aucun script publicitaire ni profil comportemental.",
+    "support_private_deployment_title": "Support de deploiement prive",
+    "support_private_deployment_desc": "Le support peut couvrir hebergement statique, deploiement interne, revue de securite, packaging, maintenance et distribution hors ligne, sans exiger de compte cloud.",
+    "support_boundaries_title": "Limites de confidentialite",
+    "support_boundary_free": "Les outils principaux restent gratuits et open source.",
+    "support_boundary_no_tracking": "Les emplacements sponsorises n'utilisent aucun pixel de suivi, aucune publicite personnalisee et aucun script publicitaire.",
+    "support_boundary_no_payload": "Les sponsors ne recoivent aucun acces aux payloads, textes de requete, identifiants utilisateur ou profils comportementaux.",
+    "support_boundary_no_account": "Aucun compte cloud ni historique de payload heberge n'est requis pour le support ou le deploiement prive.",
+    "support_cta_email": "Contacter le support",
+    "support_cta_github": "Consulter le code source",
+    "contact_support_desc": "Demandez sponsoring, deploiement prive, revue de securite, packaging ou maintenance sans partager de payload prive."
   }
 }
