@@ -3297,6 +3297,13 @@
     "pricing_internal_deployment_title": "Interne Bereitstellung",
     "pricing_internal_deployment_desc": "Self-Hosting bewahrt das Versprechen ohne Cloud-Verlauf: keine gehosteten Konten, keine Payload-Synchronisierung und keine serverseitige Verarbeitung von Tool-Payloads.",
     "pricing_internal_deployment_cta": "Interne Bereitstellung anfragen",
-    "pricing_self_hosting_guide": "Self-Hosting-Anleitung"
+    "pricing_self_hosting_guide": "Self-Hosting-Anleitung",
+    "contact_request_tool_desc": "Erstellen Sie eine bereinigte Anfrage fuer ein local-first Tool oder einen Workflow.",
+    "contact_vote_requests_desc": "Nutzen Sie GitHub-Reaktionen, um Bedarf zu zeigen, ohne Payloads zu teilen.",
+    "contact_public_planning_title": "Oeffentliche Planung",
+    "contact_public_planning_desc": "Nutzen Sie oeffentliche Anfragen nur mit bereinigten Beispielen. Posten Sie keine echten Secrets, privaten Payloads, HAR-Dateien, privaten URLs, Logs, Prompts, generierten Ausgaben, Request-Bodies oder Response-Bodies.",
+    "contact_roadmap_link": "Fahrplan",
+    "contact_distribution_research_link": "Erweiterungs- und Desktop-Recherche",
+    "contact_self_hosting_link": "Selbsthosting"
   }
 }

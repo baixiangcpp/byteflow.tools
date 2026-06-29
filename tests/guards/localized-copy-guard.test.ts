@@ -41,6 +41,24 @@ const FILE_GUARDS: Array<{ file: string; forbidden: Array<string | RegExp> }> = 
         ],
     },
     {
+        file: "src/features/install-app/components/install-app-client.tsx",
+        forbidden: [
+            "Extension and desktop research",
+        ],
+    },
+    {
+        file: "src/app/[lang]/contact/page.tsx",
+        forbidden: [
+            "Open a sanitized request for a local-first tool or workflow.",
+            "Use GitHub reactions to signal demand without sharing payloads.",
+            ">Public planning<",
+            "Use public requests only with sanitized examples.",
+            ">Roadmap<",
+            ">Extension and desktop research<",
+            ">Self-hosting<",
+        ],
+    },
+    {
         file: "src/lib/localized-meta-copy.ts",
         forbidden: [
             "Haufige Fehler bei API-Auth-Headern",

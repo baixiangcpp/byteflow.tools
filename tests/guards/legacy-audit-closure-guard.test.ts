@@ -42,7 +42,8 @@ describe("legacy audit closure guard", () => {
         const smoke = read("scripts/e2e/run-playwright-smoke.js")
 
         expect(layoutComponents).toContain("exposes language and theme controls inside the mobile navigation sheet")
-        expect(publicPlanning).toContain("Extension and desktop research")
+        expect(publicPlanning).toContain("renders contact public-planning CTAs in localized route copy")
+        expect(publicPlanning).toContain("扩展与桌面端调研")
         expect(publicPlanning).toContain("Vote on launcher demand")
         expect(publicPlanning).toContain("issues/new?template=feature_request.yml")
         expect(pricing).toContain("self_hosting_title")
@@ -52,6 +53,7 @@ describe("legacy audit closure guard", () => {
         expect(smoke).toContain("assertHeaderKeyboardPaths")
         expect(smoke).toContain("assertMobileNavigationKeyboardPath")
         expect(smoke).toContain("assertMobileAllTools")
-        expect(installApp).toContain("Extension and desktop research")
+        expect(installApp).toContain("distributionResearchLabel")
+        expect(installApp).toContain("zh-CN/distribution-research")
     })
 })

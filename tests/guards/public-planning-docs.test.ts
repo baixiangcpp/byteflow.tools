@@ -59,6 +59,23 @@ describe("public roadmap, changelog, self-hosting, and distribution docs", () =>
         expect(markup).toContain("Do not post real secrets")
     })
 
+    it("renders contact public-planning CTAs in localized route copy", () => {
+        const markup = renderToStaticMarkup(createElement(
+            LangProvider,
+            { lang: "zh-CN", translations: getTranslation("zh-CN") },
+            createElement(ContactPage),
+        ))
+
+        expect(markup).toContain("公开规划")
+        expect(markup).toContain("路线图")
+        expect(markup).toContain("扩展与桌面端调研")
+        expect(markup).toContain("自托管")
+        expect(markup).toContain("已脱敏")
+        expect(markup).not.toContain("Public planning")
+        expect(markup).not.toContain("Extension and desktop research")
+        expect(markup).not.toContain("Use public requests only with sanitized examples")
+    })
+
     it("keeps the All Tools empty state wired to privacy-safe request and voting flows", () => {
         const allToolsPage = fs.readFileSync(path.join(process.cwd(), "src/app/[lang]/all-tools/page.tsx"), "utf8")
         const allToolsDiscovery = fs.readFileSync(path.join(process.cwd(), "src/features/tool-discovery/all-tools-discovery.tsx"), "utf8")

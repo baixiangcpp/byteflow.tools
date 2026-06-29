@@ -3297,6 +3297,13 @@
     "pricing_internal_deployment_title": "Conseil de déploiement interne",
     "pricing_internal_deployment_desc": "L’auto-hébergement conserve la promesse sans historique cloud : pas de comptes hébergés, pas de synchronisation de payload et aucun traitement serveur des payloads d’outil.",
     "pricing_internal_deployment_cta": "Demander un déploiement interne",
-    "pricing_self_hosting_guide": "Guide d’auto-hébergement"
+    "pricing_self_hosting_guide": "Guide d’auto-hébergement",
+    "contact_request_tool_desc": "Ouvrez une demande nettoyee pour un outil ou workflow local-first.",
+    "contact_vote_requests_desc": "Utilisez les reactions GitHub pour signaler la demande sans partager de payloads.",
+    "contact_public_planning_title": "Planification publique",
+    "contact_public_planning_desc": "Utilisez les demandes publiques uniquement avec des exemples nettoyes. Ne publiez pas de vrais secrets, payloads prives, fichiers HAR, URL privees, logs, prompts, sorties generees, corps de requete ou corps de reponse.",
+    "contact_roadmap_link": "Feuille de route",
+    "contact_distribution_research_link": "Recherche extension et desktop",
+    "contact_self_hosting_link": "Auto-hebergement"
   }
 }

@@ -49,6 +49,7 @@ describe("install app page", () => {
                 allToolsLabel="All tools"
                 trustCenterLabel="Trust Center"
                 localDataControlsLabel="Local data controls"
+                distributionResearchLabel="Extension and desktop research"
                 offlineMatrixTitle="Offline support matrix"
                 offlineMatrixDescription="Review which workflows keep running after cache warm-up."
                 offlineMatrixLink="Offline matrix"
@@ -75,6 +76,7 @@ describe("install app page", () => {
                 allToolsLabel="所有工具"
                 trustCenterLabel="信任中心"
                 localDataControlsLabel="本地数据控制"
+                distributionResearchLabel="扩展与桌面端调研"
                 offlineMatrixTitle="离线支持矩阵"
                 offlineMatrixDescription="查看缓存预热后哪些流程可继续运行。"
                 offlineMatrixLink="离线矩阵"
@@ -85,6 +87,8 @@ describe("install app page", () => {
         expect(browseLink).toHaveAttribute("href", getAllToolsHref("zh-CN"))
         expect(browseLink).not.toHaveAttribute("href", "/zh-CN/format-validate")
         expect(screen.getByRole("link", { name: "信任中心" })).toHaveAttribute("href", "/zh-CN/trust-center")
+        expect(screen.getByRole("link", { name: "扩展与桌面端调研" })).toHaveAttribute("href", "/zh-CN/distribution-research")
+        expect(screen.queryByRole("link", { name: "Extension and desktop research" })).not.toBeInTheDocument()
 
         const previewImage = screen.getByTestId("mock-next-image")
         expect(previewImage).toHaveAttribute("aria-label", `${copy.guides.chrome_desktop.label} ${copy.guidePreviewLabel}`)
@@ -111,6 +115,7 @@ describe("install app page", () => {
                 allToolsLabel="All tools"
                 trustCenterLabel="Trust Center"
                 localDataControlsLabel="Local data controls"
+                distributionResearchLabel="Extension and desktop research"
                 offlineMatrixTitle="Offline support matrix"
                 offlineMatrixDescription="Review which workflows keep running after cache warm-up."
                 offlineMatrixLink="Offline matrix"
@@ -142,6 +147,7 @@ describe("install app page", () => {
                 allToolsLabel="All tools"
                 trustCenterLabel="Trust Center"
                 localDataControlsLabel="Local data controls"
+                distributionResearchLabel="Extension and desktop research"
                 offlineMatrixTitle="Offline support matrix"
                 offlineMatrixDescription="Review which workflows keep running after cache warm-up."
                 offlineMatrixLink="Offline matrix"
