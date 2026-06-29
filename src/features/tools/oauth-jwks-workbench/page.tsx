@@ -2,13 +2,12 @@
 
 import * as React from "react"
 import { Copy, Eraser, KeyRound, Play, RotateCcw, ShieldCheck } from "lucide-react"
-import { toast } from "sonner"
 import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
-import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { copyTextWithToolFeedback, notifyToolActionFailure } from "@/features/tool-shell/tool-action-feedback"
 import { generatePkcePair, summarizeJwks, verifyJwtWithJwks } from "./logic"
 import { SAMPLE_INPUT, SAMPLE_JWT } from "./samples"
 
@@ -80,15 +79,13 @@ export function OauthJwksWorkbenchPage() {
 
     const copyOutput = async () => {
         if (!output) {
-            return { status: "failed" as const }
+            return notifyToolActionFailure(t, {
+                kind: "copy",
+                label: t.common.output,
+                title: t.common.action_disabled_no_output,
+            })
         }
-        const result = await safeClipboardWrite(output)
-        if (!result.ok) {
-            toast.error(t.common.copy_failed)
-            return { status: "failed" as const, message: t.common.copy_failed }
-        }
-        toast.success(t.common.copied)
-        return { status: "success" as const, message: t.common.copied }
+        return copyTextWithToolFeedback(t, output, t.common.output)
     }
 
     /*

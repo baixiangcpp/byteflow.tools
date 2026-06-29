@@ -128,7 +128,7 @@ export function BionicReadingConverterPage() {
     const actions: ToolAction[] = [
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: handleSample },
         { id: "clear", label: t.common.clear, icon: Eraser, onClick: handleClear },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void handleCopy(), disabled: !output.trim() },
+        { id: "copy", label: t.common.copy, icon: Copy, onClick: handleCopy, disabled: !output.trim() },
         { id: "download", label: t.common.download, icon: Download, onClick: handleDownload, disabled: !output.trim() },
     ]
 

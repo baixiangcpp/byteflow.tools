@@ -146,7 +146,7 @@ export function GoogleFontsPairFinderPage() {
 
     const actions: ToolAction[] = [
         { id: "shuffle", label: toolT.shuffle_action, icon: RefreshCw, onClick: handleShuffle, disabled: filteredPairs.length === 0 },
-        { id: "copy_css", label: toolT.copy_css_action, icon: Copy, onClick: () => void handleCopyCss() },
+        { id: "copy_css", label: toolT.copy_css_action, icon: Copy, onClick: handleCopyCss },
     ]
 
     return (

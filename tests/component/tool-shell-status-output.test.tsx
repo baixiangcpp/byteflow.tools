@@ -54,6 +54,25 @@ describe("shared tool shell status and output components", () => {
         })
     })
 
+    it("does not announce async Promise<void> actions as successful without a returned result", async () => {
+        const actions: ToolAction[] = [
+            {
+                id: "verify",
+                label: "Verify",
+                onClick: async () => undefined,
+            },
+        ]
+
+        renderEnglish(<ToolActionBar actions={actions} />)
+
+        fireEvent.click(screen.getByRole("button", { name: "Verify" }))
+
+        await waitFor(() => {
+            expect(screen.queryByRole("status")).not.toBeInTheDocument()
+        })
+        expect(screen.getByRole("button", { name: "Verify" })).toHaveAttribute("data-tool-action-state", "idle")
+    })
+
     it("lets long output switch between wrap and horizontal scroll modes without changing the output text", () => {
         const output = `https://example.com/${"a".repeat(180)}`
 

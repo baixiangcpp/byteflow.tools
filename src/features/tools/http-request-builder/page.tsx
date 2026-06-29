@@ -131,7 +131,7 @@ export function HttpRequestBuilderPage() {
             id: "copy_code",
             label: t.common.copy,
             icon: Copy,
-            onClick: () => void handleCopy(),
+            onClick: handleCopy,
             disabled: !urlValidation.ok,
             disabledReason: urlValidation.ok ? undefined : urlValidationMessage,
         },

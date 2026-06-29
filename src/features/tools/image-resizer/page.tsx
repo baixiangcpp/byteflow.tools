@@ -283,7 +283,7 @@ export function ImageResizerPage() {
     }
 
     const actions: ToolAction[] = [
-        { id: "sample", label: t.common.sample, icon: TestTube2, onClick: () => void handleSample() },
+        { id: "sample", label: t.common.sample, icon: TestTube2, onClick: handleSample },
         { id: "clear", label: t.common.clear, icon: Eraser, onClick: handleClear, destructive: true },
         { id: "reset", label: t.common.reset, icon: RotateCcw, onClick: handleReset, destructive: true },
         {

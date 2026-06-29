@@ -42,7 +42,7 @@ export function SeoMetadataWorkbenchPage() {
 
     const actions: ToolAction[] = [
         { id: "run", label: toolT.analyze_action, icon: Play, onClick: run, variant: "default", disabled: !input.trim() },
-        { id: "copy", label: t.common.copy, icon: Copy, onClick: () => void copyOutput(), disabled: !output },
+        { id: "copy", label: t.common.copy, icon: Copy, onClick: copyOutput, disabled: !output },
         { id: "download", label: t.common.download, icon: Download, onClick: () => downloadText("seo-metadata-report.txt", output), disabled: !output },
         { id: "sample", label: t.common.sample, icon: RotateCcw, onClick: () => { setInput(SAMPLE_INPUT); setOutput(""); setError(null) } },
         { id: "clear", label: t.common.clear, icon: Eraser, onClick: () => { setInput(""); setOutput(""); setError(null) } },

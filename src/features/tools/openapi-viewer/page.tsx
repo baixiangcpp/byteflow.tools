@@ -166,7 +166,7 @@ export function OpenApiViewerPage() {
             id: "copy",
             label: t.common.copy,
             icon: Copy,
-            onClick: () => void handleCopyInput(),
+            onClick: handleCopyInput,
             disabled: !input,
         },
         {

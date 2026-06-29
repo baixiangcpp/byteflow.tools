@@ -113,7 +113,7 @@ export function PublicKeyJwkHelperPage() {
             id: "copy_output",
             label: t.common.copy,
             icon: Copy,
-            onClick: () => void copyOutput(),
+            onClick: copyOutput,
             disabled: !result?.output,
         },
         {

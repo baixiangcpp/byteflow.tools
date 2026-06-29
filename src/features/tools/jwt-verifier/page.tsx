@@ -6,7 +6,7 @@ import Link from "next/link"
 import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
-import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { ToolActionBar, type ToolAction, type ToolActionResult } from "@/features/tool-shell/tool-action-bar"
 import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { JwtSecretField } from "@/features/tools/jwt-workbench/jwt-secret-field"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
@@ -63,19 +63,50 @@ export function JwtVerifierPage() {
     const [payload, setPayload] = React.useState<Record<string, unknown> | null>(null)
     const [claims, setClaims] = React.useState<{ label: string; status: string; value: string }[]>([])
 
-    const verify = async () => {
-        if (!token.trim()) return { status: "failed" as const, message: toolT.token_label }
+    const verify = async (): Promise<ToolActionResult> => {
+        if (!token.trim()) return { status: "failed", message: t.common.input_required, description: toolT.token_label }
 
         const h = decodeHeader(token)
         const p = decodePayload(token)
         setHeader(h)
         setPayload(p)
         const alg = normalizeJwtAlgorithm(h?.alg)
+        const algorithmClass = alg.toLowerCase() === "none"
+            ? "unsigned"
+            : alg === "HS256" || alg === "HS384" || alg === "HS512"
+                ? "hmac"
+                : "unsupported"
 
         if (p) setClaims(checkClaims(p, claimLabels))
 
-        setVerifyResult(await verifyJwtSignature(token, secret, alg))
-        return { status: "success" as const }
+        if (algorithmClass === "hmac" && !secret.trim()) {
+            setVerifyResult(null)
+            return {
+                status: "failed",
+                message: t.common.input_required,
+                description: toolT.secret_label,
+            }
+        }
+
+        const nextVerifyResult = await verifyJwtSignature(token, secret, alg)
+        setVerifyResult(nextVerifyResult)
+        if (!nextVerifyResult) {
+            return {
+                status: "failed",
+                message: t.common.input_required,
+                description: toolT.secret_label,
+            }
+        }
+        if (nextVerifyResult.status === "valid") {
+            return { status: "success", message: toolT.result_valid.replace("{alg}", nextVerifyResult.algorithm) }
+        }
+        if (nextVerifyResult.status === "invalid") {
+            return { status: "failed", message: toolT.result_invalid.replace("{alg}", nextVerifyResult.algorithm) }
+        }
+        if (nextVerifyResult.status === "unsigned") {
+            return { status: "success", message: toolT.result_none_warning }
+        }
+        return { status: "success", message: toolT.result_unsupported.replace("{alg}", nextVerifyResult.algorithm) }
     }
     const clearAll = () => {
         setToken("")

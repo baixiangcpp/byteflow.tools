@@ -105,7 +105,7 @@ export function UuidGeneratorPage() {
             id: "copy_all",
             label: t.common.copy_all,
             icon: Copy,
-            onClick: () => void handleCopyAll(),
+            onClick: handleCopyAll,
             disabled: formattedUuids.length === 0,
             disabledReason: t.common.action_disabled_no_output,
         },

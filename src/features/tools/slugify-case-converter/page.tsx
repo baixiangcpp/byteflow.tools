@@ -104,7 +104,7 @@ export function SlugifyCaseConverterPage() {
             id: "copy_all",
             label: toolT.copy_all,
             icon: Copy,
-            onClick: () => void handleCopyAll(),
+            onClick: handleCopyAll,
             disabled: !input.trim(),
         },
     ]

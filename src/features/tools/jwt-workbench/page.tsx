@@ -252,7 +252,7 @@ export function JwtWorkbenchPage() {
             id: "encode",
             label: toolT.encode_action,
             icon: ShieldCheck,
-            onClick: () => { void encodeToken() },
+            onClick: encodeToken,
             variant: "default",
         },
     ]

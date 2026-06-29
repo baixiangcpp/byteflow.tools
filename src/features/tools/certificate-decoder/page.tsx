@@ -289,7 +289,10 @@ export function CertificateDecoderPage() {
         try {
             const text = await navigator.clipboard.readText()
             setPem(text)
-        } catch { /* ignore */ }
+            return { status: "success" as const, message: t.common.paste }
+        } catch {
+            return { status: "failed" as const, message: t.common.action_disabled_unavailable }
+        }
     }
 
     const actions: ToolAction[] = [
@@ -297,9 +300,7 @@ export function CertificateDecoderPage() {
             id: "paste",
             label: t.common.paste,
             icon: Clipboard,
-            onClick: () => {
-                void handlePaste()
-            },
+            onClick: handlePaste,
         },
         {
             id: "clear",

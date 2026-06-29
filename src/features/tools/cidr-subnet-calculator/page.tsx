@@ -81,9 +81,7 @@ export function CidrSubnetCalculatorPage() {
             label: t.common.copy,
             icon: Copy,
             disabled: !result,
-            onClick: () => {
-                void handleCopySummary()
-            },
+            onClick: handleCopySummary,
         },
     ]
 

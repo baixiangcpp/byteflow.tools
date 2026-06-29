@@ -249,14 +249,14 @@ export function QrCodeGeneratorPage() {
             id: "svg",
             label: "SVG",
             icon: Download,
-            onClick: () => void downloadSvg(),
+            onClick: downloadSvg,
             disabled: !text.trim(),
         },
         {
             id: "copy",
             label: t.common.copy,
             icon: Copy,
-            onClick: () => void handleCopyDataUrl(),
+            onClick: handleCopyDataUrl,
             disabled: !dataUrl,
         },
         {

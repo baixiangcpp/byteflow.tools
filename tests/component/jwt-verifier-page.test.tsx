@@ -71,17 +71,36 @@ describe("JwtVerifierPage", () => {
         fireEvent.click(screen.getByRole("button", { name: "Verify" }))
 
         await waitFor(() => {
-            expect(screen.getByText(/Signature matches the supplied secret \(HS256\)/)).toBeInTheDocument()
-            expect(screen.getByText(/not overall token trust/)).toBeInTheDocument()
+            expect(screen.getAllByText(/Signature matches the supplied secret \(HS256\)/).length).toBeGreaterThan(0)
+            expect(screen.getAllByText(/not overall token trust/).length).toBeGreaterThan(0)
         })
 
         fireEvent.change(screen.getByLabelText("Secret Key (for HMAC verification)"), { target: { value: "wrong-secret" } })
         fireEvent.click(screen.getByRole("button", { name: "Verify" }))
 
         await waitFor(() => {
-            expect(screen.getByText(/Signature does not match the supplied secret \(HS256\)/)).toBeInTheDocument()
-            expect(screen.getByText(/Do not trust this token for that key/)).toBeInTheDocument()
+            expect(screen.getAllByText(/Signature does not match the supplied secret \(HS256\)/).length).toBeGreaterThan(0)
+            expect(screen.getAllByText(/Do not trust this token for that key/).length).toBeGreaterThan(0)
         })
+    })
+
+    it("does not announce verification success before required HMAC secret input is present", async () => {
+        renderJwtVerifier()
+
+        const verifyButton = screen.getByRole("button", { name: "Verify" })
+        expect(verifyButton).toBeDisabled()
+        expect(verifyButton).toHaveAttribute("title", "Verify: JWT Token")
+
+        fireEvent.change(screen.getByRole("textbox", { name: "JWT Token" }), { target: { value: unsignedToken("HS256") } })
+        expect(screen.getByRole("button", { name: "Verify" })).not.toBeDisabled()
+
+        fireEvent.click(screen.getByRole("button", { name: "Verify" }))
+
+        await waitFor(() => {
+            expect(screen.getByRole("status")).toHaveTextContent("Input is required. Secret Key (for HMAC verification)")
+        })
+        expect(screen.getByRole("button", { name: "Verify" })).toHaveAttribute("data-tool-action-state", "failed")
+        expect(screen.queryByText(/Signature matches/)).not.toBeInTheDocument()
     })
 
     it("shows unsupported algorithms without reporting an invalid signature", async () => {
@@ -92,7 +111,7 @@ describe("JwtVerifierPage", () => {
         fireEvent.click(screen.getByRole("button", { name: "Verify" }))
 
         await waitFor(() => {
-            expect(screen.getByText(/Unsupported JWT algorithm \(RS256\)/)).toBeInTheDocument()
+            expect(screen.getAllByText(/Unsupported JWT algorithm \(RS256\)/).length).toBeGreaterThan(0)
             expect(screen.queryByText(/Signature does not match/)).not.toBeInTheDocument()
         })
     })
@@ -104,7 +123,7 @@ describe("JwtVerifierPage", () => {
         fireEvent.click(screen.getByRole("button", { name: "Verify" }))
 
         await waitFor(() => {
-            expect(screen.getByText(/declares alg: none/)).toBeInTheDocument()
+            expect(screen.getAllByText(/declares alg: none/).length).toBeGreaterThan(0)
             expect(screen.queryByText(/Signature does not match/)).not.toBeInTheDocument()
         })
     })
@@ -117,7 +136,7 @@ describe("JwtVerifierPage", () => {
         fireEvent.click(screen.getByRole("button", { name: "Verify" }))
 
         await waitFor(() => {
-            expect(screen.getByText(/Unsupported JWT algorithm \(non-string alg\)/)).toBeInTheDocument()
+            expect(screen.getAllByText(/Unsupported JWT algorithm \(non-string alg\)/).length).toBeGreaterThan(0)
             expect(screen.queryByText(/Signature does not match/)).not.toBeInTheDocument()
         })
     })

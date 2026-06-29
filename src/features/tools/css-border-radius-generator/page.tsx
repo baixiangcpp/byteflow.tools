@@ -105,7 +105,7 @@ export function CssBorderRadiusGeneratorPage() {
             id: "copy",
             label: t.common.copy,
             icon: Copy,
-            onClick: () => void handleCopy(),
+            onClick: handleCopy,
         },
         {
             id: "download",
