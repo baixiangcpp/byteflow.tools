@@ -79,6 +79,8 @@ export interface PipelineToolAdapter<Input = string, Output = string> {
     warnings: readonly string[]
     defaultOptions: Record<string, unknown>
     publicOptionKeys: readonly string[]
+    persistentOptionKeys?: readonly string[]
+    persistentOptionReview?: Record<string, string>
     validateOptions(options: Record<string, unknown>): AdapterValidationResult
     run(input: Input, options: Record<string, unknown>): Promise<AdapterRunResult<Output>> | AdapterRunResult<Output>
 }

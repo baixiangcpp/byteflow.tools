@@ -124,6 +124,9 @@ const base64Adapter: PipelineToolAdapter = {
         urlSafe: false,
     },
     publicOptionKeys: ["operation", "urlSafe"],
+    persistentOptionReview: {
+        urlSafe: "Boolean output encoding toggle; it does not contain a URL value.",
+    },
     validateOptions(options) {
         const operation = stringOption(options, "operation", "encode")
         if (!["encode", "decode"].includes(operation)) return fail("operation must be encode or decode.")
@@ -259,6 +262,14 @@ const logScrubberAdapter: PipelineToolAdapter = {
     ],
     defaultOptions: { ...DEFAULT_SCRUB_OPTIONS },
     publicOptionKeys: Object.keys(DEFAULT_SCRUB_OPTIONS),
+    persistentOptionReview: {
+        jwtTokens: "Boolean scrub-rule toggle; it does not contain token material.",
+        bearerTokens: "Boolean scrub-rule toggle; it does not contain token material.",
+        apiKeys: "Boolean scrub-rule toggle; it does not contain key material.",
+        awsAccessKeys: "Boolean scrub-rule toggle; it does not contain key material.",
+        privateKeys: "Boolean scrub-rule toggle; it does not contain key material.",
+        urlCredentials: "Boolean scrub-rule toggle; it does not contain a URL value.",
+    },
     validateOptions(options) {
         for (const key of Object.keys(DEFAULT_SCRUB_OPTIONS)) {
             if (typeof (options[key] ?? true) !== "boolean") return fail(`${key} must be boolean.`)
@@ -331,6 +342,9 @@ const csvJsonAdapter: PipelineToolAdapter = {
         typeInference: true,
     },
     publicOptionKeys: ["direction", "delimiter", "hasHeader", "typeInference"],
+    persistentOptionReview: {
+        hasHeader: "Boolean CSV parsing toggle; it does not contain header names or row data.",
+    },
     validateOptions(options) {
         const direction = stringOption(options, "direction", "csv-to-json")
         if (!["csv-to-json", "json-to-csv"].includes(direction)) return fail("direction must be csv-to-json or json-to-csv.")
@@ -518,6 +532,9 @@ const unixTimestampAdapter: PipelineToolAdapter = {
         output: "iso",
     },
     publicOptionKeys: ["output"],
+    persistentOptionReview: {
+        output: "Bounded enum controlling timestamp output format; it does not contain output data.",
+    },
     validateOptions(options) {
         const output = stringOption(options, "output", "iso")
         if (!["iso", "json"].includes(output)) return fail("output must be iso or json.")
@@ -582,6 +599,7 @@ const regexTesterAdapter: PipelineToolAdapter = {
         maxMatches: 100,
     },
     publicOptionKeys: ["pattern", "flags", "maxMatches"],
+    persistentOptionKeys: ["flags", "maxMatches"],
     validateOptions(options) {
         const pattern = stringOption(options, "pattern", "")
         const flags = stringOption(options, "flags", "g")
@@ -659,6 +677,7 @@ const jsonSchemaAdapter: PipelineToolAdapter = {
         schema: "",
     },
     publicOptionKeys: ["mode", "schema"],
+    persistentOptionKeys: ["mode"],
     validateOptions(options) {
         const mode = stringOption(options, "mode", "generate")
         if (!["generate", "validate"].includes(mode)) return fail("mode must be generate or validate.")

@@ -2849,7 +2849,7 @@
       "privacy_preview_confirm_share": "구조 전용 URL 복사",
       "privacy_preview_cancel": "취소",
       "privacy_scope_recipe_metadata": "레시피 이름과 설명",
-      "privacy_scope_steps_options": "단계 순서, 도구 ID, 라벨, 공개 옵션",
+      "privacy_scope_steps_options": "단계 순서, 도구 ID, 라벨, 검토된 영구 옵션",
       "privacy_scope_settings": "오류 시 중지와 로컬 바이트 제한 같은 안전 설정",
       "privacy_scope_runtime_input": "초기 실행 입력",
       "privacy_scope_outputs": "최종 출력과 중간 단계 출력",
@@ -2889,7 +2889,8 @@
       "usage_guide_composition_title": "구성 규칙",
       "usage_guide_composition_body": "도구는 반복할 수 있습니다. 검증은 어댑터 버전과 옵션을 확인하며, 호환성 힌트는 text 출력을 JSON 입력으로 넘기는 경우처럼 인계를 표시합니다.",
       "usage_guide_privacy_title": "개인정보 경계",
-      "usage_guide_privacy_body": "저장, JSON 내보내기, 공유 URL은 구조와 공개 옵션만 유지합니다. 런타임 입력, 출력, 로그, 파일, 고정 입력은 제거됩니다."
+      "usage_guide_privacy_body": "저장, JSON 내보내기, 공유 URL은 구조와 검토된 영구 옵션만 유지합니다. 런타임 입력, 출력, 로그, 파일, 고정 입력, 스키마, 정규식 패턴은 제거됩니다.",
+      "privacy_scope_user_authored_options": "사용자가 작성한 스키마, 정규식 패턴, 예시, 기본값, URL, 헤더, 본문, 페이로드"
     },
     "saml_decoder": {
       "title": "SAML 디코더",

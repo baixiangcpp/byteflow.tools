@@ -2849,7 +2849,7 @@
       "privacy_preview_confirm_share": "複製結構分享 URL",
       "privacy_preview_cancel": "取消",
       "privacy_scope_recipe_metadata": "配方名稱和描述",
-      "privacy_scope_steps_options": "步驟順序、工具 ID、標籤和公開選項",
+      "privacy_scope_steps_options": "步驟順序、工具 ID、標籤和已審查的持久化選項",
       "privacy_scope_settings": "停止於錯誤、本機位元組限制等安全設定",
       "privacy_scope_runtime_input": "初始執行輸入",
       "privacy_scope_outputs": "最終輸出和中間步驟輸出",
@@ -2889,7 +2889,8 @@
       "usage_guide_composition_title": "組合規則",
       "usage_guide_composition_body": "工具可以重複。驗證會檢查適配器版本和選項，相容性提示會標出類似文本輸出接入 JSON 輸入的交接。",
       "usage_guide_privacy_title": "隱私邊界",
-      "usage_guide_privacy_body": "儲存、匯出 JSON 和分享 URL 僅保留結構和公開選項。執行時輸入、輸出、日誌、檔案和固定輸入都會被移除。"
+      "usage_guide_privacy_body": "儲存、匯出 JSON 和分享 URL 僅保留結構和已審查的持久化選項。執行時輸入、輸出、日誌、檔案、固定輸入、schema 和正則模式都會被移除。",
+      "privacy_scope_user_authored_options": "使用者撰寫的 schema、正則模式、範例、預設值、URL、標頭、本文和載荷"
     },
     "saml_decoder": {
       "title": "SAML 解碼器",

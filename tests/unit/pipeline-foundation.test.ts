@@ -4,7 +4,7 @@ import { TOOL_MANIFESTS } from "@/core/registry"
 import { createPortableRecipe, decodeRecipeFromUrlParam, encodeRecipeForShareUrl, encodeRecipeForUrl, recipeContainsRuntimeInput } from "@/features/pipeline/recipe-codec"
 import { createEmptyRecipe, runRecipe, validateRecipe } from "@/features/pipeline/executor"
 import { exportRecipeToJson, importRecipeFromJson } from "@/features/pipeline/recipe-import-export"
-import { sanitizeRecipeForPersistence } from "@/features/pipeline/recipe-sanitizer"
+import { getPersistentOptionKeys, sanitizeRecipeForPersistence, SUSPICIOUS_PERSISTENT_OPTION_KEY_PARTS } from "@/features/pipeline/recipe-sanitizer"
 import { createRecipeFromTemplate, getPipelineRecipeTemplateForWorkflow, PIPELINE_RECIPE_TEMPLATES } from "@/features/pipeline/recipe-templates"
 import { createSavedRecipeRecord, isRecipeStoreAvailable } from "@/features/pipeline/recipe-store"
 import { DEFAULT_RECIPE_SETTINGS, type PipelineToolAdapter, type RecipeDocument } from "@/features/pipeline/recipe-types"
@@ -86,6 +86,15 @@ describe("pipeline foundation", () => {
             expect(typeof adapter.mayIncreaseSize).toBe("boolean")
             expect(Array.isArray(adapter.warnings)).toBe(true)
             expect(adapter.publicOptionKeys.every((key) => Object.prototype.hasOwnProperty.call(adapter.defaultOptions, key))).toBe(true)
+            expect(getPersistentOptionKeys(adapter.toolKey).every((key) => adapter.publicOptionKeys.includes(key))).toBe(true)
+            expect(getPersistentOptionKeys(adapter.toolKey).every((key) => Object.prototype.hasOwnProperty.call(adapter.defaultOptions, key))).toBe(true)
+            for (const key of getPersistentOptionKeys(adapter.toolKey)) {
+                const normalizedKey = key.toLowerCase()
+                const requiresReview = SUSPICIOUS_PERSISTENT_OPTION_KEY_PARTS.some((part) => normalizedKey.includes(part))
+                if (requiresReview) {
+                    expect(adapter.persistentOptionReview?.[key], `${adapter.toolKey}.${key} needs a privacy review reason`).toBeTruthy()
+                }
+            }
         }
     })
 
@@ -770,7 +779,7 @@ describe("pipeline foundation", () => {
         }
     })
 
-    it("removes non-public options from share URLs", () => {
+    it("removes non-persistent options from share URLs", () => {
         const recipe = buildRecipe({
             steps: [
                 {
@@ -798,6 +807,61 @@ describe("pipeline foundation", () => {
             })
             expect(decoded.recipe.steps[0].options).not.toHaveProperty("apiKey")
             expect(decoded.recipe.steps[0].options).not.toHaveProperty("token")
+        }
+    })
+
+    it("does not persist user-authored schemas or regex patterns by default", () => {
+        const privateSchema = JSON.stringify({
+            type: "object",
+            properties: {
+                Authorization: { const: "Bearer secret-token-value" },
+                customerEmail: { example: "alice@example.com" },
+            },
+        })
+        const privatePattern = "Bearer\\s+(secret-token-value)"
+        const recipe = buildRecipe({
+            steps: [
+                {
+                    id: "validate_contract",
+                    toolKey: "json_schema_workbench",
+                    adapterVersion: 1,
+                    inputMode: "previous_output",
+                    options: {
+                        mode: "validate",
+                        schema: privateSchema,
+                    },
+                },
+                {
+                    id: "match_summary",
+                    toolKey: "regex_tester",
+                    adapterVersion: 1,
+                    inputMode: "previous_output",
+                    options: {
+                        pattern: privatePattern,
+                        flags: "gi",
+                        maxMatches: 25,
+                    },
+                },
+            ],
+            edges: [],
+        })
+
+        const sanitized = sanitizeRecipeForPersistence(recipe)
+        const exported = exportRecipeToJson(recipe)
+        const saved = createSavedRecipeRecord(recipe, {}, "2026-06-10T01:00:00.000Z")
+        const decodedShare = decodeRecipeFromUrlParam(encodeRecipeForShareUrl(recipe))
+
+        expect(sanitized.steps[0].options).toEqual({ mode: "validate" })
+        expect(sanitized.steps[1].options).toEqual({ flags: "gi", maxMatches: 25 })
+        expect(JSON.stringify(saved)).not.toContain("secret-token-value")
+        expect(exported).not.toContain("secret-token-value")
+        expect(JSON.parse(exported).steps[0].options).not.toHaveProperty("schema")
+        expect(JSON.parse(exported).steps[1].options).not.toHaveProperty("pattern")
+        expect(decodedShare.ok).toBe(true)
+        if (decodedShare.ok) {
+            expect(decodedShare.recipe.steps[0].options).toEqual({ mode: "validate" })
+            expect(decodedShare.recipe.steps[1].options).toEqual({ flags: "gi", maxMatches: 25 })
+            expect(JSON.stringify(decodedShare.recipe)).not.toContain("secret-token-value")
         }
     })
 

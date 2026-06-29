@@ -2829,7 +2829,7 @@
       "usage_guide_composition_title": "Composition rules",
       "usage_guide_composition_body": "Tools can repeat. Validation checks adapter versions and options, while compatibility hints flag handoffs such as text output into JSON input.",
       "usage_guide_privacy_title": "Privacy boundary",
-      "usage_guide_privacy_body": "Save, Export JSON, and Share URL keep structure and public options only. Runtime input, outputs, logs, files, and Constant input are stripped.",
+      "usage_guide_privacy_body": "Save, Export JSON, and Share URL keep structure and reviewed persistent options only. Runtime input, outputs, logs, files, Constant input, schemas, and regex patterns are stripped.",
       "no_options": "This adapter has no configurable public options.",
       "option_mode": "Mode",
       "option_indent": "Indent",
@@ -2903,13 +2903,14 @@
       "privacy_preview_confirm_share": "Copy structure-only URL",
       "privacy_preview_cancel": "Cancel",
       "privacy_scope_recipe_metadata": "Recipe name and description",
-      "privacy_scope_steps_options": "Step order, tool IDs, labels, and public options",
+      "privacy_scope_steps_options": "Step order, tool IDs, labels, and reviewed persistent options",
       "privacy_scope_settings": "Safety settings such as stop-on-error and local byte limits",
       "privacy_scope_runtime_input": "Initial runtime input",
       "privacy_scope_outputs": "Final output and intermediate step outputs",
       "privacy_scope_logs": "Run logs, diagnostics, and errors",
       "privacy_scope_files": "Uploaded file contents",
-      "privacy_scope_constants": "Constant step inputs, tokens, keys, and payloads"
+      "privacy_scope_constants": "Constant step inputs, tokens, keys, and payloads",
+      "privacy_scope_user_authored_options": "User-authored schemas, regex patterns, examples, defaults, URLs, headers, bodies, and payloads"
     },
     "saml_decoder": {
       "title": "SAML Decoder",
