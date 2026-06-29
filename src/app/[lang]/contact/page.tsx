@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useLang } from "@/core/i18n/lang-provider"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
-import { Github, Mail, MessageSquare, ExternalLink, ShieldCheck, Map, ThumbsUp } from "lucide-react"
+import { Github, Mail, MessageSquare, ExternalLink, ShieldCheck, Map, ThumbsUp, HeartHandshake } from "lucide-react"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 
 const EMAIL_ADDRESS = "contact@byteflow.tools"
@@ -24,6 +24,7 @@ export default function ContactPage() {
         { icon: Map, title: t.common.request_tool, desc: p.contact_request_tool_desc, href: GITHUB_FEATURE_REQUEST_URL, external: true },
         { icon: ThumbsUp, title: t.common.vote_on_requests, desc: p.contact_vote_requests_desc, href: GITHUB_REQUEST_VOTING_URL, external: true },
         { icon: ShieldCheck, title: p.contact_security_title, desc: p.contact_security_desc, href: SECURITY_ADVISORY_URL, external: true },
+        { icon: HeartHandshake, title: p.support_title, desc: p.contact_support_desc, href: `/${lang}/support`, external: false },
     ]
 
     const handleCopyEmail = async () => {
@@ -46,7 +47,7 @@ export default function ContactPage() {
 
             <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {links.map((link) => (
-                    <a
+                    <Link
                         key={link.title}
                         href={link.href}
                         target={link.external ? "_blank" : undefined}
@@ -59,7 +60,7 @@ export default function ContactPage() {
                         </div>
                         <h2 className="mt-3 text-sm font-semibold">{link.title}</h2>
                         <p className="mt-1.5 text-xs leading-relaxed text-muted-foreground">{link.desc}</p>
-                    </a>
+                    </Link>
                 ))}
                 <div className="group rounded-2xl border border-border/70 bg-background/55 p-5 transition-colors duration-200 hover:border-primary/35">
                     <div className="flex items-center justify-between">
@@ -96,6 +97,12 @@ export default function ContactPage() {
                         className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                         {p.contact_self_hosting_link}
+                    </Link>
+                    <Link
+                        href={`/${lang}/support`}
+                        className="inline-flex min-h-10 items-center gap-2 rounded-md border border-border/75 bg-background/70 px-3 text-sm font-medium hover:border-primary/35 hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                        {p.support_title}
                     </Link>
                 </div>
             </section>

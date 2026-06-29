@@ -3304,6 +3304,21 @@
     "pricing_internal_deployment_title": "内部部署指导",
     "pricing_internal_deployment_desc": "自托管会保留无云端历史承诺：无托管账号、无 payload 同步，也没有服务端工具 payload 处理。",
     "pricing_internal_deployment_cta": "咨询内部部署",
-    "pricing_self_hosting_guide": "自托管指南"
+    "pricing_self_hosting_guide": "自托管指南",
+    "support_title": "隐私安全支持",
+    "support_intro": "通过普通赞助咨询或私有部署协助支持 byteflow.tools，同时保持核心工具免费、开源、浏览器本地处理且无需账号。",
+    "support_badge": "无广告跟踪的支持",
+    "support_sponsor_title": "赞助展示",
+    "support_sponsor_desc": "赞助展示仅使用纯文本或 logo 与普通链接，不使用跟踪像素、个性化广告、广告脚本或行为画像。",
+    "support_private_deployment_title": "私有部署支持",
+    "support_private_deployment_desc": "部署支持可覆盖静态托管、内部部署、安全审查、打包、维护和离线分发指导，且不要求云端账号。",
+    "support_boundaries_title": "隐私边界",
+    "support_boundary_free": "核心工具保持免费且开源。",
+    "support_boundary_no_tracking": "赞助展示不使用跟踪像素、个性化广告或广告脚本。",
+    "support_boundary_no_payload": "赞助方不会获得 payload 访问权、查询文本、用户标识或行为画像。",
+    "support_boundary_no_account": "支持或私有部署协助不需要云端账号或托管 payload 历史。",
+    "support_cta_email": "联系支持",
+    "support_cta_github": "查看源码",
+    "contact_support_desc": "咨询赞助、私有部署、安全审查、打包或维护，不需要分享私有 payload。"
   }
 }

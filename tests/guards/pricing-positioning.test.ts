@@ -32,7 +32,7 @@ describe("pricing positioning", () => {
 
     it("routes pricing CTAs to free tools, support, self-hosting, and internal deployment guidance only", () => {
         expect(PRICING_SOURCE).toContain("/all-tools")
-        expect(PRICING_SOURCE).toContain("/contact")
+        expect(PRICING_SOURCE).toContain("/support")
         expect(PRICING_SOURCE).toContain("https://github.com/baixiangcpp/byteflow.tools")
         expect(PRICING_SOURCE).toContain("pricing_support_title")
         expect(PRICING_SOURCE).toContain("self_hosting_title")
