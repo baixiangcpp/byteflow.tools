@@ -79,6 +79,44 @@ describe("csv json task logic", () => {
         expect(result.output).toBe("id,name\n1,Ada")
     })
 
+    it("keeps primitive and array rows on the non-object CSV path", () => {
+        const primitiveResult = runCsvJsonTaskSync({
+            input: "[null,2,\"x\",false]",
+            direction: "json-to-csv",
+            delimiter: ",",
+            hasHeader: true,
+            typeInference: true,
+        })
+        const arrayResult = runCsvJsonTaskSync({
+            input: "[[1,\"Ada\"],[2,\"Grace\"]]",
+            direction: "json-to-csv",
+            delimiter: ",",
+            hasHeader: true,
+            typeInference: true,
+        })
+
+        expect(primitiveResult.output).toBe("null\n2\nx\nfalse")
+        expect(arrayResult.output).toBe("1,Ada\n2,Grace")
+    })
+
+    it("rejects mixed object and non-object rows with actionable row details", () => {
+        expect(() => runCsvJsonTaskSync({
+            input: "[{\"id\":1}, null]",
+            direction: "json-to-csv",
+            delimiter: ",",
+            hasHeader: true,
+            typeInference: true,
+        })).toThrow("JSON array rows must be objects when converting to header-based CSV. Row 2 is null.")
+
+        expect(() => runCsvJsonTaskSync({
+            input: "[null, {\"id\":1}]",
+            direction: "json-to-csv",
+            delimiter: ",",
+            hasHeader: true,
+            typeInference: true,
+        })).toThrow("JSON array rows must be objects when converting to header-based CSV. Row 1 is null.")
+    })
+
     it("serializes nested arrays and objects as JSON cells when converting to CSV", () => {
         const result = runCsvJsonTaskSync({
             input: JSON.stringify([

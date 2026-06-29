@@ -3225,6 +3225,7 @@
     "verification_mode_aria_label": "検証モード",
     "verification_mode_title": "検証モード",
     "verification_mode_description": "ブラウザー内だけの補助機能です。リクエスト先ホストとストレージキーを記録し、payload、headers、クエリ文字列、値は記録しません。",
+    "verification_mode_scope": "範囲: fetch、sendBeacon、ストレージ変更のみを対象にします。ブラウザーが読み込む画像、スクリプト、ダウンロード、その他のリソースは DevTools Network で確認してください。",
     "verification_mode_on": "オン",
     "verification_mode_off": "オフ",
     "verification_mode_browser_local_tool": "ブラウザー内ツール",

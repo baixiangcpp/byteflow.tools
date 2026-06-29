@@ -3225,6 +3225,7 @@
     "verification_mode_aria_label": "验证模式",
     "verification_mode_title": "验证模式",
     "verification_mode_description": "仅在浏览器内辅助验证。它记录请求主机和存储键，不记录 payload、headers、查询字符串或存储值。",
+    "verification_mode_scope": "范围：仅覆盖 fetch、sendBeacon 和存储变更。浏览器加载的图片、脚本、下载和其他资源请求仍请使用 DevTools Network 确认。",
     "verification_mode_on": "开启",
     "verification_mode_off": "关闭",
     "verification_mode_browser_local_tool": "浏览器本地工具",

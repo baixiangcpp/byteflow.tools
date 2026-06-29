@@ -3225,6 +3225,7 @@
     "verification_mode_aria_label": "Prüfmodus",
     "verification_mode_title": "Prüfmodus",
     "verification_mode_description": "Browserinterne Hilfe. Erfasst Anfrage-Hosts und Storage-Schlüssel, aber keine Payloads, Headers, Query-Strings oder Werte.",
+    "verification_mode_scope": "Umfang: nur fetch, sendBeacon und Storage-Änderungen. Nutze DevTools Network für vom Browser geladene Bilder, Skripte, Downloads und andere Ressourcen.",
     "verification_mode_on": "Ein",
     "verification_mode_off": "Aus",
     "verification_mode_browser_local_tool": "Browser-lokales Tool",

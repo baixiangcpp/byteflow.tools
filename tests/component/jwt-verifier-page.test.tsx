@@ -50,6 +50,10 @@ function unsignedToken(algorithm: string) {
     return `${encodeJsonSegment({ alg: algorithm, typ: "JWT" })}.${encodeJsonSegment({ sub: "alice" })}.signature`
 }
 
+function tokenWithHeader(header: Record<string, unknown>) {
+    return `${encodeJsonSegment(header)}.${encodeJsonSegment({ sub: "alice" })}.signature`
+}
+
 describe("JwtVerifierPage", () => {
     beforeEach(() => {
         vi.clearAllMocks()
@@ -101,6 +105,19 @@ describe("JwtVerifierPage", () => {
 
         await waitFor(() => {
             expect(screen.getByText(/declares alg: none/)).toBeInTheDocument()
+            expect(screen.queryByText(/Signature does not match/)).not.toBeInTheDocument()
+        })
+    })
+
+    it("shows malformed non-string alg as unsupported guidance", async () => {
+        renderJwtVerifier()
+
+        fireEvent.change(screen.getByRole("textbox", { name: "JWT Token" }), { target: { value: tokenWithHeader({ alg: 123, typ: "JWT" }) } })
+        fireEvent.change(screen.getByLabelText("Secret Key (for HMAC verification)"), { target: { value: "ignored" } })
+        fireEvent.click(screen.getByRole("button", { name: "Verify" }))
+
+        await waitFor(() => {
+            expect(screen.getByText(/Unsupported JWT algorithm \(non-string alg\)/)).toBeInTheDocument()
             expect(screen.queryByText(/Signature does not match/)).not.toBeInTheDocument()
         })
     })

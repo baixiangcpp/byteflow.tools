@@ -60,9 +60,14 @@ function hashForHmacAlgorithm(algorithm: SupportedHmacJwtAlgorithm): "SHA-256" |
     return "SHA-256"
 }
 
-export function classifyJwtVerificationAlgorithm(algorithm: string): "hmac" | "unsupported" | "unsigned" {
-    if (algorithm.toLowerCase() === "none") return "unsigned"
-    if (isSupportedHmacAlgorithm(algorithm)) return "hmac"
+export function normalizeJwtAlgorithm(algorithm: unknown): string {
+    return typeof algorithm === "string" && algorithm.trim() ? algorithm : "non-string alg"
+}
+
+export function classifyJwtVerificationAlgorithm(algorithm: unknown): "hmac" | "unsupported" | "unsigned" {
+    const normalizedAlgorithm = normalizeJwtAlgorithm(algorithm)
+    if (normalizedAlgorithm.toLowerCase() === "none") return "unsigned"
+    if (isSupportedHmacAlgorithm(normalizedAlgorithm)) return "hmac"
     return "unsupported"
 }
 
@@ -81,15 +86,16 @@ async function verifyHmacJwt(token: string, secret: string, algorithm: Supported
     return bytesToBase64Url(new Uint8Array(signature)) === parts[2]
 }
 
-export async function verifyJwtSignature(token: string, secret: string, algorithm: string): Promise<JwtSignatureVerificationResult | null> {
-    const classification = classifyJwtVerificationAlgorithm(algorithm)
+export async function verifyJwtSignature(token: string, secret: string, algorithm: unknown): Promise<JwtSignatureVerificationResult | null> {
+    const normalizedAlgorithm = normalizeJwtAlgorithm(algorithm)
+    const classification = classifyJwtVerificationAlgorithm(normalizedAlgorithm)
     if (classification === "unsigned") return { status: "unsigned", algorithm: "none" }
-    if (classification === "unsupported") return { status: "unsupported", algorithm }
+    if (classification === "unsupported") return { status: "unsupported", algorithm: normalizedAlgorithm }
     if (!secret.trim()) return null
-    if (!isSupportedHmacAlgorithm(algorithm)) return { status: "unsupported", algorithm }
+    if (!isSupportedHmacAlgorithm(normalizedAlgorithm)) return { status: "unsupported", algorithm: normalizedAlgorithm }
 
-    const valid = await verifyHmacJwt(token, secret, algorithm)
-    return { status: valid ? "valid" : "invalid", algorithm }
+    const valid = await verifyHmacJwt(token, secret, normalizedAlgorithm)
+    return { status: valid ? "valid" : "invalid", algorithm: normalizedAlgorithm }
 }
 
 export function parseUnixTimestampClaim(value: unknown): { ok: true; seconds: number; iso: string } | { ok: false; error: string } {

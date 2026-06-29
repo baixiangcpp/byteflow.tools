@@ -88,30 +88,30 @@ export const FILE_INPUT_POLICIES = {
     },
     "image-standard": {
         id: "image-standard",
-        accept: "image/*",
-        description: "Image files up to 12 MB and 24 MP",
+        accept: ".png,.jpg,.jpeg,.webp,.gif,.avif,image/png,image/jpeg,image/webp,image/gif,image/avif",
+        description: "Raster image files up to 12 MB and 24 MP. Use SVG tools for SVG files.",
         maxBytes: 12 * 1024 * 1024,
         maxPixels: 24_000_000,
-        allowedMimePrefixes: ["image/"],
-        allowedExtensions: [".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".avif"],
+        allowedExtensions: [".png", ".jpg", ".jpeg", ".webp", ".gif", ".avif"],
+        allowedMimeTypes: ["image/png", "image/jpeg", "image/webp", "image/gif", "image/avif"],
     },
     "image-compact": {
         id: "image-compact",
-        accept: "image/*",
-        description: "Image files up to 10 MB and 16 MP",
+        accept: ".png,.jpg,.jpeg,.webp,.gif,.avif,image/png,image/jpeg,image/webp,image/gif,image/avif",
+        description: "Raster image files up to 10 MB and 16 MP. Use SVG tools for SVG files.",
         maxBytes: 10 * 1024 * 1024,
         maxPixels: 16_000_000,
-        allowedMimePrefixes: ["image/"],
-        allowedExtensions: [".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg", ".avif"],
+        allowedExtensions: [".png", ".jpg", ".jpeg", ".webp", ".gif", ".avif"],
+        allowedMimeTypes: ["image/png", "image/jpeg", "image/webp", "image/gif", "image/avif"],
     },
     "image-logo": {
         id: "image-logo",
-        accept: "image/*",
-        description: "Logo/avatar images up to 2 MB and 4 MP",
+        accept: ".png,.jpg,.jpeg,.webp,.gif,image/png,image/jpeg,image/webp,image/gif",
+        description: "Raster logo/avatar images up to 2 MB and 4 MP. Use SVG tools for SVG files.",
         maxBytes: 2 * 1024 * 1024,
         maxPixels: 4_000_000,
-        allowedMimePrefixes: ["image/"],
-        allowedExtensions: [".png", ".jpg", ".jpeg", ".webp", ".gif", ".svg"],
+        allowedExtensions: [".png", ".jpg", ".jpeg", ".webp", ".gif"],
+        allowedMimeTypes: ["image/png", "image/jpeg", "image/webp", "image/gif"],
     },
     svg: {
         id: "svg",
@@ -165,6 +165,7 @@ function hasAllowedFileType(file: File, policy: FileInputPolicy): boolean {
     const extension = fileExtension(file)
     const hasTypeRules = Boolean(policy.allowedMimePrefixes?.length || policy.allowedMimeTypes?.length || policy.allowedExtensions?.length)
     if (!hasTypeRules) return true
+    if (extension && policy.allowedExtensions?.length && !policy.allowedExtensions.includes(extension)) return false
     if (mime && policy.allowedMimePrefixes?.some((prefix) => mime.startsWith(prefix))) return true
     if (mime && policy.allowedMimeTypes?.includes(mime)) return true
     if (extension && policy.allowedExtensions?.includes(extension)) return true

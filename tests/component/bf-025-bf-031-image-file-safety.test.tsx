@@ -107,7 +107,7 @@ describe("BF-025/BF-031 image file safety", () => {
     it("shows shared limits, rejects invalid files before resize work, and keeps output actions disabled", async () => {
         renderEnglish(<ImageResizerPage />)
 
-        expect(screen.getByText(/Accepted input: image\/\*/)).toBeInTheDocument()
+        expect(screen.getByText(/Accepted input: \.png,\.jpg,\.jpeg,\.webp,\.gif,\.avif/)).toBeInTheDocument()
         expect(screen.getByText(/Max file size: 12 MB/)).toBeInTheDocument()
         expect(screen.getByText(/Max resolution: 24 MP/)).toBeInTheDocument()
 
@@ -120,9 +120,9 @@ describe("BF-025/BF-031 image file safety", () => {
             description: "Run the tool first to create output.",
         })).toBeDisabled()
 
-        loadResizeImageFileMock.mockRejectedValueOnce(new Error("Unsupported file type. Supported input: Image files up to 12 MB and 24 MP."))
+        loadResizeImageFileMock.mockRejectedValueOnce(new Error("Unsupported file type. Supported input: Raster image files up to 12 MB and 24 MP. Use SVG tools for SVG files."))
         fireEvent.change(fileInput(), { target: { files: [new File(["bad"], "payload.exe", { type: "application/octet-stream" })] } })
-        expect(await screen.findByText("Unsupported file type. Supported input: Image files up to 12 MB and 24 MP.")).toBeInTheDocument()
+        expect(await screen.findByText("Unsupported file type. Supported input: Raster image files up to 12 MB and 24 MP. Use SVG tools for SVG files.")).toBeInTheDocument()
         expect(runImageResizeTaskMock).not.toHaveBeenCalled()
 
         loadResizeImageFileMock.mockRejectedValueOnce(new Error("File is too large. Max supported size is 12 MB."))

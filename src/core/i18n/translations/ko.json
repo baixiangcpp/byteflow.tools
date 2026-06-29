@@ -3225,6 +3225,7 @@
     "verification_mode_aria_label": "확인 모드",
     "verification_mode_title": "확인 모드",
     "verification_mode_description": "브라우저 안에서만 쓰는 보조 기능입니다. 요청 호스트와 저장소 키를 기록하며 payload, headers, 쿼리 문자열, 값은 기록하지 않습니다.",
+    "verification_mode_scope": "범위: fetch, sendBeacon, 저장소 변경만 관찰합니다. 브라우저가 로드하는 이미지, 스크립트, 다운로드 및 기타 리소스는 DevTools Network로 확인하세요.",
     "verification_mode_on": "켜짐",
     "verification_mode_off": "꺼짐",
     "verification_mode_browser_local_tool": "브라우저 로컬 도구",

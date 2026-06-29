@@ -126,6 +126,16 @@ function serializeCsvCell(value: unknown): string {
     return String(value)
 }
 
+function isPlainObjectRow(value: unknown): value is Record<string, unknown> {
+    return value !== null && typeof value === "object" && !Array.isArray(value)
+}
+
+function describeJsonRowShape(value: unknown): string {
+    if (value === null) return "null"
+    if (Array.isArray(value)) return "array"
+    return typeof value
+}
+
 export function jsonToCsv(json: string, delimiter: string, includeHeader: boolean): string {
     const parsed = JSON.parse(json)
     const effectiveDelimiter = delimiter === "auto" ? "," : delimiter
@@ -136,7 +146,11 @@ export function jsonToCsv(json: string, delimiter: string, includeHeader: boolea
 
     if (parsed.length === 0) return ""
 
-    if (typeof parsed[0] === "object" && !Array.isArray(parsed[0])) {
+    if (parsed.some(isPlainObjectRow)) {
+        const invalidRowIndex = parsed.findIndex((item) => !isPlainObjectRow(item))
+        if (invalidRowIndex !== -1) {
+            throw new Error(`JSON array rows must be objects when converting to header-based CSV. Row ${invalidRowIndex + 1} is ${describeJsonRowShape(parsed[invalidRowIndex])}.`)
+        }
         const flattened = parsed.map((item) => flattenObject(item as Record<string, unknown>))
         const allKeys = [...new Set(flattened.flatMap((obj) => Object.keys(obj)))]
 

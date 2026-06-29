@@ -34,6 +34,25 @@ describe("file-input-policy", () => {
         expect(validateFileAgainstPolicy(new File(["<svg />"], "icon.svg", { type: "" }), FILE_INPUT_POLICIES.svg)).toMatchObject({ ok: true })
     })
 
+    it("keeps raw SVG out of generic raster image policies", () => {
+        for (const policyId of ["image-standard", "image-compact", "image-logo"] as const) {
+            const policy = FILE_INPUT_POLICIES[policyId]
+            expect(policy.accept).not.toContain("image/*")
+            expect(policy.allowedExtensions).not.toContain(".svg")
+            expect(policy.allowedMimeTypes).not.toContain("image/svg+xml")
+            expect(validateFileAgainstPolicy(new File(["<svg />"], "unsafe.svg", { type: "image/svg+xml" }), policy)).toMatchObject({
+                ok: false,
+                reason: "unsupported_type",
+            })
+            expect(validateFileAgainstPolicy(new File(["<svg />"], "unsafe.svg", { type: "image/png" }), policy)).toMatchObject({
+                ok: false,
+                reason: "unsupported_type",
+            })
+        }
+
+        expect(validateFileAgainstPolicy(new File(["<svg />"], "safe.svg", { type: "image/svg+xml" }), FILE_INPUT_POLICIES.svg)).toMatchObject({ ok: true })
+    })
+
     it("reads only files that pass policy validation", async () => {
         await expect(readTextFileWithPolicy(new File(["alpha"], "sample.txt", { type: "text/plain" }))).resolves.toBe("alpha")
         await expect(readArrayBufferWithPolicy(new File([new Uint8Array([1, 2])], "sample.bin"), FILE_INPUT_POLICIES["hash-file"])).resolves.toBeInstanceOf(ArrayBuffer)

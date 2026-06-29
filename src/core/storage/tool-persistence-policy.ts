@@ -1,4 +1,5 @@
 import { removeStorageKey, writeStorageString } from "./tool-persistence"
+import { getAnalyticsOptOutStorageKey } from "@/core/analytics/preferences"
 
 export type ToolInputPersistenceMode = true | false | "opt-in"
 
@@ -28,24 +29,49 @@ export function enforceToolInputPersistencePolicy(policy: ToolPersistencePolicy,
     writeStorageString(policy.inputStorageKey, input)
 }
 
-export function clearByteflowLocalData(): number {
+export type ClearByteflowBrowserDataOptions = {
+    preserveAnalyticsOptOut?: boolean
+    includeSessionStorage?: boolean
+}
+
+function collectByteflowStorageKeys(
+    storage: Storage,
+    preservedKeys: ReadonlySet<string>,
+): string[] {
+    const keys: string[] = []
+    for (let index = 0; index < storage.length; index += 1) {
+        const key = storage.key(index)
+        if (key?.startsWith("byteflow:") && !preservedKeys.has(key)) keys.push(key)
+    }
+    return keys
+}
+
+export function clearByteflowBrowserData(options: ClearByteflowBrowserDataOptions = {}): number {
     if (typeof window === "undefined") return 0
 
-    let removed = 0
-    const keys: string[] = []
-    try {
-        for (let index = 0; index < window.localStorage.length; index += 1) {
-            const key = window.localStorage.key(index)
-            if (key?.startsWith("byteflow:")) keys.push(key)
-        }
+    const preserveAnalyticsOptOut = options.preserveAnalyticsOptOut ?? true
+    const preservedKeys = new Set<string>()
+    if (preserveAnalyticsOptOut) preservedKeys.add(getAnalyticsOptOutStorageKey())
 
-        keys.forEach((key) => {
+    let removed = 0
+    try {
+        collectByteflowStorageKeys(window.localStorage, preservedKeys).forEach((key) => {
             window.localStorage.removeItem(key)
             removed += 1
         })
+        if (options.includeSessionStorage ?? true) {
+            collectByteflowStorageKeys(window.sessionStorage, preservedKeys).forEach((key) => {
+                window.sessionStorage.removeItem(key)
+                removed += 1
+            })
+        }
     } catch {
         return removed
     }
 
     return removed
+}
+
+export function clearByteflowLocalData(): number {
+    return clearByteflowBrowserData()
 }
