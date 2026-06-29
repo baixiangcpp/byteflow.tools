@@ -3041,7 +3041,7 @@
     },
     "json_schema_workbench": {
       "title": "JSON Schema Workbench",
-      "description": "Generate starter schemas from JSON and validate payloads against pasted schemas locally in your browser.",
+      "description": "Generate starter schemas from JSON and run basic supported schema checks locally in your browser.",
       "mode_label": "JSON Schema mode",
       "mode_generate": "Generate schema",
       "mode_validate": "Validate payload",

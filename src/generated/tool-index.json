@@ -5350,7 +5350,7 @@
       "relatedWorkflows": [],
       "keywords": [
         "json schema generator",
-        "json schema validator",
+        "basic json schema checks",
         "json schema workbench",
         "validate json schema"
       ],

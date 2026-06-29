@@ -3021,7 +3021,7 @@
     },
     "json_schema_workbench": {
       "title": "JSON-Schema-Workbench",
-      "description": "Erzeuge Starter-Schemas aus JSON und validiere Payloads gegen eingefügte Schemas lokal im Browser.",
+      "description": "Erzeuge Starter-Schemas aus JSON und fuehre grundlegende unterstuetzte Schema-Pruefungen lokal im Browser aus.",
       "mode_label": "JSON-Schema-Modus",
       "mode_generate": "Schema erzeugen",
       "mode_validate": "Payload validieren",

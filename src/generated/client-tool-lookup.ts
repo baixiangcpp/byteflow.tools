@@ -6472,7 +6472,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "slug": "json-schema-workbench",
         "keywords": [
             "json schema generator",
-            "json schema validator",
+            "basic json schema checks",
             "json schema workbench",
             "validate json schema"
         ],
@@ -6517,8 +6517,7 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "searchKeywords": [
             "schema",
             "json schema",
-            "validator",
-            "draft 7",
+            "basic validator",
             "contract"
         ]
     },

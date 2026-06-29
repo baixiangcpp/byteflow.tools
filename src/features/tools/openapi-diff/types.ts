@@ -6,7 +6,9 @@ export type OpenApiOperationSnapshot = {
     operationId?: string
     summary?: string
     parameters: OpenApiParameterSnapshot[]
+    requestBody?: OpenApiRequestBodySnapshot
     responses: string[]
+    responseContent: OpenApiResponseContentSnapshot[]
     security: string[]
 }
 
@@ -21,6 +23,25 @@ export type OpenApiSpecSnapshot = {
     operations: Map<string, OpenApiOperationSnapshot>
     schemas: Map<string, string>
     securitySchemes: Map<string, string>
+}
+
+export type OpenApiRequestBodySnapshot = {
+    required: boolean
+    mediaTypes: Record<string, OpenApiSchemaSnapshot>
+}
+
+export type OpenApiResponseContentSnapshot = {
+    statusCode: string
+    mediaTypes: Record<string, OpenApiSchemaSnapshot>
+}
+
+export type OpenApiSchemaSnapshot = {
+    type?: string
+    enum?: unknown[]
+    required: string[]
+    properties: Record<string, OpenApiSchemaSnapshot>
+    fingerprint: string
+    unresolvedRef?: string
 }
 
 export type OpenApiDiffItem = {

@@ -3021,7 +3021,7 @@
     },
     "json_schema_workbench": {
       "title": "JSON Schema 工作台",
-      "description": "在浏览器本地从 JSON 生成起始 Schema，并用粘贴的 Schema 校验 payload。",
+      "description": "在浏览器本地从 JSON 生成起始 Schema，并运行基础受支持的 Schema 检查。",
       "mode_label": "JSON Schema 模式",
       "mode_generate": "生成 Schema",
       "mode_validate": "校验 payload",

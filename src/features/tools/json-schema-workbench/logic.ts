@@ -1,4 +1,26 @@
-import type { JsonSchemaValidationIssue, JsonSchemaValidationReport, JsonSchemaValue } from "./types"
+import type { JsonSchemaValidationIssue, JsonSchemaValidationReport, JsonSchemaValidationWarning, JsonSchemaValue } from "./types"
+
+const SUPPORTED_SCHEMA_KEYWORDS = new Set([
+    "$schema",
+    "additionalProperties",
+    "enum",
+    "items",
+    "maximum",
+    "maxLength",
+    "minimum",
+    "minLength",
+    "properties",
+    "required",
+    "type",
+])
+
+const NON_VALIDATION_CONTAINER_KEYWORDS = new Set([
+    "$defs",
+    "definitions",
+    "description",
+    "examples",
+    "title",
+])
 
 function isPlainObject(value: unknown): value is Record<string, unknown> {
     return Boolean(value) && typeof value === "object" && !Array.isArray(value)
@@ -70,6 +92,47 @@ function addIssue(issues: JsonSchemaValidationIssue[], path: string, message: st
     issues.push({ path: path || "$", message, fix })
 }
 
+function addWarning(warnings: JsonSchemaValidationWarning[], path: string, keyword: string) {
+    if (warnings.some((warning) => warning.path === path && warning.keyword === keyword)) return
+    warnings.push({
+        path: path || "$",
+        keyword,
+        message: `Basic mode does not enforce "${keyword}" at ${path || "$"}.`,
+    })
+}
+
+function discoverUnsupportedKeywords(schema: unknown, path: string, warnings: JsonSchemaValidationWarning[]) {
+    if (!isPlainObject(schema)) return
+
+    for (const [keyword, value] of Object.entries(schema)) {
+        if (!SUPPORTED_SCHEMA_KEYWORDS.has(keyword) && !NON_VALIDATION_CONTAINER_KEYWORDS.has(keyword)) {
+            addWarning(warnings, path, keyword)
+        }
+
+        if (keyword === "properties" && isPlainObject(value)) {
+            for (const [propertyName, propertySchema] of Object.entries(value)) {
+                discoverUnsupportedKeywords(propertySchema, pathJoin(path, propertyName), warnings)
+            }
+            continue
+        }
+
+        if (keyword === "items") {
+            if (Array.isArray(value)) {
+                value.forEach((itemSchema, index) => discoverUnsupportedKeywords(itemSchema, pathJoin(path, `[${index}]`), warnings))
+            } else {
+                discoverUnsupportedKeywords(value, pathJoin(path, "[]"), warnings)
+            }
+            continue
+        }
+
+        if ((keyword === "$defs" || keyword === "definitions") && isPlainObject(value)) {
+            for (const [definitionName, definitionSchema] of Object.entries(value)) {
+                discoverUnsupportedKeywords(definitionSchema, pathJoin(path, definitionName), warnings)
+            }
+        }
+    }
+}
+
 function validateAgainstSchema(value: unknown, schema: JsonSchemaValue, path: string, issues: JsonSchemaValidationIssue[]) {
     if (!acceptsType(schema, value)) {
         addIssue(issues, path, `Expected ${Array.isArray(schema.type) ? schema.type.join(" or ") : schema.type}, received ${inferType(value)}.`, "Change the payload value or update the schema type.")
@@ -126,20 +189,31 @@ export function validateJsonWithSchema(payloadInput: string, schemaInput: string
     const payload = JSON.parse(payloadInput)
     const schema = JSON.parse(schemaInput) as JsonSchemaValue
     const issues: JsonSchemaValidationIssue[] = []
+    const warnings: JsonSchemaValidationWarning[] = []
+    discoverUnsupportedKeywords(schema, "$", warnings)
     validateAgainstSchema(payload, schema, "$", issues)
     return {
         valid: issues.length === 0,
         issues,
-        summary: issues.length === 0 ? "Payload matches the schema." : `${issues.length} schema issue(s) found.`,
+        warnings,
+        summary: issues.length === 0
+            ? warnings.length === 0
+                ? "Payload matches the supported schema checks."
+                : `Payload matches the supported schema checks, with ${warnings.length} warning(s) for unsupported keyword(s).`
+            : `${issues.length} schema issue(s) found${warnings.length > 0 ? `, with ${warnings.length} warning(s) for unsupported keyword(s)` : ""}.`,
     }
 }
 
 export function formatValidationReport(report: JsonSchemaValidationReport): string {
-    if (report.valid) return report.summary
-    return [report.summary, ...report.issues.map((issue) => `${issue.path}: ${issue.message} Fix: ${issue.fix}`)].join("\n")
+    const warningLines = report.warnings.map((warning) => `${warning.path}: ${warning.message}`)
+    if (report.valid) return [report.summary, ...warningLines].join("\n")
+    return [
+        report.summary,
+        ...report.issues.map((issue) => `${issue.path}: ${issue.message} Fix: ${issue.fix}`),
+        ...warningLines,
+    ].join("\n")
 }
 
 export function runTool(input: string): string {
     return generateJsonSchema(input)
 }
-

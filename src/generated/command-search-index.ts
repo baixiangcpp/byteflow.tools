@@ -2927,7 +2927,7 @@ const COMMAND_SEARCH_INDEX: Record<string, CommandSearchIndexEntry> = {
         "slug": "json-schema-workbench",
         "keywords": [
             "json schema generator",
-            "json schema validator",
+            "basic json schema checks",
             "json schema workbench",
             "validate json schema"
         ],
@@ -2935,8 +2935,7 @@ const COMMAND_SEARCH_INDEX: Record<string, CommandSearchIndexEntry> = {
         "searchKeywords": [
             "schema",
             "json schema",
-            "validator",
-            "draft 7",
+            "basic validator",
             "contract"
         ],
         "family": "formatters-validators",

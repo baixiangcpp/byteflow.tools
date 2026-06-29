@@ -3021,7 +3021,7 @@
     },
     "json_schema_workbench": {
       "title": "Atelier JSON Schema",
-      "description": "Générez des schemas de départ depuis du JSON et validez des payloads avec des schemas collés localement dans le navigateur.",
+      "description": "Generez des schemas de depart depuis du JSON et executez des controles Schema de base pris en charge localement dans le navigateur.",
       "mode_label": "Mode JSON Schema",
       "mode_generate": "Générer le schema",
       "mode_validate": "Valider le payload",
