@@ -15,13 +15,16 @@ function stubObjectUrlApi() {
     return { createObjectURL, revokeObjectURL }
 }
 
-describe("qr code generator browser downloads", () => {
-    let clickSpy: ReturnType<typeof vi.spyOn>
+describe("qr code generator browser exports", () => {
+    let clickCount = 0
 
     beforeEach(() => {
+        clickCount = 0
         document.body.innerHTML = ""
         vi.useFakeTimers()
-        clickSpy = vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => undefined)
+        vi.spyOn(HTMLAnchorElement.prototype, "click").mockImplementation(() => {
+            clickCount += 1
+        })
     })
 
     afterEach(() => {
@@ -30,22 +33,22 @@ describe("qr code generator browser downloads", () => {
         document.body.innerHTML = ""
     })
 
-    it("downloads data URLs through a temporary attached anchor", () => {
+    it("exports data URLs through a temporary attached anchor", () => {
         const result = downloadDataUrl("data:image/png;base64,abc", "qr-code.png")
 
         expect(result).toEqual({ ok: true })
-        expect(clickSpy).toHaveBeenCalledTimes(1)
+        expect(clickCount).toBe(1)
         expect(document.body.querySelector("a")).toBeNull()
     })
 
-    it("downloads blobs and defers object URL revocation", () => {
+    it("exports blobs and defers object URL revocation", () => {
         const { createObjectURL, revokeObjectURL } = stubObjectUrlApi()
 
         const result = downloadBlob(new Blob(["png"], { type: "image/png" }), "qr-code.png")
 
         expect(result).toEqual({ ok: true })
         expect(createObjectURL).toHaveBeenCalledWith(expect.any(Blob))
-        expect(clickSpy).toHaveBeenCalledTimes(1)
+        expect(clickCount).toBe(1)
         expect(revokeObjectURL).not.toHaveBeenCalled()
 
         vi.advanceTimersByTime(1_000)
@@ -55,10 +58,10 @@ describe("qr code generator browser downloads", () => {
     it("exports SVG through the same delayed-revoke path", () => {
         const { revokeObjectURL } = stubObjectUrlApi()
 
-        const result = downloadSvg("<svg xmlns=\"http://www.w3.org/2000/svg\" />", "qr-code.svg")
+        const result = downloadSvg("<svg />", "qr-code.svg")
 
         expect(result).toEqual({ ok: true })
-        expect(clickSpy).toHaveBeenCalledTimes(1)
+        expect(clickCount).toBe(1)
         expect(revokeObjectURL).not.toHaveBeenCalled()
 
         vi.advanceTimersByTime(1_000)
