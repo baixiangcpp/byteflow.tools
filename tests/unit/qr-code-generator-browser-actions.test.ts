@@ -1,6 +1,23 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { downloadBlob, downloadDataUrl, downloadSvg } from "@/features/tools/qr-code-generator/browser-actions"
 
+const ORIGINAL_CREATE_OBJECT_URL_DESCRIPTOR = Object.getOwnPropertyDescriptor(URL, "createObjectURL")
+const ORIGINAL_REVOKE_OBJECT_URL_DESCRIPTOR = Object.getOwnPropertyDescriptor(URL, "revokeObjectURL")
+
+function restoreUrlProperty(name: "createObjectURL" | "revokeObjectURL", descriptor: PropertyDescriptor | undefined) {
+    if (descriptor) {
+        Object.defineProperty(URL, name, descriptor)
+        return
+    }
+
+    delete (URL as unknown as Record<string, unknown>)[name]
+}
+
+function restoreObjectUrlApi() {
+    restoreUrlProperty("createObjectURL", ORIGINAL_CREATE_OBJECT_URL_DESCRIPTOR)
+    restoreUrlProperty("revokeObjectURL", ORIGINAL_REVOKE_OBJECT_URL_DESCRIPTOR)
+}
+
 function stubObjectUrlApi() {
     const createObjectURL = vi.fn(() => "blob:byteflow-test")
     const revokeObjectURL = vi.fn()
@@ -28,6 +45,7 @@ describe("qr code generator browser exports", () => {
     })
 
     afterEach(() => {
+        restoreObjectUrlApi()
         vi.useRealTimers()
         vi.restoreAllMocks()
         document.body.innerHTML = ""
