@@ -1,6 +1,15 @@
 import type { ErrorCorrectionLevel } from "./types"
 import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 
+const OBJECT_URL_REVOKE_DELAY_MS = 1_000
+
+export type BrowserDownloadResult = {
+    ok: true
+} | {
+    ok: false
+    error: string
+}
+
 let qrCodePromise: Promise<typeof import("qrcode")> | null = null
 let toastPromise: Promise<typeof import("sonner")["toast"]> | null = null
 
@@ -64,11 +73,75 @@ export function readFileAsDataUrl(file: File): Promise<string> {
     })
 }
 
-export function downloadDataUrl(dataUrl: string, filename: string) {
-    const a = document.createElement("a")
-    a.href = dataUrl
-    a.download = filename
-    a.click()
+function deferObjectUrlRevoke(url: string) {
+    window.setTimeout(() => URL.revokeObjectURL(url), OBJECT_URL_REVOKE_DELAY_MS)
+}
+
+function formatDownloadError(error: unknown): string {
+    return error instanceof Error ? error.message : String(error || "Browser download failed")
+}
+
+export function downloadUrl(url: string, filename: string, options: { revokeObjectUrl?: boolean } = {}): BrowserDownloadResult {
+    if (typeof document === "undefined") {
+        return { ok: false, error: "Downloads require a browser document." }
+    }
+
+    const anchor = document.createElement("a")
+    anchor.href = url
+    anchor.download = filename
+    anchor.rel = "noopener"
+    anchor.style.display = "none"
+
+    try {
+        document.body.appendChild(anchor)
+        anchor.click()
+        return { ok: true }
+    } catch (error) {
+        return { ok: false, error: formatDownloadError(error) }
+    } finally {
+        anchor.remove()
+        if (options.revokeObjectUrl) {
+            deferObjectUrlRevoke(url)
+        }
+    }
+}
+
+export function downloadBlob(blob: Blob, filename: string): BrowserDownloadResult {
+    try {
+        const url = URL.createObjectURL(blob)
+        return downloadUrl(url, filename, { revokeObjectUrl: true })
+    } catch (error) {
+        return { ok: false, error: formatDownloadError(error) }
+    }
+}
+
+export function canvasToPngBlob(canvas: HTMLCanvasElement): Promise<Blob> {
+    if (typeof canvas.toBlob === "function") {
+        return new Promise((resolve, reject) => {
+            canvas.toBlob((blob) => {
+                if (blob) {
+                    resolve(blob)
+                    return
+                }
+                reject(new Error("Canvas did not produce a PNG blob."))
+            }, "image/png")
+        })
+    }
+
+    return fetch(canvas.toDataURL("image/png")).then((response) => response.blob())
+}
+
+export async function downloadCanvasPng(canvas: HTMLCanvasElement, filename: string): Promise<BrowserDownloadResult> {
+    try {
+        const blob = await canvasToPngBlob(canvas)
+        return downloadBlob(blob, filename)
+    } catch (error) {
+        return { ok: false, error: formatDownloadError(error) }
+    }
+}
+
+export function downloadDataUrl(dataUrl: string, filename: string): BrowserDownloadResult {
+    return downloadUrl(dataUrl, filename)
 }
 
 export async function buildQrSvg(options: {
@@ -99,12 +172,6 @@ export async function buildQrSvg(options: {
         : svg
 }
 
-export function downloadSvg(svg: string, filename: string) {
-    const blob = new Blob([svg], { type: "image/svg+xml" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = filename
-    a.click()
-    URL.revokeObjectURL(url)
+export function downloadSvg(svg: string, filename: string): BrowserDownloadResult {
+    return downloadBlob(new Blob([svg], { type: "image/svg+xml" }), filename)
 }
