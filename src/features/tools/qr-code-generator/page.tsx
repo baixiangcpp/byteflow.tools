@@ -13,13 +13,13 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { ToolActionBar, type ToolAction, type ToolActionResult } from "@/features/tool-shell/tool-action-bar"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import {
     buildQrSvg,
-    downloadDataUrl,
+    downloadCanvasPng,
     downloadSvg as downloadSvgFile,
     drawRoundedRect,
     loadImage,
@@ -89,7 +89,10 @@ export function QrCodeGeneratorPage() {
         }
 
         const canvas = canvasRef.current
-        if (!canvas) return
+        if (!canvas) {
+            setDataUrl("")
+            return
+        }
 
         const qrCode = await loadQRCode()
 
@@ -175,14 +178,24 @@ export function QrCodeGeneratorPage() {
         setLogoEnabled(false)
     }
 
-    const downloadPng = () => {
-        if (!dataUrl) return
-        downloadDataUrl(dataUrl, "qr-code.png")
-        void notifySuccess(textFor("downloaded_png"))
+    const downloadPng = async (): Promise<ToolActionResult> => {
+        const canvas = canvasRef.current
+        if (!canvas || !text.trim()) {
+            return { status: "failed", message: textFor("download_error") }
+        }
+
+        const result = await downloadCanvasPng(canvas, "qr-code.png")
+        if (!result.ok) {
+            await notifyError(textFor("download_error"))
+            return { status: "failed", message: textFor("download_error"), description: result.error }
+        }
+
+        await notifySuccess(textFor("downloaded_png"))
+        return { status: "success", message: textFor("downloaded_png") }
     }
 
-    const downloadSvg = async () => {
-        if (!text.trim()) return
+    const downloadSvg = async (): Promise<ToolActionResult> => {
+        if (!text.trim()) return { status: "failed", message: textFor("download_error") }
 
         try {
             const finalSvg = await buildQrSvg({
@@ -196,10 +209,16 @@ export function QrCodeGeneratorPage() {
                 logoEnabled,
                 logoScale,
             })
-            downloadSvgFile(finalSvg, "qr-code.svg")
+            const result = downloadSvgFile(finalSvg, "qr-code.svg")
+            if (!result.ok) {
+                await notifyError(textFor("download_error"))
+                return { status: "failed", message: textFor("download_error"), description: result.error }
+            }
             await notifySuccess(textFor("downloaded_svg"))
+            return { status: "success", message: textFor("downloaded_svg") }
         } catch {
             await notifyError(textFor("download_error"))
+            return { status: "failed", message: textFor("download_error") }
         }
     }
 
@@ -239,14 +258,14 @@ export function QrCodeGeneratorPage() {
             onClick: handleSample,
         },
         {
-            id: "png",
+            id: "download_png",
             label: "PNG",
             icon: Download,
             onClick: downloadPng,
             disabled: !dataUrl,
         },
         {
-            id: "svg",
+            id: "download_svg",
             label: "SVG",
             icon: Download,
             onClick: downloadSvg,
@@ -296,9 +315,10 @@ export function QrCodeGeneratorPage() {
                             <textarea
                                 value={text}
                                 onChange={(event) => setText(event.target.value)}
-                                className="h-24 w-full resize-none rounded-md border bg-background px-3 py-2 font-mono text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                                className="min-h-[9rem] w-full resize-y rounded-md border bg-background px-3 py-2 font-mono text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                                 placeholder={textFor("placeholder")}
                             />
+                            <p className="text-xs leading-5 text-muted-foreground">{text.trim() ? textFor("prompt") : textFor("placeholder")}</p>
                         </div>
 
                         <div className="space-y-2">
