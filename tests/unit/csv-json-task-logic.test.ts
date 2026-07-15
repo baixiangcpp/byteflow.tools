@@ -247,6 +247,22 @@ describe("csv json task logic", () => {
         expect(result.output).toBe("id,name\n1,Ada")
     })
 
+    it("protects string headers and cells without corrupting typed negative numbers", () => {
+        const result = runCsvJsonTaskSync({
+            input: JSON.stringify([{
+                "=formula": "+SUM(1,1)",
+                negative_number: -42,
+                negative_text: "-42",
+            }]),
+            direction: "json-to-csv",
+            delimiter: ",",
+            hasHeader: true,
+            typeInference: true,
+        })
+
+        expect(result.output).toBe("'=formula,negative_number,negative_text\n\"'+SUM(1,1)\",-42,'-42")
+    })
+
     it("keeps primitive and array rows on the non-object CSV path", () => {
         const primitiveResult = runCsvJsonTaskSync({
             input: "[null,2,\"x\",false]",

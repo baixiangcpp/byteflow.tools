@@ -1323,6 +1323,7 @@
       "description": "Calcule l'adresse réseau, broadcast, la plage d'hôtes et les masques à partir de blocs CIDR IPv4."
     },
     "csv_json_converter": {
+      "spreadsheet_safe_note": "Le CSV sécurisé pour les tableurs ajoute une apostrophe devant les cellules texte ressemblant à des formules. Les nombres typés restent inchangés ; les chaînes protégées ne sont pas restaurées à l'identique octet par octet.",
       "title": "Convertisseur CSV ↔ JSON",
       "description": "Convertissez instantanément entre les formats CSV et JSON. Détection automatique, délimiteurs personnalisés et inférence de type.",
       "show_settings_action": "Afficher les reglages",

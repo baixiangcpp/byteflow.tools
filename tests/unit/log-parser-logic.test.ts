@@ -193,6 +193,17 @@ describe("exportToCSV", () => {
 
         expect(csv).toContain('""quotes""')
     })
+
+    it("should neutralize formula-like log messages", () => {
+        const entries = [
+            { lineNumber: 1, raw: "+SUM(1,1)", level: "INFO" as const, message: "+SUM(1,1)" },
+        ]
+
+        const csv = exportToCSV(entries)
+
+        expect(csv).toContain("\"'+SUM(1,1)\"")
+        expect(csv).not.toContain("\"+SUM(1,1)\"")
+    })
 })
 
 describe("exportToJSON", () => {

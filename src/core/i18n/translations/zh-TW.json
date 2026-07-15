@@ -1323,6 +1323,7 @@
       "description": "根據 IPv4 CIDR 網段計算網路位址、廣播位址、主機範圍與遮罩。"
     },
     "csv_json_converter": {
+      "spreadsheet_safe_note": "試算表安全 CSV 會在類似公式的字串儲存格前加上單引號。數值型別保持不變；受保護的字串無法逐位元組往返還原。",
       "title": "CSV ↔ JSON 轉換器",
       "description": "在 CSV 和 JSON 格式之間即時轉換。支援自動偵測分隔符號、自訂分隔符號和類型推斷。",
       "show_settings_action": "顯示設定",

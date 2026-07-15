@@ -1351,6 +1351,7 @@
       "description": "Calculate network, broadcast, host ranges, and masks from IPv4 CIDR blocks."
     },
     "csv_json_converter": {
+      "spreadsheet_safe_note": "Spreadsheet-safe CSV adds a leading apostrophe to formula-like string cells. Typed numbers remain unchanged; protected strings do not round-trip byte-for-byte.",
       "title": "CSV ↔ JSON Converter",
       "description": "Convert between CSV and JSON formats instantly. Supports auto-detection, custom delimiters, and type inference.",
       "show_settings_action": "Show Settings",

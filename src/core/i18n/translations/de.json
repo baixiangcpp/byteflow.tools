@@ -1323,6 +1323,7 @@
       "description": "Berechnet Netzwerk, Broadcast, Host-Bereiche und Masken aus IPv4-CIDR-Blöcken."
     },
     "csv_json_converter": {
+      "spreadsheet_safe_note": "Tabellenkalkulationssicheres CSV stellt formelartigen Textzellen ein Apostroph voran. Typisierte Zahlen bleiben unverändert; geschützte Zeichenfolgen werden nicht bytegenau zurückkonvertiert.",
       "title": "CSV ↔ JSON Konverter",
       "description": "Konvertieren Sie sofort zwischen CSV- und JSON-Formaten. Unterstützt Auto-Erkennung, benutzerdefinierte Trennzeichen und Typinferenz.",
       "show_settings_action": "Einstellungen anzeigen",

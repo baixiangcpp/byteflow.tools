@@ -1323,6 +1323,7 @@
       "description": "IPv4 CIDR ブロックからネットワーク、ブロードキャスト、ホスト範囲、マスクを計算します。"
     },
     "csv_json_converter": {
+      "spreadsheet_safe_note": "スプレッドシート向け安全 CSV では、数式のような文字列セルの先頭にアポストロフィを追加します。数値型は変更されませんが、保護された文字列はバイト単位では往復変換されません。",
       "title": "CSV ↔ JSON コンバーター",
       "description": "CSVとJSON形式を即座に変換。自動区切り検出、カスタム区切り、型推論に対応。",
       "show_settings_action": "設定を表示",

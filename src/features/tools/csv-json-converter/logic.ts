@@ -1,3 +1,7 @@
+import {
+    serializeSpreadsheetSafeCsv,
+    type SpreadsheetSafeCsvCell,
+} from "@/core/files/csv-export"
 import { JSON_ARRAY_REQUIRED_ERROR } from "./constants"
 import type { CsvJsonDiagnostic } from "./types"
 
@@ -414,19 +418,12 @@ export function csvToJson(csv: string, delimiter: string, hasHeader: boolean, ty
     return csvToJsonWithDiagnostics(csv, delimiter, hasHeader, typeInference).output
 }
 
-function escapeCSVField(value: string, delimiter: string): string {
-    if (value.includes('"') || value.includes(delimiter) || value.includes("\n") || value.includes("\r")) {
-        return `"${value.replace(/"/g, '""')}"`
-    }
-    return value
-}
-
 function flattenObject(
     obj: Record<string, unknown>,
     prefix = "",
-    result: Record<string, string> = Object.create(null) as Record<string, string>,
+    result: Record<string, SpreadsheetSafeCsvCell> = Object.create(null) as Record<string, SpreadsheetSafeCsvCell>,
     paths = new Map<string, string>(),
-): Record<string, string> {
+): Record<string, SpreadsheetSafeCsvCell> {
     for (const key of Object.keys(obj)) {
         const fullKey = prefix ? `${prefix}.${key}` : key
         const value = obj[key]
@@ -438,16 +435,24 @@ function flattenObject(
             if (existingPath) {
                 throw new Error(`JSON paths ${existingPath} and ${sourcePath} both map to CSV column ${JSON.stringify(fullKey)}. Rename a key before converting.`)
             }
-            result[fullKey] = value === null || value === undefined ? "" : serializeCsvCell(value)
+            result[fullKey] = value === null || value === undefined ? "" : serializeJsonCsvCell(value)
             paths.set(fullKey, sourcePath)
         }
     }
     return result
 }
 
-function serializeCsvCell(value: unknown): string {
+function serializeJsonCsvCell(value: unknown): SpreadsheetSafeCsvCell {
     if (Array.isArray(value) || (value !== null && typeof value === "object")) {
         return JSON.stringify(value)
+    }
+    if (
+        typeof value === "string"
+        || typeof value === "number"
+        || typeof value === "boolean"
+        || typeof value === "bigint"
+    ) {
+        return value
     }
     return String(value)
 }
@@ -480,27 +485,25 @@ export function jsonToCsv(json: string, delimiter: string, includeHeader: boolea
         const flattened = parsed.map((item) => flattenObject(item as Record<string, unknown>))
         const allKeys = [...new Set(flattened.flatMap((obj) => Object.keys(obj)))]
 
-        const lines: string[] = []
+        const rows: SpreadsheetSafeCsvCell[][] = []
         if (includeHeader) {
-            lines.push(allKeys.map((k) => escapeCSVField(k, effectiveDelimiter)).join(effectiveDelimiter))
+            rows.push(allKeys)
         }
         for (const row of flattened) {
-            lines.push(
-                allKeys.map((k) => escapeCSVField(row[k] ?? "", effectiveDelimiter)).join(effectiveDelimiter)
-            )
+            rows.push(allKeys.map((key) => row[key] ?? ""))
         }
-        return lines.join("\n")
+        return serializeSpreadsheetSafeCsv(rows, { delimiter: effectiveDelimiter })
     }
 
-    const lines: string[] = []
+    const rows: SpreadsheetSafeCsvCell[][] = []
     for (const row of parsed) {
         if (Array.isArray(row)) {
-            lines.push(
-                row.map((v: unknown) => escapeCSVField(v === null || v === undefined ? "" : serializeCsvCell(v), effectiveDelimiter)).join(effectiveDelimiter)
-            )
+            rows.push(row.map((value: unknown) => (
+                value === null || value === undefined ? "" : serializeJsonCsvCell(value)
+            )))
         } else {
-            lines.push(escapeCSVField(String(row), effectiveDelimiter))
+            rows.push([row === null ? "null" : serializeJsonCsvCell(row)])
         }
     }
-    return lines.join("\n")
+    return serializeSpreadsheetSafeCsv(rows, { delimiter: effectiveDelimiter })
 }

@@ -1323,6 +1323,7 @@
       "description": "根据 IPv4 CIDR 网段计算网络地址、广播地址、主机范围和掩码。"
     },
     "csv_json_converter": {
+      "spreadsheet_safe_note": "电子表格安全 CSV 会为类似公式的字符串单元格添加前导撇号。数值类型保持不变；受保护的字符串无法逐字节往返还原。",
       "title": "CSV ↔ JSON 转换器",
       "description": "在 CSV 和 JSON 格式之间即时转换。支持自动检测分隔符、自定义分隔符和类型推断。",
       "show_settings_action": "显示设置",

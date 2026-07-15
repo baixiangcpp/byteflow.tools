@@ -444,6 +444,11 @@ export function CsvJsonConverterPage() {
                             </InlineButton>
                         </div>
                     </div>
+                    {direction === "json-to-csv" && (
+                        <p className="border-b border-border/70 bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
+                            {toolT.spreadsheet_safe_note}
+                        </p>
+                    )}
                     <div className="flex-1 min-h-[300px]">
                         <MonacoEditor
                             height="100%"

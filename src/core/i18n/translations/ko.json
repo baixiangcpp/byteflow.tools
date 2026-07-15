@@ -1323,6 +1323,7 @@
       "description": "IPv4 CIDR 블록에서 네트워크, 브로드캐스트, 호스트 범위, 마스크를 계산합니다."
     },
     "csv_json_converter": {
+      "spreadsheet_safe_note": "스프레드시트 안전 CSV는 수식처럼 보이는 문자열 셀 앞에 아포스트로피를 추가합니다. 숫자 형식은 변경되지 않으며, 보호된 문자열은 바이트 단위로 왕복 변환되지 않습니다.",
       "title": "CSV ↔ JSON 변환기",
       "description": "CSV와 JSON 형식 간 즉시 변환. 자동 구분자 감지, 사용자 정의 구분자, 유형 추론 지원.",
       "show_settings_action": "설정 표시",

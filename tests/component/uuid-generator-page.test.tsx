@@ -120,4 +120,18 @@ describe("UuidGeneratorPage", () => {
         })
         expect(JSON.parse(mocks.downloaded.at(-1)?.content ?? "[]")).toHaveLength(1000)
     })
+
+    it("neutralizes formula-like prefixes in CSV exports", () => {
+        render(<UuidGeneratorPage />)
+
+        fireEvent.change(screen.getByLabelText("Optional prefix"), { target: { value: "=1+1" } })
+        fireEvent.click(screen.getByRole("button", { name: "CSV" }))
+
+        const download = mocks.downloaded.at(-1)
+        expect(download).toMatchObject({
+            filename: "byteflow-uuids.csv",
+            mimeType: "text/csv;charset=utf-8",
+        })
+        expect(download?.content.split("\n")[1]).toBe("1,'=1+144444444-4444-4444-4444-444444444444")
+    })
 })

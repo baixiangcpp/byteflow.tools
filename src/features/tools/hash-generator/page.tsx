@@ -18,6 +18,7 @@ import { ModeSelector } from "@/features/tool-shell/mode-selector"
 import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { serializeSpreadsheetSafeCsv } from "@/core/files/csv-export"
 import { FILE_INPUT_POLICIES, describeFilePolicy } from "@/core/files/file-input-policy"
 import {
     type StandardHashAlgorithm,
@@ -99,10 +100,10 @@ export function HashGeneratorPage() {
         if (!batchRows.length) return
 
         const content = format === "csv"
-            ? [
-                "index,input,algorithm,hash",
-                ...batchRows.map((row) => `${row.index},\"${row.line.replace(/\"/g, '\"\"')}\",${batchAlgorithm},${row.hash}`),
-            ].join("\n")
+            ? serializeSpreadsheetSafeCsv([
+                ["index", "input", "algorithm", "hash"],
+                ...batchRows.map((row) => [row.index, row.line, batchAlgorithm, row.hash] as const),
+            ])
             : batchRows.map((row) => `${row.index}. ${row.line} => ${row.hash}`).join("\n")
 
         downloadTextFile(content, format === "csv" ? "hash-batch.csv" : "hash-batch.txt")
