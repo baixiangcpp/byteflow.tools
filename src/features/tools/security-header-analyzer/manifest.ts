@@ -3,6 +3,7 @@ import type { ToolMeta } from "@/core/registry/types"
 export const toolManifest = {
     key: "security_header_analyzer",
     slug: "security-header-analyzer",
+    inputBehavior: "explicit-sample",
     category: "network-web",
     relatedTools: ["csp_parser", "header_diff", "http_status_codes", "certificate_decoder"],
     privacy: {

@@ -253,7 +253,7 @@ function createFeaturePageTemplate(toolKey) {
     return `"use client"
 
 import * as React from "react"
-import { Copy, Play } from "lucide-react"
+import { Copy, Play, TestTube2, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
@@ -270,16 +270,28 @@ export function ${componentName}Page() {
     const description = requireTranslationValue(toolT?.description, "tools.${toolKey}.description")
     const runLabel = requireTranslationValue(t.common.run, "common.run")
     const copyLabel = requireTranslationValue(t.common.copy, "common.copy")
+    const sampleLabel = requireTranslationValue(t.common.sample, "common.sample")
+    const clearLabel = requireTranslationValue(t.common.clear, "common.clear")
     const inputLabel = requireTranslationValue(t.common.input, "common.input")
     const outputLabel = requireTranslationValue(t.common.output, "common.output")
     const copyFailedLabel = requireTranslationValue(t.common.copy_failed, "common.copy_failed")
     const copiedLabel = requireTranslationValue(t.common.copied, "common.copied")
     const copiedDescLabel = requireTranslationValue(t.common.copied_desc, "common.copied_desc")
-    const [input, setInput] = React.useState(SAMPLE_INPUT)
+    const [input, setInput] = React.useState("")
     const [output, setOutput] = React.useState("")
 
     const run = () => {
         setOutput(runTool(input))
+    }
+
+    const handleSample = () => {
+        setInput(SAMPLE_INPUT)
+        setOutput("")
+    }
+
+    const handleClear = () => {
+        setInput("")
+        setOutput("")
     }
 
     const handleCopy = async () => {
@@ -302,6 +314,10 @@ export function ${componentName}Page() {
             </div>
 
             <div className="flex flex-wrap gap-2">
+                <Button variant="outline" onClick={handleSample}>
+                    <TestTube2 className="mr-2 h-4 w-4" />
+                    {sampleLabel}
+                </Button>
                 <Button onClick={run}>
                     <Play className="mr-2 h-4 w-4" />
                     {runLabel}
@@ -309,6 +325,10 @@ export function ${componentName}Page() {
                 <Button variant="outline" onClick={() => void handleCopy()} disabled={!output}>
                     <Copy className="mr-2 h-4 w-4" />
                     {copyLabel}
+                </Button>
+                <Button variant="outline" onClick={handleClear} disabled={!input && !output}>
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    {clearLabel}
                 </Button>
             </div>
 
@@ -413,6 +433,7 @@ export const toolManifest = {
     key: "${key}",
     slug: "${slug}",
     category: "${category}",
+    inputBehavior: "empty-first",
     relatedTools: ${asTsStringArray(relatedTools)},
 ${privacyBlock}
     keywords: ${asTsStringArray(keywords)},

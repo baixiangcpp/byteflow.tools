@@ -8,6 +8,7 @@ export type ToolNetworkAccess = "none" | "user_requested" | "third_party_api"
 export type ToolExternalDataSent = "none" | "user_provided_url" | "derived_url"
 export type ToolInputPersistenceMode = true | false | "opt-in"
 export type ToolExecutionMode = "browser-local" | "external-request"
+export type ToolInputBehavior = "empty-first" | "explicit-sample" | "generator-default"
 export type ToolExternalRequestEndpointType = "none" | "user_provided_url" | "derived_public_asset" | "third_party_api"
 export type ToolExternalRequestManifest = {
     required: boolean
@@ -60,6 +61,8 @@ export interface ToolMeta {
     /** Lightweight example metadata used by quality gates and discovery surfaces */
     sampleInput?: string
     sampleMode?: string
+    /** Editable input ownership. Omitted inputs must behave as empty-first. */
+    inputBehavior?: ToolInputBehavior
     /** Input-size thresholds used by performance UI and quality gates */
     inputSizePolicy?: ToolInputSizePolicy
     /** Optional public compliance copy used by social/media policy gates */

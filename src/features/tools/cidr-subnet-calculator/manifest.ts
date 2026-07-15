@@ -3,6 +3,7 @@ import type { ToolMeta } from "@/core/registry/types"
 export const toolManifest = {
     key: "cidr_subnet_calculator",
     slug: "cidr-subnet-calculator",
+    inputBehavior: "explicit-sample",
     category: "network-web",
     relatedTools: ["url_parser", "http_request_builder", "chmod_calculator", "http_status_codes"],
     privacy: {

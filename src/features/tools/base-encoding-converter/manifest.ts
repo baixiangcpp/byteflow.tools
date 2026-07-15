@@ -3,6 +3,7 @@ import type { ToolMeta } from "@/core/registry/types"
 export const toolManifest = {
     key: "base_encoding_converter",
     slug: "base-encoding-converter",
+    inputBehavior: "explicit-sample",
     category: "text-string",
     relatedTools: ["base64_encode_decode", "hex_bytes_workbench", "url_encode_decode", "hash_generator"],
     privacy: {

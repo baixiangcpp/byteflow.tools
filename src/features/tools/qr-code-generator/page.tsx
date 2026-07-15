@@ -237,7 +237,6 @@ export function QrCodeGeneratorPage() {
     }
 
     const handleReset = () => {
-        setText(DEFAULT_QR_TEXT)
         applyPreset(PRESETS[0])
         setLogoEnabled(false)
         setLogoDataUrl(null)

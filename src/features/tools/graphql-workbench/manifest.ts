@@ -3,6 +3,7 @@ import type { ToolMeta } from "@/core/registry/types"
 export const toolManifest = {
     key: "graphql_workbench",
     slug: "graphql-workbench",
+    inputBehavior: "explicit-sample",
     category: "network-web",
     relatedTools: ["http_request_builder", "openapi_viewer", "json_formatter", "jsonpath_playground"],
     privacy: {

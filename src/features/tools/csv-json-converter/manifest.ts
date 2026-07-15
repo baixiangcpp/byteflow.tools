@@ -3,6 +3,7 @@ import type { ToolMeta } from "@/core/registry/types"
 export const toolManifest = {
     key: "csv_json_converter",
     slug: "csv-json-converter",
+    inputBehavior: "empty-first",
     category: "formatters",
     relatedTools: ["json_formatter", "yaml_json_converter", "json_to_typescript", "text_diff_checker"],
     privacy: {

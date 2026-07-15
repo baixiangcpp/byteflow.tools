@@ -38,6 +38,15 @@ describe("create-tool scaffold boundaries", () => {
         expect(CREATE_TOOL_SOURCE).not.toContain("export default function ${componentName}Page()")
     })
 
+    it("keeps generated transformation inputs empty-first with explicit sample and clear actions", () => {
+        expect(CREATE_TOOL_SOURCE).toContain('const [input, setInput] = React.useState("")')
+        expect(CREATE_TOOL_SOURCE).not.toContain("React.useState(SAMPLE_INPUT)")
+        expect(CREATE_TOOL_SOURCE).toContain("const handleSample = () =>")
+        expect(CREATE_TOOL_SOURCE).toContain("setInput(SAMPLE_INPUT)")
+        expect(CREATE_TOOL_SOURCE).toContain("const handleClear = () =>")
+        expect(CREATE_TOOL_SOURCE).toContain('inputBehavior: "empty-first"')
+    })
+
     it("creates manifest metadata instead of appending legacy category metadata", () => {
         expect(CREATE_TOOL_SOURCE).toContain('import type { ToolMeta } from "@/core/registry/types"')
         expect(CREATE_TOOL_SOURCE).toContain("satisfies ToolMeta")

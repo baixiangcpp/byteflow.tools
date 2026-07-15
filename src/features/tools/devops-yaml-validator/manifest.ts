@@ -3,6 +3,7 @@ import type { ToolMeta } from "@/core/registry/types"
 export const toolManifest = {
     key: "devops_yaml_validator",
     slug: "devops-yaml-validator",
+    inputBehavior: "explicit-sample",
     category: "network-web",
     relatedTools: ["docker_run_to_compose", "yaml_json_converter", "yq_playground", "env_parser"],
     privacy: {

@@ -4,6 +4,7 @@ import { FILE_INPUT_POLICIES } from "@/core/files/file-input-policy"
 import { LangProvider } from "@/core/i18n/lang-provider"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { QrCodeGeneratorPage } from "@/features/tools/qr-code-generator/page"
+import { SAMPLE_QR_TEXT } from "@/features/tools/qr-code-generator/constants"
 
 const {
     readFileAsDataUrlMock,
@@ -27,6 +28,7 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("@/features/tools/qr-code-generator/browser-actions", () => ({
     buildQrSvg: vi.fn(),
+    downloadCanvasPng: vi.fn(),
     downloadDataUrl: vi.fn(),
     downloadSvg: vi.fn(),
     drawRoundedRect: vi.fn(),
@@ -97,5 +99,32 @@ describe("QR code generator logo uploads", () => {
         expect(await screen.findByText("logo.png")).toBeInTheDocument()
         expect(screen.getByRole("switch")).toBeChecked()
         expect(toastErrorMock).not.toHaveBeenCalled()
+    })
+
+    it("starts empty and keeps sample content behind explicit Sample and Clear actions", async () => {
+        const { container } = renderPage()
+        const content = container.querySelector<HTMLTextAreaElement>("textarea")
+
+        expect(content).not.toBeNull()
+        expect(content).toHaveValue("")
+
+        fireEvent.click(screen.getByRole("button", { name: "Sample" }))
+        await waitFor(() => expect(content).toHaveValue(SAMPLE_QR_TEXT))
+
+        fireEvent.click(screen.getByRole("button", { name: "Clear" }))
+        await waitFor(() => expect(content).toHaveValue(""))
+    })
+
+    it("resets QR settings without deleting user-owned content", async () => {
+        const { container } = renderPage()
+        const content = container.querySelector<HTMLTextAreaElement>("textarea")
+
+        fireEvent.change(content!, { target: { value: "user-owned QR payload" } })
+        fireEvent.click(screen.getByRole("button", { name: "Print" }))
+        await waitFor(() => expect(screen.getByText(/Size:\s*320px/)).toBeInTheDocument())
+
+        fireEvent.click(screen.getByRole("button", { name: "Reset" }))
+        expect(content).toHaveValue("user-owned QR payload")
+        expect(screen.getByText(/Size:\s*256px/)).toBeInTheDocument()
     })
 })

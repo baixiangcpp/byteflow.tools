@@ -3,6 +3,7 @@ import type { ToolMeta } from "@/core/registry/types"
 export const toolManifest = {
     key: "json_formatter",
     slug: "json-formatter",
+    inputBehavior: "empty-first",
     category: "formatters",
     relatedTools: ["jsonpath_playground", "json_diff_viewer", "json_to_typescript", "yaml_json_converter", "json_schema_workbench"],
     privacy: {

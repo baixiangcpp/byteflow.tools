@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import JsBarcode from "jsbarcode"
-import { Barcode, Copy, Download, Eraser, Play, TestTube2 } from "lucide-react"
+import { Barcode, Copy, Download, Eraser, Play, RotateCcw, TestTube2 } from "lucide-react"
 import { toast } from "sonner"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
@@ -51,7 +51,7 @@ export function BarcodeGeneratorPage() {
     )
 
     const [format, setFormat] = React.useState<BarcodeFormat>("CODE128")
-    const [input, setInput] = React.useState(SAMPLE_BY_FORMAT.CODE128)
+    const [input, setInput] = React.useState("")
     const [barWidth, setBarWidth] = React.useState(2)
     const [barHeight, setBarHeight] = React.useState(120)
     const [lineColor, setLineColor] = React.useState("#111827")
@@ -129,6 +129,8 @@ export function BarcodeGeneratorPage() {
 
     const handleSample = () => setInput(SAMPLE_BY_FORMAT[format])
 
+    const handleClear = () => setInput("")
+
     const handleGenerate = () => {
         if (normalizedError) {
             toast.error(normalizedError)
@@ -144,7 +146,7 @@ export function BarcodeGeneratorPage() {
 
     const handleReset = () => {
         setFormat("CODE128")
-        setInput(SAMPLE_BY_FORMAT.CODE128)
+        setInput("")
         setBarWidth(2)
         setBarHeight(120)
         setLineColor("#111827")
@@ -198,8 +200,9 @@ export function BarcodeGeneratorPage() {
 
     const actions: ToolAction[] = [
         { id: "sample", label: t.common.sample, icon: TestTube2, onClick: handleSample },
+        { id: "clear", label: t.common.clear, icon: Eraser, onClick: handleClear, disabled: !input },
         { id: "generate", label: toolT.generate_action, icon: Play, onClick: handleGenerate },
-        { id: "reset", label: t.common.reset, icon: Eraser, onClick: handleReset },
+        { id: "reset", label: t.common.reset, icon: RotateCcw, onClick: handleReset },
         { id: "copy", label: t.common.copy, icon: Copy, onClick: handleCopy },
         { id: "svg", label: "SVG", icon: Download, onClick: handleDownloadSvg, disabled: !canExport },
         { id: "png", label: "PNG", icon: Download, onClick: handleDownloadPng, disabled: !canExport },
@@ -232,7 +235,6 @@ export function BarcodeGeneratorPage() {
                                         type="button"
                                         onClick={() => {
                                             setFormat(value)
-                                            setInput(SAMPLE_BY_FORMAT[value])
                                         }}
                                         className={`min-h-11 rounded-md border px-3 text-xs font-semibold uppercase tracking-wide ${
                                             format === value
@@ -245,6 +247,7 @@ export function BarcodeGeneratorPage() {
                                 ))}
                             </div>
                             <Input
+                                aria-label={toolT.input_pane_title}
                                 value={input}
                                 onChange={(event) => setInput(event.target.value)}
                                 placeholder={

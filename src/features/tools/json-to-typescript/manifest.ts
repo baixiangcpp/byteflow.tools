@@ -3,6 +3,7 @@ import type { ToolMeta } from "@/core/registry/types"
 export const toolManifest = {
     key: "json_to_typescript",
     slug: "json-to-typescript",
+    inputBehavior: "explicit-sample",
     category: "formatters",
     relatedTools: ["json_formatter", "json_schema_workbench", "yaml_json_converter", "jsonpath_playground"],
     privacy: {

@@ -3,6 +3,7 @@ import type { ToolMeta } from "@/core/registry/types"
 export const toolManifest = {
     key: "openapi_diff",
     slug: "openapi-diff",
+    inputBehavior: "explicit-sample",
     category: "formatters",
     relatedTools: ["openapi_viewer", "openapi_mock", "yaml_json_converter", "json_diff_viewer"],
     privacy: {

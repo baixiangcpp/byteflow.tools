@@ -12,7 +12,7 @@ export const BUTTON_SIZE_CLASS = {
     sm: "h-9 px-3",
 } as const
 
-export const DEFAULT_QR_TEXT = "https://example.com/r/42"
+export const DEFAULT_QR_TEXT = ""
 export const SAMPLE_QR_TEXT = "https://example.com/qr?id=42"
 
 export const PRESETS: QrPreset[] = [
