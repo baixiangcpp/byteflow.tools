@@ -60,6 +60,7 @@
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:e2e:smoke": "node scripts/e2e/run-playwright-smoke.js",
+    "test:e2e:first-load": "node scripts/e2e/run-playwright-smoke.js --first-load-only --first-load-artifacts",
     "test:e2e:pwa": "node scripts/e2e/run-playwright-smoke.js --pwa",
     "check:i18n": "node scripts/gates/check-i18n.js",
     "check:i18n-qa": "node scripts/gates/check-i18n-qa.js",

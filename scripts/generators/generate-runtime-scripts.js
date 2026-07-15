@@ -140,14 +140,25 @@ function buildThemeManifestBootstrapScript(config) {
     var activeLang = locales.indexOf(seg) >= 0 ? seg : ${defaultLocale};
     document.documentElement.setAttribute("lang", activeLang);
 
-    var t = localStorage.getItem("theme");
+    var t = null;
+    try {
+      t = localStorage.getItem("theme");
+    } catch {}
+    if (t !== "light" && t !== "dark" && t !== "system") t = null;
     if (!t) {
-      var m = document.cookie.match(/(?:^|;\\s*)theme=([^;]*)/);
-      t = m ? m[1] : null;
+      try {
+        var m = document.cookie.match(/(?:^|;\\s*)theme=([^;]*)/);
+        t = m ? m[1] : null;
+      } catch {}
     }
+    if (t !== "light" && t !== "dark" && t !== "system") t = null;
     if (!t) t = "dark";
     if (t === "system") {
-      t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      try {
+        t = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+      } catch {
+        t = "dark";
+      }
     }
     document.documentElement.classList.remove("light", "dark");
     document.documentElement.classList.add(t);

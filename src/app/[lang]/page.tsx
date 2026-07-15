@@ -189,8 +189,8 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   return (
     <div className="relative flex flex-1 overflow-hidden">
       <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
-        <div className="absolute left-[8%] top-[-24%] h-[320px] w-[320px] rounded-full bg-cyan-500/20 blur-2xl sm:h-[460px] sm:w-[460px] sm:blur-3xl lg:h-[540px] lg:w-[540px]" />
-        <div className="absolute right-0 top-[-26%] h-[320px] w-[320px] rounded-full bg-amber-500/16 blur-2xl sm:right-[-8%] sm:h-[460px] sm:w-[460px] sm:blur-3xl lg:h-[540px] lg:w-[540px]" />
+        <div className="absolute left-[8%] top-[-160px] h-[320px] w-[320px] rounded-full bg-cyan-500/20 blur-2xl sm:top-[-220px] sm:h-[460px] sm:w-[460px] sm:blur-3xl lg:top-[-280px] lg:h-[540px] lg:w-[540px]" />
+        <div className="absolute right-0 top-[-170px] h-[320px] w-[320px] rounded-full bg-amber-500/16 blur-2xl sm:right-[-8%] sm:top-[-240px] sm:h-[460px] sm:w-[460px] sm:blur-3xl lg:top-[-300px] lg:h-[540px] lg:w-[540px]" />
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/90" />
       </div>
 

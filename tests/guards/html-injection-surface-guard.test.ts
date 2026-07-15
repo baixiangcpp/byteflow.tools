@@ -112,8 +112,8 @@ describe("HTML injection surface guard", () => {
         expect(rootPageSource).not.toContain("window.location.replace")
         expect(countMatches(rootPageSource, /dangerouslySetInnerHTML=\{\{/g)).toBe(0)
 
-        expect(layoutSource).toContain("import Script from \"next/script\"")
-        expect(layoutSource).toContain("<Script src=\"/runtime/theme-manifest-bootstrap.js\" strategy=\"beforeInteractive\" />")
+        expect(layoutSource).not.toContain("next/script")
+        expect(layoutSource).toContain("<script src=\"/runtime/theme-manifest-bootstrap.js\" />")
         expect(countMatches(layoutSource, /dangerouslySetInnerHTML=\{\{/g)).toBe(0)
         expect(themeScript).toMatch(new RegExp(`var locales = ${jsonArrayPattern(LOCALES).source};`))
         expect(themeScript).toContain(`var themeColor = t === "light" ? "${PWA_THEME_COLOR_LIGHT}" : "${PWA_THEME_COLOR}";`)

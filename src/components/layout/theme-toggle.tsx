@@ -20,9 +20,13 @@ const THEME_OPTIONS: Array<{ value: ThemePreference; labelKey: "theme_light" | "
     { value: "system", labelKey: "theme_system" },
 ]
 
-export function ThemeToggle() {
+export function ThemeToggle({ onReady }: { onReady?: () => void }) {
     const { theme, setTheme } = useThemePreference()
     const { t } = useLang()
+
+    React.useLayoutEffect(() => {
+        onReady?.()
+    }, [onReady])
 
     const handleSetTheme = (theme: ThemePreference) => {
         setTheme(theme)

@@ -1,4 +1,5 @@
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react"
+import { renderToString } from "react-dom/server"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { AllToolsDiscovery } from "@/features/tool-discovery/all-tools-discovery"
 
@@ -201,8 +202,8 @@ const LARGE_INVENTORY_TOOL_COUNT = 300
 const LARGE_INVENTORY_CARD_BUDGET = 6
 const LARGE_INVENTORY_COMPACT_LINK_BUDGET = LARGE_INVENTORY_TOOL_COUNT - LARGE_INVENTORY_CARD_BUDGET
 
-function renderDiscovery() {
-    return render(
+function createDiscoveryElement() {
+    return (
         <AllToolsDiscovery
             capabilityLabels={capabilityLabels}
             groups={groups}
@@ -212,8 +213,12 @@ function renderDiscovery() {
             totalTools={10}
             guides={[]}
             workflows={[{ id: "api", title: "API payload cleanup", href: "/en/pipeline-builder", tags: ["json", "pipeline-ready"] }]}
-        />,
+        />
     )
+}
+
+function renderDiscovery() {
+    return render(createDiscoveryElement())
 }
 
 function renderLargeInventoryDiscovery() {
@@ -273,6 +278,18 @@ describe("AllToolsDiscovery", () => {
     beforeEach(() => {
         installMemoryStorage()
         window.history.replaceState(null, "", "/en/all-tools")
+    })
+
+    it("renders stable personalization footprints before storage hydration", () => {
+        const html = renderToString(createDiscoveryElement())
+        const serverDocument = new DOMParser().parseFromString(html, "text/html")
+        const panel = serverDocument.querySelector("[data-all-tools-personalization]")
+
+        expect(panel?.getAttribute("aria-busy")).toBe("true")
+        expect(panel?.querySelectorAll("[data-all-tools-personalization-slot]")).toHaveLength(2)
+        expect(serverDocument.querySelectorAll("button.invisible[disabled][aria-hidden='true']").length).toBeGreaterThan(0)
+        expect(panel?.textContent).toContain("Favorites")
+        expect(panel?.textContent).toContain("Recent tools")
     })
 
     it("groups filters, shows active filters, and filters cards", async () => {

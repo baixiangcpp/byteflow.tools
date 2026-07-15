@@ -1,9 +1,9 @@
 import Link from "next/link"
-import { ArrowUpRight, Search, Workflow } from "lucide-react"
+import { ArrowUpRight, ChevronDown, Globe, Search, Sun, Workflow } from "lucide-react"
 import { DeferredMobileNavMenu } from "./deferred-mobile-nav-menu"
 import { DeferredNavbarControls } from "./deferred-navbar-controls"
 import { Button } from "@/components/ui/button"
-import type { Locale } from "@/core/i18n/i18n"
+import { LOCALE_NAMES, type Locale } from "@/core/i18n/i18n"
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
 import { cn } from "@/core/utils/utils"
 import { buildHomepageHref } from "@/core/routing/homepage-route"
@@ -111,7 +111,21 @@ export function Navbar({
                             <span className="text-foreground">K</span>
                         </kbd>
                     </Button>
-                    <DeferredNavbarControls />
+                    <div className="relative h-11 shrink-0" data-navbar-controls-footprint>
+                        <div className="invisible flex h-11 items-center gap-1.5" aria-hidden="true">
+                            <div className="flex h-11 items-center gap-1 px-2.5">
+                                <Globe className="h-4 w-4" />
+                                <span className="hidden text-xs 2xl:inline">{LOCALE_NAMES[lang]}</span>
+                                <ChevronDown className="h-3 w-3" />
+                            </div>
+                            <div className="flex h-11 w-11 items-center justify-center">
+                                <Sun className="h-4 w-4" />
+                            </div>
+                        </div>
+                        <div className="absolute inset-0 flex items-center gap-1.5">
+                            <DeferredNavbarControls languageLabel={LOCALE_NAMES[lang]} />
+                        </div>
+                    </div>
                 </div>
             </div>
         </header>

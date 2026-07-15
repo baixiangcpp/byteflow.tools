@@ -9,7 +9,8 @@ describe("navbar performance guard", () => {
         const deferredSource = fs.readFileSync(path.join(process.cwd(), "src/components/layout/deferred-navbar-controls.tsx"), "utf8")
 
         expect(navbarSource).toContain('import { DeferredNavbarControls } from "./deferred-navbar-controls"')
-        expect(navbarSource).toContain("<DeferredNavbarControls />")
+        expect(navbarSource).toContain("<DeferredNavbarControls languageLabel={LOCALE_NAMES[lang]} />")
+        expect(navbarSource).toContain("data-navbar-controls-footprint")
         expect(navbarSource).not.toContain('"use client"')
         expect(navbarSource).not.toContain('import { LanguageSwitcher } from "./language-switcher"')
         expect(navbarSource).not.toContain('import { ThemeToggle } from "./theme-toggle"')
@@ -25,6 +26,12 @@ describe("navbar performance guard", () => {
         expect(deferredSource).toContain('import("./language-switcher")')
         expect(deferredSource).toContain('import("./theme-toggle")')
         expect(deferredSource).toContain('useDeferredMount({ delayMs: 1200, activateOnInteraction: true })')
+        expect(deferredSource).toContain("data-navbar-language-footprint")
+        expect(deferredSource).toContain("data-navbar-theme-footprint")
+        expect(deferredSource).toContain("onReady={handleLanguageReady}")
+        expect(deferredSource).toContain("onReady={handleThemeReady}")
+        expect(deferredSource).toContain('Sun className="h-4 w-4 opacity-70 dark:hidden"')
+        expect(deferredSource).toContain('Moon className="hidden h-4 w-4 opacity-70 dark:block"')
     })
 
     it("keeps the mobile navigation drawer behind a deferred wrapper", () => {
