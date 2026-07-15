@@ -1390,8 +1390,8 @@
       "case_label": "Case",
       "case_lowercase": "Lowercase",
       "case_uppercase": "Uppercase",
-      "length_label": "Length",
-      "alphabet_label": "Alphabet",
+      "length_label": "Length (1-256)",
+      "alphabet_label": "Alphabet (2-256 unique Unicode code points)",
       "about_heading": "About {type}",
       "about_uuid_v4": "UUID v4 uses 122 random bits, so collisions are vanishingly unlikely.",
       "about_uuid_v7": "UUID v7 embeds a Unix millisecond timestamp, which keeps identifiers sortable by creation time.",
@@ -1399,7 +1399,14 @@
       "about_nanoid": "NanoID generates compact, URL-friendly unique IDs. The default 21-character format provides about 126 bits of entropy.",
       "generated_heading": "Generated IDs",
       "embedded_timestamp": "Embedded timestamp: {value}",
-      "copied_desc": "{count} ID values copied."
+      "copied_desc": "{count} ID values copied.",
+      "error_quantity_invalid": "Quantity must be a whole number from 1 to 1000.",
+      "error_nanoid_size_invalid": "NanoID length must be a whole number from 1 to 256.",
+      "error_alphabet_too_short": "Alphabet must contain at least 2 unique Unicode code points.",
+      "error_alphabet_too_long": "Alphabet cannot contain more than 256 Unicode code points.",
+      "error_alphabet_duplicate": "Alphabet must not contain duplicate Unicode code points.",
+      "error_alphabet_invalid_unicode": "Alphabet contains an unpaired Unicode surrogate.",
+      "error_generation_failed": "Unable to generate IDs with these settings."
     },
     "certificate_decoder": {
       "title": "Certificate Decoder",

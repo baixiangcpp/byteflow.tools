@@ -1362,8 +1362,8 @@
       "case_label": "Casse",
       "case_lowercase": "Minuscules",
       "case_uppercase": "Majuscules",
-      "length_label": "Longueur",
-      "alphabet_label": "Jeu de caractères",
+      "length_label": "Longueur (1-256)",
+      "alphabet_label": "Alphabet (2 à 256 points de code Unicode uniques)",
       "about_heading": "À propos de {type}",
       "about_uuid_v4": "UUID v4 utilise 122 bits aléatoires, ce qui rend les collisions extrêmement improbables.",
       "about_uuid_v7": "UUID v7 intègre un horodatage Unix en millisecondes, ce qui facilite le tri par date de création.",
@@ -1371,7 +1371,14 @@
       "about_nanoid": "NanoID génère des identifiants uniques compacts et compatibles avec les URL. Le format par défaut de 21 caractères offre environ 126 bits d'entropie.",
       "generated_heading": "ID générés",
       "embedded_timestamp": "Horodatage intégré : {value}",
-      "copied_desc": "{count} identifiants copiés."
+      "copied_desc": "{count} identifiants copiés.",
+      "error_quantity_invalid": "La quantité doit être un nombre entier compris entre 1 et 1000.",
+      "error_nanoid_size_invalid": "La longueur NanoID doit être un nombre entier compris entre 1 et 256.",
+      "error_alphabet_too_short": "L'alphabet doit contenir au moins 2 points de code Unicode uniques.",
+      "error_alphabet_too_long": "L'alphabet ne peut pas contenir plus de 256 points de code Unicode.",
+      "error_alphabet_duplicate": "L'alphabet ne doit pas contenir de points de code Unicode en double.",
+      "error_alphabet_invalid_unicode": "L'alphabet contient un substitut Unicode non apparié.",
+      "error_generation_failed": "Impossible de générer des ID avec ces paramètres."
     },
     "certificate_decoder": {
       "title": "Décodeur de certificat",

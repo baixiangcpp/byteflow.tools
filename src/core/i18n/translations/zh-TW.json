@@ -1362,8 +1362,8 @@
       "case_label": "大小寫",
       "case_lowercase": "小寫",
       "case_uppercase": "大寫",
-      "length_label": "長度",
-      "alphabet_label": "字元集",
+      "length_label": "長度（1-256）",
+      "alphabet_label": "字元集（2-256 個不重複的 Unicode 碼位）",
       "about_heading": "關於 {type}",
       "about_uuid_v4": "UUID v4 使用 122 位隨機位元，碰撞機率極低。",
       "about_uuid_v7": "UUID v7 會嵌入 Unix 毫秒時間戳，因此可依建立時間排序。",
@@ -1371,7 +1371,14 @@
       "about_nanoid": "NanoID 會產生精簡且適合 URL 的唯一識別碼，預設 21 個字元約有 126 位熵。",
       "generated_heading": "已產生的 ID",
       "embedded_timestamp": "內嵌時間戳：{value}",
-      "copied_desc": "已複製 {count} 個 ID。"
+      "copied_desc": "已複製 {count} 個 ID。",
+      "error_quantity_invalid": "數量必須是 1 到 1000 之間的整數。",
+      "error_nanoid_size_invalid": "NanoID 長度必須是 1 到 256 之間的整數。",
+      "error_alphabet_too_short": "字元集至少需要 2 個不重複的 Unicode 碼位。",
+      "error_alphabet_too_long": "字元集不能超過 256 個 Unicode 碼位。",
+      "error_alphabet_duplicate": "字元集不能包含重複的 Unicode 碼位。",
+      "error_alphabet_invalid_unicode": "字元集包含未配對的 Unicode 代理項。",
+      "error_generation_failed": "無法使用目前設定產生 ID。"
     },
     "certificate_decoder": {
       "title": "憑證解碼器",

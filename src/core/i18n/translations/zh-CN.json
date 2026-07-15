@@ -1362,8 +1362,8 @@
       "case_label": "大小写",
       "case_lowercase": "小写",
       "case_uppercase": "大写",
-      "length_label": "长度",
-      "alphabet_label": "字符集",
+      "length_label": "长度（1-256）",
+      "alphabet_label": "字符集（2-256 个不重复的 Unicode 码点）",
       "about_heading": "关于 {type}",
       "about_uuid_v4": "UUID v4 使用 122 位随机比特，发生碰撞的概率极低。",
       "about_uuid_v7": "UUID v7 在前缀中嵌入 Unix 毫秒时间戳，因此可以按生成时间排序。",
@@ -1371,7 +1371,14 @@
       "about_nanoid": "NanoID 生成紧凑且适合 URL 的唯一标识符，默认 21 个字符约有 126 位熵。",
       "generated_heading": "已生成的 ID",
       "embedded_timestamp": "嵌入时间戳：{value}",
-      "copied_desc": "已复制 {count} 个 ID。"
+      "copied_desc": "已复制 {count} 个 ID。",
+      "error_quantity_invalid": "数量必须是 1 到 1000 之间的整数。",
+      "error_nanoid_size_invalid": "NanoID 长度必须是 1 到 256 之间的整数。",
+      "error_alphabet_too_short": "字符集至少需要 2 个不重复的 Unicode 码点。",
+      "error_alphabet_too_long": "字符集不能超过 256 个 Unicode 码点。",
+      "error_alphabet_duplicate": "字符集不能包含重复的 Unicode 码点。",
+      "error_alphabet_invalid_unicode": "字符集包含未配对的 Unicode 代理项。",
+      "error_generation_failed": "无法使用当前设置生成 ID。"
     },
     "certificate_decoder": {
       "title": "证书解码器",

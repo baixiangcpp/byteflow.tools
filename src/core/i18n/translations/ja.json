@@ -1362,8 +1362,8 @@
       "case_label": "文字ケース",
       "case_lowercase": "小文字",
       "case_uppercase": "大文字",
-      "length_label": "長さ",
-      "alphabet_label": "文字セット",
+      "length_label": "長さ（1〜256）",
+      "alphabet_label": "文字セット（重複しない Unicode コードポイント 2〜256 個）",
       "about_heading": "{type} について",
       "about_uuid_v4": "UUID v4 は 122 ビットの乱数を使うため、衝突確率は極めて低くなります。",
       "about_uuid_v7": "UUID v7 には Unix ミリ秒タイムスタンプが埋め込まれており、生成時刻順に並べやすくなります。",
@@ -1371,7 +1371,14 @@
       "about_nanoid": "NanoID は URL フレンドリーでコンパクトな一意 ID を生成します。デフォルトの 21 文字で約 126 ビットのエントロピーがあります。",
       "generated_heading": "生成された ID",
       "embedded_timestamp": "埋め込みタイムスタンプ: {value}",
-      "copied_desc": "{count} 件の ID をコピーしました。"
+      "copied_desc": "{count} 件の ID をコピーしました。",
+      "error_quantity_invalid": "件数には 1 から 1000 までの整数を入力してください。",
+      "error_nanoid_size_invalid": "NanoID の長さには 1 から 256 までの整数を入力してください。",
+      "error_alphabet_too_short": "文字セットには重複しない Unicode コードポイントが 2 個以上必要です。",
+      "error_alphabet_too_long": "文字セットに指定できる Unicode コードポイントは 256 個までです。",
+      "error_alphabet_duplicate": "文字セットに同じ Unicode コードポイントを重複して指定できません。",
+      "error_alphabet_invalid_unicode": "文字セットに対応するペアのない Unicode サロゲートが含まれています。",
+      "error_generation_failed": "この設定では ID を生成できませんでした。"
     },
     "certificate_decoder": {
       "title": "証明書デコーダー",

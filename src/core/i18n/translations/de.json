@@ -1362,8 +1362,8 @@
       "case_label": "Groß-/Kleinschreibung",
       "case_lowercase": "Kleinbuchstaben",
       "case_uppercase": "Großbuchstaben",
-      "length_label": "Länge",
-      "alphabet_label": "Zeichensatz",
+      "length_label": "Länge (1-256)",
+      "alphabet_label": "Zeichensatz (2-256 eindeutige Unicode-Codepunkte)",
       "about_heading": "Über {type}",
       "about_uuid_v4": "UUID v4 verwendet 122 Zufallsbits, daher sind Kollisionen praktisch ausgeschlossen.",
       "about_uuid_v7": "UUID v7 enthält einen Unix-Millisekunden-Zeitstempel und lässt sich dadurch nach Erstellungszeit sortieren.",
@@ -1371,7 +1371,14 @@
       "about_nanoid": "NanoID erzeugt kompakte, URL-freundliche eindeutige IDs. Das Standardformat mit 21 Zeichen liefert etwa 126 Bit Entropie.",
       "generated_heading": "Generierte IDs",
       "embedded_timestamp": "Eingebetteter Zeitstempel: {value}",
-      "copied_desc": "{count} ID-Werte kopiert."
+      "copied_desc": "{count} ID-Werte kopiert.",
+      "error_quantity_invalid": "Die Anzahl muss eine ganze Zahl zwischen 1 und 1000 sein.",
+      "error_nanoid_size_invalid": "Die NanoID-Länge muss eine ganze Zahl zwischen 1 und 256 sein.",
+      "error_alphabet_too_short": "Der Zeichensatz muss mindestens 2 eindeutige Unicode-Codepunkte enthalten.",
+      "error_alphabet_too_long": "Der Zeichensatz darf höchstens 256 Unicode-Codepunkte enthalten.",
+      "error_alphabet_duplicate": "Der Zeichensatz darf keine doppelten Unicode-Codepunkte enthalten.",
+      "error_alphabet_invalid_unicode": "Der Zeichensatz enthält einen ungepaarten Unicode-Surrogatwert.",
+      "error_generation_failed": "Mit diesen Einstellungen konnten keine IDs erzeugt werden."
     },
     "certificate_decoder": {
       "title": "Zertifikats-Decoder",
