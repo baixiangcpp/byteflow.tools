@@ -12,7 +12,6 @@ export const BUTTON_SIZE_CLASS = {
     sm: "h-9 px-3",
 } as const
 
-export const MAX_LOGO_SIZE = 2 * 1024 * 1024
 export const DEFAULT_QR_TEXT = "https://example.com/r/42"
 export const SAMPLE_QR_TEXT = "https://example.com/qr?id=42"
 

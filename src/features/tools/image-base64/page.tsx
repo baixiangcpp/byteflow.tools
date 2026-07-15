@@ -118,8 +118,8 @@ export function ImageBase64Page() {
             return
         }
         const mimeFromName = getMimeFromFileName(file.name)
-        const effectiveMime = file.type && file.type.startsWith("image/") ? file.type : mimeFromName
-        if (!effectiveMime || !effectiveMime.startsWith("image/")) {
+        const effectiveMime = file.type || mimeFromName
+        if (!effectiveMime) {
             toast.error(text("invalid_file_title"), {
                 description: text("invalid_file_desc"),
             })

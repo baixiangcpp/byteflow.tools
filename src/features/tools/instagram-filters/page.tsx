@@ -4,6 +4,7 @@ import * as React from "react"
 import { Camera, Copy, Download, Eraser, TestTube2, Upload } from "lucide-react"
 import { toast } from "sonner"
 import { useLang } from "@/core/i18n/lang-provider"
+import { FILE_INPUT_POLICIES, formatFilePolicyLimit, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
@@ -17,7 +18,7 @@ import {
     type InstagramFilterPreset,
 } from "@/core/utils/instagram-tool-utils"
 
-const MAX_FILE_SIZE = 12 * 1024 * 1024
+const IMAGE_FILE_POLICY = FILE_INPUT_POLICIES["image-standard"]
 const DEFAULT_PRESET_ID = "clarendon"
 
 function toHexAlphaColor(hexColor: string, alpha: number): string {
@@ -122,17 +123,16 @@ export function InstagramFiltersPage() {
     }
 
     const handleFile = async (file: File) => {
-        if (!file.type.startsWith("image/")) {
-            toast.error(t.common.image_file_required)
-            return
-        }
-        if (file.size > MAX_FILE_SIZE) {
-            toast.error((t.common.image_file_too_large).replace("{size}", "12MB"))
+        const validation = validateFileAgainstPolicy(file, IMAGE_FILE_POLICY)
+        if (!validation.ok) {
+            toast.error(validation.reason === "too_large"
+                ? t.common.image_file_too_large.replace("{size}", formatFilePolicyLimit(IMAGE_FILE_POLICY))
+                : t.common.image_file_required)
             return
         }
 
         try {
-            const src = await fileToDataUrl(file)
+            const src = await fileToDataUrl(file, IMAGE_FILE_POLICY)
             setSourceImage(src)
             setFileName(file.name)
         } catch {
@@ -209,10 +209,11 @@ export function InstagramFiltersPage() {
                             <input
                                 ref={fileInputRef}
                                 type="file"
-                                accept="image/*"
+                                accept={IMAGE_FILE_POLICY.accept}
                                 className="hidden"
                                 onChange={(event) => {
-                                    const file = event.target.files?.[0]
+                                    const file = event.currentTarget.files?.[0]
+                                    event.currentTarget.value = ""
                                     if (file) void handleFile(file)
                                 }}
                             />

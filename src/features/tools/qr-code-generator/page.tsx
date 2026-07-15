@@ -17,6 +17,7 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import {
     buildQrSvg,
     downloadDataUrl,
@@ -27,8 +28,10 @@ import {
     loadToast,
     readFileAsDataUrl,
 } from "./browser-actions"
-import { BUTTON_BASE_CLASS, BUTTON_SIZE_CLASS, BUTTON_VARIANT_CLASS, DEFAULT_QR_TEXT, MAX_LOGO_SIZE, PRESETS, SAMPLE_QR_TEXT } from "./constants"
+import { BUTTON_BASE_CLASS, BUTTON_SIZE_CLASS, BUTTON_VARIANT_CLASS, DEFAULT_QR_TEXT, PRESETS, SAMPLE_QR_TEXT } from "./constants"
 import type { ErrorCorrectionLevel, QrPreset } from "./types"
+
+const LOGO_FILE_POLICY = FILE_INPUT_POLICIES["image-logo"]
 
 function joinClasses(...values: Array<string | null | undefined | false>) {
     return values.filter(Boolean).join(" ")
@@ -151,22 +154,23 @@ export function QrCodeGeneratorPage() {
         setActivePreset(preset.id)
     }
 
-    const handleLogoUpload = (file: File | null) => {
+    const handleLogoUpload = async (file: File | null) => {
         if (!file) return
-        if (!file.type.startsWith("image/")) {
-            void notifyError(textFor("logo_invalid"))
-            return
-        }
-        if (file.size > MAX_LOGO_SIZE) {
-            void notifyError(textFor("logo_too_large"))
+
+        const validation = validateFileAgainstPolicy(file, LOGO_FILE_POLICY)
+        if (!validation.ok) {
+            await notifyError(textFor(validation.reason === "too_large" ? "logo_too_large" : "logo_invalid"))
             return
         }
 
-        void readFileAsDataUrl(file).then((dataUrl) => {
+        try {
+            const dataUrl = await readFileAsDataUrl(file)
             setLogoDataUrl(dataUrl)
             setLogoName(file.name)
             setLogoEnabled(true)
-        })
+        } catch {
+            await notifyError(textFor("logo_invalid"))
+        }
     }
 
     const handleRemoveLogo = () => {
@@ -389,8 +393,12 @@ export function QrCodeGeneratorPage() {
                                     ref={logoInputRef}
                                     type="file"
                                     className="hidden"
-                                    accept="image/*"
-                                    onChange={(event) => handleLogoUpload(event.target.files?.[0] || null)}
+                                    accept={LOGO_FILE_POLICY.accept}
+                                    onChange={(event) => {
+                                        const file = event.currentTarget.files?.[0] || null
+                                        event.currentTarget.value = ""
+                                        void handleLogoUpload(file)
+                                    }}
                                 />
                             </div>
 

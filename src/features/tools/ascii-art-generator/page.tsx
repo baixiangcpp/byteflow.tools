@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
+import { fileToDataUrl } from "@/core/utils/image-canvas-utils"
 
 const ASCII_CHARS = ["@", "#", "S", "%", "?", "*", "+", ";", ":", ",", "."]
 
@@ -123,14 +124,13 @@ export function AsciiArtGeneratorPage() {
         }
     }, [input, mode])
 
-    const handleImageUpload = (file: File) => {
+    const handleImageUpload = async (file: File) => {
         const validation = validateFileAgainstPolicy(file, FILE_INPUT_POLICIES["image-compact"])
         if (!validation.ok) {
             toast.error(validation.reason === "unsupported_type" ? t.common.image_file_required : validation.message)
             return
         }
         const img = new Image()
-        let objectUrl = ""
         img.onload = () => {
             const canvas = canvasRef.current!
             canvas.width = img.width
@@ -138,14 +138,15 @@ export function AsciiArtGeneratorPage() {
             const ctx = canvas.getContext("2d")!
             ctx.drawImage(img, 0, 0)
             setOutput(imageToAscii(canvas, asciiWidth))
-            URL.revokeObjectURL(objectUrl)
         }
         img.onerror = () => {
-            URL.revokeObjectURL(objectUrl)
             toast.error(t.common.image_file_read_failed)
         }
-        objectUrl = URL.createObjectURL(file)
-        img.src = objectUrl
+        try {
+            img.src = await fileToDataUrl(file, FILE_INPUT_POLICIES["image-compact"])
+        } catch (error) {
+            toast.error(error instanceof Error ? error.message : t.common.image_file_read_failed)
+        }
     }
 
     return (
@@ -184,7 +185,7 @@ export function AsciiArtGeneratorPage() {
                             <button onClick={() => fileInputRef.current?.click()} className="w-full h-24 border-2 border-dashed border-border rounded-lg flex items-center justify-center text-sm text-muted-foreground hover:bg-muted/50 transition-colors">
                                 {toolT.drop_text}
                             </button>
-                            <input ref={fileInputRef} type="file" accept={FILE_INPUT_POLICIES["image-compact"].accept} className="hidden" onChange={(e) => e.target.files?.[0] && handleImageUpload(e.target.files[0])} />
+                            <input ref={fileInputRef} type="file" accept={FILE_INPUT_POLICIES["image-compact"].accept} className="hidden" onChange={(e) => e.target.files?.[0] && void handleImageUpload(e.target.files[0])} />
                             <div className="space-y-1">
                                 <label className="text-xs font-medium text-muted-foreground">{(toolT.width).replace("{width}", asciiWidth.toString())}</label>
                                 <input type="range" min={40} max={160} value={asciiWidth} onChange={(e) => setAsciiWidth(Number(e.target.value))} className="w-full" />

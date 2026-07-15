@@ -4,6 +4,7 @@ import * as React from "react"
 import { Copy, Download, Eraser, MessageCircle, TestTube2, Upload } from "lucide-react"
 import { toast } from "sonner"
 import { useLang } from "@/core/i18n/lang-provider"
+import { FILE_INPUT_POLICIES, formatFilePolicyLimit, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
@@ -17,7 +18,7 @@ import {
     type SocialTheme,
 } from "@/core/utils/social-media-utils"
 
-const MAX_FILE_SIZE = 5 * 1024 * 1024
+const AVATAR_FILE_POLICY = FILE_INPUT_POLICIES["image-logo"]
 
 const DEFAULT_STATE = {
     displayName: "S42 Lab",
@@ -235,16 +236,15 @@ export function TweetGeneratorPage() {
     )
 
     const handleAvatarFile = async (file: File) => {
-        if (!file.type.startsWith("image/")) {
-            toast.error(t.common.image_file_required)
-            return
-        }
-        if (file.size > MAX_FILE_SIZE) {
-            toast.error((t.common.image_file_too_large).replace("{size}", "5MB"))
+        const validation = validateFileAgainstPolicy(file, AVATAR_FILE_POLICY)
+        if (!validation.ok) {
+            toast.error(validation.reason === "too_large"
+                ? t.common.image_file_too_large.replace("{size}", formatFilePolicyLimit(AVATAR_FILE_POLICY))
+                : t.common.image_file_required)
             return
         }
         try {
-            const dataUrl = await fileToDataUrl(file)
+            const dataUrl = await fileToDataUrl(file, AVATAR_FILE_POLICY)
             setAvatarDataUrl(dataUrl)
             setAvatarName(file.name)
         } catch {
@@ -384,10 +384,11 @@ export function TweetGeneratorPage() {
                                 <input
                                     ref={avatarInputRef}
                                     type="file"
-                                    accept="image/*"
+                                    accept={AVATAR_FILE_POLICY.accept}
                                     className="hidden"
                                     onChange={(event) => {
-                                        const file = event.target.files?.[0]
+                                        const file = event.currentTarget.files?.[0]
+                                        event.currentTarget.value = ""
                                         if (file) void handleAvatarFile(file)
                                     }}
                                 />
