@@ -21,6 +21,11 @@ describe("legacy route redirects", () => {
             status: 301,
             reason: "merged",
         })
+        expect(getLegacyRouteBySourceSlug("csv-to-json")).toMatchObject({
+            targetSlug: "csv-json-converter",
+            status: 301,
+            reason: "renamed",
+        })
     })
 
     it("keeps generated aliases and redirects aligned with the legacy route manifest", () => {
@@ -32,10 +37,23 @@ describe("legacy route redirects", () => {
         )
 
         for (const route of redirectRoutes) {
+            expect(redirects).toContain(`/${route.sourceSlug} /en/${route.targetSlug} ${route.status}`)
             for (const locale of LOCALES) {
                 expect(redirects).toContain(`/${locale}/${route.sourceSlug} /${locale}/${route.targetSlug} ${route.status}`)
             }
         }
+    })
+
+    it("redirects every locale-free canonical tool path to the default locale", () => {
+        const redirects = read("public/_redirects")
+
+        for (const tool of TOOL_REGISTRY) {
+            expect(redirects).toContain(`/${tool.slug} /en/${tool.slug} 301`)
+        }
+
+        expect(redirects).toContain("/qr-code-generator /en/qr-code-generator 301")
+        expect(redirects).toContain("/json-formatter /en/json-formatter 301")
+        expect(redirects).toContain("/base64-encode-decode /en/base64-encode-decode 301")
     })
 
     it("keeps every legacy source out of sitemap while preserving valid targets", () => {
