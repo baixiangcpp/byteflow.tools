@@ -1417,6 +1417,7 @@
       "body_type_none": "Keine",
       "body_type_raw": "Rohdaten",
       "body_type_form_urlencoded": "Form-URL-kodiert",
+      "body_not_allowed": "Generierte GET- und HEAD-Anfragen können keinen Anfragekörper enthalten.",
       "generated_code": "Generierter Code",
       "code_type_fetch": "JS-Fetch-Code",
       "query_params": "Query-Parameter",

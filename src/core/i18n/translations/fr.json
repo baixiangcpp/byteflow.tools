@@ -1417,6 +1417,7 @@
       "body_type_none": "Aucun",
       "body_type_raw": "Brut",
       "body_type_form_urlencoded": "URL encodée pour formulaire",
+      "body_not_allowed": "Les requêtes GET et HEAD générées ne peuvent pas contenir de corps.",
       "generated_code": "Code généré",
       "code_type_fetch": "Code JS Fetch",
       "query_params": "Parametres de requete",

@@ -1417,6 +1417,7 @@
       "body_type_none": "无",
       "body_type_raw": "原始内容",
       "body_type_form_urlencoded": "表单 URL 编码",
+      "body_not_allowed": "生成的 GET 和 HEAD 请求不能包含请求正文。",
       "generated_code": "生成代码",
       "code_type_fetch": "JS Fetch 代码",
       "query_params": "查询参数",

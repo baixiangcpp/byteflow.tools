@@ -1417,6 +1417,7 @@
       "body_type_none": "なし",
       "body_type_raw": "生データ",
       "body_type_form_urlencoded": "フォーム URL エンコード",
+      "body_not_allowed": "生成する GET と HEAD リクエストに本文は含められません。",
       "generated_code": "生成コード",
       "code_type_fetch": "JS Fetch コード",
       "query_params": "クエリパラメータ",

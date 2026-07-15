@@ -29,7 +29,7 @@ describe("CurlToCodePage", () => {
         renderPage()
 
         expect(screen.queryByRole("alert")).not.toBeInTheDocument()
-        expect(screen.getByLabelText("Output")).toHaveTextContent('"enabled": true')
+        expect(screen.getByLabelText("Output")).toHaveTextContent('body: "{\\"id\\": 42, \\"enabled\\": true}"')
         expect(screen.getByRole("button", { name: "Copy" })).toBeEnabled()
     })
 

@@ -1445,6 +1445,7 @@
       "body_type_none": "None",
       "body_type_raw": "Raw",
       "body_type_form_urlencoded": "Form URL Encoded",
+      "body_not_allowed": "GET and HEAD requests cannot include a body in generated snippets.",
       "generated_code": "Generated Code",
       "code_type_fetch": "JS Fetch",
       "query_params": "Query parameters",

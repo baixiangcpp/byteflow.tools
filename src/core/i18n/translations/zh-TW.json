@@ -1417,6 +1417,7 @@
       "body_type_none": "無",
       "body_type_raw": "原始內容",
       "body_type_form_urlencoded": "表單 URL 編碼",
+      "body_not_allowed": "產生的 GET 和 HEAD 請求不能包含請求本文。",
       "generated_code": "產生程式碼",
       "code_type_fetch": "JS Fetch 程式碼",
       "query_params": "查詢參數",

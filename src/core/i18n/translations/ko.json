@@ -1417,6 +1417,7 @@
       "body_type_none": "없음",
       "body_type_raw": "원본",
       "body_type_form_urlencoded": "폼 URL 인코딩",
+      "body_not_allowed": "생성된 GET 및 HEAD 요청에는 본문을 포함할 수 없습니다.",
       "generated_code": "생성 코드",
       "code_type_fetch": "JS Fetch 코드",
       "query_params": "쿼리 매개변수",
