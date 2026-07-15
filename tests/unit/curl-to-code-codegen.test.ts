@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import {
     convertCurlToCode,
+    parseCurl,
     toGo,
     toJavaScript,
     toPhp,
@@ -13,18 +14,21 @@ const MALICIOUS_CURL = `curl -X POST 'https://api.example.com/x'; console.log('J
   -d 'x' ; echo BODY_INJECTED ; #''`
 
 describe("curl to code codegen", () => {
-    it("does not emit attacker-controlled URL as JavaScript syntax", () => {
+    it("rejects shell operators before JavaScript code generation", () => {
+        const parsed = parseCurl(MALICIOUS_CURL)
         const code = convertCurlToCode(MALICIOUS_CURL, "javascript", "parse error")
 
-        expect(code).toContain(`fetch(${JSON.stringify("https://api.example.com/x")}, {`)
-        expect(code).not.toContain("fetch('https://api.example.com/x';")
+        expect(parsed.ok).toBe(false)
+        if (!parsed.ok) expect(parsed.diagnostics.at(-1)?.code).toBe("unsupported_operator")
+        expect(code).toBe("parse error")
+        expect(code).not.toContain("JS_INJECTED")
     })
 
-    it("does not emit attacker-controlled body as Python syntax", () => {
+    it("rejects shell operators before Python code generation", () => {
         const code = convertCurlToCode(MALICIOUS_CURL, "python", "parse error")
 
-        expect(code).toContain(`data = ${JSON.stringify("x")}`)
-        expect(code).not.toContain("data = 'x' ; echo BODY_INJECTED")
+        expect(code).toBe("parse error")
+        expect(code).not.toContain("BODY_INJECTED")
     })
 
     it("uses safe string literal encoders across generated languages", () => {
@@ -32,7 +36,9 @@ describe("curl to code codegen", () => {
             method: "POST",
             url: "https://api.example.com/x\"; injected(); //",
             headers: { "X-Test": "v\"; injected(); //" },
+            headerEntries: [{ name: "X-Test", value: "v\"; injected(); //" }],
             data: "body\"#; injected(); //",
+            dataParts: [{ option: "--data-raw" as const, value: "body\"#; injected(); //" }],
             dataType: "raw" as const,
         }
 

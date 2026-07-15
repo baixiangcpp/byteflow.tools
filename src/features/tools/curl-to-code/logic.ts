@@ -7,66 +7,25 @@ import {
     pythonStringLiteral,
     rustStringLiteral,
 } from "@/core/codegen/literals"
+import {
+    parseCurl,
+    type CurlDiagnostic,
+    type ParsedRequest,
+} from "./parser"
+
+export { parseCurl } from "./parser"
+export type {
+    CurlDataOption,
+    CurlDiagnostic,
+    CurlDiagnosticCode,
+    CurlDiagnosticSeverity,
+    CurlParseResult,
+    ParsedDataPart,
+    ParsedHeader,
+    ParsedRequest,
+} from "./parser"
 
 export type OutputLang = "javascript" | "python" | "go" | "php" | "rust"
-
-export interface ParsedRequest {
-    method: string
-    url: string
-    headers: Record<string, string>
-    data: string
-    dataType: "raw" | "json" | "form"
-}
-
-export function parseCurl(curlStr: string): ParsedRequest | null {
-    try {
-        const result: ParsedRequest = { method: "GET", url: "", headers: {}, data: "", dataType: "raw" }
-
-        const normalized = curlStr.replace(/\\\n\s*/g, " ").replace(/\\\r?\n\s*/g, " ").trim()
-        const rest = normalized.replace(/^curl\s+/, "")
-        const urlMatch = rest.match(/['"]?(https?:\/\/[^\s'"]+)['"]?/)
-        if (urlMatch) {
-            result.url = urlMatch[1]
-        }
-
-        const methodMatch = rest.match(/-X\s+['"]?(\w+)['"]?/i)
-        if (methodMatch) {
-            result.method = methodMatch[1].toUpperCase()
-        }
-
-        const headerRegex = /-H\s+['"]([^'"]+)['"]/g
-        let headerMatch: RegExpExecArray | null
-        while ((headerMatch = headerRegex.exec(rest)) !== null) {
-            const colonIdx = headerMatch[1].indexOf(":")
-            if (colonIdx > 0) {
-                const key = headerMatch[1].slice(0, colonIdx).trim()
-                const value = headerMatch[1].slice(colonIdx + 1).trim()
-                result.headers[key] = value
-            }
-        }
-
-        const dataMatch = rest.match(/(?:-d|--data|--data-raw|--data-binary)\s+['"]([^'"]*)['"]/i) ||
-            rest.match(/(?:-d|--data|--data-raw|--data-binary)\s+(\S+)/i)
-        if (dataMatch) {
-            result.data = dataMatch[1]
-            if (result.method === "GET") result.method = "POST"
-
-            try {
-                JSON.parse(result.data)
-                result.dataType = "json"
-            } catch {
-                if (result.data.includes("=") && !result.data.includes("{")) {
-                    result.dataType = "form"
-                }
-            }
-        }
-
-        if (!result.url) return null
-        return result
-    } catch {
-        return null
-    }
-}
 
 export function toJavaScript(req: ParsedRequest): string {
     const lines: string[] = []
@@ -200,15 +159,33 @@ export function toRust(req: ParsedRequest): string {
     return lines.join("\n")
 }
 
-export function convertCurlToCode(curl: string, lang: OutputLang, parseError: string): string {
-    if (!curl.trim()) return ""
-    const parsed = parseCurl(curl)
-    if (!parsed) return parseError
+function generateCode(request: ParsedRequest, lang: OutputLang): string {
     switch (lang) {
-        case "javascript": return toJavaScript(parsed)
-        case "python": return toPython(parsed)
-        case "go": return toGo(parsed)
-        case "php": return toPhp(parsed)
-        case "rust": return toRust(parsed)
+        case "javascript": return toJavaScript(request)
+        case "python": return toPython(request)
+        case "go": return toGo(request)
+        case "php": return toPhp(request)
+        case "rust": return toRust(request)
     }
+}
+
+export interface CurlConversionResult {
+    code: string
+    diagnostics: CurlDiagnostic[]
+}
+
+export function convertCurlToCodeResult(curl: string, lang: OutputLang): CurlConversionResult {
+    if (!curl.trim()) return { code: "", diagnostics: [] }
+    const parsed = parseCurl(curl)
+    if (!parsed.ok) return { code: "", diagnostics: parsed.diagnostics }
+    return {
+        code: generateCode(parsed.request, lang),
+        diagnostics: parsed.diagnostics,
+    }
+}
+
+export function convertCurlToCode(curl: string, lang: OutputLang, parseError: string): string {
+    const result = convertCurlToCodeResult(curl, lang)
+    if (result.diagnostics.some((item) => item.severity === "error")) return parseError
+    return result.code
 }

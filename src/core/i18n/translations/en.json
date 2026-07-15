@@ -1464,7 +1464,19 @@
       "title": "cURL to Code",
       "description": "Convert cURL commands to JavaScript, Python, Go, PHP, or Rust code.",
       "input_label": "cURL Command",
-      "parse_error": "Unable to parse cURL command. Check syntax and try again."
+      "parse_error": "Unable to parse cURL command. Check syntax and try again.",
+      "parse_warning": "The cURL command was parsed with warnings.",
+      "diagnostic_invalid_command": "Expected curl followed by one absolute HTTP(S) URL.",
+      "diagnostic_unterminated_quote": "Unterminated quote {token}.",
+      "diagnostic_dangling_escape": "A trailing backslash has nothing to escape.",
+      "diagnostic_unsupported_operator": "Shell operator {token} is not supported.",
+      "diagnostic_unsupported_option": "Unsupported cURL option {token}.",
+      "diagnostic_missing_option_value": "Option {token} requires a value.",
+      "diagnostic_invalid_value": "Invalid cURL value {token}.",
+      "diagnostic_unexpected_argument": "Unexpected argument or additional URL {token}.",
+      "diagnostic_unsupported_data_file": "File or stdin data reference {token} is not supported.",
+      "diagnostic_duplicate_header": "Header {token} is repeated; generated code uses the last value.",
+      "diagnostic_position": "Character {position}."
     },
     "javascript_formatter": {
       "title": "JavaScript Formatter",

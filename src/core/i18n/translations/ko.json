@@ -1436,7 +1436,19 @@
       "title": "cURL → 코드 변환",
       "description": "cURL 명령을 JavaScript, Python, Go, PHP 또는 Rust 코드로 변환합니다.",
       "input_label": "cURL 명령",
-      "parse_error": "cURL 명령을 해석할 수 없습니다. 구문을 확인한 후 다시 시도하세요."
+      "parse_error": "cURL 명령을 해석할 수 없습니다. 구문을 확인한 후 다시 시도하세요.",
+      "parse_warning": "cURL 명령이 경고와 함께 해석되었습니다.",
+      "diagnostic_invalid_command": "curl 다음에 하나의 절대 HTTP(S) URL을 입력하세요.",
+      "diagnostic_unterminated_quote": "따옴표 {token}가 닫히지 않았습니다.",
+      "diagnostic_dangling_escape": "마지막 백슬래시 뒤에 이스케이프할 문자가 없습니다.",
+      "diagnostic_unsupported_operator": "셸 연산자 {token}는 지원되지 않습니다.",
+      "diagnostic_unsupported_option": "cURL 옵션 {token}는 지원되지 않습니다.",
+      "diagnostic_missing_option_value": "옵션 {token}에 값이 필요합니다.",
+      "diagnostic_invalid_value": "cURL 값 {token}가 올바르지 않습니다.",
+      "diagnostic_unexpected_argument": "예상하지 못한 인수 또는 추가 URL {token}가 있습니다.",
+      "diagnostic_unsupported_data_file": "파일 또는 표준 입력 데이터 참조 {token}는 지원되지 않습니다.",
+      "diagnostic_duplicate_header": "헤더 {token}가 중복되었습니다. 생성된 코드는 마지막 값을 사용합니다.",
+      "diagnostic_position": "{position}번째 문자."
     },
     "javascript_formatter": {
       "title": "JavaScript 포매터",

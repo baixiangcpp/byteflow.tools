@@ -1436,7 +1436,19 @@
       "title": "cURL 轉程式碼",
       "description": "將 cURL 指令轉換為 JavaScript、Python、Go、PHP 或 Rust 程式碼。",
       "input_label": "cURL 指令",
-      "parse_error": "無法解析 cURL 指令，請檢查語法後再試一次。"
+      "parse_error": "無法解析 cURL 指令，請檢查語法後再試一次。",
+      "parse_warning": "cURL 指令已解析，但有警告。",
+      "diagnostic_invalid_command": "應以 curl 開頭，且只能包含一個絕對 HTTP(S) URL。",
+      "diagnostic_unterminated_quote": "引號 {token} 未閉合。",
+      "diagnostic_dangling_escape": "結尾的反斜線沒有可跳脫的字元。",
+      "diagnostic_unsupported_operator": "不支援 shell 運算子 {token}。",
+      "diagnostic_unsupported_option": "不支援 cURL 選項 {token}。",
+      "diagnostic_missing_option_value": "選項 {token} 需要一個值。",
+      "diagnostic_invalid_value": "cURL 值 {token} 無效。",
+      "diagnostic_unexpected_argument": "出現非預期參數或額外 URL {token}。",
+      "diagnostic_unsupported_data_file": "不支援檔案或標準輸入資料參照 {token}。",
+      "diagnostic_duplicate_header": "標頭 {token} 重複；產生的程式碼會使用最後一個值。",
+      "diagnostic_position": "第 {position} 個字元。"
     },
     "javascript_formatter": {
       "title": "JavaScript 格式化器",

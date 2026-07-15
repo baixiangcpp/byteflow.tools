@@ -1436,7 +1436,19 @@
       "title": "cURL 转代码",
       "description": "将 cURL 命令转换为 JavaScript、Python、Go、PHP 或 Rust 代码。",
       "input_label": "cURL 命令",
-      "parse_error": "无法解析 cURL 命令，请检查语法后重试。"
+      "parse_error": "无法解析 cURL 命令，请检查语法后重试。",
+      "parse_warning": "cURL 命令已解析，但存在警告。",
+      "diagnostic_invalid_command": "应以 curl 开头，并且只包含一个绝对 HTTP(S) URL。",
+      "diagnostic_unterminated_quote": "引号 {token} 未闭合。",
+      "diagnostic_dangling_escape": "末尾的反斜杠没有可转义的字符。",
+      "diagnostic_unsupported_operator": "不支持 shell 操作符 {token}。",
+      "diagnostic_unsupported_option": "不支持 cURL 选项 {token}。",
+      "diagnostic_missing_option_value": "选项 {token} 需要一个值。",
+      "diagnostic_invalid_value": "cURL 值 {token} 无效。",
+      "diagnostic_unexpected_argument": "存在意外参数或额外 URL {token}。",
+      "diagnostic_unsupported_data_file": "不支持文件或标准输入数据引用 {token}。",
+      "diagnostic_duplicate_header": "请求头 {token} 重复；生成的代码使用最后一个值。",
+      "diagnostic_position": "第 {position} 个字符。"
     },
     "javascript_formatter": {
       "title": "JavaScript 格式化器",

@@ -1436,7 +1436,19 @@
       "title": "cURL → Code",
       "description": "cURL-Befehle in JavaScript-, Python-, Go-, PHP- oder Rust-Code umwandeln.",
       "input_label": "cURL-Befehl",
-      "parse_error": "Der cURL-Befehl konnte nicht analysiert werden. Syntax prüfen und erneut versuchen."
+      "parse_error": "Der cURL-Befehl konnte nicht analysiert werden. Syntax prüfen und erneut versuchen.",
+      "parse_warning": "Der cURL-Befehl wurde mit Warnungen analysiert.",
+      "diagnostic_invalid_command": "Nach curl muss genau eine absolute HTTP(S)-URL folgen.",
+      "diagnostic_unterminated_quote": "Das Anführungszeichen {token} wurde nicht geschlossen.",
+      "diagnostic_dangling_escape": "Der abschließende Backslash hat kein zu maskierendes Zeichen.",
+      "diagnostic_unsupported_operator": "Der Shell-Operator {token} wird nicht unterstützt.",
+      "diagnostic_unsupported_option": "Die cURL-Option {token} wird nicht unterstützt.",
+      "diagnostic_missing_option_value": "Die Option {token} benötigt einen Wert.",
+      "diagnostic_invalid_value": "Der cURL-Wert {token} ist ungültig.",
+      "diagnostic_unexpected_argument": "Unerwartetes Argument oder zusätzliche URL {token}.",
+      "diagnostic_unsupported_data_file": "Die Datei- oder Standardeingabe-Referenz {token} wird nicht unterstützt.",
+      "diagnostic_duplicate_header": "Der Header {token} ist doppelt; der generierte Code verwendet den letzten Wert.",
+      "diagnostic_position": "Zeichen {position}."
     },
     "javascript_formatter": {
       "title": "JavaScript-Formatter",

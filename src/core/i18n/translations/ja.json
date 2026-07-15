@@ -1436,7 +1436,19 @@
       "title": "cURL→コード変換",
       "description": "cURLコマンドをJavaScript、Python、Go、PHP、Rustコードに変換。",
       "input_label": "cURL コマンド",
-      "parse_error": "cURL コマンドを解析できません。構文を確認してからもう一度お試しください。"
+      "parse_error": "cURL コマンドを解析できません。構文を確認してからもう一度お試しください。",
+      "parse_warning": "cURL コマンドは警告付きで解析されました。",
+      "diagnostic_invalid_command": "curl の後には絶対 HTTP(S) URL を1つ指定してください。",
+      "diagnostic_unterminated_quote": "引用符 {token} が閉じられていません。",
+      "diagnostic_dangling_escape": "末尾のバックスラッシュにはエスケープ対象がありません。",
+      "diagnostic_unsupported_operator": "シェル演算子 {token} はサポートされていません。",
+      "diagnostic_unsupported_option": "cURL オプション {token} はサポートされていません。",
+      "diagnostic_missing_option_value": "オプション {token} には値が必要です。",
+      "diagnostic_invalid_value": "cURL の値 {token} は無効です。",
+      "diagnostic_unexpected_argument": "予期しない引数または追加 URL {token} があります。",
+      "diagnostic_unsupported_data_file": "ファイルまたは標準入力のデータ参照 {token} はサポートされていません。",
+      "diagnostic_duplicate_header": "ヘッダー {token} が重複しています。生成コードでは最後の値を使用します。",
+      "diagnostic_position": "{position} 文字目。"
     },
     "javascript_formatter": {
       "title": "JavaScriptフォーマッター",

@@ -1436,7 +1436,19 @@
       "title": "cURL vers Code",
       "description": "Convertissez les commandes cURL en code JavaScript, Python, Go, PHP ou Rust.",
       "input_label": "Commande cURL",
-      "parse_error": "Impossible d'analyser la commande cURL. Verifiez la syntaxe puis reessayez."
+      "parse_error": "Impossible d'analyser la commande cURL. Verifiez la syntaxe puis reessayez.",
+      "parse_warning": "La commande cURL a été analysée avec des avertissements.",
+      "diagnostic_invalid_command": "curl doit être suivi d'une seule URL HTTP(S) absolue.",
+      "diagnostic_unterminated_quote": "Le guillemet {token} n'est pas fermé.",
+      "diagnostic_dangling_escape": "La barre oblique inverse finale n'a aucun caractère à échapper.",
+      "diagnostic_unsupported_operator": "L'opérateur shell {token} n'est pas pris en charge.",
+      "diagnostic_unsupported_option": "L'option cURL {token} n'est pas prise en charge.",
+      "diagnostic_missing_option_value": "L'option {token} nécessite une valeur.",
+      "diagnostic_invalid_value": "La valeur cURL {token} n'est pas valide.",
+      "diagnostic_unexpected_argument": "Argument inattendu ou URL supplémentaire {token}.",
+      "diagnostic_unsupported_data_file": "La référence de fichier ou d'entrée standard {token} n'est pas prise en charge.",
+      "diagnostic_duplicate_header": "L'en-tête {token} est répété ; le code généré utilise la dernière valeur.",
+      "diagnostic_position": "Caractère {position}."
     },
     "javascript_formatter": {
       "title": "Formateur JavaScript",
