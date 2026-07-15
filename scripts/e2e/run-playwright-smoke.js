@@ -47,6 +47,19 @@ const AXE_REVIEW_ROUTES = [
     "/en/trust-center",
     "/en/install-app",
 ];
+const INPUT_INTENT_AUDIT_ROUTES = [
+    { route: "/en/qr-code-generator", requiredIntents: ["shortText", "scalar"] },
+    { route: "/en/base64-encode-decode", requiredIntents: ["payload", "generatedOutput"] },
+    { route: "/en/regex-tester", requiredIntents: ["scalar", "shortText", "payload"] },
+    { route: "/en/json-formatter", requiredIntents: ["workbench", "payload"] },
+    { route: "/en/csv-json-converter", requiredIntents: ["workbench", "payload", "generatedOutput"] },
+    { route: "/en/jwt-decoder", requiredIntents: ["workbench", "payload", "generatedOutput"] },
+    { route: "/en/pipeline-builder", requiredIntents: ["workbench", "shortText", "payload", "generatedOutput"] },
+];
+const INPUT_INTENT_AUDIT_VIEWPORTS = [
+    { width: 390, height: 844, mobile: true },
+    { width: 1280, height: 900, mobile: false },
+];
 const ALL_TOOLS_FILTER_INTERACTION_BUDGET_MS = 2000;
 const ALL_TOOLS_MOBILE_SCROLL_BUDGET_MS = 3500;
 const ALL_TOOLS_MOBILE_MAX_FRAME_DELTA_MS = 500;
@@ -194,6 +207,7 @@ function parseArgs(argv) {
         includePwa: false,
         firstLoadOnly: false,
         writeFirstLoadArtifacts: false,
+        inputIntentsOnly: false,
     };
 
     for (const arg of argv) {
@@ -214,6 +228,11 @@ function parseArgs(argv) {
 
         if (arg === "--first-load-artifacts") {
             args.writeFirstLoadArtifacts = true;
+            continue;
+        }
+
+        if (arg === "--input-intents-only") {
+            args.inputIntentsOnly = true;
             continue;
         }
 
@@ -1139,6 +1158,93 @@ async function assertMobileReviewMatrix(browser, baseUrl) {
     }
 }
 
+async function assertInputIntentSizingMatrix(browser, baseUrl) {
+    for (const viewport of INPUT_INTENT_AUDIT_VIEWPORTS) {
+        const context = await browser.newContext({
+            serviceWorkers: "block",
+            viewport: { width: viewport.width, height: viewport.height },
+            isMobile: viewport.mobile,
+        });
+
+        try {
+            for (const audit of INPUT_INTENT_AUDIT_ROUTES) {
+                const page = await context.newPage();
+                const routeLabel = `${audit.route} input intent ${viewport.width}x${viewport.height}`;
+                const runtime = createRuntimeObserver(page, routeLabel, baseUrl);
+
+                try {
+                    await page.goto(`${baseUrl}${audit.route}`, { waitUntil: "domcontentloaded" });
+                    await page.waitForSelector("main", { timeout: 15_000 });
+                    await page.locator("[data-input-intent]").first().waitFor({ state: "attached", timeout: 15_000 });
+
+                    const measurements = await page.evaluate(({ mobile }) => {
+                        const isVisible = (element) => {
+                            const style = window.getComputedStyle(element);
+                            const rect = element.getBoundingClientRect();
+                            return style.display !== "none" && style.visibility !== "hidden" && Number(style.opacity) !== 0 && rect.width > 0 && rect.height > 0;
+                        };
+                        const nodes = Array.from(document.querySelectorAll("[data-input-intent]")).filter(isVisible);
+                        const counts = {};
+                        const issues = [];
+
+                        for (const element of nodes) {
+                            const intent = element.getAttribute("data-input-intent");
+                            if (!intent) continue;
+                            counts[intent] = (counts[intent] || 0) + 1;
+
+                            const rect = element.getBoundingClientRect();
+                            const tag = element.tagName.toLowerCase();
+                            const field = ["input", "textarea", "select"].includes(tag);
+                            if (intent === "scalar" && field) {
+                                const target = element.closest("label") || element;
+                                const targetRect = target.getBoundingClientRect();
+                                const minimum = mobile ? 44 : 36;
+                                if (targetRect.height + 0.5 < minimum || targetRect.width + 0.5 < minimum) {
+                                    issues.push(`${intent} ${tag}: ${Math.round(targetRect.width)}x${Math.round(targetRect.height)}`);
+                                }
+                            }
+                            if (intent === "shortText" && tag === "input" && rect.height + 0.5 < (mobile ? 44 : 44)) {
+                                issues.push(`${intent} input height: ${Math.round(rect.height)}px`);
+                            }
+                            if (intent === "shortText" && tag === "textarea") {
+                                const style = window.getComputedStyle(element);
+                                const resize = style.resize;
+                                if (rect.height + 0.5 < 144) issues.push(`${intent} textarea height: ${Math.round(rect.height)}px (min-height ${style.minHeight}; ${element.className})`);
+                                if (!resize.includes("vertical") && resize !== "both") issues.push(`${intent} textarea resize: ${resize}`);
+                            }
+                            if (["payload", "generatedOutput"].includes(intent) && ["textarea", "pre"].includes(tag) && rect.height + 0.5 < 256) {
+                                issues.push(`${intent} ${tag} height: ${Math.round(rect.height)}px`);
+                            }
+                        }
+
+                        return { counts, issues };
+                    }, { mobile: viewport.mobile });
+
+                    for (const intent of audit.requiredIntents) {
+                        if (!measurements.counts[intent]) {
+                            throw new Error(`${routeLabel} did not render required ${intent} input intent.`);
+                        }
+                    }
+                    if (measurements.issues.length > 0) {
+                        throw new Error(`${routeLabel} input sizing failed:\n- ${measurements.issues.join("\n- ")}`);
+                    }
+
+                    await assertNoHorizontalOverflow(page, routeLabel);
+                    const screenshot = await page.screenshot({ animations: "disabled", fullPage: false });
+                    if (screenshot.byteLength < 5_000) {
+                        throw new Error(`${routeLabel} sizing screenshot was unexpectedly blank (${screenshot.byteLength} bytes).`);
+                    }
+                    runtime.assertClean();
+                } finally {
+                    await page.close();
+                }
+            }
+        } finally {
+            await context.close();
+        }
+    }
+}
+
 async function assertAxeSeriousCriticalMatrix(browser, baseUrl) {
     const context = await browser.newContext({ serviceWorkers: "block" });
 
@@ -2046,6 +2152,9 @@ async function runSmoke(baseUrl, { writeFirstLoadArtifacts = false } = {}) {
         await assertMobileReviewMatrix(browser, baseUrl);
         console.log("[playwright-smoke] PASS mobile review matrix: no overflow or touch-target regressions");
 
+        await assertInputIntentSizingMatrix(browser, baseUrl);
+        console.log("[playwright-smoke] PASS input intent sizing matrix: mobile/desktop heights, touch targets, overflow, and screenshots");
+
         await assertAxeSeriousCriticalMatrix(browser, baseUrl);
         console.log("[playwright-smoke] PASS accessibility: no serious or critical axe violations on representative pages");
     } finally {
@@ -2073,11 +2182,22 @@ async function runPwaSmoke(baseUrl) {
     }
 }
 
+async function runInputIntentSmoke(baseUrl) {
+    const browser = await chromium.launch({ headless: true });
+    try {
+        await assertInputIntentSizingMatrix(browser, baseUrl);
+        console.log("[playwright-smoke] PASS input intent sizing matrix: mobile/desktop heights, touch targets, overflow, and screenshots");
+    } finally {
+        await browser.close();
+    }
+}
+
 async function main() {
     const {
         baseUrl,
         firstLoadOnly,
         includePwa,
+        inputIntentsOnly,
         port,
         skipServer,
         writeFirstLoadArtifacts,
@@ -2091,15 +2211,19 @@ async function main() {
             console.log(`[playwright-smoke] Static server ready at ${baseUrl}`);
         }
 
-        if (firstLoadOnly) {
+        if (inputIntentsOnly) {
+            await runInputIntentSmoke(baseUrl);
+        } else if (firstLoadOnly) {
             await runFirstLoadAudit(baseUrl, { writeArtifacts: writeFirstLoadArtifacts });
         } else {
             await runSmoke(baseUrl, { writeFirstLoadArtifacts });
         }
-        if (includePwa && !firstLoadOnly) {
+        if (includePwa && !firstLoadOnly && !inputIntentsOnly) {
             await runPwaSmoke(baseUrl);
         }
-        console.log("[playwright-smoke] PASS: critical routes render and navigate correctly");
+        if (!firstLoadOnly && !inputIntentsOnly) {
+            console.log("[playwright-smoke] PASS: critical routes render and navigate correctly");
+        }
     } catch (error) {
         console.error("[playwright-smoke] FAILED");
         if (serverHandle) {

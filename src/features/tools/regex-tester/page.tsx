@@ -153,7 +153,8 @@ export function RegexTesterPage() {
                                 <Input
                                     id="regex-pattern"
                                     type="text"
-                                    className={`font-mono text-lg h-12 pl-8 pr-4 ${error ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                                    intent="shortText"
+                                    className={`font-mono text-lg pl-8 pr-4 ${error ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                                     placeholder={toolT.pattern_placeholder}
                                     value={pattern}
                                     onChange={(e) => setPattern(e.target.value)}
@@ -173,7 +174,8 @@ export function RegexTesterPage() {
                             <Input
                                 id="regex-flags"
                                 type="text"
-                                className="font-mono text-lg h-12"
+                                intent="scalar"
+                                className="font-mono text-lg"
                                 placeholder={toolT.flags_placeholder}
                                 value={flags}
                                 onChange={(e) => setFlags(e.target.value.replace(/[^gimsuy]/g, ''))} // Restrict to valid JS regex flags
@@ -189,7 +191,8 @@ export function RegexTesterPage() {
                         <span>{toolT.test_string_label}</span>
                     </div>
                     <Textarea
-                        className="flex-1 min-h-[350px] resize-none border-0 focus-visible:ring-1 focus-visible:ring-ring/50 p-4 font-mono text-base leading-relaxed"
+                        intent="payload"
+                        className="flex-1 resize-none border-0 focus-visible:ring-1 focus-visible:ring-ring/50 p-4 font-mono text-base leading-relaxed"
                         placeholder={toolT.test_string_placeholder}
                         value={testString}
                         onChange={(e) => setTestString(e.target.value)}

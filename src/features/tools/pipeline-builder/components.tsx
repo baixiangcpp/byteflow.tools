@@ -43,6 +43,7 @@ export function StepOptions({
                             <Input
                                 id={`${step.id}-${key}`}
                                 type="number"
+                                intent="scalar"
                                 value={Number(value)}
                                 min={0}
                                 max={8}
@@ -59,6 +60,7 @@ export function StepOptions({
                             <Label htmlFor={`${step.id}-${key}`}>{text(`option_${key}`)}</Label>
                             <select
                                 id={`${step.id}-${key}`}
+                                data-input-intent="scalar"
                                 className="mt-1 h-11 w-full rounded-md border bg-background px-2 text-sm lg:h-9"
                                 value={String(value)}
                                 onChange={(event) => updateOption(key, event.target.value)}
@@ -76,6 +78,7 @@ export function StepOptions({
                         <Label htmlFor={`${step.id}-${key}`}>{text(`option_${key}`)}</Label>
                         <Input
                             id={`${step.id}-${key}`}
+                            intent="shortText"
                             value={String(value)}
                             onChange={(event) => updateOption(key, event.target.value)}
                         />

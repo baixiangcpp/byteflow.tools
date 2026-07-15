@@ -45,6 +45,10 @@ describe("create-tool scaffold boundaries", () => {
         expect(CREATE_TOOL_SOURCE).toContain("setInput(SAMPLE_INPUT)")
         expect(CREATE_TOOL_SOURCE).toContain("const handleClear = () =>")
         expect(CREATE_TOOL_SOURCE).toContain('inputBehavior: "empty-first"')
+        expect(CREATE_TOOL_SOURCE).toContain('intent="payload"')
+        expect(CREATE_TOOL_SOURCE).toContain('intent="generatedOutput"')
+        expect(CREATE_TOOL_SOURCE).toContain('data-input-intent="workbench"')
+        expect(CREATE_TOOL_SOURCE).not.toContain('className="min-h-[360px] font-mono"')
     })
 
     it("uses the standard tool page container contract", () => {

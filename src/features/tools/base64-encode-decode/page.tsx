@@ -387,7 +387,6 @@ export function Base64Page() {
                 </div>
 
                 <ToolActionBar actions={standardActions} handoffPayload={handoffPayload} />
-
                 <div className="flex flex-wrap items-center gap-2">
                     {mode === "file" ? (
                         <>
@@ -410,6 +409,7 @@ export function Base64Page() {
                 <input
                     ref={fileInputRef}
                     type="file"
+                    data-input-intent="payload"
                     accept={filePolicy.accept}
                     className="hidden"
                     onChange={(event) => {
@@ -437,7 +437,8 @@ export function Base64Page() {
                     </div>
                     <div className="flex-1 p-0">
                         <Textarea
-                            className="h-full min-h-[400px] w-full resize-none border-0 p-4 font-mono text-sm leading-relaxed focus-visible:ring-1 focus-visible:ring-ring/50"
+                            intent="payload"
+                            className="h-full w-full resize-none border-0 p-4 font-mono text-sm leading-relaxed focus-visible:ring-1 focus-visible:ring-ring/50"
                             placeholder={mode === "file" ? text("input_placeholder_file") : text("input_placeholder_text")}
                             value={input}
                             onChange={(event) => setInput(event.target.value)}
@@ -454,7 +455,7 @@ export function Base64Page() {
                     value={outputPreview}
                     metadata={`${output.length} chars / ${outputBytes} bytes`}
                     emptyText={t.common.result_placeholder}
-                    minHeightClassName="min-h-[400px]"
+                    intent="generatedOutput"
                     className="rounded-lg"
                     actions={isOutputPreviewTruncated ? (
                         <span className="rounded-md border border-border/70 bg-background/90 px-2 py-1 text-[11px] font-normal text-muted-foreground">

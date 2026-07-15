@@ -70,7 +70,7 @@
     ]
   },
   "summary": {
-    "scannedFiles": 939,
+    "scannedFiles": 941,
     "pageRoots": 369,
     "toolSurfaces": 131,
     "standardTools": 82,
@@ -2556,7 +2556,7 @@
       "file": "src/features/tools/barcode-generator/page.tsx",
       "component": "BarcodeGeneratorPage",
       "element": "ToolPageContainer",
-      "line": 210
+      "line": 213
     },
     {
       "file": "src/features/tools/base-encoding-converter/page.tsx",
@@ -2724,7 +2724,7 @@
       "file": "src/features/tools/csv-json-converter/page.tsx",
       "component": "CsvJsonConverterPage",
       "element": "WideToolPageContainer",
-      "line": 259
+      "line": 253
     },
     {
       "file": "src/features/tools/curl-to-code/page.tsx",
@@ -3114,7 +3114,7 @@
       "file": "src/features/tools/qr-code-generator/page.tsx",
       "component": "QrCodeGeneratorPage",
       "element": "ToolPageContainer",
-      "line": 401
+      "line": 365
     },
     {
       "file": "src/features/tools/react-native-shadow-generator/page.tsx",
@@ -3427,7 +3427,7 @@
       "sm:grid-cols-2": 54,
       "sm:grid-cols-3": 8,
       "sm:grid-cols-4": 1,
-      "w-full": 131,
+      "w-full": 130,
       "xl:grid-cols-[0.9fr_1.1fr]": 1,
       "xl:grid-cols-[1.02fr_0.98fr]": 1,
       "xl:grid-cols-[1.05fr_0.95fr]": 6,

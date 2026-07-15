@@ -4,6 +4,7 @@ import * as React from "react"
 import { AlignLeft, ListMinus } from "lucide-react"
 import { useLang } from "@/core/i18n/lang-provider"
 import { cn } from "@/core/utils/utils"
+import { inputIntentClassName, type InputIntent } from "@/components/ui/input-intent"
 
 export type OutputWrapMode = "wrap" | "scroll"
 
@@ -103,7 +104,8 @@ export function TextOutputPanel({
     className,
     bodyClassName,
     defaultMode = "wrap",
-    minHeightClassName = "min-h-[260px]",
+    intent = "generatedOutput",
+    minHeightClassName,
 }: {
     title: string
     value: string
@@ -114,6 +116,7 @@ export function TextOutputPanel({
     className?: string
     bodyClassName?: string
     defaultMode?: OutputWrapMode
+    intent?: InputIntent
     minHeightClassName?: string
 }) {
     const [mode, setMode] = React.useState<OutputWrapMode>(defaultMode)
@@ -137,9 +140,11 @@ export function TextOutputPanel({
             <pre
                 tabIndex={0}
                 aria-label={ariaLabel || title}
+                data-input-intent={intent}
                 data-output-overflow-mode={mode}
                 className={cn(
                     "flex-1 select-all overflow-auto border-t bg-background p-4 font-mono text-sm leading-relaxed outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+                    inputIntentClassName(intent, "output"),
                     minHeightClassName,
                     mode === "wrap" ? "whitespace-pre-wrap break-words" : "whitespace-pre",
                     bodyClassName,

@@ -154,6 +154,19 @@
     min-height: 44px !important;
     min-width: 44px !important;
   }
+
+  textarea[data-input-intent="shortText"] {
+    min-height: 9rem !important;
+  }
+
+  textarea[data-input-intent="payload"],
+  textarea[data-input-intent="generatedOutput"] {
+    min-height: 16rem !important;
+  }
+
+  textarea[data-input-intent="workbench"] {
+    min-height: 22rem !important;
+  }
 }
 }
 

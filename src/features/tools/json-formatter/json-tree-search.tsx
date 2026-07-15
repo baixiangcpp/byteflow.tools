@@ -23,7 +23,8 @@ export function JsonTreeSearch({
                 <Search className="absolute left-2.5 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
                 <Input
                     autoFocus
-                    className="h-8 w-48 pl-8 text-xs focus-visible:ring-1 focus-visible:ring-primary/50"
+                    intent="shortText"
+                    className="w-48 pl-8 text-xs focus-visible:ring-1 focus-visible:ring-primary/50"
                     placeholder={placeholder}
                     value={query}
                     onChange={(event) => onQueryChange(event.target.value)}

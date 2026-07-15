@@ -13,13 +13,6 @@ import { buildInputTooLargeMessage, countNonEmptyLines, isOverUtf8Budget, TOOL_R
 import { FILE_INPUT_POLICIES, readTextFileWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { readStorageString, removeStorageKey, writeStorageString } from "@/core/storage/tool-persistence"
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import {
     DIRECTION_STORAGE_KEY,
     DELIMITER_STORAGE_KEY,
     HAS_HEADER_STORAGE_KEY,
@@ -29,6 +22,7 @@ import {
 } from "./constants"
 import { runCsvJsonTask } from "./csv-json-task"
 import { InlineButton } from "./components"
+import { CsvSettingsPanel } from "./settings-panel"
 import type { CsvJsonDiagnostic, Direction } from "./types"
 import { WideToolPageContainer } from "@/components/layout/page-container"
 async function loadToast() {
@@ -313,54 +307,18 @@ export function CsvJsonConverterPage() {
             </div>
 
             {/* Settings Panel */}
-            {showSettings && (
-                <div className="p-4 border rounded-lg bg-card space-y-4">
-                    <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">
-                        {toolT.settings_title}
-                    </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">{toolT.delimiter_label}</label>
-                            <Select value={delimiter} onValueChange={setDelimiter}>
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="auto">{toolT.delimiter_auto_label}</SelectItem>
-                                    <SelectItem value=",">{toolT.delimiter_comma_label}</SelectItem>
-                                    <SelectItem value=";">{toolT.delimiter_semicolon_label}</SelectItem>
-                                    <SelectItem value="\t">{toolT.delimiter_tab_label}</SelectItem>
-                                    <SelectItem value="|">{toolT.delimiter_pipe_label}</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    checked={hasHeader}
-                                    onChange={(e) => setHasHeader(e.target.checked)}
-                                    className="rounded border-input"
-                                />
-                                {direction === "csv-to-json"
-                                    ? toolT.csv_has_header_label
-                                    : toolT.json_include_header_label}
-                            </label>
-                        </div>
-                        {direction === "csv-to-json" && (
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium flex items-center gap-2">
-                                    <input
-                                        type="checkbox"
-                                        checked={typeInference}
-                                        onChange={(e) => setTypeInference(e.target.checked)}
-                                        className="rounded border-input"
-                                    />
-                                    {toolT.type_inference_label}
-                                </label>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            )}
+            {showSettings ? (
+                <CsvSettingsPanel
+                    delimiter={delimiter}
+                    direction={direction}
+                    hasHeader={hasHeader}
+                    setDelimiter={setDelimiter}
+                    setHasHeader={setHasHeader}
+                    setTypeInference={setTypeInference}
+                    toolT={toolT}
+                    typeInference={typeInference}
+                />
+            ) : null}
 
             {/* Error */}
             {error && (
@@ -390,13 +348,13 @@ export function CsvJsonConverterPage() {
             )}
 
             {/* Workspace Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 min-h-[600px] border rounded-lg bg-card overflow-hidden">
+            <div data-input-intent="workbench" className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 min-h-[600px] border rounded-lg bg-card overflow-hidden">
                 {/* Input Pane */}
                 <div className="flex flex-col h-full border-b lg:border-b-0 lg:border-r">
                     <div className="tool-pane-header tool-pane-header-between">
                         <span>{t.common.input} ({inputFormatLabel})</span>
                         <label className="cursor-pointer">
-                            <input type="file" className="hidden" accept={FILE_INPUT_POLICIES["csv-json"].accept} onChange={handleFileUpload} />
+                            <input type="file" data-input-intent="payload" className="hidden" accept={FILE_INPUT_POLICIES["csv-json"].accept} onChange={handleFileUpload} />
                             <span className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
                                 <Upload className="h-3.5 w-3.5" />
                                 {toolT.input_upload_action}
@@ -405,6 +363,7 @@ export function CsvJsonConverterPage() {
                     </div>
                     <div className="flex-1 min-h-[300px]">
                         <MonacoEditor
+                            intent="payload"
                             height="100%"
                             defaultLanguage={inputLang}
                             language={inputLang}
@@ -451,6 +410,7 @@ export function CsvJsonConverterPage() {
                     )}
                     <div className="flex-1 min-h-[300px]">
                         <MonacoEditor
+                            intent="generatedOutput"
                             height="100%"
                             defaultLanguage={outputLang}
                             language={outputLang}

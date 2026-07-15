@@ -23,7 +23,23 @@ describe("playwright smoke matrix guard", () => {
         expect(SMOKE_SOURCE).toContain("assertMobileToolPageJourneys")
         expect(SMOKE_SOURCE).toContain("assertMobileReviewMatrix")
         expect(SMOKE_SOURCE).toContain("assertAxeSeriousCriticalMatrix")
+        expect(SMOKE_SOURCE).toContain("assertInputIntentSizingMatrix")
         expect(SMOKE_SOURCE).toContain("assertBasicAccessibility")
+    })
+
+    it("keeps real mobile and desktop input-intent sizing measurements", () => {
+        expect(SMOKE_SOURCE).toContain("INPUT_INTENT_AUDIT_ROUTES")
+        expect(SMOKE_SOURCE).toContain("INPUT_INTENT_AUDIT_VIEWPORTS")
+        expect(SMOKE_SOURCE).toContain('if (arg === "--input-intents-only")')
+        expect(SMOKE_SOURCE).toContain("runInputIntentSmoke")
+        expect(SMOKE_SOURCE).toContain('{ width: 390, height: 844, mobile: true }')
+        expect(SMOKE_SOURCE).toContain('{ width: 1280, height: 900, mobile: false }')
+        expect(SMOKE_SOURCE).toContain('route: "/en/qr-code-generator"')
+        expect(SMOKE_SOURCE).toContain('route: "/en/csv-json-converter"')
+        expect(SMOKE_SOURCE).toContain('document.querySelectorAll("[data-input-intent]")')
+        expect(SMOKE_SOURCE).toContain("getBoundingClientRect")
+        expect(SMOKE_SOURCE).toContain('page.screenshot({ animations: "disabled", fullPage: false })')
+        expect(SMOKE_SOURCE).toContain("assertNoHorizontalOverflow(page, routeLabel)")
     })
 
     it("keeps mobile tool-page regression coverage for core workflows", () => {

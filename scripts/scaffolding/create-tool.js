@@ -333,20 +333,21 @@ export function ${componentName}Page() {
                 </Button>
             </div>
 
-            <div className="grid gap-4 lg:grid-cols-2">
+            <div data-input-intent="workbench" className="grid gap-4 lg:grid-cols-2">
                 <div className="space-y-2">
                     <label className="text-sm font-medium text-muted-foreground">{inputLabel}</label>
                     <Textarea
+                        intent="payload"
                         value={input}
                         onChange={(event) => setInput(event.target.value)}
                         placeholder={inputLabel}
-                        className="min-h-[360px] font-mono"
+                        className="font-mono"
                     />
                 </div>
 
                 <div className="space-y-2">
                     <label className="text-sm font-medium text-muted-foreground">{outputLabel}</label>
-                    <Textarea value={output} readOnly className="min-h-[360px] font-mono" />
+                    <Textarea intent="generatedOutput" value={output} readOnly className="font-mono" />
                 </div>
             </div>
         </ToolPageContainer>

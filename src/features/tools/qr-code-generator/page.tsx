@@ -1,20 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { Copy, Download, ExternalLink, FileImage, ImagePlus, LoaderCircle, QrCode, RotateCcw, ScanLine, TestTube2, Trash2, Upload } from "lucide-react"
+import { Copy, Download, ExternalLink, QrCode, RotateCcw, TestTube2, Trash2, Upload } from "lucide-react"
 import { useLang } from "@/core/i18n/lang-provider"
-import { Input } from "@/components/ui/input"
-import { Slider } from "@/components/ui/slider"
-import { Switch } from "@/components/ui/switch"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 import { ToolActionBar, type ToolAction, type ToolActionResult } from "@/features/tool-shell/tool-action-bar"
-import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
@@ -30,14 +19,11 @@ import {
     loadToast,
     readFileAsDataUrl,
 } from "./browser-actions"
-import { BUTTON_BASE_CLASS, BUTTON_SIZE_CLASS, BUTTON_VARIANT_CLASS, DEFAULT_QR_TEXT, PRESETS, SAMPLE_QR_TEXT } from "./constants"
+import { DEFAULT_QR_TEXT, PRESETS, SAMPLE_QR_TEXT } from "./constants"
+import { QrDecodePanel, QrGeneratePanel, QrModeTabs, type DecodeStatus, type QrMode } from "./panels"
 import type { ErrorCorrectionLevel, QrPreset } from "./types"
 import { ToolPageContainer } from "@/components/layout/page-container"
 const LOGO_FILE_POLICY = FILE_INPUT_POLICIES["image-logo"]
-const QR_DECODE_FILE_POLICY = FILE_INPUT_POLICIES["qr-decode-image"]
-
-type QrMode = "generate" | "decode"
-type DecodeStatus = "idle" | "decoding" | "success" | "error"
 
 const DECODE_ERROR_KEYS = {
     empty_file: "decode_empty_file",
@@ -49,29 +35,6 @@ const DECODE_ERROR_KEYS = {
     decoder_unavailable: "decode_decoder_unavailable",
     no_qr: "decode_no_qr",
 } as const
-
-function joinClasses(...values: Array<string | null | undefined | false>) {
-    return values.filter(Boolean).join(" ")
-}
-
-type InlineButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-    variant?: keyof typeof BUTTON_VARIANT_CLASS
-}
-
-function InlineButton({
-    className,
-    type = "button",
-    variant = "outline",
-    ...props
-}: InlineButtonProps) {
-    return (
-        <button
-            type={type}
-            className={joinClasses(BUTTON_BASE_CLASS, BUTTON_VARIANT_CLASS[variant], BUTTON_SIZE_CLASS.sm, className)}
-            {...props}
-        />
-    )
-}
 
 export function QrCodeGeneratorPage() {
     const { t } = useLang()
@@ -410,280 +373,51 @@ export function QrCodeGeneratorPage() {
                         {textFor("description")}
                     </p>
                 </div>
-                <div
-                    role="tablist"
-                    aria-label={textFor("mode_label")}
-                    className="inline-grid w-full grid-cols-2 rounded-md border bg-muted/40 p-1 sm:w-fit"
-                >
-                    <button
-                        type="button"
-                        role="tab"
-                        id="qr-generate-tab"
-                        aria-controls="qr-generate-panel"
-                        aria-selected={mode === "generate"}
-                        onClick={() => setMode("generate")}
-                        className={joinClasses(
-                            "inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-4 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 lg:min-h-9",
-                            mode === "generate" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground",
-                        )}
-                    >
-                        <QrCode className="h-4 w-4" />
-                        {textFor("mode_generate")}
-                    </button>
-                    <button
-                        type="button"
-                        role="tab"
-                        id="qr-decode-tab"
-                        aria-controls="qr-decode-panel"
-                        aria-selected={mode === "decode"}
-                        onClick={() => setMode("decode")}
-                        className={joinClasses(
-                            "inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-4 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 lg:min-h-9",
-                            mode === "decode" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground",
-                        )}
-                    >
-                        <ScanLine className="h-4 w-4" />
-                        {textFor("mode_decode")}
-                    </button>
-                </div>
+                <QrModeTabs mode={mode} onChange={setMode} textFor={textFor} />
                 <ToolActionBar actions={mode === "generate" ? generateActions : decodeActions} />
             </div>
 
             {mode === "generate" ? (
-                <div
-                    id="qr-generate-panel"
-                    role="tabpanel"
-                    aria-labelledby="qr-generate-tab"
-                    className="grid grid-cols-1 gap-6 md:grid-cols-12"
-                >
-                <div className="md:col-span-4 lg:col-span-4">
-                    <div className="space-y-5 rounded-lg border bg-card p-5 shadow-sm">
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">{textFor("content")}</label>
-                            <textarea
-                                value={text}
-                                onChange={(event) => setText(event.target.value)}
-                                className="h-24 w-full resize-none rounded-md border bg-background px-3 py-2 font-mono text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
-                                placeholder={textFor("placeholder")}
-                            />
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                                {textFor("presets")}
-                            </label>
-                            <div className="flex flex-wrap gap-2">
-                                {PRESETS.map((preset) => (
-                                    <InlineButton
-                                        key={preset.id}
-                                        type="button"
-                                        variant={activePreset === preset.id ? "default" : "outline"}
-                                        onClick={() => applyPreset(preset)}
-                                    >
-                                        {textFor(preset.labelKey)}
-                                    </InlineButton>
-                                ))}
-                            </div>
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">{textFor("size")} {size}px</label>
-                            <Slider value={[size]} onValueChange={([v]) => setSize(v)} min={128} max={640} step={32} />
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">{textFor("margin")} {margin}</label>
-                            <Slider value={[margin]} onValueChange={([v]) => setMargin(v)} min={0} max={8} step={1} />
-                        </div>
-
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">{textFor("ecc")}</label>
-                            <Select value={errorCorrectionLevel} onValueChange={(value) => setErrorCorrectionLevel(value as ErrorCorrectionLevel)}>
-                                <SelectTrigger>
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="L">{textFor("ecc_l")}</SelectItem>
-                                    <SelectItem value="M">{textFor("ecc_m")}</SelectItem>
-                                    <SelectItem value="Q">{textFor("ecc_q")}</SelectItem>
-                                    <SelectItem value="H">{textFor("ecc_h")}</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-3">
-                            <div className="space-y-1.5">
-                                <label className="text-sm font-medium">{textFor("fg")}</label>
-                                <div className="flex items-center gap-2">
-                                    <input
-                                        type="color"
-                                        value={fgColor}
-                                        onChange={(event) => setFgColor(event.target.value)}
-                                        className="h-9 w-9 cursor-pointer rounded border-0 bg-transparent p-0"
-                                    />
-                                    <Input value={fgColor} onChange={(event) => setFgColor(event.target.value)} className="h-9 text-xs font-mono" />
-                                </div>
-                            </div>
-                            <div className="space-y-1.5">
-                                <label className="text-sm font-medium">{textFor("bg")}</label>
-                                <div className="flex items-center gap-2">
-                                    <input
-                                        type="color"
-                                        value={bgColor}
-                                        onChange={(event) => setBgColor(event.target.value)}
-                                        className="h-9 w-9 cursor-pointer rounded border-0 bg-transparent p-0"
-                                    />
-                                    <Input value={bgColor} onChange={(event) => setBgColor(event.target.value)} className="h-9 text-xs font-mono" />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="space-y-3 rounded-md border bg-muted/20 p-3">
-                            <div className="flex items-center justify-between">
-                                <label className="text-sm font-medium">{textFor("logo_toggle")}</label>
-                                <Switch checked={logoEnabled} onCheckedChange={setLogoEnabled} />
-                            </div>
-
-                            <div className="flex flex-wrap items-center gap-2">
-                                <InlineButton type="button" variant="outline" onClick={() => logoInputRef.current?.click()}>
-                                    <ImagePlus className="mr-1 h-4 w-4" />
-                                    {textFor("logo_upload")}
-                                </InlineButton>
-                                <InlineButton type="button" variant="outline" onClick={handleRemoveLogo} disabled={!logoDataUrl}>
-                                    {textFor("logo_remove")}
-                                </InlineButton>
-                                <input
-                                    ref={logoInputRef}
-                                    type="file"
-                                    className="hidden"
-                                    accept={LOGO_FILE_POLICY.accept}
-                                    onChange={(event) => {
-                                        const file = event.currentTarget.files?.[0] || null
-                                        event.currentTarget.value = ""
-                                        void handleLogoUpload(file)
-                                    }}
-                                />
-                            </div>
-
-                            {logoName ? (
-                                <p className="text-xs text-muted-foreground">{logoName}</p>
-                            ) : (
-                                <p className="text-xs text-muted-foreground">{textFor("logo_hint")}</p>
-                            )}
-
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium">{textFor("logo_size")} {logoScale}%</label>
-                                <Slider value={[logoScale]} onValueChange={([v]) => setLogoScale(v)} min={12} max={34} step={1} />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="md:col-span-8 lg:col-span-8">
-                    <ToolPreviewArea
-                        title={textFor("preview_label") || "Preview"}
-                        metadata={`${size} × ${size} px`}
-                        className="h-full min-h-[540px]"
-                    >
-                        {text.trim() ? (
-                            <canvas ref={canvasRef} className="rounded-xl shadow-2xl transition-transform duration-300 hover:scale-[1.02]" />
-                        ) : (
-                            <p className="text-sm text-muted-foreground">{textFor("prompt")}</p>
-                        )}
-                    </ToolPreviewArea>
-                </div>
-                </div>
+                <QrGeneratePanel
+                    activePreset={activePreset}
+                    applyPreset={applyPreset}
+                    bgColor={bgColor}
+                    canvasRef={canvasRef}
+                    errorCorrectionLevel={errorCorrectionLevel}
+                    fgColor={fgColor}
+                    handleLogoUpload={handleLogoUpload}
+                    handleRemoveLogo={handleRemoveLogo}
+                    logoDataUrl={logoDataUrl}
+                    logoEnabled={logoEnabled}
+                    logoInputRef={logoInputRef}
+                    logoName={logoName}
+                    logoScale={logoScale}
+                    margin={margin}
+                    setBgColor={setBgColor}
+                    setErrorCorrectionLevel={setErrorCorrectionLevel}
+                    setFgColor={setFgColor}
+                    setLogoEnabled={setLogoEnabled}
+                    setLogoScale={setLogoScale}
+                    setMargin={setMargin}
+                    setSize={setSize}
+                    setText={setText}
+                    size={size}
+                    text={text}
+                    textFor={textFor}
+                />
             ) : (
-                <section
-                    id="qr-decode-panel"
-                    role="tabpanel"
-                    aria-labelledby="qr-decode-tab"
-                    className="grid grid-cols-1 gap-6 md:grid-cols-12"
-                >
-                    <div className="space-y-4 md:col-span-5">
-                        <label
-                            className={joinClasses(
-                                "flex min-h-[260px] cursor-pointer flex-col items-center justify-center gap-3 rounded-md border-2 border-dashed bg-card p-6 text-center transition-colors focus-within:ring-2 focus-within:ring-ring/50",
-                                decodeDragActive ? "border-primary bg-primary/5" : "border-border hover:border-primary/60",
-                            )}
-                            onDragEnter={(event) => {
-                                event.preventDefault()
-                                setDecodeDragActive(true)
-                            }}
-                            onDragOver={(event) => {
-                                event.preventDefault()
-                                event.dataTransfer.dropEffect = "copy"
-                            }}
-                            onDragLeave={() => setDecodeDragActive(false)}
-                            onDrop={(event) => {
-                                event.preventDefault()
-                                setDecodeDragActive(false)
-                                void handleDecodeFile(event.dataTransfer.files?.[0] || null)
-                            }}
-                        >
-                            <input
-                                ref={decodeInputRef}
-                                type="file"
-                                className="sr-only"
-                                accept={QR_DECODE_FILE_POLICY.accept}
-                                onChange={(event) => {
-                                    const file = event.currentTarget.files?.[0] || null
-                                    event.currentTarget.value = ""
-                                    void handleDecodeFile(file)
-                                }}
-                            />
-                            {decodeStatus === "decoding" ? (
-                                <LoaderCircle className="h-10 w-10 animate-spin text-primary" aria-hidden="true" />
-                            ) : (
-                                <FileImage className="h-10 w-10 text-primary" aria-hidden="true" />
-                            )}
-                            <span className="text-base font-semibold text-foreground">
-                                {decodeStatus === "decoding" ? textFor("decode_processing") : textFor("decode_drop")}
-                            </span>
-                            <span className="text-sm text-muted-foreground">{textFor("decode_formats")}</span>
-                            {decodeFileName ? (
-                                <span className="max-w-full truncate text-xs text-muted-foreground">{decodeFileName}</span>
-                            ) : null}
-                        </label>
-
-                        <p className="text-sm text-muted-foreground">{textFor("decode_one_code")}</p>
-                        {decodeStatus === "error" ? (
-                            <div
-                                role="alert"
-                                data-testid="qr-decode-error"
-                                className="rounded-md border border-destructive/35 bg-destructive/10 p-3 text-sm text-destructive"
-                            >
-                                {decodeError}
-                            </div>
-                        ) : null}
-                    </div>
-
-                    <div className="md:col-span-7">
-                        <ToolPreviewArea
-                            title={textFor("decode_result")}
-                            metadata={decodedPayload ? (decodedUrl ? textFor("decode_type_url") : textFor("decode_type_text")) : undefined}
-                            className="h-full min-h-[420px]"
-                        >
-                            {decodedPayload ? (
-                                <div className="flex h-full w-full flex-col gap-3 text-left">
-                                    <div className="text-xs font-semibold uppercase text-muted-foreground">
-                                        {decodedUrl ? textFor("decode_type_url") : textFor("decode_type_text")}
-                                    </div>
-                                    <pre
-                                        data-testid="qr-decoded-output"
-                                        className="max-h-[360px] min-h-[180px] w-full overflow-auto whitespace-pre-wrap break-all rounded-md border bg-background p-4 font-mono text-sm text-foreground"
-                                    >
-                                        {decodedPayload}
-                                    </pre>
-                                </div>
-                            ) : (
-                                <p className="text-sm text-muted-foreground">
-                                    {decodeStatus === "decoding" ? textFor("decode_processing") : textFor("decode_prompt")}
-                                </p>
-                            )}
-                        </ToolPreviewArea>
-                    </div>
-                </section>
+                <QrDecodePanel
+                    decodeDragActive={decodeDragActive}
+                    decodeError={decodeError}
+                    decodeFileName={decodeFileName}
+                    decodeInputRef={decodeInputRef}
+                    decodedPayload={decodedPayload}
+                    decodedUrl={decodedUrl}
+                    decodeStatus={decodeStatus}
+                    handleDecodeFile={handleDecodeFile}
+                    setDecodeDragActive={setDecodeDragActive}
+                    textFor={textFor}
+                />
             )}
 
             <RelatedTools toolKey="qr_code_generator" />

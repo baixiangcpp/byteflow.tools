@@ -195,7 +195,7 @@ export function JwtDecoderPage() {
             )}
 
             {/* Workspace Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 min-h-[600px]">
+            <div data-input-intent="workbench" className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 min-h-[600px]">
                 {/* Input Pane */}
                 <div className="flex flex-col h-full border rounded-lg bg-card overflow-hidden">
                     <div className="tool-pane-header tool-pane-header-between">
@@ -203,7 +203,8 @@ export function JwtDecoderPage() {
                     </div>
                     <div className="flex-1 p-0">
                         <Textarea
-                            className="h-full min-h-[300px] w-full resize-none border-0 focus-visible:ring-1 focus-visible:ring-ring/50 p-4 font-mono text-sm leading-relaxed"
+                            intent="payload"
+                            className="h-full w-full resize-none border-0 focus-visible:ring-1 focus-visible:ring-ring/50 p-4 font-mono text-sm leading-relaxed"
                             placeholder={toolT.token_placeholder}
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
@@ -231,6 +232,7 @@ export function JwtDecoderPage() {
                         </div>
                         <div className="flex-1 min-h-[150px]">
                             <MonacoEditor
+                                intent="generatedOutput"
                                 height="100%"
                                 language="json"
                                 theme={monacoTheme}
@@ -265,6 +267,7 @@ export function JwtDecoderPage() {
                         </div>
                         <div className="flex-1 min-h-[300px]">
                             <MonacoEditor
+                                intent="generatedOutput"
                                 height="100%"
                                 language="json"
                                 theme={monacoTheme}

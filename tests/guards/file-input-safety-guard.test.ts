@@ -82,16 +82,17 @@ describe("file input safety guard", () => {
         const wildcardImagePickers = sourceFiles().filter((file) => read(file).includes('accept="image/*"'))
         expect(wildcardImagePickers).toEqual([])
 
-        const filesByPolicy = new Map([
+        const filesByPolicy = [
             ["src/features/tools/ascii-art-generator/page.tsx", "image-compact"],
             ["src/features/tools/image-average-color-finder/page.tsx", "image-compact"],
             ["src/features/tools/image-base64/page.tsx", "image-compact"],
             ["src/features/tools/instagram-filters/page.tsx", "image-standard"],
             ["src/features/tools/instagram-post-generator/page.tsx", "image-standard"],
             ["src/features/tools/instagram-story-generator/page.tsx", "image-standard"],
-            ["src/features/tools/qr-code-generator/page.tsx", "image-logo"],
+            ["src/features/tools/qr-code-generator/panels.tsx", "image-logo"],
+            ["src/features/tools/qr-code-generator/panels.tsx", "qr-decode-image"],
             ["src/features/tools/tweet-generator/page.tsx", "image-logo"],
-        ])
+        ] as const
 
         for (const [file, policyId] of filesByPolicy) {
             const source = read(file)

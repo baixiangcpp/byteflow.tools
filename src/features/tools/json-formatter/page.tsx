@@ -596,10 +596,9 @@ export function JsonFormatterPage() {
                 onOpenImportPicker={openImportPicker}
                 text={text}
             />
-
             <JsonErrorAlert details={errorDetails} error={error} text={text} />
 
-            <div className="grid min-h-[600px] min-w-0 flex-1 grid-cols-1 gap-4 overflow-hidden rounded-lg border bg-card lg:grid-cols-2">
+            <div data-input-intent="workbench" className="grid min-h-[600px] min-w-0 flex-1 grid-cols-1 gap-4 overflow-hidden rounded-lg border bg-card lg:grid-cols-2">
                 <div className="flex h-full flex-col border-b lg:border-r lg:border-b-0">
                     <div className="tool-pane-header tool-pane-header-between">
                         <span>{t.common.input}</span>
@@ -607,6 +606,7 @@ export function JsonFormatterPage() {
                     </div>
                     <div className="min-h-[300px] flex-1">
                         <MonacoEditor
+                            intent="payload"
                             height="100%"
                             defaultLanguage="json"
                             theme={monacoTheme}
@@ -646,11 +646,11 @@ export function JsonFormatterPage() {
                         viewMode={viewMode}
                         wrapMode={outputWrapMode}
                     />
-
                     {viewMode === "text" ? (
                         <div className="min-h-[300px] flex-1">
                             {output ? (
                                 <MonacoEditor
+                                    intent="generatedOutput"
                                     height="100%"
                                     defaultLanguage="json"
                                     theme={monacoTheme}
