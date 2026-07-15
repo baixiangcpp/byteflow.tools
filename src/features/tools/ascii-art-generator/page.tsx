@@ -8,6 +8,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { fileToDataUrl } from "@/core/utils/image-canvas-utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const ASCII_CHARS = ["@", "#", "S", "%", "?", "*", "+", ";", ":", ",", "."]
 
@@ -150,7 +151,7 @@ export function AsciiArtGeneratorPage() {
     }
 
     return (
-        <div className="flex flex-col h-full">
+        <ToolPageContainer className="flex flex-col h-full">
             <div className="flex items-center justify-between border-b px-4 py-3 gap-2 flex-wrap">
                 <div className="flex items-center gap-2">
                     <Type className="h-5 w-5 text-primary" />
@@ -201,6 +202,6 @@ export function AsciiArtGeneratorPage() {
                 </div>
             </div>
             <canvas ref={canvasRef} className="hidden" />
-        </div>
+        </ToolPageContainer>
     )
 }

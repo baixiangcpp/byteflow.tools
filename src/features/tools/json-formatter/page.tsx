@@ -50,7 +50,7 @@ import { JsonTreeNode } from "./components"
 import { SAMPLE_JSON_SOURCE } from "./samples"
 import { downloadJsonOutput } from "./browser-actions"
 import type { JsonPath, JsonValue, TreeDialogState, ViewMode } from "./types"
-
+import { WideToolPageContainer } from "@/components/layout/page-container"
 export function JsonFormatterPage() {
     const { t, lang } = useLang()
     const toolT = t.tools["json_formatter"] as Record<string, string>
@@ -564,7 +564,7 @@ export function JsonFormatterPage() {
     }
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-[1400px] flex-col space-y-6">
+        <WideToolPageContainer className="flex h-full flex-col space-y-6">
             <JsonTreeEditDialog
                 applyLabel={t.common.apply}
                 closeLabel={t.common.close}
@@ -714,6 +714,6 @@ export function JsonFormatterPage() {
             </div>
 
             <PrivacyFAQ />
-        </div>
+        </WideToolPageContainer>
     )
 }

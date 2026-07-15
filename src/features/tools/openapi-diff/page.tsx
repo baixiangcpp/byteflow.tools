@@ -12,6 +12,7 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { downloadText } from "./browser-actions"
 import { diffOpenApiSpecs, formatOpenApiDiffReport } from "./logic"
 import { SAMPLE_AFTER, SAMPLE_BEFORE } from "./samples"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 export function OpenapiDiffPage() {
     const { t } = useLang()
@@ -64,7 +65,7 @@ export function OpenapiDiffPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-7xl flex-col gap-6">
+        <WideToolPageContainer className="flex h-full flex-col gap-6">
             <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -96,6 +97,6 @@ export function OpenapiDiffPage() {
             </section>
 
             <RelatedTools toolKey="openapi_diff" />
-        </div>
+        </WideToolPageContainer>
     )
 }

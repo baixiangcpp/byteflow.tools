@@ -121,6 +121,7 @@ describe("RoutePageChrome", () => {
         expect(screen.getByText("Requests the Instagram URL you provide only after you confirm rights and click Download.")).toBeInTheDocument()
         expect(screen.getByText("Consent message")).toBeInTheDocument()
         expect(screen.getAllByRole("link", { name: "Trust Center" })[0]).toHaveAttribute("href", "/en/trust-center#verify-local-processing")
+        expect(document.querySelector('[data-route-shell="true"]')).toHaveAttribute("data-route-container-intent", "tool")
     })
 
     it("shows local trust status for local-only tools", () => {
@@ -136,5 +137,6 @@ describe("RoutePageChrome", () => {
         expect(screen.getByText("Offline processing message")).toBeInTheDocument()
         expect(screen.getByText("Sensitive input")).toBeInTheDocument()
         expect(screen.queryByText("External request details")).not.toBeInTheDocument()
+        expect(document.querySelector('[data-route-shell="true"]')).toHaveAttribute("data-route-container-intent", "wide-tool")
     })
 })

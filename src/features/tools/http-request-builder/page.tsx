@@ -30,6 +30,7 @@ import {
     type HttpMethod,
     type QueryEntry,
 } from "./logic"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 let nextId = 0
 
@@ -152,7 +153,7 @@ export function HttpRequestBuilderPage() {
     }
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-5xl mx-auto w-full">
+        <ToolPageContainer className="flex flex-col h-full space-y-6">
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
@@ -384,6 +385,6 @@ export function HttpRequestBuilderPage() {
             </div>
 
             <RelatedTools toolKey="http_request_builder" />
-        </div>
+        </ToolPageContainer>
     )
 }

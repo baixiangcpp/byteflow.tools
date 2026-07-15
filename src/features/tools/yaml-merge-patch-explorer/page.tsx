@@ -17,6 +17,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { runYamlExplorer, type YamlExplorerMode, type YamlExplorerResult } from "@/features/tools/yaml-merge-patch-explorer/utils"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 export function YamlMergePatchExplorerPage() {
     const { t } = useLang()
@@ -91,7 +92,7 @@ replicas: 2`)
     }, [mode])
 
     return (
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8">
+        <WideToolPageContainer className="flex flex-col gap-6 py-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
@@ -206,6 +207,6 @@ replicas: 2`)
                     </div>
                 </div>
             )}
-        </div>
+        </WideToolPageContainer>
     )
 }

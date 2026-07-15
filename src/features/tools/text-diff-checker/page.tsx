@@ -8,6 +8,7 @@ import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/u
 import { MonacoDiffEditor } from "@/features/tool-shell/monaco-editors"
 import { OutputWrapModeControl, type OutputWrapMode } from "@/features/tool-shell/text-output-panel"
 import { buildInputTooLargeMessage, isOverUtf8Budget, TOOL_RUNTIME_BUDGETS } from "@/core/performance/tool-runtime-budgets"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 const ACTION_BUTTON_CLASS =
     "inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-border bg-background px-3 py-2 text-sm font-medium shadow-xs transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 sm:h-9 sm:min-h-9 sm:py-0 dark:bg-input/30 dark:border-input dark:hover:bg-input/50"
@@ -39,7 +40,7 @@ export function TextDiffCheckerPage() {
     }
 
     return (
-        <div className="flex flex-col h-full max-w-7xl mx-auto w-full">
+        <WideToolPageContainer className="flex flex-col h-full">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 mb-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -111,6 +112,6 @@ export function TextDiffCheckerPage() {
                     />
                 </div>
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

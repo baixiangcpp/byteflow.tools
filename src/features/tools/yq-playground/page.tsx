@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { runYqQuery, type YqInputFormat, type YqOutputFormat, type YqQueryResult } from "@/features/tools/yq-playground/utils"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 export function YqPlaygroundPage() {
     const { t } = useLang()
@@ -64,7 +65,7 @@ workers:
     }, [])
 
     return (
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8">
+        <WideToolPageContainer className="flex flex-col gap-6 py-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">{text("title")}</h1>
@@ -156,6 +157,6 @@ workers:
                     </div>
                 </div>
             )}
-        </div>
+        </WideToolPageContainer>
     )
 }

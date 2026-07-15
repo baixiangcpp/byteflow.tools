@@ -4,6 +4,7 @@ import { Github, Globe, Code2, Zap, Shield, ArrowUpRight } from "lucide-react"
 import { getGrowthIndex } from "@/core/growth/growth-pages"
 import { isValidLocale } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
+import { StaticPageContainer } from "@/components/layout/page-container"
 
 export default async function AboutPage({ params }: { params: Promise<{ lang: string }> }) {
     const { lang } = await params
@@ -25,7 +26,7 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
     ]
 
     return (
-        <div className="mx-auto w-full max-w-5xl space-y-8">
+        <StaticPageContainer className="space-y-8">
             <section className="rounded-2xl border border-border/70 bg-card/55 p-6 backdrop-blur-sm sm:p-7">
                 <h1 className="text-3xl font-semibold tracking-tight">{p.about_title}</h1>
                 <p className="mt-3 text-base leading-relaxed text-muted-foreground">{p.about_intro}</p>
@@ -109,6 +110,6 @@ export default async function AboutPage({ params }: { params: Promise<{ lang: st
                     {p.about_explore}
                 </Link>
             </section>
-        </div>
+        </StaticPageContainer>
     )
 }

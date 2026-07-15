@@ -4,7 +4,8 @@ import { loadToolSlugs as loadToolSlugsFromManifests } from "../lib/tool-manifes
 
 const DEFAULT_SCAN_DIRS = [".next/server/app", "out"]
 const SUPPORTED_LOCALES = new Set(["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr"])
-const REQUIRED_TEMPLATE_LAYOUT_CLASS_TOKENS = ["mx-auto", "w-full", "max-w-7xl"]
+const REQUIRED_TEMPLATE_LAYOUT_CLASS_TOKENS = ["w-full"]
+const FORBIDDEN_TEMPLATE_LAYOUT_CLASS_PREFIXES = ["max-w-"]
 const REQUIRED_TEMPLATE_LAYOUT_ATTRIBUTES = ["data-tool-content-template-width-sync"]
 
 const REQUIRED_SECTION_TITLES_BY_LOCALE = {
@@ -214,6 +215,11 @@ function main() {
         for (const token of REQUIRED_TEMPLATE_LAYOUT_CLASS_TOKENS) {
             if (!classList.includes(token)) {
                 failures.push(`${slug}: template layout missing class token "${token}"`)
+            }
+        }
+        for (const prefix of FORBIDDEN_TEMPLATE_LAYOUT_CLASS_PREFIXES) {
+            if (classList.some((token) => token.startsWith(prefix))) {
+                failures.push(`${slug}: template layout must inherit route width instead of using "${prefix}*"`)
             }
         }
 

@@ -28,7 +28,7 @@ export function LangNotFoundContent() {
         requireTranslationValue(t.tools?.[toolKey]?.title, `tools.${toolKey}.title`)
 
     return (
-        <section className="mx-auto flex w-full max-w-3xl flex-col gap-6 rounded-2xl border border-border/60 bg-card/45 px-6 py-12 md:px-10">
+        <section data-route-width-exception="focused-status" className="mx-auto flex w-full max-w-3xl flex-col gap-6 rounded-2xl border border-border/60 bg-card/45 px-6 py-12 md:px-10">
             <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-amber-400/35 bg-amber-400/10 text-amber-500">
                 <AlertTriangle className="h-6 w-6" />
             </div>

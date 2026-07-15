@@ -9,6 +9,7 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { convertStrokeToFill } from "@/features/tools/svg-stroke-to-fill-converter/utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE_INPUT = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" width="256" height="256">
   <rect x="26" y="26" width="204" height="204" rx="28" stroke="#0f172a" stroke-width="12" fill="none" />
@@ -83,7 +84,7 @@ export function SvgStrokeToFillConverterPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -138,6 +139,6 @@ export function SvgStrokeToFillConverterPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }

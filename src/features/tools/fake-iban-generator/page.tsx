@@ -16,6 +16,7 @@ import {
     type IbanCountry,
     validateIban,
 } from "@/features/tools/fake-iban-generator/utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 function downloadTextFile(content: string, filename: string) {
     const blob = new Blob([content], { type: "text/plain;charset=utf-8" })
@@ -148,7 +149,7 @@ export function FakeIbanGeneratorPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -253,6 +254,6 @@ export function FakeIbanGeneratorPage() {
             </div>
 
             <RelatedTools toolKey="fake_iban_generator" />
-        </div>
+        </ToolPageContainer>
     )
 }

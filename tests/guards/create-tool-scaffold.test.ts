@@ -47,6 +47,12 @@ describe("create-tool scaffold boundaries", () => {
         expect(CREATE_TOOL_SOURCE).toContain('inputBehavior: "empty-first"')
     })
 
+    it("uses the standard tool page container contract", () => {
+        expect(CREATE_TOOL_SOURCE).toContain('import { ToolPageContainer } from "@/components/layout/page-container"')
+        expect(CREATE_TOOL_SOURCE).toContain('<ToolPageContainer className="flex h-full flex-col gap-6">')
+        expect(CREATE_TOOL_SOURCE).not.toContain('max-w-6xl flex-col gap-6')
+    })
+
     it("creates manifest metadata instead of appending legacy category metadata", () => {
         expect(CREATE_TOOL_SOURCE).toContain('import type { ToolMeta } from "@/core/registry/types"')
         expect(CREATE_TOOL_SOURCE).toContain("satisfies ToolMeta")

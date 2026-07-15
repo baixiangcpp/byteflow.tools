@@ -18,6 +18,7 @@ import {
     normalizeJwtAlgorithm,
     type JwtSignatureVerificationResult,
 } from "./logic"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const ICON_BUTTON_CLASS =
     "inline-flex h-7 w-7 items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 dark:hover:bg-accent/50"
@@ -144,7 +145,7 @@ export function JwtVerifierPage() {
     ]
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-5xl mx-auto w-full">
+        <ToolPageContainer className="flex flex-col h-full space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -265,6 +266,6 @@ export function JwtVerifierPage() {
             )}
 
             <RelatedTools toolKey="jwt_verifier" />
-        </div>
+        </ToolPageContainer>
     )
 }

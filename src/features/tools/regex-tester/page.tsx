@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { runRegexTestTask } from "./regex-test-task"
 import { type RegexMatchSummary } from "./utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE_PATTERN = "[A-Z][a-z]+"
 const SAMPLE_FLAGS = "g"
@@ -125,7 +126,7 @@ export function RegexTesterPage() {
     ]
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-5xl mx-auto">
+        <ToolPageContainer className="flex flex-col h-full space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -260,6 +261,6 @@ export function RegexTesterPage() {
                 </div>
 
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }

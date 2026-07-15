@@ -141,7 +141,7 @@ export function ToolContentTemplateSection({
         <>
             {faqSchema ? <JsonLdScript data-faq-schema="tool" jsonLd={faqSchema} /> : null}
             <ToolContentTemplateSurface source={source}>
-                <div className="mx-auto max-w-4xl space-y-8">
+                <div data-route-width-exception="readable-content" className="mx-auto max-w-4xl space-y-8">
                     <header className="space-y-3">
                         <h2 className="text-xl font-semibold tracking-tight text-foreground">{model.copy.guideTitle(model.title)}</h2>
                         <p className="text-sm leading-relaxed text-muted-foreground">{model.content.intro}</p>

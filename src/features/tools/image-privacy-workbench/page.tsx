@@ -11,6 +11,7 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { createLocalObjectUrl, downloadObjectUrl, revokeLocalObjectUrl, stripImageMetadata } from "./browser-actions"
 import { formatMetadataScan } from "./logic"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 export function ImagePrivacyWorkbenchPage() {
     const { t } = useLang()
@@ -77,7 +78,7 @@ export function ImagePrivacyWorkbenchPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col gap-6">
+        <ToolPageContainer className="flex h-full flex-col gap-6">
             <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -137,6 +138,6 @@ export function ImagePrivacyWorkbenchPage() {
             </div>
 
             <RelatedTools toolKey="image_privacy_workbench" />
-        </div>
+        </ToolPageContainer>
     )
 }

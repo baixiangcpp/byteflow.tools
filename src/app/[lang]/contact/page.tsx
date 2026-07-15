@@ -6,6 +6,7 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Github, Mail, MessageSquare, ExternalLink, ShieldCheck, Map, ThumbsUp, HeartHandshake } from "lucide-react"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { StaticPageContainer } from "@/components/layout/page-container"
 
 const EMAIL_ADDRESS = "contact@byteflow.tools"
 const GITHUB_REPOSITORY_URL = "https://github.com/baixiangcpp/byteflow.tools"
@@ -39,7 +40,7 @@ export default function ContactPage() {
     }
 
     return (
-        <div className="mx-auto w-full max-w-5xl space-y-8">
+        <StaticPageContainer className="space-y-8">
             <section className="rounded-2xl border border-border/70 bg-card/55 p-6 backdrop-blur-sm sm:p-7">
                 <h1 className="text-3xl font-semibold tracking-tight">{p.contact_title}</h1>
                 <p className="mt-3 text-base leading-relaxed text-muted-foreground">{p.contact_intro}</p>
@@ -106,6 +107,6 @@ export default function ContactPage() {
                     </Link>
                 </div>
             </section>
-        </div>
+        </StaticPageContainer>
     )
 }

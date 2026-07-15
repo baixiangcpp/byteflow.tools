@@ -8,6 +8,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { Input } from "@/components/ui/input"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { parseTimestampHeuristic } from "@/features/tools/unix-timestamp/utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 export function UnixTimestampPage() {
     const { t, lang } = useLang()
@@ -102,7 +103,7 @@ export function UnixTimestampPage() {
     }
 
     return (
-        <div className="flex flex-col h-full space-y-4 max-w-4xl mx-auto">
+        <ToolPageContainer className="flex flex-col h-full space-y-4">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -174,7 +175,7 @@ export function UnixTimestampPage() {
                 </div>
 
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }
 

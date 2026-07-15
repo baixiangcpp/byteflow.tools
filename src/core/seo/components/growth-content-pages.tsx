@@ -17,6 +17,7 @@ import { getToolByKey } from "@/core/registry"
 import { ArticleJsonLd, CollectionPageJsonLd, HowToJsonLd } from "@/core/seo/components/page-json-ld"
 import { JsonLdScript } from "@/core/seo/components/json-ld-script"
 import { SITE_URL, buildCanonicalUrl } from "@/core/seo/urls"
+import { CatalogPageContainer, StaticPageContainer } from "@/components/layout/page-container"
 
 function requireGrowthPage(slug: GrowthPageSlug) {
     const page = getGrowthPage(slug)
@@ -156,7 +157,7 @@ export function GrowthContentPage({ locale, slug }: { locale: Locale; slug: Grow
     const index = requireGrowthIndex(indexSlugForPage(page))
 
     return (
-        <article className="mx-auto w-full max-w-6xl space-y-6">
+        <StaticPageContainer as="article" className="space-y-6">
             <PageStructuredData locale={locale} page={page} copy={copy} />
 
             <header className="rounded-lg border border-border/70 bg-card/55 p-6 backdrop-blur-sm sm:p-7">
@@ -309,7 +310,7 @@ export function GrowthContentPage({ locale, slug }: { locale: Locale; slug: Grow
                     ))}
                 </div>
             </section>
-        </article>
+        </StaticPageContainer>
     )
 }
 
@@ -336,7 +337,7 @@ export function GrowthIndexPage({ locale, slug }: { locale: Locale; slug: Growth
         }))
 
     return (
-        <div className="mx-auto w-full max-w-6xl space-y-6">
+        <CatalogPageContainer className="space-y-6">
             <CollectionPageJsonLd
                 lang={locale}
                 slug={slug}
@@ -443,7 +444,7 @@ export function GrowthIndexPage({ locale, slug }: { locale: Locale; slug: Growth
                     {getTranslation(locale).pages.trust_center_title}
                 </Link>
             </section>
-        </div>
+        </CatalogPageContainer>
     )
 }
 

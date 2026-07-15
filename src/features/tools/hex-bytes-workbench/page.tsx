@@ -10,6 +10,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { inspectBytes, type ByteInputMode, type ByteWorkbenchResult } from "@/features/tools/hex-bytes-workbench/utils"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 const MODES: ByteInputMode[] = ["text", "hex", "base64"]
 
@@ -50,7 +51,7 @@ export function HexBytesWorkbenchPage() {
     }, [])
 
     return (
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8">
+        <WideToolPageContainer className="flex flex-col gap-6 py-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">{text("title")}</h1>
@@ -149,6 +150,6 @@ export function HexBytesWorkbenchPage() {
                     </div>
                 </div>
             ) : null}
-        </div>
+        </WideToolPageContainer>
     )
 }

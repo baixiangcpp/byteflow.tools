@@ -26,6 +26,7 @@ import {
     type LoremUnits,
 } from "@/features/tools/lorem-ipsum/utils"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 export function LoremIpsumGeneratorPage() {
     const { t } = useLang()
@@ -137,7 +138,7 @@ export function LoremIpsumGeneratorPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-5xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -269,6 +270,6 @@ export function LoremIpsumGeneratorPage() {
                     ) : null}
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }

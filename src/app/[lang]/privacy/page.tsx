@@ -5,6 +5,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { TOOL_REGISTRY } from "@/core/registry"
 import { getExternalRequestToolDisclosures } from "@/core/registry/privacy"
 import { LocalDataControls } from "@/features/privacy/local-data-controls"
+import { StaticPageContainer } from "@/components/layout/page-container"
 
 export default function PrivacyPage() {
     const { t, lang } = useLang()
@@ -28,7 +29,7 @@ export default function PrivacyPage() {
         .sort((a, b) => a.title.localeCompare(b.title, lang))
 
     return (
-        <div className="mx-auto w-full max-w-5xl space-y-6">
+        <StaticPageContainer className="space-y-6">
             <section className="rounded-2xl border border-border/70 bg-card/55 p-6 backdrop-blur-sm sm:p-7">
                 <h1 className="text-3xl font-semibold tracking-tight">{p.privacy_title}</h1>
                 <p className="mt-2 text-sm text-muted-foreground">{p.privacy_last_updated}</p>
@@ -91,6 +92,6 @@ export default function PrivacyPage() {
                 </article>
                 <LocalDataControls />
             </section>
-        </div>
+        </StaticPageContainer>
     )
 }

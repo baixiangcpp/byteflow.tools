@@ -25,6 +25,7 @@ import {
     type IDCaseFormat,
     type IDType,
 } from "./logic"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 export function IdGeneratorPage() {
     const { t } = useLang()
@@ -102,7 +103,7 @@ export function IdGeneratorPage() {
     const nanoidAlphabetError = validation.errors.nanoidAlphabet ? toolT[validation.errors.nanoidAlphabet] : null
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-5xl mx-auto">
+        <ToolPageContainer className="flex flex-col h-full space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -264,6 +265,6 @@ export function IdGeneratorPage() {
             </div>
 
             <RelatedTools toolKey="id_generator" />
-        </div>
+        </ToolPageContainer>
     )
 }

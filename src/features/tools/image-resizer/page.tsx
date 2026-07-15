@@ -20,6 +20,7 @@ import {
     type ResizeFitMode,
     type ResizeFormat,
 } from "@/features/tools/image-resizer/utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const DEFAULT_STATE = {
     width: 1280,
@@ -301,7 +302,7 @@ export function ImageResizerPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -511,6 +512,6 @@ export function ImageResizerPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }

@@ -32,7 +32,7 @@ import {
 } from "./browser-actions"
 import { BUTTON_BASE_CLASS, BUTTON_SIZE_CLASS, BUTTON_VARIANT_CLASS, DEFAULT_QR_TEXT, PRESETS, SAMPLE_QR_TEXT } from "./constants"
 import type { ErrorCorrectionLevel, QrPreset } from "./types"
-
+import { ToolPageContainer } from "@/components/layout/page-container"
 const LOGO_FILE_POLICY = FILE_INPUT_POLICIES["image-logo"]
 const QR_DECODE_FILE_POLICY = FILE_INPUT_POLICIES["qr-decode-image"]
 
@@ -399,7 +399,7 @@ export function QrCodeGeneratorPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -687,6 +687,6 @@ export function QrCodeGeneratorPage() {
             )}
 
             <RelatedTools toolKey="qr_code_generator" />
-        </div>
+        </ToolPageContainer>
     )
 }

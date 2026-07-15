@@ -9,6 +9,7 @@ import { RelatedTools } from "@/core/seo/components/related-tools"
 import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { OutputWrapModeControl, type OutputWrapMode } from "@/features/tool-shell/text-output-panel"
 import { cn } from "@/core/utils/utils"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 interface HeaderEntry { key: string; value: string }
 
@@ -57,7 +58,7 @@ export function HeaderDiffPage() {
     const typeIcons = { added: <Plus className="h-3.5 w-3.5 text-emerald-500" />, removed: <Minus className="h-3.5 w-3.5 text-red-500" />, modified: <ArrowLeftRight className="h-3.5 w-3.5 text-amber-500" />, unchanged: <Equal className="h-3.5 w-3.5 text-muted-foreground" /> }
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-[1400px] mx-auto w-full">
+        <WideToolPageContainer className="flex flex-col h-full space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -111,6 +112,6 @@ export function HeaderDiffPage() {
                 </>
             )}
             <RelatedTools toolKey="header_diff" />
-        </div>
+        </WideToolPageContainer>
     )
 }

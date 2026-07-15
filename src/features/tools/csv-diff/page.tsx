@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { buildInputTooLargeMessage, countNonEmptyLines, isOverUtf8Budget, TOOL_RUNTIME_BUDGETS } from "@/core/performance/tool-runtime-budgets"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 function parseCsv(text: string): string[][] {
     const rows: string[][] = []
@@ -88,7 +89,7 @@ export function CsvDiffPage() {
     const typeIcons = { added: <Plus className="h-3.5 w-3.5 text-emerald-500" />, removed: <Minus className="h-3.5 w-3.5 text-red-500" />, modified: <FileSpreadsheet className="h-3.5 w-3.5 text-amber-500" />, unchanged: <Equal className="h-3.5 w-3.5 text-muted-foreground" /> }
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-[1400px] mx-auto w-full">
+        <WideToolPageContainer className="flex flex-col h-full space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -157,6 +158,6 @@ export function CsvDiffPage() {
                 </div>
             )}
             <RelatedTools toolKey="csv_diff" />
-        </div>
+        </WideToolPageContainer>
     )
 }

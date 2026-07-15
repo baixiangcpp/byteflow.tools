@@ -18,6 +18,7 @@ import { BINARY_SAMPLE_BASE64, TEXT_SAMPLE_BASE64, TEXT_SAMPLE_INPUT, URL_SAFE_S
 import type { Mode, Operation } from "./types"
 import { useBase64FileTask } from "./use-base64-file-task"
 import { useBase64TextTask } from "./use-base64-text-task"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 export function Base64Page() {
     const { t, lang } = useLang()
@@ -341,7 +342,7 @@ export function Base64Page() {
     ]
 
     return (
-        <div className="flex h-full w-full max-w-[1400px] flex-col space-y-6">
+        <WideToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -462,6 +463,6 @@ export function Base64Page() {
                     ) : null}
                 />
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

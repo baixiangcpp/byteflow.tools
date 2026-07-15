@@ -10,6 +10,7 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
 import { cn } from "@/core/utils/utils"
 import { buildInputTooLargeMessage, isOverUtf8Budget, TOOL_RUNTIME_BUDGETS } from "@/core/performance/tool-runtime-budgets"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 interface OpenAPIInfo {
     title?: string
@@ -179,7 +180,7 @@ export function OpenApiViewerPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-[1400px] flex-col space-y-8">
+        <WideToolPageContainer className="flex h-full flex-col space-y-8">
             <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between gap-2 flex-wrap">
                     <div className="flex items-center gap-3">
@@ -344,6 +345,6 @@ export function OpenApiViewerPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

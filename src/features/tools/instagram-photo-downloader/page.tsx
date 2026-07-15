@@ -18,6 +18,7 @@ import {
     getInstagramMediaFilename,
     parseInstagramMediaInput,
 } from "@/core/utils/instagram-tool-utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE_URL = "https://www.instagram.com/p/C5M0YfJt5gX/"
 const EXTERNAL_HOSTS = ["instagram.com"] as const
@@ -309,7 +310,7 @@ export function InstagramPhotoDownloaderPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -442,6 +443,6 @@ export function InstagramPhotoDownloaderPage() {
                     />
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }

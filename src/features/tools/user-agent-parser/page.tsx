@@ -8,6 +8,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { Textarea } from "@/components/ui/textarea"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { UAParser, IResult } from "ua-parser-js"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 export function UserAgentParserPage() {
     const { t } = useLang()
@@ -60,7 +61,7 @@ export function UserAgentParserPage() {
     }
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-5xl mx-auto">
+        <ToolPageContainer className="flex flex-col h-full space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -159,7 +160,7 @@ export function UserAgentParserPage() {
                 </div>
 
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }
 

@@ -18,6 +18,7 @@ import {
 } from "@/core/utils/invisible-chars-utils"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 export function InvisibleCharsDetectorPage() {
     const { t } = useLang()
@@ -87,7 +88,7 @@ export function InvisibleCharsDetectorPage() {
     }
 
     return (
-        <div className="container mx-auto max-w-6xl py-8 px-4 space-y-6">
+        <ToolPageContainer className="py-8 space-y-6">
             <div className="space-y-2">
                 <h1 className="text-3xl font-bold">{text("title")}</h1>
                 <p className="text-muted-foreground">{text("description")}</p>
@@ -216,6 +217,6 @@ export function InvisibleCharsDetectorPage() {
                     <p className="font-medium">{text("no_suspicious_found")}</p>
                 </div>
             )}
-        </div>
+        </ToolPageContainer>
     )
 }

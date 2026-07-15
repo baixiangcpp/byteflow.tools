@@ -16,6 +16,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 const INPUT_STORAGE_KEY = "byteflow:sql-formatter:input";
 const DIALECT_STORAGE_KEY = "byteflow:sql-formatter:dialect";
@@ -138,7 +139,7 @@ export function SqlFormatterPage() {
     }
 
     return (
-        <div className="flex flex-col h-full space-y-8 max-w-[1400px] mx-auto w-full">
+        <WideToolPageContainer className="flex flex-col h-full space-y-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -246,6 +247,6 @@ export function SqlFormatterPage() {
                 </div>
 
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

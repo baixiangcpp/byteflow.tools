@@ -8,6 +8,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { copyTextWithToolFeedback } from "@/features/tool-shell/tool-action-feedback"
 import { TextOutputPanel } from "@/features/tool-shell/text-output-panel"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 interface QueryParam {
     id: string
@@ -193,7 +194,7 @@ export function UrlParserPage() {
     )
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-5xl mx-auto w-full">
+        <ToolPageContainer className="flex flex-col h-full space-y-6">
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
@@ -315,6 +316,6 @@ export function UrlParserPage() {
             />
 
             <RelatedTools toolKey="url_parser" />
-        </div>
+        </ToolPageContainer>
     )
 }

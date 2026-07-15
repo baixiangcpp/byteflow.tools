@@ -9,6 +9,7 @@ import {
 import { requireTranslationValue } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { ArticleJsonLd } from "./page-json-ld"
+import { StaticPageContainer } from "@/components/layout/page-container"
 
 function renderSection(section: LocalizedArticleSection) {
     return (
@@ -51,7 +52,7 @@ export function LocalizedArticlePage({
     const siblingTitle = article.sibling ? getLocalizedArticleTitle(article.sibling, locale) : null
 
     return (
-        <article className="mx-auto w-full max-w-4xl space-y-8">
+        <StaticPageContainer as="article" className="space-y-8">
             <ArticleJsonLd
                 lang={locale}
                 slug={slug}
@@ -122,6 +123,6 @@ export function LocalizedArticlePage({
                     ) : null}
                 </footer>
             ) : null}
-        </article>
+        </StaticPageContainer>
     )
 }

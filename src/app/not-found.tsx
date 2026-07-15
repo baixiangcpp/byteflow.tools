@@ -4,6 +4,7 @@ import { AlertTriangle, Home, Layers, Search, ShieldAlert, Wrench } from "lucide
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
 import { MENU_GROUP_DEFS } from "@/core/registry/menu-groups"
 import { DEFAULT_OG_IMAGE } from "@/core/seo/seo"
+import { RouteViewportContainer, StaticPageContainer } from "@/components/layout/page-container"
 
 const TITLE = "Page not found | byteflow.tools"
 const DESCRIPTION = "The page does not exist. Choose a language and continue from the all-tools directory."
@@ -36,8 +37,9 @@ export const metadata: Metadata = {
 
 export default function RootNotFound() {
     return (
-        <main className="mx-auto flex min-h-[60vh] w-full max-w-3xl items-center px-6 py-12">
-            <section className="w-full rounded-2xl border border-border/60 bg-card/45 px-6 py-12 md:px-10">
+        <RouteViewportContainer as="main" className="flex min-h-[60vh] items-center py-12">
+            <StaticPageContainer>
+                <section className="w-full rounded-2xl border border-border/60 bg-card/45 px-6 py-12 md:px-10">
                 <div className="inline-flex h-12 w-12 items-center justify-center rounded-xl border border-amber-400/35 bg-amber-400/10 text-amber-500">
                     <AlertTriangle className="h-6 w-6" />
                 </div>
@@ -90,7 +92,8 @@ export default function RootNotFound() {
                     </Link>
                     .
                 </div>
-            </section>
-        </main>
+                </section>
+            </StaticPageContainer>
+        </RouteViewportContainer>
     )
 }

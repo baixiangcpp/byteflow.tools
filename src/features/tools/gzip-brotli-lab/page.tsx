@@ -25,6 +25,7 @@ import {
     type CompressionResult,
 } from "@/features/tools/gzip-brotli-lab/utils"
 import { runCompressionTask } from "@/features/tools/gzip-brotli-lab/compression-task"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 export function GzipBrotliLabPage() {
     const { t } = useLang()
@@ -109,7 +110,7 @@ export function GzipBrotliLabPage() {
     }, [text])
 
     return (
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8">
+        <WideToolPageContainer className="flex flex-col gap-6 py-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
@@ -225,6 +226,6 @@ export function GzipBrotliLabPage() {
                     </div>
                 </div>
             )}
-        </div>
+        </WideToolPageContainer>
     )
 }

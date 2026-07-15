@@ -12,6 +12,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { executeJqFilter, formatJqParsedOutput, validateJSON, formatJSON, type JqOutputMode } from "@/features/tools/jq-playground/browser-actions"
 import { JQ_EXAMPLES, type JqExample } from "@/features/tools/jq-playground/samples"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 const AUTO_RUN_KEY = "jq-playground-auto-run"
 const MAX_HISTORY_SIZE = 10
@@ -169,7 +170,7 @@ export function JqPlaygroundPage() {
     }, [handleRun])
 
     return (
-        <div className="container mx-auto max-w-7xl py-8 px-4 space-y-6">
+        <WideToolPageContainer className="py-8 space-y-6">
             <div className="space-y-2">
                 <h1 className="text-3xl font-bold">{text("title")}</h1>
                 <p className="text-muted-foreground">{text("description")}</p>
@@ -388,6 +389,6 @@ export function JqPlaygroundPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

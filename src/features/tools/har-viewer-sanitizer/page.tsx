@@ -12,6 +12,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { DEFAULT_HAR_SANITIZE_OPTIONS, parseHarSummary, sanitizeHar, type HarParseResult, type HarSanitizeOptions, type HarSanitizeResult } from "@/features/tools/har-viewer-sanitizer/utils"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 type OptionKey = keyof HarSanitizeOptions
 
@@ -92,7 +93,7 @@ export function HarViewerSanitizerPage() {
     }, [])
 
     return (
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8">
+        <WideToolPageContainer className="flex flex-col gap-6 py-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight">{text("title")}</h1>
@@ -180,6 +181,6 @@ export function HarViewerSanitizerPage() {
                     </div>
                 </div>
             )}
-        </div>
+        </WideToolPageContainer>
     )
 }

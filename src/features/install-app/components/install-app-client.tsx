@@ -11,6 +11,7 @@ import type { Locale } from "@/core/i18n/i18n"
 import { JsonLdScript } from "@/core/seo/components/json-ld-script"
 import { clearByteflowPwaCaches } from "@/core/storage/pwa-cache-controls"
 import type { GuidePlatform, InstallPageCopy } from "@/core/utils/install-app-copy"
+import { StaticPageContainer } from "@/components/layout/page-container"
 
 type BeforeInstallPromptEvent = Event & {
     prompt: () => Promise<void>
@@ -153,7 +154,7 @@ export function InstallAppClient({
             : ""
 
     return (
-        <div className="mx-auto w-full max-w-5xl space-y-8">
+        <StaticPageContainer className="space-y-8">
             <JsonLdScript jsonLd={faqJsonLd} />
 
             <section className="relative overflow-hidden rounded-3xl border border-border/70 bg-card/60 p-6 sm:p-8">
@@ -333,6 +334,6 @@ export function InstallAppClient({
                     {copy.bottomTrust}
                 </p>
             </section>
-        </div>
+        </StaticPageContainer>
     )
 }

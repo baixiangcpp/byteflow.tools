@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildGradientCss, buildGradientValue, type GradientType } from "@/core/utils/css-generator-utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const DEFAULT_STATE = {
     type: "linear" as GradientType,
@@ -101,7 +102,7 @@ export function CssGradientGeneratorPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -186,7 +187,7 @@ export function CssGradientGeneratorPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }
 

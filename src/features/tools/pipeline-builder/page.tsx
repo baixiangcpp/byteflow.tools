@@ -41,6 +41,7 @@ import { PipelineStepList } from "./pipeline-step-list"
 import { PipelineTemplateList } from "./pipeline-template-list"
 import { PipelineUsageGuide } from "./pipeline-usage-guide"
 import type { OptionValue } from "./types"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 const ONBOARDING_DISMISSED_KEY = "byteflow:pipeline-builder:onboarding-dismissed"
 const TEMPLATE_PARAM = "template"
@@ -363,7 +364,7 @@ export function PipelineBuilderPage() {
     ]
 
     return (
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8">
+        <WideToolPageContainer className="flex flex-col gap-6 py-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
@@ -547,6 +548,6 @@ export function PipelineBuilderPage() {
                     validation={validation}
                 />
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

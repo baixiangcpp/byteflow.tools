@@ -30,7 +30,7 @@ import {
 import { runCsvJsonTask } from "./csv-json-task"
 import { InlineButton } from "./components"
 import type { CsvJsonDiagnostic, Direction } from "./types"
-
+import { WideToolPageContainer } from "@/components/layout/page-container"
 async function loadToast() {
     const { toast } = await import("sonner")
     return toast
@@ -256,7 +256,7 @@ export function CsvJsonConverterPage() {
     const outputFormatLabel = direction === "csv-to-json" ? "JSON" : "CSV"
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-[1400px] mx-auto w-full">
+        <WideToolPageContainer className="flex flex-col h-full space-y-6">
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
@@ -473,6 +473,6 @@ export function CsvJsonConverterPage() {
             </div>
 
             <RelatedTools toolKey="csv_json_converter" />
-        </div>
+        </WideToolPageContainer>
     )
 }

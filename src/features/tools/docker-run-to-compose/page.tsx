@@ -15,6 +15,7 @@ import {
 } from "@/features/tools/docker-run-to-compose/utils"
 import { Label } from "@/components/ui/label"
 import { Alert, AlertDescription } from "@/components/ui/alert"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 export function DockerRunToComposePage() {
     const { t } = useLang()
@@ -68,7 +69,7 @@ export function DockerRunToComposePage() {
     }, [])
 
     return (
-        <div className="container mx-auto max-w-6xl py-8 px-4 space-y-6">
+        <ToolPageContainer className="py-8 space-y-6">
             <div className="space-y-2">
                 <h1 className="text-3xl font-bold">{text("title")}</h1>
                 <p className="text-muted-foreground">{text("description")}</p>
@@ -128,6 +129,6 @@ export function DockerRunToComposePage() {
                     <Textarea value={output} readOnly className="min-h-[300px] font-mono text-sm bg-muted" />
                 </div>
             )}
-        </div>
+        </ToolPageContainer>
     )
 }

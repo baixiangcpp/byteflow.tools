@@ -102,7 +102,7 @@ export function TotpGeneratorPage() {
     }
 
     return (
-        <div className="flex h-full w-full max-w-3xl flex-col space-y-6 mx-auto">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div>
                 <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
                     <KeyRound className="h-6 w-6 text-primary" />
@@ -278,6 +278,6 @@ export function TotpGeneratorPage() {
             </div>
 
             <RelatedTools toolKey="totp_generator" />
-        </div>
+        </ToolPageContainer>
     )
 }

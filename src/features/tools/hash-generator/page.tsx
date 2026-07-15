@@ -29,6 +29,7 @@ import type { HashTaskInput } from "./hash-task-logic"
 import type { HashMode } from "./types"
 import { useHashFileInput } from "./use-hash-file-input"
 import { useHashTask } from "./use-hash-task"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 export function HashGeneratorPage() {
     const { t, lang } = useLang()
@@ -137,7 +138,7 @@ export function HashGeneratorPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -369,7 +370,7 @@ export function HashGeneratorPage() {
                     ) : null}
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }
 

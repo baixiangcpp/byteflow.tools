@@ -22,6 +22,7 @@ import {
     type CurlDiagnosticCode,
     type OutputLang,
 } from "./logic"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE_CURL = `curl -X POST 'https://api.example.com/users' \\
   -H 'Content-Type: application/json' \\
@@ -85,7 +86,7 @@ export function CurlToCodePage() {
     ]
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-[1400px] mx-auto w-full">
+        <WideToolPageContainer className="flex flex-col h-full space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -164,6 +165,6 @@ export function CurlToCodePage() {
             </div>
 
             <RelatedTools toolKey="curl_to_code" />
-        </div>
+        </WideToolPageContainer>
     )
 }

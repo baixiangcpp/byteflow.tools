@@ -30,7 +30,7 @@ export function Navbar({
             className="sticky top-0 z-50 px-3 pt-3 md:px-6 md:pt-4"
             style={{ paddingTop: "max(env(safe-area-inset-top), 1rem)" }}
         >
-            <div className="mx-auto flex h-16 w-full max-w-screen-2xl items-center gap-2 rounded-2xl border border-border/70 bg-background/80 px-3 shadow-xl shadow-black/10 backdrop-blur-xl supports-[backdrop-filter]:bg-background/72 dark:shadow-black/35 md:gap-3 md:px-4">
+            <div data-route-width-exception="global-shell" className="mx-auto flex h-16 w-full max-w-screen-2xl items-center gap-2 rounded-2xl border border-border/70 bg-background/80 px-3 shadow-xl shadow-black/10 backdrop-blur-xl supports-[backdrop-filter]:bg-background/72 dark:shadow-black/35 md:gap-3 md:px-4">
                 <Link
                     href={homeHref}
                     className="mr-1 flex shrink-0 items-center gap-2.5 rounded-lg px-1.5 py-1 transition-colors hover:bg-muted/65 max-[420px]:mr-0 max-[420px]:gap-2"

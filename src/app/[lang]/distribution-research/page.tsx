@@ -4,6 +4,7 @@ import { Boxes, MessageSquarePlus, MonitorDown, ShieldCheck, ThumbsUp } from "lu
 import type { Locale } from "@/core/i18n/i18n"
 import { isValidLocale } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
+import { StaticPageContainer } from "@/components/layout/page-container"
 
 const MVP_TOOL_KEYS = [
     "json_formatter",
@@ -170,7 +171,7 @@ export default async function DistributionResearchPage({ params }: { params: Pro
     const mvpTools = MVP_TOOL_KEYS.map((key) => t.tools[key].title).join(", ")
 
     return (
-        <div className="mx-auto w-full max-w-5xl space-y-8">
+        <StaticPageContainer className="space-y-8">
             <section className="rounded-lg border border-border/70 bg-card/55 p-6 sm:p-7">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">{copy.badge}</p>
                 <h1 className="mt-3 text-3xl font-semibold tracking-tight">{copy.heading}</h1>
@@ -220,6 +221,6 @@ export default async function DistributionResearchPage({ params }: { params: Pro
                     </Link>
                 </div>
             </section>
-        </div>
+        </StaticPageContainer>
     )
 }

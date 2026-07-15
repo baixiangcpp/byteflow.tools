@@ -14,6 +14,7 @@ import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-war
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { decodeJwtParts, JwtDecodeError, type JwtClaimSemantic, type JwtDecodeErrorCode, type JwtSemanticSummary } from "./utils"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 function formatLocalTime(utc: string): string {
     return new Date(utc).toLocaleString()
@@ -146,7 +147,7 @@ export function JwtDecoderPage() {
     ]
 
     return (
-        <div className="flex flex-col h-full space-y-8 max-w-[1400px] mx-auto w-full">
+        <WideToolPageContainer className="flex flex-col h-full space-y-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -368,6 +369,6 @@ export function JwtDecoderPage() {
                     )}
                 </div>
             ) : null}
-        </div>
+        </WideToolPageContainer>
     )
 }

@@ -16,6 +16,7 @@ import {
     validateCronExpression,
     type CronFieldKey,
 } from "./logic"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const CRONSTRUE_LOCALE_BY_LANG: Record<Locale, string> = {
     en: "en",
@@ -106,7 +107,7 @@ export function CrontabGeneratorPage() {
     }
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-4xl mx-auto">
+        <ToolPageContainer className="flex flex-col h-full space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -191,7 +192,7 @@ export function CrontabGeneratorPage() {
                 </div>
 
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }
 

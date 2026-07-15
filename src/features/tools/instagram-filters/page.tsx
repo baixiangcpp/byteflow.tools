@@ -17,6 +17,7 @@ import {
     INSTAGRAM_FILTER_PRESETS,
     type InstagramFilterPreset,
 } from "@/core/utils/instagram-tool-utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const IMAGE_FILE_POLICY = FILE_INPUT_POLICIES["image-standard"]
 const DEFAULT_PRESET_ID = "clarendon"
@@ -177,7 +178,7 @@ export function InstagramFiltersPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -337,7 +338,7 @@ export function InstagramFiltersPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }
 

@@ -18,6 +18,7 @@ import { RelatedTools } from "@/core/seo/components/related-tools"
 import { CASE_STYLES, analyzeSlugQuality, convertCase, type CaseStyle } from "@/features/tools/slugify-case-converter/utils"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 type LocaleOption = "auto" | "en-US" | "tr" | "de"
 
@@ -110,7 +111,7 @@ export function SlugifyCaseConverterPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -281,6 +282,6 @@ export function SlugifyCaseConverterPage() {
             </div>
 
             <RelatedTools toolKey="slugify_case_converter" />
-        </div>
+        </ToolPageContainer>
     )
 }

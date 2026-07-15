@@ -26,6 +26,7 @@ import {
 import { MAX_CUSTOM_PRESETS, SEPARATOR_MAP, STORAGE_KEY } from "./constants"
 import { clamp, getSeparatorKey, parsePreset } from "./logic"
 import type { SeparatorKey } from "./types"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 export function PasswordGeneratorPage() {
     const { t } = useLang()
@@ -199,7 +200,7 @@ export function PasswordGeneratorPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -493,6 +494,6 @@ export function PasswordGeneratorPage() {
             </div>
 
             <RelatedTools toolKey="password_generator" />
-        </div>
+        </ToolPageContainer>
     )
 }

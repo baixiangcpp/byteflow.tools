@@ -13,6 +13,7 @@ import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { ToolEmptyState } from "@/features/tool-shell/tool-empty-state"
 import { normalizeBarcodeValue, type BarcodeFormat } from "@/features/tools/barcode-generator/utils"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE_BY_FORMAT: Record<BarcodeFormat, string> = {
     CODE128: "BYTEFLOW-2026",
@@ -209,7 +210,7 @@ export function BarcodeGeneratorPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -339,6 +340,6 @@ export function BarcodeGeneratorPage() {
             </div>
 
             <RelatedTools toolKey="barcode_generator" />
-        </div>
+        </ToolPageContainer>
     )
 }

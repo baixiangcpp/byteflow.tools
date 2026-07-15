@@ -9,6 +9,7 @@ import { getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 function queryJsonPath(obj: unknown, path: string): unknown[] {
     const results: unknown[] = []
@@ -112,7 +113,7 @@ export function JsonPathPlaygroundPage() {
     }, [errorLabel, json, path])
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-[1400px] flex-col space-y-8">
+        <WideToolPageContainer className="flex h-full flex-col space-y-8">
             <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-1">
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -192,6 +193,6 @@ export function JsonPathPlaygroundPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

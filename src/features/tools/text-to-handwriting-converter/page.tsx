@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 type PaperStyle = "plain" | "lined" | "grid"
 
@@ -228,7 +229,7 @@ export function TextToHandwritingConverterPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -350,6 +351,6 @@ export function TextToHandwritingConverterPage() {
             </div>
 
             <RelatedTools toolKey="text_to_handwriting_converter" />
-        </div>
+        </ToolPageContainer>
     )
 }

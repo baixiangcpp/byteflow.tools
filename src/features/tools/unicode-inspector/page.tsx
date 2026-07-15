@@ -11,6 +11,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { PHASE4_LIMITS } from "@/core/utils/phase4-inspector-limits"
 import { inspectUnicode, type UnicodeInspectionResult } from "@/features/tools/unicode-inspector/utils"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 export function UnicodeInspectorPage() {
     const { t } = useLang()
@@ -34,7 +35,7 @@ export function UnicodeInspectorPage() {
     }, [])
 
     return (
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8">
+        <WideToolPageContainer className="flex flex-col gap-6 py-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
@@ -105,6 +106,6 @@ export function UnicodeInspectorPage() {
                     </table>
                 </div>
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

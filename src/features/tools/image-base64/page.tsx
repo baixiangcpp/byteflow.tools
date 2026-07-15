@@ -10,6 +10,7 @@ import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { fileToDataUrl } from "@/core/utils/image-canvas-utils"
 import { parseBase64Image, sanitizeBase64 } from "@/features/tools/image-base64/utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 type OutputFormat =
     | "data_uri"
@@ -237,7 +238,7 @@ export function ImageBase64Page() {
     ]
 
     return (
-        <div className="flex h-full flex-col">
+        <ToolPageContainer className="flex h-full flex-col">
             <div className="flex flex-col gap-3 border-b px-4 py-3">
                 <div className="flex items-center gap-2">
                     <ImageIcon className="h-5 w-5 text-primary" />
@@ -401,6 +402,6 @@ export function ImageBase64Page() {
                     </>
                 )}
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }

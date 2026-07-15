@@ -5,6 +5,7 @@ import { getTranslation } from "@/core/i18n/translations/catalog"
 import { getToolByKey } from "@/core/registry"
 import { SITE_URL, buildCanonicalUrl } from "@/core/seo/urls"
 import { getPipelineRecipeTemplateForWorkflow } from "@/features/pipeline/recipe-templates"
+import { CatalogPageContainer } from "@/components/layout/page-container"
 import {
     WORKFLOW_DEFINITIONS,
     getLocalizedWorkflowCopy,
@@ -236,7 +237,7 @@ export function WorkflowIndexPage({ lang }: { lang: Locale }) {
     const copy = WORKFLOW_INDEX_COPY[lang]
 
     return (
-        <div className="mx-auto w-full max-w-6xl space-y-7">
+        <CatalogPageContainer className="space-y-7">
             <CollectionPageJsonLd
                 lang={lang}
                 slug="workflows"
@@ -265,7 +266,7 @@ export function WorkflowIndexPage({ lang }: { lang: Locale }) {
                     <WorkflowCard key={workflow.slug} workflow={workflow} lang={lang} />
                 ))}
             </section>
-        </div>
+        </CatalogPageContainer>
     )
 }
 
@@ -291,7 +292,7 @@ export function WorkflowDetailPage({
     const pipelineBuilderTitle = getToolCopy(lang, "pipeline_builder").title
 
     return (
-        <div className="mx-auto w-full max-w-6xl space-y-7">
+        <CatalogPageContainer className="space-y-7">
             <WorkflowBreadcrumbJsonLd lang={lang} workflow={workflow} />
             <HowToJsonLd
                 lang={lang}
@@ -435,6 +436,6 @@ export function WorkflowDetailPage({
                     </div>
                 </article>
             </section>
-        </div>
+        </CatalogPageContainer>
     )
 }

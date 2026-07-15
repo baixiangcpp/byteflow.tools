@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { convertBaseEncoding, type BaseEncoding } from "./utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 type Operation = "encode" | "decode"
 
@@ -60,7 +61,7 @@ export function BaseEncodingConverterPage() {
     }
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col gap-6">
+        <ToolPageContainer className="flex h-full flex-col gap-6">
             <div>
                 <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
                     <Binary className="h-6 w-6 text-primary" />
@@ -148,6 +149,6 @@ export function BaseEncodingConverterPage() {
                     />
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }

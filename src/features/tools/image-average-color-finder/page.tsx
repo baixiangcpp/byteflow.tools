@@ -11,6 +11,7 @@ import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { averageHexFromPixels, averageRgbFromPixels, rgbToString } from "@/core/utils/image-color-utils"
 import { createDemoImageDataUrl, fileToDataUrl, getImageDataForAnalysis } from "@/core/utils/image-canvas-utils"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const IMAGE_FILE_POLICY = FILE_INPUT_POLICIES["image-compact"]
 
@@ -124,7 +125,7 @@ export function ImageAverageColorFinderPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -222,6 +223,6 @@ export function ImageAverageColorFinderPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }

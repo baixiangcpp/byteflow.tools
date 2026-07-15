@@ -17,6 +17,7 @@ import {
     type LogLevel,
 } from "@/features/tools/local-log-parser/utils"
 import { Checkbox } from "@/components/ui/checkbox"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 export function LocalLogParserPage() {
     const { t } = useLang()
@@ -141,7 +142,7 @@ export function LocalLogParserPage() {
     }
 
     return (
-        <div className="container mx-auto max-w-7xl py-8 px-4 space-y-6">
+        <WideToolPageContainer className="py-8 space-y-6">
             <div className="space-y-2">
                 <h1 className="text-3xl font-bold">{text("title")}</h1>
                 <p className="text-muted-foreground">{text("description")}</p>
@@ -274,6 +275,6 @@ export function LocalLogParserPage() {
                     </div>
                 </div>
             )}
-        </div>
+        </WideToolPageContainer>
     )
 }

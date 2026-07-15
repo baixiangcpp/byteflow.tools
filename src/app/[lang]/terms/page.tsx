@@ -1,6 +1,7 @@
 "use client"
 
 import { useLang } from "@/core/i18n/lang-provider"
+import { StaticPageContainer } from "@/components/layout/page-container"
 
 export default function TermsPage() {
     const { t } = useLang()
@@ -15,7 +16,7 @@ export default function TermsPage() {
     ]
 
     return (
-        <div className="mx-auto w-full max-w-5xl space-y-6">
+        <StaticPageContainer className="space-y-6">
             <section className="rounded-2xl border border-border/70 bg-card/55 p-6 backdrop-blur-sm sm:p-7">
                 <h1 className="text-3xl font-semibold tracking-tight">{p.terms_title}</h1>
                 <p className="mt-2 text-sm text-muted-foreground">{p.terms_last_updated}</p>
@@ -29,6 +30,6 @@ export default function TermsPage() {
                     </article>
                 ))}
             </section>
-        </div>
+        </StaticPageContainer>
     )
 }

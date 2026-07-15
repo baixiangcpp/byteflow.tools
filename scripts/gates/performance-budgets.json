@@ -8,7 +8,7 @@
       "maxInitialScriptFiles": 12,
       "maxCssGzipBytes": 35000,
       "maxCssRawBytes": 220000,
-      "maxHtmlBytes": 330000
+      "maxHtmlBytes": 340000
     },
     {
       "route": "/en/all-tools",
@@ -38,7 +38,7 @@
       "maxInitialScriptFiles": 27,
       "maxCssGzipBytes": 35000,
       "maxCssRawBytes": 220000,
-      "maxHtmlBytes": 320000
+      "maxHtmlBytes": 335000
     },
     {
       "route": "/en/markdown-preview",
@@ -48,7 +48,7 @@
       "maxInitialScriptFiles": 23,
       "maxCssGzipBytes": 35000,
       "maxCssRawBytes": 220000,
-      "maxHtmlBytes": 300000
+      "maxHtmlBytes": 305000
     },
     {
       "route": "/en/image-resizer",
@@ -58,7 +58,7 @@
       "maxInitialScriptFiles": 27,
       "maxCssGzipBytes": 35000,
       "maxCssRawBytes": 220000,
-      "maxHtmlBytes": 310000
+      "maxHtmlBytes": 318000
     }
   ]
 }

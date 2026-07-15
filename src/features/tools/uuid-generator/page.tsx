@@ -18,6 +18,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const PAGE_SIZE_OPTIONS = [50, 100, 250]
 type ExportFormat = "txt" | "csv" | "json"
@@ -140,7 +141,7 @@ export function UuidGeneratorPage() {
     ]
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-5xl mx-auto">
+        <ToolPageContainer className="flex flex-col h-full space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -302,6 +303,6 @@ export function UuidGeneratorPage() {
                 </div>
 
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }

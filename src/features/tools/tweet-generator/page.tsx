@@ -17,6 +17,7 @@ import {
     wrapLines,
     type SocialTheme,
 } from "@/core/utils/social-media-utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const AVATAR_FILE_POLICY = FILE_INPUT_POLICIES["image-logo"]
 
@@ -303,7 +304,7 @@ export function TweetGeneratorPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -427,7 +428,7 @@ export function TweetGeneratorPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }
 

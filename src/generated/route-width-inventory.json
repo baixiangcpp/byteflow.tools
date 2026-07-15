@@ -1,0 +1,3472 @@
+{
+  "schemaVersion": 1,
+  "contracts": {
+    "viewport": "mx-auto w-full max-w-screen-2xl px-4 md:px-8 lg:px-10",
+    "intents": {
+      "tool": "mx-auto w-full max-w-6xl",
+      "wide-tool": "mx-auto w-full max-w-[1400px]",
+      "static": "mx-auto w-full max-w-5xl",
+      "catalog": "mx-auto w-full max-w-6xl"
+    },
+    "representativeRoutes": {
+      "all-tools": "catalog",
+      "install-app": "static",
+      "json-formatter": "wide-tool",
+      "pipeline-builder": "wide-tool",
+      "qr-code-generator": "tool",
+      "support": "static"
+    },
+    "wideToolSlugs": [
+      "asn1-der-inspector",
+      "base64-encode-decode",
+      "code-to-image-converter",
+      "css-formatter",
+      "css-minifier",
+      "csv-diff",
+      "csv-json-converter",
+      "curl-to-code",
+      "env-parser",
+      "graphql-workbench",
+      "gzip-brotli-lab",
+      "har-viewer-sanitizer",
+      "header-diff",
+      "hex-bytes-workbench",
+      "html-css-beautifier",
+      "html-encoder-decoder",
+      "html-formatter",
+      "html-minifier",
+      "html-to-markdown",
+      "javascript-formatter",
+      "javascript-minifier",
+      "jq-playground",
+      "json-diff-viewer",
+      "json-formatter",
+      "json-schema-workbench",
+      "json-to-typescript",
+      "jsonpath-playground",
+      "jwt-decoder",
+      "letter-counter",
+      "local-log-parser",
+      "log-scrubber",
+      "markdown-preview",
+      "multiple-whitespace-remover",
+      "ndjson-formatter",
+      "openapi-diff",
+      "openapi-mock",
+      "openapi-viewer",
+      "pipeline-builder",
+      "regex-generator",
+      "saml-decoder",
+      "sql-formatter",
+      "structured-data-visualizer",
+      "svg-optimizer",
+      "text-diff-checker",
+      "unicode-inspector",
+      "url-encode-decode",
+      "xml-formatter",
+      "yaml-json-converter",
+      "yaml-merge-patch-explorer",
+      "yq-playground"
+    ]
+  },
+  "summary": {
+    "scannedFiles": 939,
+    "pageRoots": 369,
+    "toolSurfaces": 131,
+    "standardTools": 82,
+    "wideTools": 49
+  },
+  "toolSurfaces": [
+    {
+      "slug": "ai-color-palette-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "ascii-art-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "asn1-der-inspector",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "barcode-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "base-encoding-converter",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "base64-encode-decode",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "bionic-reading-converter",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "certificate-decoder",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "chmod-calculator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "cidr-subnet-calculator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "code-to-image-converter",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "color-converter",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "color-mixer",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "color-shades-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "cron-visualizer",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "crontab-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "csp-parser",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "css-background-pattern-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "css-border-radius-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "css-box-shadow-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "css-checkbox-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "css-clip-path-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "css-cubic-bezier-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "css-glassmorphism-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "css-gradient-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "css-loader-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "css-minifier",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "css-switch-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "css-text-glitch-effect-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "css-triangle-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "csv-diff",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "csv-json-converter",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "curl-to-code",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "devops-yaml-validator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "docker-run-to-compose",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "env-parser",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "fake-iban-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "google-fonts-pair-finder",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "graphql-workbench",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "gzip-brotli-lab",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "har-viewer-sanitizer",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "hash-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "header-diff",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "hex-bytes-workbench",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "html-css-beautifier",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "html-encoder-decoder",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "html-formatter",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "html-minifier",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "html-to-markdown",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "http-request-builder",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "http-status-codes",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "id-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "image-average-color-finder",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "image-base64",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "image-caption-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "image-color-extractor",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "image-color-picker",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "image-cropper",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "image-filters",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "image-privacy-workbench",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "image-resizer",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "instagram-filters",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "instagram-photo-downloader",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "instagram-post-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "instagram-story-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "invisible-characters-detector",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "javascript-formatter",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "javascript-minifier",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "jq-playground",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "json-diff-viewer",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "json-formatter",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "json-schema-workbench",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "json-to-typescript",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "jsonpath-playground",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "jwt-decoder",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "jwt-verifier",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "jwt-workbench",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "letter-counter",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "list-randomizer",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "local-log-parser",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "log-scrubber",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "lorem-ipsum",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "markdown-preview",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "md5-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "messagepack-inspector",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "multiple-whitespace-remover",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "ndjson-formatter",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "oauth-jwks-workbench",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "open-graph-meta-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "openapi-diff",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "openapi-mock",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "openapi-viewer",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "password-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "photo-censor",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "pipeline-builder",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "public-key-jwk-helper",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "qr-code-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "react-native-shadow-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "regex-generator",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "regex-tester",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "robots-txt-tester",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "saml-decoder",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "scanned-pdf-converter",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "security-header-analyzer",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "seo-metadata-workbench",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "slugify-case-converter",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "sql-formatter",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "structured-data-visualizer",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "svg-blob-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "svg-optimizer",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "svg-pattern-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "svg-stroke-to-fill-converter",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "svg-to-png-converter",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "text-diff-checker",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "text-to-handwriting-converter",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "totp-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "tweet-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "tweet-to-image-converter",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "twitter-ad-revenue-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "unicode-inspector",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "unix-timestamp",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "url-encode-decode",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "url-parser",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "user-agent-parser",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "uuid-generator",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "vimeo-thumbnail-grabber",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "xml-formatter",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "yaml-json-converter",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "yaml-merge-patch-explorer",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    },
+    {
+      "slug": "youtube-thumbnail-grabber",
+      "intent": "tool",
+      "roots": [
+        "ToolPageContainer"
+      ]
+    },
+    {
+      "slug": "yq-playground",
+      "intent": "wide-tool",
+      "roots": [
+        "WideToolPageContainer"
+      ]
+    }
+  ],
+  "centeredMaxWidthExceptions": [
+    {
+      "file": "src/app/[lang]/error.tsx",
+      "element": "section",
+      "line": 44,
+      "reason": "focused-status",
+      "maxWidthTokens": [
+        "max-w-2xl"
+      ]
+    },
+    {
+      "file": "src/app/[lang]/page.tsx",
+      "element": "div",
+      "line": 197,
+      "reason": "home-shell",
+      "maxWidthTokens": [
+        "max-w-screen-2xl"
+      ]
+    },
+    {
+      "file": "src/app/[lang]/page.tsx",
+      "element": "div",
+      "line": 206,
+      "reason": "home-hero",
+      "maxWidthTokens": [
+        "max-w-4xl"
+      ]
+    },
+    {
+      "file": "src/app/[lang]/page.tsx",
+      "element": "p",
+      "line": 220,
+      "reason": "home-copy",
+      "maxWidthTokens": [
+        "max-w-2xl"
+      ]
+    },
+    {
+      "file": "src/components/layout/app-runtime.tsx",
+      "element": "div",
+      "line": 262,
+      "reason": "runtime-banner",
+      "maxWidthTokens": [
+        "max-w-6xl"
+      ]
+    },
+    {
+      "file": "src/components/layout/footer-content.tsx",
+      "element": "div",
+      "line": 35,
+      "reason": "global-shell",
+      "maxWidthTokens": [
+        "max-w-screen-2xl"
+      ]
+    },
+    {
+      "file": "src/components/layout/lang-not-found-content.tsx",
+      "element": "section",
+      "line": 31,
+      "reason": "focused-status",
+      "maxWidthTokens": [
+        "max-w-3xl"
+      ]
+    },
+    {
+      "file": "src/components/layout/navbar.tsx",
+      "element": "div",
+      "line": 33,
+      "reason": "global-shell",
+      "maxWidthTokens": [
+        "max-w-screen-2xl"
+      ]
+    },
+    {
+      "file": "src/components/layout/seo-faq-section.tsx",
+      "element": "div",
+      "line": 42,
+      "reason": "readable-content",
+      "maxWidthTokens": [
+        "max-w-3xl"
+      ]
+    },
+    {
+      "file": "src/core/seo/components/legacy-tool-redirect-page.tsx",
+      "element": "div",
+      "line": 13,
+      "reason": "legacy-redirect",
+      "maxWidthTokens": [
+        "max-w-xl"
+      ]
+    },
+    {
+      "file": "src/core/seo/components/tool-content-template-modules/core.tsx",
+      "element": "div",
+      "line": 144,
+      "reason": "readable-content",
+      "maxWidthTokens": [
+        "max-w-4xl"
+      ]
+    },
+    {
+      "file": "src/features/tools/cidr-subnet-calculator/page.tsx",
+      "element": "div",
+      "line": 107,
+      "reason": "focused-work-surface",
+      "maxWidthTokens": [
+        "max-w-3xl"
+      ]
+    }
+  ],
+  "pageRoots": [
+    {
+      "file": "src/app/[lang]/about/page.tsx",
+      "component": "AboutPage",
+      "element": "StaticPageContainer",
+      "line": 29
+    },
+    {
+      "file": "src/app/[lang]/ai-color-palette-generator/page.tsx",
+      "component": "AiColorPaletteGeneratorRoutePage",
+      "element": "AiColorPaletteGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/all-tools/page.tsx",
+      "component": "AllToolsPage",
+      "element": "CatalogPageContainer",
+      "line": 99
+    },
+    {
+      "file": "src/app/[lang]/api-auth-header-mistakes/page.tsx",
+      "component": "ApiAuthHeaderMistakesPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/api-auth-header-mistakes/page.tsx",
+      "component": "ApiAuthHeaderMistakesPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/ascii-art-generator/page.tsx",
+      "component": "AsciiArtGeneratorRoutePage",
+      "element": "AsciiArtGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/asn1-der-inspector/page.tsx",
+      "component": "Asn1DerInspectorRoutePage",
+      "element": "Asn1DerInspectorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/barcode-generator/page.tsx",
+      "component": "BarcodeGeneratorRoutePage",
+      "element": "BarcodeGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/base-encoding-converter/page.tsx",
+      "component": "Page",
+      "element": "BaseEncodingConverterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/base64-encode-decode/page.tsx",
+      "component": "Base64RoutePage",
+      "element": "Base64Page",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/base64-encoding-when-and-how-to-use-it/page.tsx",
+      "component": "Base64EncodingWhenAndHowToUseItPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/base64-encoding-when-and-how-to-use-it/page.tsx",
+      "component": "Base64EncodingWhenAndHowToUseItPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/bionic-reading-converter/page.tsx",
+      "component": "BionicReadingConverterRoutePage",
+      "element": "BionicReadingConverterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/certificate-chain-basics-for-developers/page.tsx",
+      "component": "CertificateChainBasicsPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/certificate-chain-basics-for-developers/page.tsx",
+      "component": "CertificateChainBasicsPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/certificate-decoder/page.tsx",
+      "component": "CertificateDecoderRoutePage",
+      "element": "CertificateDecoderPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/changelog/page.tsx",
+      "component": "ChangelogPage",
+      "element": "StaticPageContainer",
+      "line": 222
+    },
+    {
+      "file": "src/app/[lang]/chmod-calculator/page.tsx",
+      "component": "ChmodCalculatorRoutePage",
+      "element": "ChmodCalculatorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/cidr-subnet-calculator/page.tsx",
+      "component": "CidrSubnetCalculatorRoutePage",
+      "element": "CidrSubnetCalculatorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/code-to-image-converter/page.tsx",
+      "component": "CodeToImageConverterRoutePage",
+      "element": "CodeToImageConverterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/color-converter/page.tsx",
+      "component": "ColorConverterRoutePage",
+      "element": "ColorConverterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/color-extraction-from-images-use-cases-and-tools/page.tsx",
+      "component": "ColorExtractionFromImagesUseCasesAndToolsPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/color-extraction-from-images-use-cases-and-tools/page.tsx",
+      "component": "ColorExtractionFromImagesUseCasesAndToolsPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/color-mixer/page.tsx",
+      "component": "ColorMixerRoutePage",
+      "element": "ColorMixerPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/color-shades-generator/page.tsx",
+      "component": "ColorShadesGeneratorRoutePage",
+      "element": "ColorShadesGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/contact/page.tsx",
+      "component": "ContactPage",
+      "element": "StaticPageContainer",
+      "line": 43
+    },
+    {
+      "file": "src/app/[lang]/convert-curl-to-fetch-python/page.tsx",
+      "component": "ConvertCurlToFetchPythonPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/convert-curl-to-fetch-python/page.tsx",
+      "component": "ConvertCurlToFetchPythonPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/convert-encode/page.tsx",
+      "component": "ConvertEncodePage",
+      "element": "MenuGroupHub",
+      "line": 11
+    },
+    {
+      "file": "src/app/[lang]/cron-expression-generator/page.tsx",
+      "component": "CronExpressionGeneratorRedirect",
+      "element": "LegacyToolRedirectPage",
+      "line": 34
+    },
+    {
+      "file": "src/app/[lang]/cron-visualizer/page.tsx",
+      "component": "CronVisualizerRoutePage",
+      "element": "CronVisualizerPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/crontab-generator/page.tsx",
+      "component": "CrontabGeneratorRoutePage",
+      "element": "CrontabGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/csp-mistakes-that-break-production/page.tsx",
+      "component": "CspMistakesThatBreakProductionPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/csp-mistakes-that-break-production/page.tsx",
+      "component": "CspMistakesThatBreakProductionPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/csp-parser/page.tsx",
+      "component": "CspParserRoutePage",
+      "element": "CspParserPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/css-animations-and-transitions-guide/page.tsx",
+      "component": "CssAnimationsAndTransitionsGuidePage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/css-animations-and-transitions-guide/page.tsx",
+      "component": "CssAnimationsAndTransitionsGuidePage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/css-background-pattern-generator/page.tsx",
+      "component": "CssBackgroundPatternGeneratorRoutePage",
+      "element": "CssBackgroundPatternGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/css-border-radius-and-shapes-guide/page.tsx",
+      "component": "CssBorderRadiusAndShapesGuidePage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/css-border-radius-and-shapes-guide/page.tsx",
+      "component": "CssBorderRadiusAndShapesGuidePage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/css-border-radius-generator/page.tsx",
+      "component": "CssBorderRadiusGeneratorRoutePage",
+      "element": "CssBorderRadiusGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/css-box-shadow-generator/page.tsx",
+      "component": "CssBoxShadowGeneratorRoutePage",
+      "element": "CssBoxShadowGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/css-checkbox-generator/page.tsx",
+      "component": "CssCheckboxGeneratorRoutePage",
+      "element": "CssCheckboxGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/css-clip-path-generator/page.tsx",
+      "component": "CssClipPathGeneratorRoutePage",
+      "element": "CssClipPathGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/css-cubic-bezier-generator/page.tsx",
+      "component": "CssCubicBezierGeneratorRoutePage",
+      "element": "CssCubicBezierGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/css-formatter/page.tsx",
+      "component": "CssFormatterPage",
+      "element": "HtmlCssBeautifierTool",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/css-glassmorphism-generator/page.tsx",
+      "component": "CssGlassmorphismGeneratorRoutePage",
+      "element": "CssGlassmorphismGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/css-gradient-generator/page.tsx",
+      "component": "CssGradientGeneratorRoutePage",
+      "element": "CssGradientGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/css-layout-patterns-for-developers/page.tsx",
+      "component": "CssLayoutPatternsForDevelopersPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/css-layout-patterns-for-developers/page.tsx",
+      "component": "CssLayoutPatternsForDevelopersPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/css-loader-generator/page.tsx",
+      "component": "CssLoaderGeneratorRoutePage",
+      "element": "CssLoaderGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/css-minifier/page.tsx",
+      "component": "CssMinifierRoutePage",
+      "element": "CssMinifierPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/css-switch-generator/page.tsx",
+      "component": "CssSwitchGeneratorRoutePage",
+      "element": "CssSwitchGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/css-text-glitch-effect-generator/page.tsx",
+      "component": "CssTextGlitchEffectGeneratorRoutePage",
+      "element": "CssTextGlitchEffectGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/css-triangle-generator/page.tsx",
+      "component": "CssTriangleGeneratorRoutePage",
+      "element": "CssTriangleGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/csv-diff/page.tsx",
+      "component": "CsvDiffRoutePage",
+      "element": "CsvDiffPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/csv-json-converter/page.tsx",
+      "component": "CsvJsonConverterRoutePage",
+      "element": "CsvJsonConverterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/csv-to-json/page.tsx",
+      "component": "CsvToJsonRedirect",
+      "element": "LegacyToolRedirectPage",
+      "line": 23
+    },
+    {
+      "file": "src/app/[lang]/curl-to-code/page.tsx",
+      "component": "CurlToCodeRoutePage",
+      "element": "CurlToCodePage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/data-code-formats/page.tsx",
+      "component": "DataCodeFormatsPage",
+      "element": "MenuGroupHub",
+      "line": 11
+    },
+    {
+      "file": "src/app/[lang]/design-media/page.tsx",
+      "component": "DesignMediaPage",
+      "element": "MenuGroupHub",
+      "line": 11
+    },
+    {
+      "file": "src/app/[lang]/devops-logs/page.tsx",
+      "component": "DevopsLogsPage",
+      "element": "MenuGroupHub",
+      "line": 11
+    },
+    {
+      "file": "src/app/[lang]/devops-yaml-validator/page.tsx",
+      "component": "Page",
+      "element": "DevopsYamlValidatorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/distribution-research/page.tsx",
+      "component": "DistributionResearchPage",
+      "element": "StaticPageContainer",
+      "line": 174
+    },
+    {
+      "file": "src/app/[lang]/dns-records-uptime/page.tsx",
+      "component": "DnsRecordsUptimePage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/dns-records-uptime/page.tsx",
+      "component": "DnsRecordsUptimePage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/docker-run-to-compose/page.tsx",
+      "component": "DockerRunToComposeRoutePage",
+      "element": "DockerRunToComposePage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/encoding-crypto/page.tsx",
+      "component": "EncodingCryptoPage",
+      "element": "MenuGroupHub",
+      "line": 11
+    },
+    {
+      "file": "src/app/[lang]/env-parser/page.tsx",
+      "component": "EnvVariableParserRoutePage",
+      "element": "EnvVariableParserPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/error.tsx",
+      "component": "LangError",
+      "element": "div",
+      "line": 43
+    },
+    {
+      "file": "src/app/[lang]/fake-iban-generator/page.tsx",
+      "component": "FakeIbanGeneratorRoutePage",
+      "element": "FakeIbanGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/format-validate/page.tsx",
+      "component": "FormatValidatePage",
+      "element": "MenuGroupHub",
+      "line": 11
+    },
+    {
+      "file": "src/app/[lang]/formatters/page.tsx",
+      "component": "FormattersPage",
+      "element": "CategoryHub",
+      "line": 11
+    },
+    {
+      "file": "src/app/[lang]/generators-calculators/page.tsx",
+      "component": "GeneratorsCalculatorsPage",
+      "element": "MenuGroupHub",
+      "line": 11
+    },
+    {
+      "file": "src/app/[lang]/generators-ids/page.tsx",
+      "component": "GeneratorsIdsPage",
+      "element": "MenuGroupHub",
+      "line": 11
+    },
+    {
+      "file": "src/app/[lang]/generators/page.tsx",
+      "component": "GeneratorsPage",
+      "element": "CategoryHub",
+      "line": 11
+    },
+    {
+      "file": "src/app/[lang]/google-fonts-pair-finder/page.tsx",
+      "component": "GoogleFontsPairFinderRoutePage",
+      "element": "GoogleFontsPairFinderPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/graphql-workbench/page.tsx",
+      "component": "Page",
+      "element": "GraphqlWorkbenchPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/gzip-brotli-lab/page.tsx",
+      "component": "GzipBrotliLabRoutePage",
+      "element": "GzipBrotliLabPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/har-viewer-sanitizer/page.tsx",
+      "component": "HarViewerSanitizerRoutePage",
+      "element": "HarViewerSanitizerPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/hash-functions-compared-md5-vs-sha256-vs-sha512/page.tsx",
+      "component": "HashFunctionsComparedMd5VsSha256VsSha512Page",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/hash-functions-compared-md5-vs-sha256-vs-sha512/page.tsx",
+      "component": "HashFunctionsComparedMd5VsSha256VsSha512Page",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/hash-generator/page.tsx",
+      "component": "HashGeneratorRoutePage",
+      "element": "HashGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/header-diff/page.tsx",
+      "component": "HeaderDiffRoutePage",
+      "element": "HeaderDiffPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/hex-bytes-workbench/page.tsx",
+      "component": "HexBytesWorkbenchRoutePage",
+      "element": "HexBytesWorkbenchPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/html-css-beautifier/page.tsx",
+      "component": "HtmlCssBeautifierRoutePage",
+      "element": "HtmlCssBeautifierPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/html-encoder-decoder/page.tsx",
+      "component": "HtmlEncoderDecoderRoutePage",
+      "element": "HtmlEncoderDecoderPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/html-formatter/page.tsx",
+      "component": "HtmlFormatterRoutePage",
+      "element": "HtmlFormatterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/html-minifier/page.tsx",
+      "component": "HtmlMinifierRoutePage",
+      "element": "HtmlMinifierPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/html-to-markdown/page.tsx",
+      "component": "HtmlToMarkdownRoutePage",
+      "element": "HtmlToMarkdownPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/http-request-builder/page.tsx",
+      "component": "HttpRequestBuilderRoutePage",
+      "element": "HttpRequestBuilderPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/http-status-codes/page.tsx",
+      "component": "HttpStatusCodesRoutePage",
+      "element": "HttpStatusCodesPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/id-generator/page.tsx",
+      "component": "IdGeneratorRoutePage",
+      "element": "IdGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/image-average-color-finder/page.tsx",
+      "component": "ImageAverageColorFinderRoutePage",
+      "element": "ImageAverageColorFinderPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/image-base64/page.tsx",
+      "component": "ImageBase64RoutePage",
+      "element": "ImageBase64Page",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/image-caption-generator/page.tsx",
+      "component": "ImageCaptionGeneratorRoutePage",
+      "element": "ImageCaptionGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/image-color-extractor/page.tsx",
+      "component": "ImageColorExtractorRoutePage",
+      "element": "ImageColorExtractorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/image-color-picker/page.tsx",
+      "component": "ImageColorPickerRoutePage",
+      "element": "ImageColorPickerPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/image-cropper/page.tsx",
+      "component": "ImageCropperRoutePage",
+      "element": "ImageCropperPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/image-filters/page.tsx",
+      "component": "ImageFiltersRoutePage",
+      "element": "ImageFiltersPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/image-optimization-for-web-complete-workflow/page.tsx",
+      "component": "ImageOptimizationForWebCompleteWorkflowPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/image-optimization-for-web-complete-workflow/page.tsx",
+      "component": "ImageOptimizationForWebCompleteWorkflowPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/image-privacy-how-to-censor-and-protect-images/page.tsx",
+      "component": "ImagePrivacyHowToCensorAndProtectImagesPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/image-privacy-how-to-censor-and-protect-images/page.tsx",
+      "component": "ImagePrivacyHowToCensorAndProtectImagesPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/image-privacy-workbench/page.tsx",
+      "component": "Page",
+      "element": "ImagePrivacyWorkbenchPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/image-resizer/page.tsx",
+      "component": "ImageResizerRoutePage",
+      "element": "ImageResizerPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/images-svg-css/page.tsx",
+      "component": "ImagesSvgCssPage",
+      "element": "MenuGroupHub",
+      "line": 11
+    },
+    {
+      "file": "src/app/[lang]/instagram-filters/page.tsx",
+      "component": "InstagramFiltersRoutePage",
+      "element": "InstagramFiltersPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/instagram-photo-downloader/page.tsx",
+      "component": "InstagramPhotoDownloaderRoutePage",
+      "element": "InstagramPhotoDownloaderPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/instagram-post-generator/page.tsx",
+      "component": "InstagramPostGeneratorRoutePage",
+      "element": "InstagramPostGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/instagram-story-generator/page.tsx",
+      "component": "InstagramStoryGeneratorRoutePage",
+      "element": "InstagramStoryGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/install-app/page.tsx",
+      "component": "InstallAppPage",
+      "element": "InstallAppClient",
+      "line": 24
+    },
+    {
+      "file": "src/app/[lang]/invisible-characters-detector/page.tsx",
+      "component": "InvisibleCharsDetectorRoutePage",
+      "element": "InvisibleCharsDetectorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/javascript-formatter/page.tsx",
+      "component": "JavascriptFormatterRoutePage",
+      "element": "JavascriptFormatterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/javascript-minifier/page.tsx",
+      "component": "JavascriptMinifierRoutePage",
+      "element": "JavascriptMinifierPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/jq-playground/page.tsx",
+      "component": "JqPlaygroundRoutePage",
+      "element": "JqPlaygroundPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/json-diff-viewer/page.tsx",
+      "component": "JsonDiffViewerRoutePage",
+      "element": "JsonDiffViewerPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/json-formatter/page.tsx",
+      "component": "JsonFormatterRoutePage",
+      "element": "JsonFormatterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/json-formatting-errors/page.tsx",
+      "component": "JsonFormattingErrorsPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/json-formatting-errors/page.tsx",
+      "component": "JsonFormattingErrorsPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/json-schema-validation-checklist/page.tsx",
+      "component": "JsonSchemaValidationChecklistPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/json-schema-validation-checklist/page.tsx",
+      "component": "JsonSchemaValidationChecklistPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/json-schema-workbench/page.tsx",
+      "component": "Page",
+      "element": "JsonSchemaWorkbenchPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/json-to-typescript/page.tsx",
+      "component": "JsonToTypeScriptRoutePage",
+      "element": "JsonToTypeScriptPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/json-vs-json5-differences/page.tsx",
+      "component": "JsonVsJson5DifferencesPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/json-vs-json5-differences/page.tsx",
+      "component": "JsonVsJson5DifferencesPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/jsonpath-playground/page.tsx",
+      "component": "JsonPathPlaygroundRoutePage",
+      "element": "JsonPathPlaygroundPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/jwt-decoder/page.tsx",
+      "component": "JwtDecoderRoutePage",
+      "element": "JwtDecoderPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/jwt-security-best-practices-for-token-handling/page.tsx",
+      "component": "JwtSecurityBestPracticesForTokenHandlingPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/jwt-security-best-practices-for-token-handling/page.tsx",
+      "component": "JwtSecurityBestPracticesForTokenHandlingPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/jwt-verifier/page.tsx",
+      "component": "JwtVerifierRoutePage",
+      "element": "JwtVerifierPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/jwt-workbench/page.tsx",
+      "component": "JwtWorkbenchRoutePage",
+      "element": "JwtWorkbenchPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/letter-counter/page.tsx",
+      "component": "LetterCounterRoutePage",
+      "element": "LetterCounterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/list-randomizer/page.tsx",
+      "component": "ListRandomizerRoutePage",
+      "element": "ListRandomizerPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/loading.tsx",
+      "component": "LangLoading",
+      "element": "div",
+      "line": 3
+    },
+    {
+      "file": "src/app/[lang]/local-log-parser/page.tsx",
+      "component": "LocalLogParserRoutePage",
+      "element": "LocalLogParserPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/log-scrubber/page.tsx",
+      "component": "LogScrubberRoutePage",
+      "element": "LogScrubberPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/lorem-ipsum/page.tsx",
+      "component": "LoremIpsumGeneratorRoutePage",
+      "element": "LoremIpsumGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/markdown-preview/page.tsx",
+      "component": "MarkdownPreviewRoutePage",
+      "element": "MarkdownPreviewPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/md5-digest-generator/page.tsx",
+      "component": "Md5EncryptDecryptPage",
+      "element": "Fragment",
+      "line": 28
+    },
+    {
+      "file": "src/app/[lang]/md5-generator/page.tsx",
+      "component": "Md5GeneratorRoutePage",
+      "element": "Md5GeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/messagepack-inspector/page.tsx",
+      "component": "Page",
+      "element": "MessagepackInspectorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/mock-openapi-quickly/page.tsx",
+      "component": "MockOpenapiQuicklyPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/mock-openapi-quickly/page.tsx",
+      "component": "MockOpenapiQuicklyPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/modern-css-effects-guide/page.tsx",
+      "component": "ModernCssEffectsGuidePage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/modern-css-effects-guide/page.tsx",
+      "component": "ModernCssEffectsGuidePage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/multiple-whitespace-remover/page.tsx",
+      "component": "MultipleWhitespaceRemoverRoutePage",
+      "element": "MultipleWhitespaceRemoverPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/ndjson-formatter/page.tsx",
+      "component": "NdjsonFormatterRoutePage",
+      "element": "NdjsonFormatterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/network-tools/page.tsx",
+      "component": "NetworkToolsPage",
+      "element": "CategoryHub",
+      "line": 11
+    },
+    {
+      "file": "src/app/[lang]/not-found.tsx",
+      "component": "LangNotFound",
+      "element": "LangNotFoundContent",
+      "line": 44
+    },
+    {
+      "file": "src/app/[lang]/oauth-jwks-workbench/page.tsx",
+      "component": "Page",
+      "element": "OauthJwksWorkbenchPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/open-graph-meta-generator/page.tsx",
+      "component": "OpenGraphMetaGeneratorRoutePage",
+      "element": "OpenGraphMetaGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/openapi-debugging-workflow-checklist/page.tsx",
+      "component": "OpenapiDebuggingWorkflowChecklistPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/openapi-debugging-workflow-checklist/page.tsx",
+      "component": "OpenapiDebuggingWorkflowChecklistPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/openapi-diff/page.tsx",
+      "component": "Page",
+      "element": "OpenapiDiffPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/openapi-mock/page.tsx",
+      "component": "OpenApiMockRoutePage",
+      "element": "OpenApiMockPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/openapi-viewer/page.tsx",
+      "component": "OpenApiViewerRoutePage",
+      "element": "OpenApiViewerPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/page.tsx",
+      "component": "Home",
+      "element": "div",
+      "line": 190
+    },
+    {
+      "file": "src/app/[lang]/password-generator/page.tsx",
+      "component": "PasswordGeneratorRoutePage",
+      "element": "PasswordGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/photo-censor/page.tsx",
+      "component": "PhotoCensorRoutePage",
+      "element": "PhotoCensorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/pipeline-builder/page.tsx",
+      "component": "PipelineBuilderRoutePage",
+      "element": "PipelineBuilderPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/pricing/page.tsx",
+      "component": "PricingPage",
+      "element": "StaticPageContainer",
+      "line": 44
+    },
+    {
+      "file": "src/app/[lang]/privacy/page.tsx",
+      "component": "PrivacyPage",
+      "element": "StaticPageContainer",
+      "line": 32
+    },
+    {
+      "file": "src/app/[lang]/public-key-jwk-helper/page.tsx",
+      "component": "Page",
+      "element": "PublicKeyJwkHelperPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/qr-code-generator/page.tsx",
+      "component": "QrCodeGeneratorRoutePage",
+      "element": "QrCodeGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/react-native-shadow-generator/page.tsx",
+      "component": "ReactNativeShadowGeneratorRoutePage",
+      "element": "ReactNativeShadowGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/regex-generator/page.tsx",
+      "component": "RegexGeneratorRoutePage",
+      "element": "RegexGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/regex-tester/page.tsx",
+      "component": "RegexTesterRoutePage",
+      "element": "RegexTesterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/roadmap/page.tsx",
+      "component": "RoadmapPage",
+      "element": "StaticPageContainer",
+      "line": 141
+    },
+    {
+      "file": "src/app/[lang]/robots-txt-tester/page.tsx",
+      "component": "RobotsTxtTesterRoutePage",
+      "element": "RobotsTxtTesterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/robots-txt-testing-checklist/page.tsx",
+      "component": "RobotsTxtTestingChecklistPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/robots-txt-testing-checklist/page.tsx",
+      "component": "RobotsTxtTestingChecklistPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/saml-decoder/page.tsx",
+      "component": "SamlDecoderRoutePage",
+      "element": "SamlDecoderPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/scanned-pdf-converter/page.tsx",
+      "component": "ScannedPdfConverterRoutePage",
+      "element": "ScannedPdfConverterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/security-header-analyzer/page.tsx",
+      "component": "SecurityHeaderAnalyzerRoutePage",
+      "element": "SecurityHeaderAnalyzerPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/self-hosting/page.tsx",
+      "component": "SelfHostingPage",
+      "element": "StaticPageContainer",
+      "line": 148
+    },
+    {
+      "file": "src/app/[lang]/seo-metadata-workbench/page.tsx",
+      "component": "Page",
+      "element": "SeoMetadataWorkbenchPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/sha1-digest-generator/page.tsx",
+      "component": "Sha1EncryptDecryptPage",
+      "element": "Fragment",
+      "line": 37
+    },
+    {
+      "file": "src/app/[lang]/sha224-digest-generator/page.tsx",
+      "component": "Sha224EncryptDecryptPage",
+      "element": "Fragment",
+      "line": 46
+    },
+    {
+      "file": "src/app/[lang]/sha256-digest-generator/page.tsx",
+      "component": "Sha256EncryptDecryptPage",
+      "element": "Fragment",
+      "line": 28
+    },
+    {
+      "file": "src/app/[lang]/sha384-digest-generator/page.tsx",
+      "component": "Sha384EncryptDecryptPage",
+      "element": "Fragment",
+      "line": 46
+    },
+    {
+      "file": "src/app/[lang]/sha512-digest-generator/page.tsx",
+      "component": "Sha512EncryptDecryptPage",
+      "element": "Fragment",
+      "line": 28
+    },
+    {
+      "file": "src/app/[lang]/slugify-case-converter/page.tsx",
+      "component": "SlugifyCaseConverterRoutePage",
+      "element": "SlugifyCaseConverterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/social-metadata/page.tsx",
+      "component": "SocialMetadataPage",
+      "element": "MenuGroupHub",
+      "line": 11
+    },
+    {
+      "file": "src/app/[lang]/sql-formatter/page.tsx",
+      "component": "SqlFormatterRoutePage",
+      "element": "SqlFormatterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/structured-data-visualizer/page.tsx",
+      "component": "StructuredDataVisualizerRoutePage",
+      "element": "StructuredDataVisualizerPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/support/page.tsx",
+      "component": "SupportPage",
+      "element": "StaticPageContainer",
+      "line": 25
+    },
+    {
+      "file": "src/app/[lang]/svg-blob-generator/page.tsx",
+      "component": "SvgBlobGeneratorRoutePage",
+      "element": "SvgBlobGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/svg-optimization-and-conversion-best-practices/page.tsx",
+      "component": "SvgOptimizationAndConversionBestPracticesPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/svg-optimization-and-conversion-best-practices/page.tsx",
+      "component": "SvgOptimizationAndConversionBestPracticesPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/svg-optimizer/page.tsx",
+      "component": "SvgOptimizerRoutePage",
+      "element": "SvgOptimizerPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/svg-pattern-generator/page.tsx",
+      "component": "SvgPatternGeneratorRoutePage",
+      "element": "SvgPatternGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/svg-stroke-to-fill-converter/page.tsx",
+      "component": "SvgStrokeToFillConverterRoutePage",
+      "element": "SvgStrokeToFillConverterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/svg-to-png-converter/page.tsx",
+      "component": "SvgToPngConverterRoutePage",
+      "element": "SvgToPngConverterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/terms/page.tsx",
+      "component": "TermsPage",
+      "element": "StaticPageContainer",
+      "line": 19
+    },
+    {
+      "file": "src/app/[lang]/text-content/page.tsx",
+      "component": "TextContentPage",
+      "element": "MenuGroupHub",
+      "line": 11
+    },
+    {
+      "file": "src/app/[lang]/text-diff-checker/page.tsx",
+      "component": "TextDiffCheckerRoutePage",
+      "element": "TextDiffCheckerPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/text-regex/page.tsx",
+      "component": "TextRegexPage",
+      "element": "MenuGroupHub",
+      "line": 11
+    },
+    {
+      "file": "src/app/[lang]/text-to-handwriting-converter/page.tsx",
+      "component": "TextToHandwritingConverterRoutePage",
+      "element": "TextToHandwritingConverterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/text-tools/page.tsx",
+      "component": "TextToolsPage",
+      "element": "CategoryHub",
+      "line": 11
+    },
+    {
+      "file": "src/app/[lang]/tls-chain-inspector/page.tsx",
+      "component": "TlsChainInspectorRedirect",
+      "element": "LegacyToolRedirectPage",
+      "line": 29
+    },
+    {
+      "file": "src/app/[lang]/totp-generator/page.tsx",
+      "component": "TotpGeneratorRoutePage",
+      "element": "TotpGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/trust-center/page.tsx",
+      "component": "TrustCenterPage",
+      "element": "StaticPageContainer",
+      "line": 146
+    },
+    {
+      "file": "src/app/[lang]/tweet-generator/page.tsx",
+      "component": "TweetGeneratorRoutePage",
+      "element": "TweetGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/tweet-to-image-converter/page.tsx",
+      "component": "TweetToImageConverterRoutePage",
+      "element": "TweetToImageConverterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/twitter-ad-revenue-generator/page.tsx",
+      "component": "TwitterAdRevenueGeneratorRoutePage",
+      "element": "TwitterAdRevenueGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/unicode-inspector/page.tsx",
+      "component": "UnicodeInspectorRoutePage",
+      "element": "UnicodeInspectorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/unix-timestamp/page.tsx",
+      "component": "UnixTimestampRoutePage",
+      "element": "UnixTimestampPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/url-encode-decode/page.tsx",
+      "component": "UrlEncodeDecodeRoutePage",
+      "element": "UrlEncodeDecodePage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/url-encoding-explained-common-mistakes-and-solutions/page.tsx",
+      "component": "UrlEncodingExplainedCommonMistakesAndSolutionsPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/url-encoding-explained-common-mistakes-and-solutions/page.tsx",
+      "component": "UrlEncodingExplainedCommonMistakesAndSolutionsPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/url-parser/page.tsx",
+      "component": "UrlParserRoutePage",
+      "element": "UrlParserPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/user-agent-parser/page.tsx",
+      "component": "UserAgentParserRoutePage",
+      "element": "UserAgentParserPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/uuid-generator/page.tsx",
+      "component": "UuidGeneratorRoutePage",
+      "element": "UuidGeneratorPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/validate-json-before-api-requests/page.tsx",
+      "component": "ValidateJsonBeforeApiRequestsPage",
+      "element": "LocalizedArticlePage",
+      "line": 17
+    },
+    {
+      "file": "src/app/[lang]/validate-json-before-api-requests/page.tsx",
+      "component": "ValidateJsonBeforeApiRequestsPage",
+      "element": "StaticPageContainer",
+      "line": 21
+    },
+    {
+      "file": "src/app/[lang]/vimeo-thumbnail-grabber/page.tsx",
+      "component": "VimeoThumbnailGrabberRoutePage",
+      "element": "VimeoThumbnailGrabberPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/web-api-network/page.tsx",
+      "component": "WebApiNetworkPage",
+      "element": "MenuGroupHub",
+      "line": 11
+    },
+    {
+      "file": "src/app/[lang]/web-api/page.tsx",
+      "component": "WebApiPage",
+      "element": "MenuGroupHub",
+      "line": 11
+    },
+    {
+      "file": "src/app/[lang]/workflows/api-payload-cleanup/page.tsx",
+      "component": "ApiPayloadCleanupWorkflowPage",
+      "element": "WorkflowDetailPage",
+      "line": 36
+    },
+    {
+      "file": "src/app/[lang]/workflows/image-resize-social-export/page.tsx",
+      "component": "ImageResizeSocialExportWorkflowPage",
+      "element": "WorkflowDetailPage",
+      "line": 36
+    },
+    {
+      "file": "src/app/[lang]/workflows/json-typescript-contract-review/page.tsx",
+      "component": "JsonTypescriptContractReviewWorkflowPage",
+      "element": "WorkflowDetailPage",
+      "line": 36
+    },
+    {
+      "file": "src/app/[lang]/workflows/log-scrub-before-sharing/page.tsx",
+      "component": "LogScrubBeforeSharingWorkflowPage",
+      "element": "WorkflowDetailPage",
+      "line": 36
+    },
+    {
+      "file": "src/app/[lang]/workflows/page.tsx",
+      "component": "WorkflowsPage",
+      "element": "WorkflowIndexPage",
+      "line": 28
+    },
+    {
+      "file": "src/app/[lang]/workflows/security-token-review/page.tsx",
+      "component": "SecurityTokenReviewWorkflowPage",
+      "element": "WorkflowDetailPage",
+      "line": 36
+    },
+    {
+      "file": "src/app/[lang]/xml-formatter/page.tsx",
+      "component": "XmlFormatterRoutePage",
+      "element": "XmlFormatterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/yaml-json-converter/page.tsx",
+      "component": "YamlJsonConverterRoutePage",
+      "element": "YamlJsonConverterPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/yaml-merge-patch-explorer/page.tsx",
+      "component": "YamlMergePatchExplorerRoutePage",
+      "element": "YamlMergePatchExplorerPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/youtube-thumbnail-grabber/page.tsx",
+      "component": "YouTubeThumbnailGrabberRoutePage",
+      "element": "YouTubeThumbnailGrabberPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/[lang]/yq-playground/page.tsx",
+      "component": "YqPlaygroundRoutePage",
+      "element": "YqPlaygroundPage",
+      "line": 6
+    },
+    {
+      "file": "src/app/not-found.tsx",
+      "component": "RootNotFound",
+      "element": "RouteViewportContainer",
+      "line": 40
+    },
+    {
+      "file": "src/app/page.tsx",
+      "component": "RootPage",
+      "element": "LangProvider",
+      "line": 60
+    },
+    {
+      "file": "src/core/seo/components/growth-content-pages.tsx",
+      "component": "GrowthContentPage",
+      "element": "StaticPageContainer",
+      "line": 160
+    },
+    {
+      "file": "src/core/seo/components/growth-content-pages.tsx",
+      "component": "GrowthIndexPage",
+      "element": "CatalogPageContainer",
+      "line": 340
+    },
+    {
+      "file": "src/core/seo/components/legacy-tool-redirect-page.tsx",
+      "component": "LegacyToolRedirectPage",
+      "element": "ToolPageContainer",
+      "line": 12
+    },
+    {
+      "file": "src/core/seo/components/localized-article-page.tsx",
+      "component": "LocalizedArticlePage",
+      "element": "StaticPageContainer",
+      "line": 55
+    },
+    {
+      "file": "src/core/seo/components/workflow-pages.tsx",
+      "component": "WorkflowIndexPage",
+      "element": "CatalogPageContainer",
+      "line": 240
+    },
+    {
+      "file": "src/core/seo/components/workflow-pages.tsx",
+      "component": "WorkflowDetailPage",
+      "element": "CatalogPageContainer",
+      "line": 295
+    },
+    {
+      "file": "src/features/tools/ai-color-palette-generator/page.tsx",
+      "component": "AiColorPaletteGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 86
+    },
+    {
+      "file": "src/features/tools/ascii-art-generator/page.tsx",
+      "component": "AsciiArtGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 154
+    },
+    {
+      "file": "src/features/tools/asn1-der-inspector/page.tsx",
+      "component": "Asn1DerInspectorPage",
+      "element": "WideToolPageContainer",
+      "line": 65
+    },
+    {
+      "file": "src/features/tools/barcode-generator/page.tsx",
+      "component": "BarcodeGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 210
+    },
+    {
+      "file": "src/features/tools/base-encoding-converter/page.tsx",
+      "component": "BaseEncodingConverterPage",
+      "element": "ToolPageContainer",
+      "line": 64
+    },
+    {
+      "file": "src/features/tools/base64-encode-decode/page.tsx",
+      "component": "Base64Page",
+      "element": "WideToolPageContainer",
+      "line": 345
+    },
+    {
+      "file": "src/features/tools/bionic-reading-converter/page.tsx",
+      "component": "BionicReadingConverterPage",
+      "element": "ToolPageContainer",
+      "line": 137
+    },
+    {
+      "file": "src/features/tools/certificate-decoder/page.tsx",
+      "component": "CertificateDecoderPage",
+      "element": "ToolPageContainer",
+      "line": 322
+    },
+    {
+      "file": "src/features/tools/chmod-calculator/page.tsx",
+      "component": "ChmodCalculatorPage",
+      "element": "ToolPageContainer",
+      "line": 63
+    },
+    {
+      "file": "src/features/tools/cidr-subnet-calculator/page.tsx",
+      "component": "CidrSubnetCalculatorPage",
+      "element": "ToolPageContainer",
+      "line": 90
+    },
+    {
+      "file": "src/features/tools/code-to-image-converter/page.tsx",
+      "component": "CodeToImageConverterPage",
+      "element": "WideToolPageContainer",
+      "line": 99
+    },
+    {
+      "file": "src/features/tools/color-converter/page.tsx",
+      "component": "ColorConverterPage",
+      "element": "ToolPageContainer",
+      "line": 141
+    },
+    {
+      "file": "src/features/tools/color-mixer/page.tsx",
+      "component": "ColorMixerPage",
+      "element": "ToolPageContainer",
+      "line": 95
+    },
+    {
+      "file": "src/features/tools/color-shades-generator/page.tsx",
+      "component": "ColorShadesGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 80
+    },
+    {
+      "file": "src/features/tools/cron-visualizer/page.tsx",
+      "component": "CronVisualizerPage",
+      "element": "ToolPageContainer",
+      "line": 130
+    },
+    {
+      "file": "src/features/tools/crontab-generator/page.tsx",
+      "component": "CrontabGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 110
+    },
+    {
+      "file": "src/features/tools/csp-parser/page.tsx",
+      "component": "CspParserPage",
+      "element": "ToolPageContainer",
+      "line": 119
+    },
+    {
+      "file": "src/features/tools/css-background-pattern-generator/page.tsx",
+      "component": "CssBackgroundPatternGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 119
+    },
+    {
+      "file": "src/features/tools/css-border-radius-generator/page.tsx",
+      "component": "CssBorderRadiusGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 120
+    },
+    {
+      "file": "src/features/tools/css-box-shadow-generator/page.tsx",
+      "component": "CssBoxShadowGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 105
+    },
+    {
+      "file": "src/features/tools/css-checkbox-generator/page.tsx",
+      "component": "CssCheckboxGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 107
+    },
+    {
+      "file": "src/features/tools/css-clip-path-generator/page.tsx",
+      "component": "CssClipPathGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 80
+    },
+    {
+      "file": "src/features/tools/css-cubic-bezier-generator/page.tsx",
+      "component": "CssCubicBezierGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 79
+    },
+    {
+      "file": "src/features/tools/css-glassmorphism-generator/page.tsx",
+      "component": "CssGlassmorphismGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 106
+    },
+    {
+      "file": "src/features/tools/css-gradient-generator/page.tsx",
+      "component": "CssGradientGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 105
+    },
+    {
+      "file": "src/features/tools/css-loader-generator/page.tsx",
+      "component": "CssLoaderGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 85
+    },
+    {
+      "file": "src/features/tools/css-minifier/page.tsx",
+      "component": "CssMinifierPage",
+      "element": "WideToolPageContainer",
+      "line": 176
+    },
+    {
+      "file": "src/features/tools/css-switch-generator/page.tsx",
+      "component": "CssSwitchGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 115
+    },
+    {
+      "file": "src/features/tools/css-text-glitch-effect-generator/page.tsx",
+      "component": "CssTextGlitchEffectGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 98
+    },
+    {
+      "file": "src/features/tools/css-triangle-generator/page.tsx",
+      "component": "CssTriangleGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 120
+    },
+    {
+      "file": "src/features/tools/csv-diff/page.tsx",
+      "component": "CsvDiffPage",
+      "element": "WideToolPageContainer",
+      "line": 92
+    },
+    {
+      "file": "src/features/tools/csv-json-converter/page.tsx",
+      "component": "CsvJsonConverterPage",
+      "element": "WideToolPageContainer",
+      "line": 259
+    },
+    {
+      "file": "src/features/tools/curl-to-code/page.tsx",
+      "component": "CurlToCodePage",
+      "element": "WideToolPageContainer",
+      "line": 89
+    },
+    {
+      "file": "src/features/tools/devops-yaml-validator/page.tsx",
+      "component": "DevopsYamlValidatorPage",
+      "element": "ToolPageContainer",
+      "line": 44
+    },
+    {
+      "file": "src/features/tools/docker-run-to-compose/page.tsx",
+      "component": "DockerRunToComposePage",
+      "element": "ToolPageContainer",
+      "line": 72
+    },
+    {
+      "file": "src/features/tools/env-parser/page.tsx",
+      "component": "EnvVariableParserPage",
+      "element": "WideToolPageContainer",
+      "line": 79
+    },
+    {
+      "file": "src/features/tools/fake-iban-generator/page.tsx",
+      "component": "FakeIbanGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 152
+    },
+    {
+      "file": "src/features/tools/google-fonts-pair-finder/page.tsx",
+      "component": "GoogleFontsPairFinderPage",
+      "element": "ToolPageContainer",
+      "line": 154
+    },
+    {
+      "file": "src/features/tools/graphql-workbench/page.tsx",
+      "component": "GraphqlWorkbenchPage",
+      "element": "WideToolPageContainer",
+      "line": 70
+    },
+    {
+      "file": "src/features/tools/gzip-brotli-lab/page.tsx",
+      "component": "GzipBrotliLabPage",
+      "element": "WideToolPageContainer",
+      "line": 113
+    },
+    {
+      "file": "src/features/tools/har-viewer-sanitizer/page.tsx",
+      "component": "HarViewerSanitizerPage",
+      "element": "WideToolPageContainer",
+      "line": 96
+    },
+    {
+      "file": "src/features/tools/hash-generator/page.tsx",
+      "component": "HashGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 141
+    },
+    {
+      "file": "src/features/tools/header-diff/page.tsx",
+      "component": "HeaderDiffPage",
+      "element": "WideToolPageContainer",
+      "line": 61
+    },
+    {
+      "file": "src/features/tools/hex-bytes-workbench/page.tsx",
+      "component": "HexBytesWorkbenchPage",
+      "element": "WideToolPageContainer",
+      "line": 54
+    },
+    {
+      "file": "src/features/tools/html-css-beautifier/page.tsx",
+      "component": "HtmlCssBeautifierPage",
+      "element": "WideToolPageContainer",
+      "line": 8
+    },
+    {
+      "file": "src/features/tools/html-encoder-decoder/page.tsx",
+      "component": "HtmlEncoderDecoderPage",
+      "element": "WideToolPageContainer",
+      "line": 110
+    },
+    {
+      "file": "src/features/tools/html-formatter/page.tsx",
+      "component": "HtmlFormatterPage",
+      "element": "WideToolPageContainer",
+      "line": 8
+    },
+    {
+      "file": "src/features/tools/html-minifier/page.tsx",
+      "component": "HtmlMinifierPage",
+      "element": "WideToolPageContainer",
+      "line": 205
+    },
+    {
+      "file": "src/features/tools/html-to-markdown/page.tsx",
+      "component": "HtmlToMarkdownPage",
+      "element": "WideToolPageContainer",
+      "line": 98
+    },
+    {
+      "file": "src/features/tools/http-request-builder/page.tsx",
+      "component": "HttpRequestBuilderPage",
+      "element": "ToolPageContainer",
+      "line": 156
+    },
+    {
+      "file": "src/features/tools/http-status-codes/page.tsx",
+      "component": "HttpStatusCodesPage",
+      "element": "ToolPageContainer",
+      "line": 116
+    },
+    {
+      "file": "src/features/tools/id-generator/page.tsx",
+      "component": "IdGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 106
+    },
+    {
+      "file": "src/features/tools/image-average-color-finder/page.tsx",
+      "component": "ImageAverageColorFinderPage",
+      "element": "ToolPageContainer",
+      "line": 128
+    },
+    {
+      "file": "src/features/tools/image-base64/page.tsx",
+      "component": "ImageBase64Page",
+      "element": "ToolPageContainer",
+      "line": 241
+    },
+    {
+      "file": "src/features/tools/image-caption-generator/page.tsx",
+      "component": "ImageCaptionGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 254
+    },
+    {
+      "file": "src/features/tools/image-color-extractor/page.tsx",
+      "component": "ImageColorExtractorPage",
+      "element": "ToolPageContainer",
+      "line": 174
+    },
+    {
+      "file": "src/features/tools/image-color-picker/page.tsx",
+      "component": "ImageColorPickerPage",
+      "element": "ToolPageContainer",
+      "line": 207
+    },
+    {
+      "file": "src/features/tools/image-cropper/page.tsx",
+      "component": "ImageCropperPage",
+      "element": "ToolPageContainer",
+      "line": 227
+    },
+    {
+      "file": "src/features/tools/image-filters/page.tsx",
+      "component": "ImageFiltersPage",
+      "element": "ToolPageContainer",
+      "line": 198
+    },
+    {
+      "file": "src/features/tools/image-privacy-workbench/page.tsx",
+      "component": "ImagePrivacyWorkbenchPage",
+      "element": "ToolPageContainer",
+      "line": 81
+    },
+    {
+      "file": "src/features/tools/image-resizer/page.tsx",
+      "component": "ImageResizerPage",
+      "element": "ToolPageContainer",
+      "line": 305
+    },
+    {
+      "file": "src/features/tools/instagram-filters/page.tsx",
+      "component": "InstagramFiltersPage",
+      "element": "ToolPageContainer",
+      "line": 181
+    },
+    {
+      "file": "src/features/tools/instagram-photo-downloader/page.tsx",
+      "component": "InstagramPhotoDownloaderPage",
+      "element": "ToolPageContainer",
+      "line": 313
+    },
+    {
+      "file": "src/features/tools/instagram-post-generator/page.tsx",
+      "component": "InstagramPostGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 263
+    },
+    {
+      "file": "src/features/tools/instagram-story-generator/page.tsx",
+      "component": "InstagramStoryGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 290
+    },
+    {
+      "file": "src/features/tools/invisible-characters-detector/page.tsx",
+      "component": "InvisibleCharsDetectorPage",
+      "element": "ToolPageContainer",
+      "line": 91
+    },
+    {
+      "file": "src/features/tools/javascript-formatter/page.tsx",
+      "component": "JavascriptFormatterPage",
+      "element": "WideToolPageContainer",
+      "line": 187
+    },
+    {
+      "file": "src/features/tools/javascript-minifier/page.tsx",
+      "component": "JavascriptMinifierPage",
+      "element": "WideToolPageContainer",
+      "line": 198
+    },
+    {
+      "file": "src/features/tools/jq-playground/page.tsx",
+      "component": "JqPlaygroundPage",
+      "element": "WideToolPageContainer",
+      "line": 173
+    },
+    {
+      "file": "src/features/tools/json-diff-viewer/page.tsx",
+      "component": "JsonDiffViewerPage",
+      "element": "WideToolPageContainer",
+      "line": 172
+    },
+    {
+      "file": "src/features/tools/json-formatter/page.tsx",
+      "component": "JsonFormatterPage",
+      "element": "WideToolPageContainer",
+      "line": 567
+    },
+    {
+      "file": "src/features/tools/json-schema-workbench/page.tsx",
+      "component": "JsonSchemaWorkbenchPage",
+      "element": "WideToolPageContainer",
+      "line": 72
+    },
+    {
+      "file": "src/features/tools/json-to-typescript/page.tsx",
+      "component": "JsonToTypeScriptPage",
+      "element": "WideToolPageContainer",
+      "line": 183
+    },
+    {
+      "file": "src/features/tools/jsonpath-playground/page.tsx",
+      "component": "JsonPathPlaygroundPage",
+      "element": "WideToolPageContainer",
+      "line": 116
+    },
+    {
+      "file": "src/features/tools/jwt-decoder/page.tsx",
+      "component": "JwtDecoderPage",
+      "element": "WideToolPageContainer",
+      "line": 150
+    },
+    {
+      "file": "src/features/tools/jwt-verifier/page.tsx",
+      "component": "JwtVerifierPage",
+      "element": "ToolPageContainer",
+      "line": 148
+    },
+    {
+      "file": "src/features/tools/jwt-workbench/page.tsx",
+      "component": "JwtWorkbenchPage",
+      "element": "ToolPageContainer",
+      "line": 262
+    },
+    {
+      "file": "src/features/tools/letter-counter/page.tsx",
+      "component": "LetterCounterPage",
+      "element": "WideToolPageContainer",
+      "line": 88
+    },
+    {
+      "file": "src/features/tools/list-randomizer/page.tsx",
+      "component": "ListRandomizerPage",
+      "element": "ToolPageContainer",
+      "line": 204
+    },
+    {
+      "file": "src/features/tools/local-log-parser/page.tsx",
+      "component": "LocalLogParserPage",
+      "element": "WideToolPageContainer",
+      "line": 145
+    },
+    {
+      "file": "src/features/tools/log-scrubber/page.tsx",
+      "component": "LogScrubberPage",
+      "element": "WideToolPageContainer",
+      "line": 142
+    },
+    {
+      "file": "src/features/tools/lorem-ipsum/page.tsx",
+      "component": "LoremIpsumGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 141
+    },
+    {
+      "file": "src/features/tools/markdown-preview/page.tsx",
+      "component": "MarkdownPreviewPage",
+      "element": "WideToolPageContainer",
+      "line": 241
+    },
+    {
+      "file": "src/features/tools/md5-generator/page.tsx",
+      "component": "Md5GeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 12
+    },
+    {
+      "file": "src/features/tools/messagepack-inspector/page.tsx",
+      "component": "MessagepackInspectorPage",
+      "element": "ToolPageContainer",
+      "line": 57
+    },
+    {
+      "file": "src/features/tools/multiple-whitespace-remover/page.tsx",
+      "component": "MultipleWhitespaceRemoverPage",
+      "element": "WideToolPageContainer",
+      "line": 116
+    },
+    {
+      "file": "src/features/tools/ndjson-formatter/page.tsx",
+      "component": "NdjsonFormatterPage",
+      "element": "WideToolPageContainer",
+      "line": 103
+    },
+    {
+      "file": "src/features/tools/oauth-jwks-workbench/page.tsx",
+      "component": "OauthJwksWorkbenchPage",
+      "element": "ToolPageContainer",
+      "line": 106
+    },
+    {
+      "file": "src/features/tools/open-graph-meta-generator/page.tsx",
+      "component": "OpenGraphMetaGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 87
+    },
+    {
+      "file": "src/features/tools/openapi-diff/page.tsx",
+      "component": "OpenapiDiffPage",
+      "element": "WideToolPageContainer",
+      "line": 68
+    },
+    {
+      "file": "src/features/tools/openapi-mock/page.tsx",
+      "component": "OpenApiMockPage",
+      "element": "WideToolPageContainer",
+      "line": 128
+    },
+    {
+      "file": "src/features/tools/openapi-viewer/page.tsx",
+      "component": "OpenApiViewerPage",
+      "element": "WideToolPageContainer",
+      "line": 183
+    },
+    {
+      "file": "src/features/tools/password-generator/page.tsx",
+      "component": "PasswordGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 203
+    },
+    {
+      "file": "src/features/tools/photo-censor/page.tsx",
+      "component": "PhotoCensorPage",
+      "element": "ToolPageContainer",
+      "line": 229
+    },
+    {
+      "file": "src/features/tools/pipeline-builder/page.tsx",
+      "component": "PipelineBuilderPage",
+      "element": "WideToolPageContainer",
+      "line": 367
+    },
+    {
+      "file": "src/features/tools/public-key-jwk-helper/page.tsx",
+      "component": "PublicKeyJwkHelperPage",
+      "element": "ToolPageContainer",
+      "line": 135
+    },
+    {
+      "file": "src/features/tools/qr-code-generator/page.tsx",
+      "component": "QrCodeGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 401
+    },
+    {
+      "file": "src/features/tools/react-native-shadow-generator/page.tsx",
+      "component": "ReactNativeShadowGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 109
+    },
+    {
+      "file": "src/features/tools/regex-generator/page.tsx",
+      "component": "RegexGeneratorPage",
+      "element": "WideToolPageContainer",
+      "line": 208
+    },
+    {
+      "file": "src/features/tools/regex-tester/page.tsx",
+      "component": "RegexTesterPage",
+      "element": "ToolPageContainer",
+      "line": 129
+    },
+    {
+      "file": "src/features/tools/robots-txt-tester/page.tsx",
+      "component": "RobotsTxtTesterPage",
+      "element": "ToolPageContainer",
+      "line": 73
+    },
+    {
+      "file": "src/features/tools/saml-decoder/page.tsx",
+      "component": "SamlDecoderPage",
+      "element": "WideToolPageContainer",
+      "line": 72
+    },
+    {
+      "file": "src/features/tools/scanned-pdf-converter/page.tsx",
+      "component": "ScannedPdfConverterPage",
+      "element": "ToolPageContainer",
+      "line": 309
+    },
+    {
+      "file": "src/features/tools/security-header-analyzer/page.tsx",
+      "component": "SecurityHeaderAnalyzerPage",
+      "element": "ToolPageContainer",
+      "line": 103
+    },
+    {
+      "file": "src/features/tools/seo-metadata-workbench/page.tsx",
+      "component": "SeoMetadataWorkbenchPage",
+      "element": "ToolPageContainer",
+      "line": 53
+    },
+    {
+      "file": "src/features/tools/slugify-case-converter/page.tsx",
+      "component": "SlugifyCaseConverterPage",
+      "element": "ToolPageContainer",
+      "line": 114
+    },
+    {
+      "file": "src/features/tools/sql-formatter/page.tsx",
+      "component": "SqlFormatterPage",
+      "element": "WideToolPageContainer",
+      "line": 142
+    },
+    {
+      "file": "src/features/tools/structured-data-visualizer/page.tsx",
+      "component": "StructuredDataVisualizerPage",
+      "element": "WideToolPageContainer",
+      "line": 72
+    },
+    {
+      "file": "src/features/tools/svg-blob-generator/page.tsx",
+      "component": "SvgBlobGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 105
+    },
+    {
+      "file": "src/features/tools/svg-optimizer/page.tsx",
+      "component": "SvgOptimizerPage",
+      "element": "WideToolPageContainer",
+      "line": 158
+    },
+    {
+      "file": "src/features/tools/svg-pattern-generator/page.tsx",
+      "component": "SvgPatternGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 111
+    },
+    {
+      "file": "src/features/tools/svg-stroke-to-fill-converter/page.tsx",
+      "component": "SvgStrokeToFillConverterPage",
+      "element": "ToolPageContainer",
+      "line": 87
+    },
+    {
+      "file": "src/features/tools/svg-to-png-converter/page.tsx",
+      "component": "SvgToPngConverterPage",
+      "element": "ToolPageContainer",
+      "line": 217
+    },
+    {
+      "file": "src/features/tools/text-diff-checker/page.tsx",
+      "component": "TextDiffCheckerPage",
+      "element": "WideToolPageContainer",
+      "line": 43
+    },
+    {
+      "file": "src/features/tools/text-to-handwriting-converter/page.tsx",
+      "component": "TextToHandwritingConverterPage",
+      "element": "ToolPageContainer",
+      "line": 232
+    },
+    {
+      "file": "src/features/tools/totp-generator/page.tsx",
+      "component": "TotpGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 105
+    },
+    {
+      "file": "src/features/tools/tweet-generator/page.tsx",
+      "component": "TweetGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 307
+    },
+    {
+      "file": "src/features/tools/tweet-to-image-converter/page.tsx",
+      "component": "TweetToImageConverterPage",
+      "element": "ToolPageContainer",
+      "line": 340
+    },
+    {
+      "file": "src/features/tools/twitter-ad-revenue-generator/page.tsx",
+      "component": "TwitterAdRevenueGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 127
+    },
+    {
+      "file": "src/features/tools/unicode-inspector/page.tsx",
+      "component": "UnicodeInspectorPage",
+      "element": "WideToolPageContainer",
+      "line": 38
+    },
+    {
+      "file": "src/features/tools/unix-timestamp/page.tsx",
+      "component": "UnixTimestampPage",
+      "element": "ToolPageContainer",
+      "line": 106
+    },
+    {
+      "file": "src/features/tools/url-encode-decode/page.tsx",
+      "component": "UrlEncodeDecodePage",
+      "element": "WideToolPageContainer",
+      "line": 170
+    },
+    {
+      "file": "src/features/tools/url-parser/page.tsx",
+      "component": "UrlParserPage",
+      "element": "ToolPageContainer",
+      "line": 197
+    },
+    {
+      "file": "src/features/tools/user-agent-parser/page.tsx",
+      "component": "UserAgentParserPage",
+      "element": "ToolPageContainer",
+      "line": 64
+    },
+    {
+      "file": "src/features/tools/uuid-generator/page.tsx",
+      "component": "UuidGeneratorPage",
+      "element": "ToolPageContainer",
+      "line": 144
+    },
+    {
+      "file": "src/features/tools/vimeo-thumbnail-grabber/page.tsx",
+      "component": "VimeoThumbnailGrabberPage",
+      "element": "ToolPageContainer",
+      "line": 226
+    },
+    {
+      "file": "src/features/tools/xml-formatter/page.tsx",
+      "component": "XmlFormatterPage",
+      "element": "WideToolPageContainer",
+      "line": 99
+    },
+    {
+      "file": "src/features/tools/yaml-json-converter/page.tsx",
+      "component": "YamlJsonConverterPage",
+      "element": "WideToolPageContainer",
+      "line": 166
+    },
+    {
+      "file": "src/features/tools/yaml-merge-patch-explorer/page.tsx",
+      "component": "YamlMergePatchExplorerPage",
+      "element": "WideToolPageContainer",
+      "line": 95
+    },
+    {
+      "file": "src/features/tools/youtube-thumbnail-grabber/page.tsx",
+      "component": "YouTubeThumbnailGrabberPage",
+      "element": "ToolPageContainer",
+      "line": 226
+    },
+    {
+      "file": "src/features/tools/yq-playground/page.tsx",
+      "component": "YqPlaygroundPage",
+      "element": "WideToolPageContainer",
+      "line": 68
+    }
+  ],
+  "widthTokensByArea": {
+    "app": {
+      "container": 1,
+      "grid-cols-1": 5,
+      "lg:grid-cols-2": 1,
+      "lg:grid-cols-3": 1,
+      "lg:grid-cols-5": 1,
+      "max-w-2xl": 2,
+      "max-w-3xl": 10,
+      "max-w-4xl": 1,
+      "max-w-screen-2xl": 1,
+      "max-w-xl": 1,
+      "md:grid-cols-2": 7,
+      "md:grid-cols-3": 3,
+      "sm:grid-cols-2": 52,
+      "sm:grid-cols-3": 3,
+      "w-full": 5
+    },
+    "layout": {
+      "col-span-2": 1,
+      "container": 2,
+      "grid-cols-1": 1,
+      "grid-cols-2": 2,
+      "grid-cols-3": 1,
+      "max-w-[1400px]": 1,
+      "max-w-[140px]": 1,
+      "max-w-[88px]": 1,
+      "max-w-3xl": 2,
+      "max-w-5xl": 1,
+      "max-w-6xl": 3,
+      "max-w-md": 1,
+      "max-w-screen-2xl": 3,
+      "max-w-sm": 1,
+      "md:col-span-4": 1,
+      "md:col-span-8": 1,
+      "md:grid-cols-12": 1,
+      "sm:grid-cols-2": 1,
+      "sm:grid-cols-3": 1,
+      "w-full": 10
+    },
+    "tools": {
+      "col-span-2": 2,
+      "col-span-3": 1,
+      "col-span-9": 1,
+      "col-span-full": 1,
+      "container": 37,
+      "grid-cols-[4.5rem_1fr]": 1,
+      "grid-cols-[56px_1fr]": 2,
+      "grid-cols-[96px_120px_minmax(0,1fr)_96px]": 2,
+      "grid-cols-1": 98,
+      "grid-cols-12": 1,
+      "grid-cols-2": 28,
+      "grid-cols-3": 9,
+      "grid-cols-5": 1,
+      "lg:col-span-2": 1,
+      "lg:col-span-3": 5,
+      "lg:col-span-4": 2,
+      "lg:col-span-8": 2,
+      "lg:col-span-9": 3,
+      "lg:grid-cols-[1fr_auto_1fr]": 1,
+      "lg:grid-cols-[240px_minmax(0,1fr)]": 1,
+      "lg:grid-cols-[340px_minmax(0,1fr)_360px]": 1,
+      "lg:grid-cols-[420px_minmax(0,1fr)]": 1,
+      "lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]": 2,
+      "lg:grid-cols-[minmax(0,1fr)_320px]": 2,
+      "lg:grid-cols-1": 1,
+      "lg:grid-cols-2": 51,
+      "lg:grid-cols-3": 3,
+      "lg:grid-cols-5": 2,
+      "lg:grid-cols-6": 2,
+      "lg:grid-cols-8": 1,
+      "max-w-[200px]": 1,
+      "max-w-[300px]": 1,
+      "max-w-[62%]": 1,
+      "max-w-[620px]": 1,
+      "max-w-3xl": 16,
+      "max-w-full": 18,
+      "max-w-lg": 1,
+      "max-w-md": 1,
+      "max-w-none": 1,
+      "max-w-sm": 2,
+      "max-w-xs": 1,
+      "md:col-span-12": 4,
+      "md:col-span-2": 3,
+      "md:col-span-4": 8,
+      "md:col-span-5": 1,
+      "md:col-span-7": 1,
+      "md:col-span-8": 6,
+      "md:grid-cols-[1fr_auto_1fr_auto_1fr]": 1,
+      "md:grid-cols-[1fr_auto]": 2,
+      "md:grid-cols-[minmax(0,1fr)_180px_180px]": 1,
+      "md:grid-cols-12": 9,
+      "md:grid-cols-2": 15,
+      "md:grid-cols-3": 7,
+      "md:grid-cols-4": 5,
+      "md:grid-cols-6": 1,
+      "sm:col-span-2": 16,
+      "sm:grid-cols-[1.2fr_1fr]": 1,
+      "sm:grid-cols-[11rem_1fr]": 1,
+      "sm:grid-cols-[160px_1fr]": 1,
+      "sm:grid-cols-[180px_1fr]": 1,
+      "sm:grid-cols-[1fr_auto_1fr]": 1,
+      "sm:grid-cols-[minmax(0,1fr)_minmax(220px,320px)]": 1,
+      "sm:grid-cols-2": 54,
+      "sm:grid-cols-3": 8,
+      "sm:grid-cols-4": 1,
+      "w-full": 131,
+      "xl:grid-cols-[0.9fr_1.1fr]": 1,
+      "xl:grid-cols-[1.02fr_0.98fr]": 1,
+      "xl:grid-cols-[1.05fr_0.95fr]": 6,
+      "xl:grid-cols-[1.08fr_0.92fr]": 8,
+      "xl:grid-cols-[1.15fr_0.85fr]": 2,
+      "xl:grid-cols-[1.1fr_0.9fr]": 26,
+      "xl:grid-cols-[1.2fr_0.8fr]": 1,
+      "xl:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)]": 1,
+      "xl:grid-cols-3": 2
+    },
+    "route-surfaces": {
+      "container": 11,
+      "grid-cols-1": 4,
+      "lg:grid-cols-[0.9fr_1.1fr]": 1,
+      "lg:grid-cols-[1.15fr_0.85fr]": 1,
+      "lg:grid-cols-2": 2,
+      "lg:grid-cols-3": 3,
+      "max-w-2xl": 1,
+      "max-w-3xl": 14,
+      "max-w-4xl": 2,
+      "max-w-xl": 1,
+      "md:grid-cols-2": 3,
+      "md:grid-cols-3": 1,
+      "sm:grid-cols-[2.5rem_1fr]": 1,
+      "sm:grid-cols-2": 12,
+      "w-full": 2,
+      "xl:grid-cols-[0.95fr_1.05fr]": 2,
+      "xl:grid-cols-[1.15fr_0.85fr]": 1,
+      "xl:grid-cols-[1.1fr_0.9fr]": 2,
+      "xl:grid-cols-3": 1
+    },
+    "install": {
+      "max-w-3xl": 3,
+      "md:grid-cols-3": 1,
+      "sm:grid-cols-[1.1fr_0.9fr]": 1,
+      "w-full": 1
+    },
+    "scaffold": {
+      "lg:grid-cols-2": 1
+    }
+  }
+}

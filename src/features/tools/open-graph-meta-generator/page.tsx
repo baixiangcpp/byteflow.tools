@@ -15,6 +15,7 @@ import {
     normalizeAbsoluteHttpUrl,
     type OpenGraphInput,
 } from "@/features/tools/open-graph-meta-generator/utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 export function OpenGraphMetaGeneratorPage() {
     const { t, lang } = useLang()
@@ -83,7 +84,7 @@ export function OpenGraphMetaGeneratorPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -181,7 +182,7 @@ export function OpenGraphMetaGeneratorPage() {
                     />
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }
 

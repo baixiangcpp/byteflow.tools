@@ -194,7 +194,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-background/90" />
       </div>
 
-      <div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-12 px-4 pb-20 pt-10 sm:px-6 lg:gap-16 lg:px-8">
+      <div data-route-width-exception="home-shell" className="mx-auto flex w-full max-w-screen-2xl flex-col gap-12 px-4 pb-20 pt-10 sm:px-6 lg:gap-16 lg:px-8">
         {/* Hero Section */}
         <section
           className="home-reveal relative overflow-hidden rounded-[2rem] border border-border/75 bg-card/70 px-6 py-12 shadow-[0_32px_80px_-36px_rgba(0,0,0,0.75)] backdrop-blur-md dark:shadow-black/60 md:backdrop-blur-xl sm:px-8 sm:py-14 lg:px-12 lg:py-16"
@@ -203,7 +203,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
           <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(130deg,hsl(189_94%_46%/0.14),transparent_40%,hsl(31_94%_56%/0.14))]" />
           <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:linear-gradient(hsl(215_30%_84%/0.26)_1px,transparent_1px),linear-gradient(90deg,hsl(215_30%_84%/0.26)_1px,transparent_1px)] [background-size:34px_34px]" />
 
-          <div className="relative max-w-4xl mx-auto text-center">
+          <div data-route-width-exception="home-hero" className="relative max-w-4xl mx-auto text-center">
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/12 px-4 py-2 text-sm font-medium text-primary shadow-sm shadow-primary/20">
               <span className="h-2 w-2 rounded-full bg-primary shadow-[0_0_0_6px_rgba(14,165,233,0.22)] animate-pulse" />
               {t.site.hero_badge}
@@ -217,7 +217,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
               {t.site.hero_title_2}
             </h1>
 
-            <p className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg lg:text-xl">
+            <p data-route-width-exception="home-copy" className="mx-auto mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground sm:text-lg lg:text-xl">
               {t.site.hero_subtitle}
             </p>
 

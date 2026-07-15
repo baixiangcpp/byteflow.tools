@@ -257,6 +257,7 @@ import { Copy, Play, TestTube2, Trash2 } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
+import { ToolPageContainer } from "@/components/layout/page-container"
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { requireTranslationValue } from "@/core/i18n/i18n"
@@ -307,7 +308,7 @@ export function ${componentName}Page() {
     }
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col gap-6">
+        <ToolPageContainer className="flex h-full flex-col gap-6">
             <div>
                 <h1 className="text-2xl font-bold tracking-tight text-foreground">{title}</h1>
                 <p className="mt-1 text-muted-foreground">{description}</p>
@@ -348,7 +349,7 @@ export function ${componentName}Page() {
                     <Textarea value={output} readOnly className="min-h-[360px] font-mono" />
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }
 `;

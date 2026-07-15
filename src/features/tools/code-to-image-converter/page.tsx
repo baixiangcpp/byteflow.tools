@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { type CodeImageTheme, renderCodeToPngDataUrl } from "@/features/tools/code-to-image-converter/utils"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE_CODE = [
     "export function buildPreview(id) {",
@@ -95,7 +96,7 @@ export function CodeToImageConverterPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-[1400px] flex-col space-y-8">
+        <WideToolPageContainer className="flex h-full flex-col space-y-8">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -174,6 +175,6 @@ export function CodeToImageConverterPage() {
                     )}
                 </ToolPreviewArea>
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }
