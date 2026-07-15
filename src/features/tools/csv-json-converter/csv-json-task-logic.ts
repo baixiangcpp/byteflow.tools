@@ -1,5 +1,5 @@
-import { csvToJson, jsonToCsv } from "./logic"
-import type { Direction } from "./types"
+import { csvToJsonWithDiagnostics, jsonToCsv } from "./logic"
+import type { CsvJsonDiagnostic, Direction } from "./types"
 
 export type CsvJsonTaskInput = {
     input: string
@@ -11,6 +11,8 @@ export type CsvJsonTaskInput = {
 
 export type CsvJsonTaskResult = {
     output: string
+    diagnostics: CsvJsonDiagnostic[]
+    detectedDelimiter?: string
 }
 
 export function runCsvJsonTaskSync({
@@ -20,9 +22,12 @@ export function runCsvJsonTaskSync({
     hasHeader,
     typeInference,
 }: CsvJsonTaskInput): CsvJsonTaskResult {
+    if (direction === "csv-to-json") {
+        return csvToJsonWithDiagnostics(input, delimiter, hasHeader, typeInference)
+    }
+
     return {
-        output: direction === "csv-to-json"
-            ? csvToJson(input, delimiter, hasHeader, typeInference)
-            : jsonToCsv(input, delimiter, hasHeader),
+        output: jsonToCsv(input, delimiter, hasHeader),
+        diagnostics: [],
     }
 }

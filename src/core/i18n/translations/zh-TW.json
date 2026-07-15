@@ -1319,6 +1319,7 @@
       "csv_has_header_label": "首列為標頭",
       "json_include_header_label": "包含標頭列",
       "type_inference_label": "自動推斷型別（數字、布林值）",
+      "diagnostics_label": "CSV 診斷",
       "input_upload_action": "上傳",
       "error_json_array_required": "JSON 必須是物件陣列或陣列陣列。"
     },

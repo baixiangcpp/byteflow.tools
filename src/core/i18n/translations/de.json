@@ -1319,6 +1319,7 @@
       "csv_has_header_label": "Erste Zeile als Kopfzeile",
       "json_include_header_label": "Kopfzeile einschließen",
       "type_inference_label": "Typen erkennen (Zahlen, Boolesche Werte)",
+      "diagnostics_label": "CSV-Diagnosen",
       "input_upload_action": "Hochladen",
       "error_json_array_required": "JSON muss ein Array aus Objekten oder Arrays sein."
     },

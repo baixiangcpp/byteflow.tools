@@ -16,7 +16,21 @@ class MockCsvJsonWorker {
                 this.onmessage?.({ data: { ok: false, error: "CSV_JSON_WORKER_FAILED" } } as MessageEvent)
                 return
             }
-            this.onmessage?.({ data: { ok: true, value: { output: "from-worker" } } } as MessageEvent)
+            this.onmessage?.({
+                data: {
+                    ok: true,
+                    value: {
+                        output: "from-worker",
+                        diagnostics: [{
+                            code: "delimiter_detected",
+                            severity: "info",
+                            message: "Auto-detected comma (,).",
+                            delimiter: ",",
+                        }],
+                        detectedDelimiter: ",",
+                    },
+                },
+            } as MessageEvent)
         })
     }
 
@@ -42,14 +56,27 @@ describe("runCsvJsonTask", () => {
     it("uses the worker result when workers are available", async () => {
         vi.stubGlobal("Worker", MockCsvJsonWorker)
 
-        await expect(runCsvJsonTask(input)).resolves.toEqual({ output: "from-worker" })
+        await expect(runCsvJsonTask(input)).resolves.toEqual({
+            output: "from-worker",
+            diagnostics: [{
+                code: "delimiter_detected",
+                severity: "info",
+                message: "Auto-detected comma (,).",
+                delimiter: ",",
+            }],
+            detectedDelimiter: ",",
+        })
     })
 
     it("falls back to sync conversion on non-timeout worker failures", async () => {
         MockCsvJsonWorker.mode = "error"
         vi.stubGlobal("Worker", MockCsvJsonWorker)
 
-        await expect(runCsvJsonTask(input)).resolves.toEqual({ output: "[\n  {\n    \"name\": \"Ada\"\n  }\n]" })
+        await expect(runCsvJsonTask(input)).resolves.toEqual({
+            output: "[\n  {\n    \"name\": \"Ada\"\n  }\n]",
+            diagnostics: [],
+            detectedDelimiter: ",",
+        })
     })
 
     it("does not fall back when aborted", async () => {

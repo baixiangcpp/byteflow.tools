@@ -4,7 +4,7 @@ import { cleanText, analyzeText, type CleanOptions } from "@/core/utils/invisibl
 import { scrubLogs, DEFAULT_SCRUB_OPTIONS, type ScrubOptions } from "@/core/utils/log-scrubber-utils"
 import { encodeUrlByMode, decodeUrlByMode, type UrlEncodingMode } from "@/core/utils/url-codec-utils"
 import { removeExtraWhitespace } from "@/core/utils/whitespace-utils"
-import { csvToJson, jsonToCsv } from "@/features/tools/csv-json-converter/logic"
+import { csvToJsonWithDiagnostics, jsonToCsv } from "@/features/tools/csv-json-converter/logic"
 import { JSON_ARRAY_REQUIRED_ERROR } from "@/features/tools/csv-json-converter/constants"
 import { exportEnvVars, parseEnvFile, type EnvExportFormat } from "@/features/tools/env-parser/utils"
 import { formatDevopsYamlReport, validateDevopsYaml } from "@/features/tools/devops-yaml-validator/logic"
@@ -360,10 +360,18 @@ const csvJsonAdapter: PipelineToolAdapter = {
             const delimiter = stringOption(options, "delimiter", "auto")
             const hasHeader = booleanOption(options, "hasHeader", true)
             const typeInference = booleanOption(options, "typeInference", true)
-            const output = direction === "csv-to-json"
-                ? csvToJson(input, delimiter, hasHeader, typeInference)
-                : jsonToCsv(input, delimiter, hasHeader)
-            return success(output, startedAt, input)
+            if (direction === "csv-to-json") {
+                const result = csvToJsonWithDiagnostics(input, delimiter, hasHeader, typeInference)
+                return success(
+                    result.output,
+                    startedAt,
+                    input,
+                    result.diagnostics
+                        .filter((diagnostic) => diagnostic.severity === "warning")
+                        .map((diagnostic) => diagnostic.message),
+                )
+            }
+            return success(jsonToCsv(input, delimiter, hasHeader), startedAt, input)
         } catch (error) {
             const message = error instanceof Error && error.message === JSON_ARRAY_REQUIRED_ERROR
                 ? "JSON input must be an array to convert to CSV."

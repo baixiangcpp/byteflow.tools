@@ -1319,6 +1319,7 @@
       "csv_has_header_label": "首行为表头",
       "json_include_header_label": "包含表头行",
       "type_inference_label": "自动推断类型（数字、布尔值）",
+      "diagnostics_label": "CSV 诊断",
       "input_upload_action": "上传",
       "error_json_array_required": "JSON 必须是对象数组或数组数组。"
     },

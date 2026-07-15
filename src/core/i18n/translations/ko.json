@@ -1319,6 +1319,7 @@
       "csv_has_header_label": "첫 행을 헤더로 사용",
       "json_include_header_label": "헤더 행 포함",
       "type_inference_label": "유형 추론 사용 (숫자, 불리언)",
+      "diagnostics_label": "CSV 진단",
       "input_upload_action": "업로드",
       "error_json_array_required": "JSON은 객체 배열 또는 배열 배열이어야 합니다."
     },

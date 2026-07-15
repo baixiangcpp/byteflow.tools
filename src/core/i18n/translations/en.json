@@ -1347,6 +1347,7 @@
       "csv_has_header_label": "First row is header",
       "json_include_header_label": "Include header row",
       "type_inference_label": "Type inference (numbers, booleans)",
+      "diagnostics_label": "CSV diagnostics",
       "input_upload_action": "Upload",
       "error_json_array_required": "JSON must be an array of objects or arrays."
     },

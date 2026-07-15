@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ArrowLeftRight, Copy, Eraser, Play, Settings2, Download, Upload } from "lucide-react"
+import { ArrowLeftRight, Copy, Eraser, Play, Settings2, Download, Upload, TriangleAlert } from "lucide-react"
 import { useLang } from "@/core/i18n/lang-provider"
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
@@ -29,7 +29,7 @@ import {
 } from "./constants"
 import { runCsvJsonTask } from "./csv-json-task"
 import { InlineButton } from "./components"
-import type { Direction } from "./types"
+import type { CsvJsonDiagnostic, Direction } from "./types"
 
 async function loadToast() {
     const { toast } = await import("sonner")
@@ -44,6 +44,7 @@ export function CsvJsonConverterPage() {
     const [input, setInput] = React.useState("")
     const [output, setOutput] = React.useState("")
     const [error, setError] = React.useState<string | null>(null)
+    const [diagnostics, setDiagnostics] = React.useState<CsvJsonDiagnostic[]>([])
     const [direction, setDirection] = React.useState<Direction>("csv-to-json")
     const [delimiter, setDelimiter] = React.useState("auto")
     const [hasHeader, setHasHeader] = React.useState(true)
@@ -117,6 +118,7 @@ export function CsvJsonConverterPage() {
         if (!input.trim()) {
             setOutput("")
             setError(null)
+            setDiagnostics([])
             setIsConverting(false)
             return
         }
@@ -124,6 +126,7 @@ export function CsvJsonConverterPage() {
         if (isOverUtf8Budget(input, TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes)) {
             setOutput("")
             setError(buildInputTooLargeMessage(t.common.local_input_too_large, TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes))
+            setDiagnostics([])
             setIsConverting(false)
             return
         }
@@ -131,22 +134,29 @@ export function CsvJsonConverterPage() {
         if (direction === "csv-to-json" && countNonEmptyLines(input, TOOL_RUNTIME_BUDGETS.maxCsvJsonRows).exceeded) {
             setOutput("")
             setError(t.common.local_row_limit_exceeded.replace("{count}", String(TOOL_RUNTIME_BUDGETS.maxCsvJsonRows)))
+            setDiagnostics([])
             setIsConverting(false)
             return
         }
 
         const controller = new AbortController()
         convertAbortControllerRef.current = controller
+        setOutput("")
+        setError(null)
+        setDiagnostics([])
         setIsConverting(true)
         void runCsvJsonTask({ input, direction, delimiter, hasHeader, typeInference }, { signal: controller.signal })
             .then((result) => {
                 if (convertRequestIdRef.current !== requestId) return
                 setOutput(result.output)
+                setDiagnostics(result.diagnostics)
                 setError(null)
             })
             .catch((e: unknown) => {
                 if (convertRequestIdRef.current !== requestId) return
                 const message = e instanceof Error ? e.message : String(e)
+                setOutput("")
+                setDiagnostics([])
                 setError(message === JSON_ARRAY_REQUIRED_ERROR ? toolT.error_json_array_required : message)
             })
             .finally(() => {
@@ -172,6 +182,7 @@ export function CsvJsonConverterPage() {
         setInput("")
         setOutput("")
         setError(null)
+        setDiagnostics([])
         removeStorageKey(INPUT_STORAGE_KEY)
     }
 
@@ -182,6 +193,7 @@ export function CsvJsonConverterPage() {
         setInput(output)
         setOutput("")
         setError(null)
+        setDiagnostics([])
     }
 
     const handleDownload = () => {
@@ -203,6 +215,8 @@ export function CsvJsonConverterPage() {
         const policy = FILE_INPUT_POLICIES["csv-json"]
         const validation = validateFileAgainstPolicy(file, policy)
         if (!validation.ok) {
+            setOutput("")
+            setDiagnostics([])
             setError(validation.reason === "too_large" ? buildInputTooLargeMessage(t.common.local_input_too_large, TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes) : validation.message)
             e.target.value = ""
             return
@@ -211,6 +225,8 @@ export function CsvJsonConverterPage() {
             .then((text) => {
                 cancelPendingConversion()
                 setInput(text)
+                setOutput("")
+                setDiagnostics([])
                 setError(null)
             })
             .catch((error) => setError(error instanceof Error ? error.message : t.common.image_file_read_failed))
@@ -353,6 +369,26 @@ export function CsvJsonConverterPage() {
                 </div>
             )}
 
+            {diagnostics.length > 0 && (
+                <section
+                    aria-label={toolT.diagnostics_label}
+                    aria-live="polite"
+                    className="rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-sm"
+                >
+                    <div className="flex items-center gap-2 font-medium text-foreground">
+                        <TriangleAlert className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true" />
+                        <h2>{toolT.diagnostics_label}</h2>
+                    </div>
+                    <ul className="mt-2 space-y-1 text-muted-foreground">
+                        {diagnostics.map((diagnostic, index) => (
+                            <li key={`${diagnostic.code}-${diagnostic.row ?? 0}-${diagnostic.column ?? 0}-${index}`}>
+                                {diagnostic.message}
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
+
             {/* Workspace Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 min-h-[600px] border rounded-lg bg-card overflow-hidden">
                 {/* Input Pane */}
@@ -378,6 +414,9 @@ export function CsvJsonConverterPage() {
                             onChange={(val) => {
                                 cancelPendingConversion()
                                 setInput(val || "")
+                                setOutput("")
+                                setDiagnostics([])
+                                setError(null)
                             }}
                             options={{
                                 minimap: { enabled: false },

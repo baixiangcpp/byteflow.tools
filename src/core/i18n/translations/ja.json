@@ -1319,6 +1319,7 @@
       "csv_has_header_label": "先頭行をヘッダーとして扱う",
       "json_include_header_label": "ヘッダー行を含める",
       "type_inference_label": "型を推定する（数値・真偽値）",
+      "diagnostics_label": "CSV 診断",
       "input_upload_action": "アップロード",
       "error_json_array_required": "JSON はオブジェクト配列または配列配列である必要があります。"
     },

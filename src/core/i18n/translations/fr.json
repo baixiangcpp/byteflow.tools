@@ -1319,6 +1319,7 @@
       "csv_has_header_label": "La premiere ligne est un en-tete",
       "json_include_header_label": "Inclure la ligne d'en-tete",
       "type_inference_label": "Deduir les types (nombres, booleens)",
+      "diagnostics_label": "Diagnostics CSV",
       "input_upload_action": "Televerser",
       "error_json_array_required": "Le JSON doit etre un tableau d'objets ou de tableaux."
     },
