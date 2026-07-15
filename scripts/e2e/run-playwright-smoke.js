@@ -1040,6 +1040,8 @@ async function assertDownloadedFile(download, expectedFilename, kind) {
     if (kind === "svg" && !contents.toString("utf8").includes("<svg")) {
         throw new Error(`${expectedFilename} did not contain SVG markup.`);
     }
+
+    return downloadPath;
 }
 
 async function assertQrDownloadJourney(context, baseUrl) {
@@ -1059,11 +1061,40 @@ async function assertQrDownloadJourney(context, baseUrl) {
         }, null, { timeout: 15_000 });
         const pngDownloadPromise = page.waitForEvent("download");
         await pngButton.click();
-        await assertDownloadedFile(await pngDownloadPromise, "qr-code.png", "png");
+        const pngDownloadPath = await assertDownloadedFile(await pngDownloadPromise, "qr-code.png", "png");
 
         const svgDownloadPromise = page.waitForEvent("download");
         await page.getByRole("button", { name: "SVG", exact: true }).first().click();
         await assertDownloadedFile(await svgDownloadPromise, "qr-code.svg", "svg");
+
+        const pageCountBeforeDecode = context.pages().length;
+        await page.getByRole("tab", { name: "Decode image", exact: true }).click();
+        const decodeInput = page.locator('input[type="file"][accept*=".png"]').first();
+        await decodeInput.setInputFiles({
+            name: "qr-code.png",
+            mimeType: "image/png",
+            buffer: await readFile(pngDownloadPath),
+        });
+        await page.waitForFunction((expectedPayload) => {
+            const output = document.querySelector('[data-testid="qr-decoded-output"]')?.textContent?.trim();
+            const error = document.querySelector('[data-testid="qr-decode-error"]')
+                || Array.from(document.querySelectorAll('[role="alert"]')).find((node) => node.textContent?.trim());
+            return output === expectedPayload || Boolean(error);
+        }, "https://byteflow.tools/qr-download-smoke", { timeout: 15_000 });
+        const decodeAlert = (await page.getByRole("alert").allTextContents()).filter((message) => message.trim());
+        if (decodeAlert.length > 0) {
+            throw new Error(`QR round-trip decode failed: ${decodeAlert.join(" ")}`);
+        }
+        if (context.pages().length !== pageCountBeforeDecode) {
+            throw new Error("QR decoding opened the decoded URL without explicit user action.");
+        }
+
+        await decodeInput.setInputFiles({
+            name: "blank.png",
+            mimeType: "image/png",
+            buffer: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64"),
+        });
+        await page.getByRole("alert").filter({ hasText: "No QR code was found" }).waitFor({ timeout: 15_000 });
         runtime.assertClean();
     } finally {
         await page.close();

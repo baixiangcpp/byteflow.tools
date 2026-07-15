@@ -8,11 +8,13 @@ import { SAMPLE_QR_TEXT } from "@/features/tools/qr-code-generator/constants"
 
 const {
     readFileAsDataUrlMock,
+    decodeQrImageFileMock,
     toastErrorMock,
     toastSuccessMock,
     toCanvasMock,
 } = vi.hoisted(() => ({
     readFileAsDataUrlMock: vi.fn(),
+    decodeQrImageFileMock: vi.fn(),
     toastErrorMock: vi.fn(),
     toastSuccessMock: vi.fn(),
     toCanvasMock: vi.fn(),
@@ -28,6 +30,7 @@ vi.mock("next/navigation", () => ({
 
 vi.mock("@/features/tools/qr-code-generator/browser-actions", () => ({
     buildQrSvg: vi.fn(),
+    decodeQrImageFile: (file: File) => decodeQrImageFileMock(file),
     downloadCanvasPng: vi.fn(),
     downloadDataUrl: vi.fn(),
     downloadSvg: vi.fn(),
@@ -58,6 +61,7 @@ describe("QR code generator logo uploads", () => {
             disconnect() {}
         })
         toCanvasMock.mockResolvedValue(undefined)
+        decodeQrImageFileMock.mockResolvedValue({ ok: false, error: "no_qr" })
         HTMLCanvasElement.prototype.getContext = vi.fn(() => null) as unknown as HTMLCanvasElement["getContext"]
         HTMLCanvasElement.prototype.toDataURL = vi.fn(() => "data:image/png;base64,qr-code")
     })
@@ -126,5 +130,38 @@ describe("QR code generator logo uploads", () => {
         fireEvent.click(screen.getByRole("button", { name: "Reset" }))
         expect(content).toHaveValue("user-owned QR payload")
         expect(screen.getByText(/Size:\s*256px/)).toBeInTheDocument()
+    })
+
+    it("decodes an uploaded QR image without opening URL payloads automatically", async () => {
+        const open = vi.spyOn(window, "open")
+        decodeQrImageFileMock.mockResolvedValueOnce({
+            ok: true,
+            payload: "https://byteflow.tools/decoded",
+            width: 256,
+            height: 256,
+        })
+        const { container } = renderPage()
+
+        fireEvent.click(screen.getByRole("tab", { name: "Decode image" }))
+        const input = container.querySelector<HTMLInputElement>('input[accept*=".png"]')
+        const qrImage = new File(["png"], "qr.png", { type: "image/png" })
+        fireEvent.change(input!, { target: { files: [qrImage] } })
+
+        expect(await screen.findByTestId("qr-decoded-output")).toHaveTextContent("https://byteflow.tools/decoded")
+        expect(open).not.toHaveBeenCalled()
+
+        expect(screen.getByRole("link", { name: "Open" })).toHaveAttribute("href", "https://byteflow.tools/decoded")
+        expect(open).not.toHaveBeenCalled()
+    })
+
+    it("localizes decode failures", async () => {
+        decodeQrImageFileMock.mockResolvedValueOnce({ ok: false, error: "no_qr" })
+        const { container } = renderPage()
+
+        fireEvent.click(screen.getByRole("tab", { name: "Decode image" }))
+        const input = container.querySelector<HTMLInputElement>('input[accept*=".png"]')
+        fireEvent.change(input!, { target: { files: [new File(["blank"], "blank.png", { type: "image/png" })] } })
+
+        expect(await screen.findByRole("alert")).toHaveTextContent("No QR code was found in this image.")
     })
 })

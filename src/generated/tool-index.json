@@ -3432,13 +3432,16 @@
       "slug": "qr-code-generator",
       "category": "generators",
       "relatedTools": [
-        "uuid_generator",
-        "password_generator",
-        "url_encode_decode"
+        "barcode_generator",
+        "image_base64",
+        "url_encode_decode",
+        "svg_to_png_converter"
       ],
       "relatedWorkflows": [],
       "keywords": [
         "qr code generator",
+        "qr code decoder",
+        "scan qr image",
         "generate qr code online",
         "qr code maker"
       ],

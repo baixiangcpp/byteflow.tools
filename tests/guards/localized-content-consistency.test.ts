@@ -35,6 +35,14 @@ const GENERATED_JA_PATH = path.join(
     "generated",
     "ja.json",
 )
+const GENERATED_QR_LOCALE_PATHS = [
+    GENERATED_ZH_CN_PATH,
+    GENERATED_ZH_TW_PATH,
+    GENERATED_JA_PATH,
+    path.join(process.cwd(), "src", "core", "seo", "components", "tool-content-template-modules", "generated", "ko.json"),
+    path.join(process.cwd(), "src", "core", "seo", "components", "tool-content-template-modules", "generated", "de.json"),
+    path.join(process.cwd(), "src", "core", "seo", "components", "tool-content-template-modules", "generated", "fr.json"),
+]
 
 describe("localized content consistency guards", () => {
     it("uses locale-agnostic regex email sample text", () => {
@@ -133,6 +141,13 @@ describe("localized content consistency guards", () => {
         expect(colorShadesSerialized).toContain("设计令牌")
         expect(colorShadesSerialized).not.toContain("设计标记")
         expect(colorShadesSerialized).not.toContain("Token 映射")
+    })
+
+    it("keeps localized QR guidance aligned with browser-local image decoding", () => {
+        for (const filePath of GENERATED_QR_LOCALE_PATHS) {
+            const templates = JSON.parse(fs.readFileSync(filePath, "utf8")) as Record<string, unknown>
+            expect(JSON.stringify(templates["qr-code-generator"])).toContain("WebP")
+        }
     })
 
     it("keeps confirmed zh-CN production fixes pinned to corrected terminology and examples", () => {

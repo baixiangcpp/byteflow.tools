@@ -8,6 +8,7 @@ export type FileInputPolicyId =
     | "image-standard"
     | "image-compact"
     | "image-logo"
+    | "qr-decode-image"
     | "svg"
     | "scan-image"
     | "recipe-json"
@@ -115,6 +116,15 @@ export const FILE_INPUT_POLICIES = {
         allowedExtensions: [".png", ".jpg", ".jpeg", ".webp", ".gif"],
         allowedMimeTypes: ["image/png", "image/jpeg", "image/webp", "image/gif"],
     },
+    "qr-decode-image": {
+        id: "qr-decode-image",
+        accept: ".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp",
+        description: "PNG, JPEG, or WebP QR images up to 8 MB and 12 MP",
+        maxBytes: 8 * 1024 * 1024,
+        maxPixels: 12_000_000,
+        allowedExtensions: [".png", ".jpg", ".jpeg", ".webp"],
+        allowedMimeTypes: ["image/png", "image/jpeg", "image/webp"],
+    },
     svg: {
         id: "svg",
         accept: ".svg,image/svg+xml",
@@ -193,6 +203,7 @@ const RASTER_POLICY_IDS = new Set<FileInputPolicyId>([
     "image-standard",
     "image-compact",
     "image-logo",
+    "qr-decode-image",
     "scan-image",
 ])
 

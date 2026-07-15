@@ -21,6 +21,11 @@ describe("file-input-policy", () => {
         expect(FILE_INPUT_POLICIES["hash-file"].maxBytes).toBe(50 * 1024 * 1024)
         expect(FILE_INPUT_POLICIES["image-standard"].maxPixels).toBe(24_000_000)
         expect(FILE_INPUT_POLICIES["image-compact"].maxPixels).toBe(16_000_000)
+        expect(FILE_INPUT_POLICIES["qr-decode-image"]).toMatchObject({
+            maxBytes: 8 * 1024 * 1024,
+            maxPixels: 12_000_000,
+        })
+        expect(FILE_INPUT_POLICIES["qr-decode-image"].accept).toBe(".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp")
         expect(formatPixelLimit(FILE_INPUT_POLICIES["scan-image"].maxPixels ?? 0)).toBe("24 MP")
         expect(FILE_INPUT_POLICIES["scan-image"].maxFiles).toBe(20)
         expect(formatFilePolicyLimit(FILE_INPUT_POLICIES["recipe-json"])).toBe("256 KB")
@@ -45,7 +50,7 @@ describe("file-input-policy", () => {
     })
 
     it("keeps raw SVG out of generic raster image policies", () => {
-        for (const policyId of ["image-standard", "image-compact", "image-logo"] as const) {
+        for (const policyId of ["image-standard", "image-compact", "image-logo", "qr-decode-image"] as const) {
             const policy = FILE_INPUT_POLICIES[policyId]
             expect(policy.accept).not.toContain("image/*")
             expect(policy.allowedExtensions).not.toContain(".svg")

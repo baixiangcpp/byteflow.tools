@@ -2166,9 +2166,10 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "key": "qr_code_generator",
         "slug": "qr-code-generator",
         "relatedToolKeys": [
-            "uuid_generator",
-            "password_generator",
-            "url_encode_decode"
+            "barcode_generator",
+            "image_base64",
+            "url_encode_decode",
+            "svg_to_png_converter"
         ],
         "relatedWorkflows": [],
         "sampleInput": null,
@@ -2177,7 +2178,8 @@ const DISCOVERY_TOOL_INDEX: Record<string, DiscoveryToolIndexEntry> = {
         "compliance": null,
         "family": "generators",
         "tags": [
-            "generators"
+            "generators",
+            "image"
         ],
         "capabilities": [
             "browser-local",

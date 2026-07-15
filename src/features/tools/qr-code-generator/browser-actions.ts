@@ -1,5 +1,5 @@
 import type { ErrorCorrectionLevel } from "./types"
-import { FILE_INPUT_POLICIES } from "@/core/files/file-input-policy"
+import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { fileToDataUrl } from "@/core/utils/image-canvas-utils"
 
 const OBJECT_URL_REVOKE_DELAY_MS = 1_000
@@ -57,6 +57,125 @@ export function injectLogoIntoSvg(svg: string, options: { dataUrl: string; size:
 
 export function readFileAsDataUrl(file: File): Promise<string> {
     return fileToDataUrl(file, FILE_INPUT_POLICIES["image-logo"])
+}
+
+export type QrDecoder = typeof import("jsqr")["default"]
+
+export function createRetryableQrDecoderLoader(loader: () => Promise<QrDecoder>) {
+    let pending: Promise<QrDecoder> | null = null
+
+    return async () => {
+        pending ??= loader()
+        const active = pending
+        try {
+            return await active
+        } catch (error) {
+            if (pending === active) pending = null
+            throw error
+        }
+    }
+}
+
+const loadQrDecoderFromChunk = createRetryableQrDecoderLoader(
+    () => import("jsqr").then((module) => module.default),
+)
+
+export function loadQrDecoder() {
+    return loadQrDecoderFromChunk()
+}
+
+export type QrDecodeResult =
+    | { ok: true; payload: string; width: number; height: number }
+    | {
+        ok: false
+        error:
+            | "empty_file"
+            | "too_large"
+            | "unsupported_type"
+            | "image_too_large"
+            | "image_load_failed"
+            | "canvas_unavailable"
+            | "decoder_unavailable"
+            | "no_qr"
+    }
+
+export function decodeQrImageData(
+    imageData: Pick<ImageData, "data" | "width" | "height">,
+    decoder: QrDecoder,
+): QrDecodeResult {
+    const decoded = decoder(imageData.data, imageData.width, imageData.height, {
+        inversionAttempts: "attemptBoth",
+    })
+    if (!decoded?.data) return { ok: false, error: "no_qr" }
+    return {
+        ok: true,
+        payload: decoded.data,
+        width: imageData.width,
+        height: imageData.height,
+    }
+}
+
+export async function decodeQrImageFile(file: File, decoder?: QrDecoder): Promise<QrDecodeResult> {
+    const policy = FILE_INPUT_POLICIES["qr-decode-image"]
+    const validation = validateFileAgainstPolicy(file, policy)
+    if (!validation.ok) {
+        const error = validation.reason === "too_large"
+            ? "too_large"
+            : validation.reason === "empty"
+                ? "empty_file"
+                : "unsupported_type"
+        return { ok: false, error }
+    }
+
+    let dataUrl: string
+    try {
+        dataUrl = await fileToDataUrl(file, policy)
+    } catch {
+        return { ok: false, error: "unsupported_type" }
+    }
+
+    let image: HTMLImageElement
+    try {
+        image = await loadImage(dataUrl)
+    } catch {
+        return { ok: false, error: "image_load_failed" }
+    }
+
+    const width = image.naturalWidth || image.width
+    const height = image.naturalHeight || image.height
+    if (width <= 0 || height <= 0) return { ok: false, error: "image_load_failed" }
+    if (policy.maxPixels && width * height > policy.maxPixels) {
+        return { ok: false, error: "image_too_large" }
+    }
+
+    const canvas = document.createElement("canvas")
+    canvas.width = width
+    canvas.height = height
+    const context = canvas.getContext("2d", { willReadFrequently: true })
+    if (!context) return { ok: false, error: "canvas_unavailable" }
+
+    let imageData: ImageData
+    try {
+        context.drawImage(image, 0, 0)
+        imageData = context.getImageData(0, 0, canvas.width, canvas.height)
+    } catch {
+        return { ok: false, error: "image_load_failed" }
+    }
+
+    let activeDecoder = decoder
+    if (!activeDecoder) {
+        try {
+            activeDecoder = await loadQrDecoder()
+        } catch {
+            return { ok: false, error: "decoder_unavailable" }
+        }
+    }
+
+    try {
+        return decodeQrImageData(imageData, activeDecoder)
+    } catch {
+        return { ok: false, error: "decoder_unavailable" }
+    }
 }
 
 export type DownloadResult =

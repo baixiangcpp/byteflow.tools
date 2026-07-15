@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { Copy, Download, ImagePlus, QrCode, RotateCcw, TestTube2, Trash2 } from "lucide-react"
+import { Copy, Download, ExternalLink, FileImage, ImagePlus, LoaderCircle, QrCode, RotateCcw, ScanLine, TestTube2, Trash2, Upload } from "lucide-react"
 import { useLang } from "@/core/i18n/lang-provider"
 import { Input } from "@/components/ui/input"
 import { Slider } from "@/components/ui/slider"
@@ -18,8 +18,10 @@ import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
+import { parseSafeExternalUrl } from "@/core/security/external-url"
 import {
     buildQrSvg,
+    decodeQrImageFile,
     downloadCanvasPng,
     downloadSvg as downloadSvgFile,
     drawRoundedRect,
@@ -32,6 +34,21 @@ import { BUTTON_BASE_CLASS, BUTTON_SIZE_CLASS, BUTTON_VARIANT_CLASS, DEFAULT_QR_
 import type { ErrorCorrectionLevel, QrPreset } from "./types"
 
 const LOGO_FILE_POLICY = FILE_INPUT_POLICIES["image-logo"]
+const QR_DECODE_FILE_POLICY = FILE_INPUT_POLICIES["qr-decode-image"]
+
+type QrMode = "generate" | "decode"
+type DecodeStatus = "idle" | "decoding" | "success" | "error"
+
+const DECODE_ERROR_KEYS = {
+    empty_file: "decode_empty_file",
+    too_large: "decode_too_large",
+    unsupported_type: "decode_unsupported",
+    image_too_large: "decode_dimensions_too_large",
+    image_load_failed: "decode_image_failed",
+    canvas_unavailable: "decode_image_failed",
+    decoder_unavailable: "decode_decoder_unavailable",
+    no_qr: "decode_no_qr",
+} as const
 
 function joinClasses(...values: Array<string | null | undefined | false>) {
     return values.filter(Boolean).join(" ")
@@ -81,9 +98,22 @@ export function QrCodeGeneratorPage() {
     const [logoScale, setLogoScale] = React.useState(22)
     const [activePreset, setActivePreset] = React.useState("default")
     const [dataUrl, setDataUrl] = React.useState("")
+    const [mode, setMode] = React.useState<QrMode>("generate")
+    const [decodeStatus, setDecodeStatus] = React.useState<DecodeStatus>("idle")
+    const [decodedPayload, setDecodedPayload] = React.useState("")
+    const [decodeError, setDecodeError] = React.useState("")
+    const [decodeFileName, setDecodeFileName] = React.useState("")
+    const [decodeDragActive, setDecodeDragActive] = React.useState(false)
 
     const canvasRef = React.useRef<HTMLCanvasElement>(null)
     const logoInputRef = React.useRef<HTMLInputElement>(null)
+    const decodeInputRef = React.useRef<HTMLInputElement>(null)
+    const decodeRequestRef = React.useRef(0)
+
+    const decodedUrl = React.useMemo(() => {
+        const parsed = parseSafeExternalUrl(decodedPayload, { requireHttps: false })
+        return parsed.ok ? parsed.url : null
+    }, [decodedPayload])
 
     const renderToCanvas = React.useCallback(async () => {
         if (!text.trim()) {
@@ -253,7 +283,49 @@ export function QrCodeGeneratorPage() {
         applyPreset(PRESETS[2])
     }
 
-    const actions: ToolAction[] = [
+    const clearDecode = () => {
+        decodeRequestRef.current += 1
+        setDecodeStatus("idle")
+        setDecodedPayload("")
+        setDecodeError("")
+        setDecodeFileName("")
+        if (decodeInputRef.current) decodeInputRef.current.value = ""
+    }
+
+    const handleDecodeFile = async (file: File | null) => {
+        if (!file) return
+        const requestId = ++decodeRequestRef.current
+        setDecodeStatus("decoding")
+        setDecodedPayload("")
+        setDecodeError("")
+        setDecodeFileName(file.name)
+
+        const result = await decodeQrImageFile(file)
+        if (requestId !== decodeRequestRef.current) return
+        if (!result.ok) {
+            const message = textFor(DECODE_ERROR_KEYS[result.error])
+            setDecodeStatus("error")
+            setDecodeError(message)
+            await notifyError(message)
+            return
+        }
+
+        setDecodedPayload(result.payload)
+        setDecodeStatus("success")
+    }
+
+    const handleCopyDecoded = async (): Promise<ToolActionResult> => {
+        if (!decodedPayload) return { status: "failed", message: t.common.copy_failed }
+        const result = await safeClipboardWrite(decodedPayload)
+        if (!result.ok) {
+            await notifyError(t.common.copy_failed)
+            return { status: "failed", message: t.common.copy_failed }
+        }
+        await notifySuccess(t.common.copied, textFor("decode_copy_success"))
+        return { status: "success", message: textFor("decode_copy_success") }
+    }
+
+    const generateActions: ToolAction[] = [
         {
             id: "sample",
             label: t.common.sample,
@@ -295,6 +367,37 @@ export function QrCodeGeneratorPage() {
         },
     ]
 
+    const decodeActions: ToolAction[] = [
+        {
+            id: "upload",
+            label: textFor("decode_upload"),
+            icon: Upload,
+            onClick: () => decodeInputRef.current?.click(),
+        },
+        {
+            id: "copy",
+            label: t.common.copy,
+            icon: Copy,
+            onClick: handleCopyDecoded,
+            disabled: !decodedPayload,
+        },
+        {
+            id: "open",
+            label: t.common.open,
+            icon: ExternalLink,
+            href: decodedUrl?.toString() || "#",
+            disabled: !decodedUrl,
+            disabledReason: decodedPayload && !decodedUrl ? textFor("decode_not_url") : undefined,
+        },
+        {
+            id: "clear",
+            label: t.common.clear,
+            icon: Trash2,
+            onClick: clearDecode,
+            disabled: decodeStatus === "idle" && !decodeFileName,
+        },
+    ]
+
     return (
         <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
             <div className="flex flex-col gap-4">
@@ -307,10 +410,52 @@ export function QrCodeGeneratorPage() {
                         {textFor("description")}
                     </p>
                 </div>
-                <ToolActionBar actions={actions} />
+                <div
+                    role="tablist"
+                    aria-label={textFor("mode_label")}
+                    className="inline-grid w-full grid-cols-2 rounded-md border bg-muted/40 p-1 sm:w-fit"
+                >
+                    <button
+                        type="button"
+                        role="tab"
+                        id="qr-generate-tab"
+                        aria-controls="qr-generate-panel"
+                        aria-selected={mode === "generate"}
+                        onClick={() => setMode("generate")}
+                        className={joinClasses(
+                            "inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-4 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 lg:min-h-9",
+                            mode === "generate" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground",
+                        )}
+                    >
+                        <QrCode className="h-4 w-4" />
+                        {textFor("mode_generate")}
+                    </button>
+                    <button
+                        type="button"
+                        role="tab"
+                        id="qr-decode-tab"
+                        aria-controls="qr-decode-panel"
+                        aria-selected={mode === "decode"}
+                        onClick={() => setMode("decode")}
+                        className={joinClasses(
+                            "inline-flex min-h-11 items-center justify-center gap-2 rounded-sm px-4 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 lg:min-h-9",
+                            mode === "decode" ? "bg-background text-foreground shadow-xs" : "text-muted-foreground hover:text-foreground",
+                        )}
+                    >
+                        <ScanLine className="h-4 w-4" />
+                        {textFor("mode_decode")}
+                    </button>
+                </div>
+                <ToolActionBar actions={mode === "generate" ? generateActions : decodeActions} />
             </div>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
+            {mode === "generate" ? (
+                <div
+                    id="qr-generate-panel"
+                    role="tabpanel"
+                    aria-labelledby="qr-generate-tab"
+                    className="grid grid-cols-1 gap-6 md:grid-cols-12"
+                >
                 <div className="md:col-span-4 lg:col-span-4">
                     <div className="space-y-5 rounded-lg border bg-card p-5 shadow-sm">
                         <div className="space-y-2">
@@ -447,7 +592,99 @@ export function QrCodeGeneratorPage() {
                         )}
                     </ToolPreviewArea>
                 </div>
-            </div>
+                </div>
+            ) : (
+                <section
+                    id="qr-decode-panel"
+                    role="tabpanel"
+                    aria-labelledby="qr-decode-tab"
+                    className="grid grid-cols-1 gap-6 md:grid-cols-12"
+                >
+                    <div className="space-y-4 md:col-span-5">
+                        <label
+                            className={joinClasses(
+                                "flex min-h-[260px] cursor-pointer flex-col items-center justify-center gap-3 rounded-md border-2 border-dashed bg-card p-6 text-center transition-colors focus-within:ring-2 focus-within:ring-ring/50",
+                                decodeDragActive ? "border-primary bg-primary/5" : "border-border hover:border-primary/60",
+                            )}
+                            onDragEnter={(event) => {
+                                event.preventDefault()
+                                setDecodeDragActive(true)
+                            }}
+                            onDragOver={(event) => {
+                                event.preventDefault()
+                                event.dataTransfer.dropEffect = "copy"
+                            }}
+                            onDragLeave={() => setDecodeDragActive(false)}
+                            onDrop={(event) => {
+                                event.preventDefault()
+                                setDecodeDragActive(false)
+                                void handleDecodeFile(event.dataTransfer.files?.[0] || null)
+                            }}
+                        >
+                            <input
+                                ref={decodeInputRef}
+                                type="file"
+                                className="sr-only"
+                                accept={QR_DECODE_FILE_POLICY.accept}
+                                onChange={(event) => {
+                                    const file = event.currentTarget.files?.[0] || null
+                                    event.currentTarget.value = ""
+                                    void handleDecodeFile(file)
+                                }}
+                            />
+                            {decodeStatus === "decoding" ? (
+                                <LoaderCircle className="h-10 w-10 animate-spin text-primary" aria-hidden="true" />
+                            ) : (
+                                <FileImage className="h-10 w-10 text-primary" aria-hidden="true" />
+                            )}
+                            <span className="text-base font-semibold text-foreground">
+                                {decodeStatus === "decoding" ? textFor("decode_processing") : textFor("decode_drop")}
+                            </span>
+                            <span className="text-sm text-muted-foreground">{textFor("decode_formats")}</span>
+                            {decodeFileName ? (
+                                <span className="max-w-full truncate text-xs text-muted-foreground">{decodeFileName}</span>
+                            ) : null}
+                        </label>
+
+                        <p className="text-sm text-muted-foreground">{textFor("decode_one_code")}</p>
+                        {decodeStatus === "error" ? (
+                            <div
+                                role="alert"
+                                data-testid="qr-decode-error"
+                                className="rounded-md border border-destructive/35 bg-destructive/10 p-3 text-sm text-destructive"
+                            >
+                                {decodeError}
+                            </div>
+                        ) : null}
+                    </div>
+
+                    <div className="md:col-span-7">
+                        <ToolPreviewArea
+                            title={textFor("decode_result")}
+                            metadata={decodedPayload ? (decodedUrl ? textFor("decode_type_url") : textFor("decode_type_text")) : undefined}
+                            className="h-full min-h-[420px]"
+                        >
+                            {decodedPayload ? (
+                                <div className="flex h-full w-full flex-col gap-3 text-left">
+                                    <div className="text-xs font-semibold uppercase text-muted-foreground">
+                                        {decodedUrl ? textFor("decode_type_url") : textFor("decode_type_text")}
+                                    </div>
+                                    <pre
+                                        data-testid="qr-decoded-output"
+                                        className="max-h-[360px] min-h-[180px] w-full overflow-auto whitespace-pre-wrap break-all rounded-md border bg-background p-4 font-mono text-sm text-foreground"
+                                    >
+                                        {decodedPayload}
+                                    </pre>
+                                </div>
+                            ) : (
+                                <p className="text-sm text-muted-foreground">
+                                    {decodeStatus === "decoding" ? textFor("decode_processing") : textFor("decode_prompt")}
+                                </p>
+                            )}
+                        </ToolPreviewArea>
+                    </div>
+                </section>
+            )}
 
             <RelatedTools toolKey="qr_code_generator" />
         </div>

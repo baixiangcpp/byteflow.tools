@@ -4169,14 +4169,17 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "slug": "qr-code-generator",
         "keywords": [
             "qr code generator",
+            "qr code decoder",
+            "scan qr image",
             "generate qr code online",
             "qr code maker"
         ],
         "aliases": [],
         "relatedToolKeys": [
-            "uuid_generator",
-            "password_generator",
-            "url_encode_decode"
+            "barcode_generator",
+            "image_base64",
+            "url_encode_decode",
+            "svg_to_png_converter"
         ],
         "relatedWorkflows": [],
         "sampleInput": null,
@@ -4201,11 +4204,20 @@ const CLIENT_TOOL_LOOKUP: Record<string, ClientToolLookupEntry> = {
         "persistInput": null,
         "family": "generators",
         "tags": [
-            "generators"
+            "generators",
+            "image"
         ],
         "capabilities": [
             "browser-local",
             "offline-capable"
+        ],
+        "searchKeywords": [
+            "decode qr",
+            "read qr code",
+            "qr image scanner",
+            "二维码解析",
+            "QRコード読み取り",
+            "QR 코드 해독"
         ]
     },
     "barcode_generator": {
