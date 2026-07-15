@@ -16,7 +16,6 @@ import { decodeJwtParts } from "@/features/tools/jwt-decoder/utils"
 import { runNdjsonTransform, type NdjsonMessages, type NdjsonMode } from "@/features/tools/ndjson-formatter/utils"
 import { diffOpenApiSpecs, formatOpenApiDiffReport } from "@/features/tools/openapi-diff/logic"
 import { runRegexTestTask } from "@/features/tools/regex-tester/regex-test-task"
-import { testRegexPattern } from "@/features/tools/regex-tester/utils"
 import { convertCase, type CaseStyle } from "@/features/tools/slugify-case-converter/utils"
 import { parseTimestampHeuristic } from "@/features/tools/unix-timestamp/utils"
 import { convertYamlJson, type YamlJsonMode } from "@/features/tools/yaml-json-converter/utils"
@@ -608,8 +607,6 @@ const regexTesterAdapter: PipelineToolAdapter = {
         if (!/^[gimsuy]*$/.test(flags)) return fail("flags must contain only g, i, m, s, u, or y.")
         if (new Set(flags).size !== flags.length) return fail("flags must not contain duplicates.")
         if (!Number.isFinite(maxMatches) || maxMatches < 1 || maxMatches > 5000) return fail("maxMatches must be between 1 and 5000.")
-        const validation = testRegexPattern(pattern, flags, "")
-        if (!validation.ok) return fail("pattern must be a valid JavaScript regular expression.")
         return ok()
     },
     async run(input, options) {

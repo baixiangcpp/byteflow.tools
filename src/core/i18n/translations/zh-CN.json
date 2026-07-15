@@ -1154,6 +1154,8 @@
       "group_prefix": "分组",
       "error_invalid_regex": "正则表达式无效",
       "error_match_limit": "匹配数量超限，正则可能正在无限匹配空字符串。",
+      "error_worker_timeout": "正则表达式求值超过安全时限。请简化表达式或缩短测试文本。",
+      "error_safe_evaluation_unavailable": "隔离 Worker 无法运行，当前不能安全地执行正则表达式。请检查浏览器或内容安全策略设置后重试。",
       "timing_label": "{ms} 毫秒",
       "evaluating_label": "正在评估...",
       "performance_warning_title": "性能警告",

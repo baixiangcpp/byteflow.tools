@@ -54,7 +54,12 @@ export function RegexTesterPage() {
                     setMatches(result.matches)
                     setError(result.limited ? toolT.error_match_limit : null)
                 } else {
-                    setError(result.error || toolT.error_invalid_regex)
+                    const localizedTaskError = result.errorCode === "worker_timeout"
+                        ? toolT.error_worker_timeout
+                        : result.errorCode === "safe_evaluation_unavailable"
+                            ? toolT.error_safe_evaluation_unavailable
+                            : null
+                    setError(localizedTaskError || result.error || toolT.error_invalid_regex)
                     setMatches([])
                 }
             })
@@ -74,7 +79,15 @@ export function RegexTesterPage() {
         return () => {
             controller.abort()
         }
-    }, [flags, pattern, testString, toolT.error_invalid_regex, toolT.error_match_limit])
+    }, [
+        flags,
+        pattern,
+        testString,
+        toolT.error_invalid_regex,
+        toolT.error_match_limit,
+        toolT.error_safe_evaluation_unavailable,
+        toolT.error_worker_timeout,
+    ])
 
     const handleClear = () => {
         setPattern("")

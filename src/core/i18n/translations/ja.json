@@ -1154,6 +1154,8 @@
       "group_prefix": "グループ",
       "error_invalid_regex": "無効な正規表現",
       "error_match_limit": "一致数が上限を超えました。空文字列への無限一致が発生している可能性があります。",
+      "error_worker_timeout": "正規表現の評価が安全タイムアウトを超えました。パターンを簡略化するか、テスト文字列を短くしてください。",
+      "error_safe_evaluation_unavailable": "分離された Worker を実行できないため、安全な正規表現評価を利用できません。ブラウザーまたはコンテンツセキュリティ設定を確認してください。",
       "timing_label": "{ms} ミリ秒",
       "evaluating_label": "評価中...",
       "performance_warning_title": "パフォーマンス警告",

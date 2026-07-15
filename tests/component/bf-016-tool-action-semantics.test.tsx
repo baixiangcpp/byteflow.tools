@@ -1,5 +1,5 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
-import { beforeEach, describe, expect, it, vi } from "vitest"
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest"
 import { LangProvider } from "@/core/i18n/lang-provider"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { Base64Page } from "@/features/tools/base64-encode-decode/page"
@@ -7,6 +7,7 @@ import { ImageResizerPage } from "@/features/tools/image-resizer/page"
 import { JsonFormatterPage } from "@/features/tools/json-formatter/page"
 import { RegexTesterPage } from "@/features/tools/regex-tester/page"
 import { YouTubeThumbnailGrabberPage } from "@/features/tools/youtube-thumbnail-grabber/page"
+import { RegexTestWorkerMock } from "../helpers/regex-test-worker-mock"
 
 const clipboardWriteMock = vi.fn()
 const downloadJsonOutputMock = vi.fn()
@@ -139,6 +140,10 @@ class MockImage {
 }
 
 describe("BF-016 shared tool action semantics", () => {
+    afterEach(() => {
+        vi.unstubAllGlobals()
+    })
+
     beforeEach(() => {
         vi.clearAllMocks()
         installMemoryStorage()
@@ -230,6 +235,7 @@ describe("BF-016 shared tool action semantics", () => {
     })
 
     it("keeps Regex Tester Sample and Clear deterministic after invalid and valid states", async () => {
+        vi.stubGlobal("Worker", RegexTestWorkerMock)
         renderEnglish(<RegexTesterPage />)
 
         expect(screen.getByRole("button", { name: "Sample" })).toHaveAttribute(

@@ -1,5 +1,5 @@
 import { runWorkerTask, WorkerTaskError } from "@/core/workers/run-worker-task"
-import { testRegexPattern, type RegexTestResult } from "./utils"
+import { type RegexTestResult } from "./utils"
 
 type RegexTestWorkerInput = {
     pattern: string
@@ -14,10 +14,23 @@ type RegexTestTaskOptions = {
     maxMatches?: number
 }
 
-function timeoutResult(message: string): RegexTestResult {
+export type RegexTestTaskErrorCode = "worker_timeout" | "safe_evaluation_unavailable"
+
+export type RegexTestTaskResult = RegexTestResult & {
+    errorCode?: RegexTestTaskErrorCode
+    workerErrorCode?: string
+}
+
+function failureResult(
+    errorCode: RegexTestTaskErrorCode,
+    workerErrorCode: string,
+    message: string,
+): RegexTestTaskResult {
     return {
         ok: false,
         error: message,
+        errorCode,
+        workerErrorCode,
         matches: [],
         limited: false,
         elapsedMs: 0,
@@ -25,14 +38,22 @@ function timeoutResult(message: string): RegexTestResult {
     }
 }
 
+function unavailableResult(workerErrorCode: string): RegexTestTaskResult {
+    return failureResult(
+        "safe_evaluation_unavailable",
+        workerErrorCode,
+        "Safe regex evaluation is unavailable because the isolated worker could not run. Check browser or content-security settings and try again.",
+    )
+}
+
 export async function runRegexTestTask(
     pattern: string,
     flags: string,
     testString: string,
     options: RegexTestTaskOptions = {},
-): Promise<RegexTestResult> {
+): Promise<RegexTestTaskResult> {
     if (typeof Worker === "undefined") {
-        return testRegexPattern(pattern, flags, testString, options.maxMatches)
+        return unavailableResult("WORKER_UNAVAILABLE")
     }
 
     try {
@@ -43,11 +64,15 @@ export async function runRegexTestTask(
         )
     } catch (error) {
         if (error instanceof WorkerTaskError && error.code === "WORKER_TIMEOUT") {
-            return timeoutResult("Regex evaluation was stopped after the safety timeout. Simplify the pattern or test a smaller input.")
+            return failureResult(
+                "worker_timeout",
+                error.code,
+                "Regex evaluation was stopped after the safety timeout. Simplify the pattern or test a smaller input.",
+            )
         }
         if (error instanceof WorkerTaskError && error.code === "WORKER_ABORTED") {
             throw error
         }
-        return testRegexPattern(pattern, flags, testString, options.maxMatches)
+        return unavailableResult(error instanceof WorkerTaskError ? error.code : "WORKER_UNKNOWN_ERROR")
     }
 }

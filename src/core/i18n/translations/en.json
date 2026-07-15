@@ -1182,6 +1182,8 @@
       "group_prefix": "Group",
       "error_invalid_regex": "Invalid regex",
       "error_match_limit": "Match limit exceeded. The regex may be matching endless zero-length strings.",
+      "error_worker_timeout": "Regex evaluation exceeded the safety timeout. Simplify the pattern or use a smaller test input.",
+      "error_safe_evaluation_unavailable": "Safe regex evaluation is unavailable because the isolated worker could not run. Check your browser or content-security settings and try again.",
       "timing_label": "{ms} ms",
       "evaluating_label": "Evaluating...",
       "performance_warning_title": "Performance warning",

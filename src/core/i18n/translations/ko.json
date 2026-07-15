@@ -1154,6 +1154,8 @@
       "group_prefix": "그룹",
       "error_invalid_regex": "잘못된 정규식",
       "error_match_limit": "일치 개수가 한도를 초과했습니다. 빈 문자열을 무한히 매칭하고 있을 수 있습니다.",
+      "error_worker_timeout": "정규식 평가가 안전 시간 제한을 초과했습니다. 패턴을 단순화하거나 테스트 입력을 줄이세요.",
+      "error_safe_evaluation_unavailable": "격리된 Worker를 실행할 수 없어 안전한 정규식 평가를 사용할 수 없습니다. 브라우저 또는 콘텐츠 보안 설정을 확인하세요.",
       "timing_label": "시간: {ms} ms",
       "evaluating_label": "평가 중...",
       "performance_warning_title": "성능 경고",

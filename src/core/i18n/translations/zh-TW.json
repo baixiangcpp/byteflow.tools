@@ -1154,6 +1154,8 @@
       "group_prefix": "群組",
       "error_invalid_regex": "正則表達式無效",
       "error_match_limit": "比對數量超出上限，正則可能正在無限比對空字串。",
+      "error_worker_timeout": "正則表達式求值超過安全時限。請簡化表達式或縮短測試文字。",
+      "error_safe_evaluation_unavailable": "隔離 Worker 無法執行，目前無法安全地執行正則表達式。請檢查瀏覽器或內容安全策略設定後再試一次。",
       "timing_label": "{ms} 毫秒",
       "evaluating_label": "正在評估...",
       "performance_warning_title": "效能警告",

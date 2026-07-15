@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 import { getPipelineAdapter, getPipelineAdapterKeys, PIPELINE_TOOL_ADAPTERS } from "@/features/pipeline/adapter-registry"
 import { TOOL_MANIFESTS } from "@/core/registry"
 import { createPortableRecipe, decodeRecipeFromUrlParam, encodeRecipeForShareUrl, encodeRecipeForUrl, recipeContainsRuntimeInput } from "@/features/pipeline/recipe-codec"
@@ -10,6 +10,7 @@ import { createSavedRecipeRecord, isRecipeStoreAvailable } from "@/features/pipe
 import { DEFAULT_RECIPE_SETTINGS, type PipelineToolAdapter, type RecipeDocument } from "@/features/pipeline/recipe-types"
 import { getStepCompatibilityHints } from "@/features/tools/pipeline-builder/logic"
 import { WORKFLOW_DEFINITIONS } from "@/core/workflows/workflow-hubs"
+import { RegexTestWorkerMock } from "../helpers/regex-test-worker-mock"
 
 function buildRecipe(overrides: Partial<RecipeDocument> = {}): RecipeDocument {
     const base: RecipeDocument = {
@@ -43,6 +44,10 @@ function buildRecipe(overrides: Partial<RecipeDocument> = {}): RecipeDocument {
 }
 
 describe("pipeline foundation", () => {
+    afterEach(() => {
+        vi.unstubAllGlobals()
+    })
+
     it("exposes the first deterministic adapter set", () => {
         expect(getPipelineAdapterKeys()).toEqual([
             "json_formatter",
@@ -375,6 +380,7 @@ describe("pipeline foundation", () => {
     })
 
     it("runs regex summary and env parser adapters", async () => {
+        vi.stubGlobal("Worker", RegexTestWorkerMock)
         const regexRecipe = buildRecipe({
             steps: [{
                 id: "regex",

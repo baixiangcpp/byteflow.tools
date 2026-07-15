@@ -1154,6 +1154,8 @@
       "group_prefix": "Groupe",
       "error_invalid_regex": "Expression régulière invalide",
       "error_match_limit": "Limite de correspondances dépassée. L'expression peut faire des correspondances infinies sur une chaîne vide.",
+      "error_worker_timeout": "L'évaluation de l'expression a dépassé le délai de sécurité. Simplifiez-la ou réduisez le texte de test.",
+      "error_safe_evaluation_unavailable": "L'évaluation sécurisée est indisponible car le worker isolé n'a pas pu s'exécuter. Vérifiez les paramètres du navigateur ou de sécurité du contenu.",
       "timing_label": "Duree : {ms} ms",
       "evaluating_label": "Evaluation...",
       "performance_warning_title": "Avertissement de performance",

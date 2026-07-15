@@ -1154,6 +1154,8 @@
       "group_prefix": "Gruppe",
       "error_invalid_regex": "Ungueltiger regulaerer Ausdruck",
       "error_match_limit": "Trefferlimit ueberschritten. Der Ausdruck koennte endlos leere Zeichenfolgen finden.",
+      "error_worker_timeout": "Die Regex-Auswertung hat das Sicherheitszeitlimit ueberschritten. Vereinfachen Sie den Ausdruck oder kuerzen Sie den Testtext.",
+      "error_safe_evaluation_unavailable": "Die sichere Regex-Auswertung ist nicht verfuegbar, weil der isolierte Worker nicht ausgefuehrt werden konnte. Pruefen Sie die Browser- oder Inhaltssicherheitseinstellungen.",
       "timing_label": "Dauer: {ms} ms",
       "evaluating_label": "Wird ausgewertet...",
       "performance_warning_title": "Leistungswarnung",
