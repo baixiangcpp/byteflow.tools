@@ -13,14 +13,14 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { ToolActionBar, type ToolAction, type ToolActionResult } from "@/features/tool-shell/tool-action-bar"
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import {
     buildQrSvg,
-    downloadDataUrl,
+    downloadCanvasPng,
     downloadSvg as downloadSvgFile,
     drawRoundedRect,
     loadImage,
@@ -179,14 +179,26 @@ export function QrCodeGeneratorPage() {
         setLogoEnabled(false)
     }
 
-    const downloadPng = () => {
-        if (!dataUrl) return
-        downloadDataUrl(dataUrl, "qr-code.png")
-        void notifySuccess(textFor("downloaded_png"))
+    const downloadPng = async (): Promise<ToolActionResult> => {
+        const canvas = canvasRef.current
+        if (!dataUrl || !canvas) {
+            return { status: "failed", message: textFor("download_error") }
+        }
+
+        const result = await downloadCanvasPng(canvas, "qr-code.png")
+        if (result.ok) {
+            await notifySuccess(textFor("downloaded_png"))
+            return { status: "success", message: textFor("downloaded_png") }
+        }
+
+        await notifyError(textFor("download_error"))
+        return { status: "failed", message: textFor("download_error") }
     }
 
-    const downloadSvg = async () => {
-        if (!text.trim()) return
+    const downloadSvg = async (): Promise<ToolActionResult> => {
+        if (!text.trim()) {
+            return { status: "failed", message: textFor("download_error") }
+        }
 
         try {
             const finalSvg = await buildQrSvg({
@@ -200,10 +212,17 @@ export function QrCodeGeneratorPage() {
                 logoEnabled,
                 logoScale,
             })
-            downloadSvgFile(finalSvg, "qr-code.svg")
-            await notifySuccess(textFor("downloaded_svg"))
+            const result = downloadSvgFile(finalSvg, "qr-code.svg")
+            if (result.ok) {
+                await notifySuccess(textFor("downloaded_svg"))
+                return { status: "success", message: textFor("downloaded_svg") }
+            }
+
+            await notifyError(textFor("download_error"))
+            return { status: "failed", message: textFor("download_error") }
         } catch {
             await notifyError(textFor("download_error"))
+            return { status: "failed", message: textFor("download_error") }
         }
     }
 

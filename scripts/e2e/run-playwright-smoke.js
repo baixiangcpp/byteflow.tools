@@ -1014,6 +1014,62 @@ async function assertBase64PipelineSafeNavigationJourney(context, baseUrl) {
     await page.close();
 }
 
+async function assertDownloadedFile(download, expectedFilename, kind) {
+    if (download.suggestedFilename() !== expectedFilename) {
+        throw new Error(`Expected ${expectedFilename}, received ${download.suggestedFilename()}.`);
+    }
+
+    const failure = await download.failure();
+    if (failure) {
+        throw new Error(`${expectedFilename} download failed: ${failure}`);
+    }
+
+    const downloadPath = await download.path();
+    if (!downloadPath) {
+        throw new Error(`${expectedFilename} did not produce a downloadable file.`);
+    }
+
+    const contents = await readFile(downloadPath);
+    if (contents.length === 0) {
+        throw new Error(`${expectedFilename} download was empty.`);
+    }
+
+    if (kind === "png" && !contents.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) {
+        throw new Error(`${expectedFilename} did not contain a PNG signature.`);
+    }
+    if (kind === "svg" && !contents.toString("utf8").includes("<svg")) {
+        throw new Error(`${expectedFilename} did not contain SVG markup.`);
+    }
+}
+
+async function assertQrDownloadJourney(context, baseUrl) {
+    const page = await context.newPage();
+    const runtime = createRuntimeObserver(page, "QR code downloads", baseUrl);
+
+    try {
+        await page.goto(`${baseUrl}/en/qr-code-generator`, { waitUntil: "domcontentloaded" });
+        await page.locator("textarea").first().fill("https://byteflow.tools/qr-download-smoke");
+
+        const pngButton = page.getByRole("button", { name: "PNG", exact: true }).first();
+        await page.waitForFunction(() => {
+            const canvas = document.querySelector("canvas");
+            const button = Array.from(document.querySelectorAll("button"))
+                .find((candidate) => candidate.textContent?.trim() === "PNG");
+            return canvas instanceof HTMLCanvasElement && canvas.width > 0 && button && !button.disabled;
+        }, null, { timeout: 15_000 });
+        const pngDownloadPromise = page.waitForEvent("download");
+        await pngButton.click();
+        await assertDownloadedFile(await pngDownloadPromise, "qr-code.png", "png");
+
+        const svgDownloadPromise = page.waitForEvent("download");
+        await page.getByRole("button", { name: "SVG", exact: true }).first().click();
+        await assertDownloadedFile(await svgDownloadPromise, "qr-code.svg", "svg");
+        runtime.assertClean();
+    } finally {
+        await page.close();
+    }
+}
+
 async function expectTextareaValueAbsent(page, pattern, label) {
     const found = await page.evaluate((source) => {
         const regex = new RegExp(source);
@@ -1481,6 +1537,9 @@ async function runSmoke(baseUrl) {
 
         await assertBase64PipelineSafeNavigationJourney(context, baseUrl);
         console.log("[playwright-smoke] PASS journey: /en/base64-encode-decode -> /en/pipeline-builder safe navigation");
+
+        await assertQrDownloadJourney(context, baseUrl);
+        console.log("[playwright-smoke] PASS journey: /en/qr-code-generator PNG and SVG downloads");
 
         await assertPipelineRecipeJourney(context, baseUrl);
         console.log("[playwright-smoke] PASS journey: /en/pipeline-builder template -> run");

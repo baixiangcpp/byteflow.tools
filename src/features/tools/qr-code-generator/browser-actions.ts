@@ -2,6 +2,8 @@ import type { ErrorCorrectionLevel } from "./types"
 import { FILE_INPUT_POLICIES } from "@/core/files/file-input-policy"
 import { fileToDataUrl } from "@/core/utils/image-canvas-utils"
 
+const OBJECT_URL_REVOKE_DELAY_MS = 1_000
+
 let qrCodePromise: Promise<typeof import("qrcode")> | null = null
 let toastPromise: Promise<typeof import("sonner")["toast"]> | null = null
 
@@ -57,11 +59,61 @@ export function readFileAsDataUrl(file: File): Promise<string> {
     return fileToDataUrl(file, FILE_INPUT_POLICIES["image-logo"])
 }
 
-export function downloadDataUrl(dataUrl: string, filename: string) {
-    const a = document.createElement("a")
-    a.href = dataUrl
-    a.download = filename
-    a.click()
+export type DownloadResult =
+    | { ok: true }
+    | { ok: false; error: "empty_file" | "download_failed" }
+
+export function downloadUrl(url: string, filename: string): DownloadResult {
+    if (!url || !filename || !document.body) return { ok: false, error: "download_failed" }
+
+    const anchor = document.createElement("a")
+    try {
+        anchor.href = url
+        anchor.download = filename
+        anchor.rel = "noopener"
+        anchor.hidden = true
+        document.body.appendChild(anchor)
+        anchor.click()
+        return { ok: true }
+    } catch {
+        return { ok: false, error: "download_failed" }
+    } finally {
+        anchor.remove()
+    }
+}
+
+export function downloadBlob(blob: Blob, filename: string): DownloadResult {
+    if (blob.size === 0) return { ok: false, error: "empty_file" }
+
+    let url = ""
+    try {
+        url = URL.createObjectURL(blob)
+        return downloadUrl(url, filename)
+    } catch {
+        return { ok: false, error: "download_failed" }
+    } finally {
+        if (url) {
+            window.setTimeout(() => URL.revokeObjectURL(url), OBJECT_URL_REVOKE_DELAY_MS)
+        }
+    }
+}
+
+export async function downloadCanvasPng(canvas: HTMLCanvasElement, filename: string): Promise<DownloadResult> {
+    if (typeof canvas.toBlob === "function") {
+        try {
+            const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, "image/png"))
+            if (blob?.size) return downloadBlob(blob, filename)
+        } catch {
+            // Use the local data URL fallback below.
+        }
+    }
+
+    try {
+        const dataUrl = canvas.toDataURL("image/png")
+        return dataUrl ? downloadUrl(dataUrl, filename) : { ok: false, error: "empty_file" }
+    } catch {
+        return { ok: false, error: "download_failed" }
+    }
 }
 
 export async function buildQrSvg(options: {
@@ -92,12 +144,7 @@ export async function buildQrSvg(options: {
         : svg
 }
 
-export function downloadSvg(svg: string, filename: string) {
+export function downloadSvg(svg: string, filename: string): DownloadResult {
     const blob = new Blob([svg], { type: "image/svg+xml" })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement("a")
-    a.href = url
-    a.download = filename
-    a.click()
-    URL.revokeObjectURL(url)
+    return downloadBlob(blob, filename)
 }
