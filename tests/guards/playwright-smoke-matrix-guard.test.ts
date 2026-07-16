@@ -71,6 +71,9 @@ describe("playwright smoke matrix guard", () => {
 
     it("keeps PWA smoke opt-in so CI can cover service worker behavior after export", () => {
         expect(SMOKE_ARGS_SOURCE).toContain('if (arg === "--pwa")')
+        expect(SMOKE_ARGS_SOURCE).toContain('["--pwa-only", "pwaOnly"]')
+        expect(SMOKE_SOURCE).toContain("if (pwaOnly) {")
+        expect(SMOKE_SOURCE).toContain("await runPwaSmoke(baseUrl)")
         expect(SMOKE_SOURCE).toContain("assertPwaShellJourney")
         expect(SMOKE_SOURCE).toContain("serviceWorkers: \"allow\"")
         expect(SMOKE_SOURCE).toContain("await context.setOffline(true)")

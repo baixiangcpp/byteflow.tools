@@ -7,6 +7,7 @@ import axe from "axe-core";
 import { chromium } from "playwright";
 import serveHandler from "serve-handler";
 import { parsePlaywrightSmokeArgs } from "./playwright-smoke-args.js";
+import { raceWithTimeout } from "./promise-timeout.js";
 
 const DEFAULT_PORT = 4173;
 const DEFAULT_ROUTES = [
@@ -66,6 +67,7 @@ const ALL_TOOLS_MOBILE_SCROLL_BUDGET_MS = 3500;
 const ALL_TOOLS_MOBILE_MAX_FRAME_DELTA_MS = 500;
 const FIRST_LOAD_CLS_BUDGET = 0.1;
 const FIRST_LOAD_SETTLE_MS = 2_600;
+const PWA_SERVICE_WORKER_READY_TIMEOUT_MS = 20_000;
 const FIRST_LOAD_ARTIFACT_DIR = path.resolve(process.cwd(), "output/first-load-audit");
 const FIRST_LOAD_AUDIT_CASES = [
     {
@@ -1837,14 +1839,18 @@ async function assertPwaShellJourney(browser, baseUrl) {
             throw new Error(`Expected default manifest link to be /manifest.json, found ${manifestHref || "none"}`);
         }
 
-        const registration = await page.evaluate(async () => {
-            if (!("serviceWorker" in navigator)) return null;
-            const ready = await navigator.serviceWorker.ready;
-            return {
-                scope: ready.scope,
-                activeScriptUrl: ready.active?.scriptURL || "",
-            };
-        });
+        const registration = await raceWithTimeout(
+            page.evaluate(async () => {
+                if (!("serviceWorker" in navigator)) return null;
+                const ready = await navigator.serviceWorker.ready;
+                return {
+                    scope: ready.scope,
+                    activeScriptUrl: ready.active?.scriptURL || "",
+                };
+            }),
+            PWA_SERVICE_WORKER_READY_TIMEOUT_MS,
+            `Timed out after ${PWA_SERVICE_WORKER_READY_TIMEOUT_MS}ms waiting for navigator.serviceWorker.ready at ${baseUrl}. Check /sw.js registration and browser errors.`,
+        );
         if (!registration?.activeScriptUrl.endsWith("/sw.js")) {
             throw new Error("Service worker did not become active for the PWA shell.");
         }
@@ -2160,6 +2166,7 @@ async function main() {
         includePwa,
         inputIntentsOnly,
         port,
+        pwaOnly,
         skipServer,
         writeFirstLoadArtifacts,
     } = parsePlaywrightSmokeArgs(process.argv.slice(2), { defaultPort: DEFAULT_PORT });
@@ -2172,17 +2179,19 @@ async function main() {
             console.log(`[playwright-smoke] Static server ready at ${baseUrl}`);
         }
 
-        if (inputIntentsOnly) {
+        if (pwaOnly) {
+            await runPwaSmoke(baseUrl);
+        } else if (inputIntentsOnly) {
             await runInputIntentSmoke(baseUrl);
         } else if (firstLoadOnly) {
             await runFirstLoadAudit(baseUrl, { writeArtifacts: writeFirstLoadArtifacts });
         } else {
             await runSmoke(baseUrl, { writeFirstLoadArtifacts });
         }
-        if (includePwa && !firstLoadOnly && !inputIntentsOnly) {
+        if (includePwa && !firstLoadOnly && !inputIntentsOnly && !pwaOnly) {
             await runPwaSmoke(baseUrl);
         }
-        if (!firstLoadOnly && !inputIntentsOnly) {
+        if (!firstLoadOnly && !inputIntentsOnly && !pwaOnly) {
             console.log("[playwright-smoke] PASS: critical routes render and navigate correctly");
         }
     } catch (error) {

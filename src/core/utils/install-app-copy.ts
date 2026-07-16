@@ -50,7 +50,7 @@ export type InstallPageCopy = {
 
 const GUIDE_SCREENSHOTS: Record<GuidePlatform, string> = {
     chrome_desktop: "/pwa-screenshots/install-chrome-desktop.png",
-    safari_desktop: "/pwa-screenshots/install-ios-safari.png",
+    safari_desktop: "/pwa-screenshots/install-safari-desktop.png",
     edge: "/pwa-screenshots/install-edge.png",
     firefox: "/pwa-screenshots/install-firefox.png",
     android: "/pwa-screenshots/install-android.png",
@@ -61,24 +61,86 @@ type AuthoredInstallPageCopy = Omit<InstallPageCopy, "guides"> & {
     guides: Record<AuthoredGuidePlatform, InstallGuide>
 }
 
-const SAFARI_DESKTOP_GUIDE: InstallGuide = {
-    label: "Safari",
-    title: "Install on macOS Safari",
-    steps: [
-        "Open byteflow.tools in Safari on macOS.",
-        "Open Share or File, then choose Add to Dock.",
-        "Confirm the name and launch from the Dock or Launchpad.",
-    ],
-    screenshot: GUIDE_SCREENSHOTS.safari_desktop,
+const SAFARI_DESKTOP_GUIDES: Record<Locale, InstallGuide> = {
+    en: {
+        label: "Safari Desktop",
+        title: "Install on macOS Safari",
+        steps: [
+            "Open byteflow.tools in Safari on macOS.",
+            "Open Share or File, then choose Add to Dock.",
+            "Confirm the name and launch from the Dock or Launchpad.",
+        ],
+        screenshot: GUIDE_SCREENSHOTS.safari_desktop,
+    },
+    "zh-CN": {
+        label: "Safari 桌面版",
+        title: "在 macOS Safari 中安装",
+        steps: [
+            "在 macOS 的 Safari 中打开 byteflow.tools。",
+            "打开“分享”或“文件”菜单，然后选择“添加到程序坞”。",
+            "确认名称，然后从程序坞或启动台打开应用。",
+        ],
+        screenshot: GUIDE_SCREENSHOTS.safari_desktop,
+    },
+    "zh-TW": {
+        label: "Safari 桌面版",
+        title: "在 macOS Safari 安裝",
+        steps: [
+            "在 macOS 的 Safari 中開啟 byteflow.tools。",
+            "開啟「分享」或「檔案」選單，然後選擇「加入 Dock」。",
+            "確認名稱，然後從 Dock 或啟動台開啟應用程式。",
+        ],
+        screenshot: GUIDE_SCREENSHOTS.safari_desktop,
+    },
+    ja: {
+        label: "Safari デスクトップ",
+        title: "macOS Safari でインストール",
+        steps: [
+            "macOS の Safari で byteflow.tools を開きます。",
+            "共有または「ファイル」メニューを開き、「Dockに追加」を選びます。",
+            "名前を確認し、Dock または Launchpad から起動します。",
+        ],
+        screenshot: GUIDE_SCREENSHOTS.safari_desktop,
+    },
+    ko: {
+        label: "Safari 데스크톱",
+        title: "macOS Safari에서 설치",
+        steps: [
+            "macOS의 Safari에서 byteflow.tools를 엽니다.",
+            "공유 또는 파일 메뉴를 열고 Dock에 추가를 선택합니다.",
+            "이름을 확인한 뒤 Dock 또는 Launchpad에서 실행합니다.",
+        ],
+        screenshot: GUIDE_SCREENSHOTS.safari_desktop,
+    },
+    de: {
+        label: "Safari Desktop",
+        title: "Mit Safari unter macOS installieren",
+        steps: [
+            "Öffnen Sie byteflow.tools in Safari unter macOS.",
+            "Öffnen Sie Teilen oder Ablage und wählen Sie Zum Dock hinzufügen.",
+            "Bestätigen Sie den Namen und starten Sie die App über Dock oder Launchpad.",
+        ],
+        screenshot: GUIDE_SCREENSHOTS.safari_desktop,
+    },
+    fr: {
+        label: "Safari sur ordinateur",
+        title: "Installer avec Safari sur macOS",
+        steps: [
+            "Ouvrez byteflow.tools dans Safari sur macOS.",
+            "Ouvrez Partager ou Fichier, puis choisissez Ajouter au Dock.",
+            "Confirmez le nom, puis lancez l’application depuis le Dock ou Launchpad.",
+        ],
+        screenshot: GUIDE_SCREENSHOTS.safari_desktop,
+    },
 }
 
-function withSafariDesktopGuide(copy: AuthoredInstallPageCopy): InstallPageCopy {
+function withSafariDesktopGuide(locale: Locale, copy: AuthoredInstallPageCopy): InstallPageCopy {
     const { chrome_desktop, edge, firefox, android, ios } = copy.guides
     return {
         ...copy,
         guides: {
             chrome_desktop,
-            safari_desktop: SAFARI_DESKTOP_GUIDE,
+            safari_desktop: SAFARI_DESKTOP_GUIDES[locale],
             edge,
             firefox,
             android,
@@ -875,5 +937,5 @@ export const INSTALL_PAGE_COPY: Record<Locale, AuthoredInstallPageCopy> = {
 }
 
 export function getInstallPageCopy(locale: Locale): InstallPageCopy {
-    return withSafariDesktopGuide(INSTALL_PAGE_COPY[locale] || INSTALL_PAGE_COPY.en)
+    return withSafariDesktopGuide(locale, INSTALL_PAGE_COPY[locale] || INSTALL_PAGE_COPY.en)
 }

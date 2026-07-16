@@ -1,4 +1,34 @@
 (function () {
+  var installPromptBridgeReadySlot = "__byteflowPwaInstallPromptBridgeReady";
+  var installPromptChangeEvent = "byteflow:pwa-install-prompt-change";
+  var installPromptInstalledKey = "byteflow:pwa-install:installed";
+  var installPromptSlot = "__byteflowPwaInstallPrompt";
+
+  function notifyInstallPromptChange() {
+    try {
+      window.dispatchEvent(new CustomEvent(installPromptChangeEvent));
+    } catch {}
+  }
+
+  if (!window[installPromptBridgeReadySlot]) {
+    window[installPromptBridgeReadySlot] = true;
+    window.addEventListener("beforeinstallprompt", function (event) {
+      event.preventDefault();
+      try {
+        localStorage.removeItem(installPromptInstalledKey);
+      } catch {}
+      window[installPromptSlot] = event;
+      notifyInstallPromptChange();
+    });
+    window.addEventListener("appinstalled", function () {
+      try {
+        localStorage.setItem(installPromptInstalledKey, "1");
+      } catch {}
+      window[installPromptSlot] = null;
+      notifyInstallPromptChange();
+    });
+  }
+
   try {
     var locales = ["en","zh-CN","zh-TW","ja","ko","de","fr"];
     var p = window.location.pathname || "/";

@@ -1,6 +1,11 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { InstallAppClient } from "@/features/install-app/components/install-app-client"
+import {
+    capturePwaInstallPrompt,
+    consumePwaInstallPrompt,
+    getPwaInstallPromptSnapshot,
+} from "@/core/pwa/install-prompt-store"
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
 import { getInstallPageCopy } from "@/core/utils/install-app-copy"
 
@@ -24,6 +29,7 @@ vi.mock("@/core/analytics/analytics", () => ({
 
 describe("install app page", () => {
     beforeEach(() => {
+        consumePwaInstallPrompt()
         if (!window.matchMedia) {
             Object.defineProperty(window, "matchMedia", {
                 writable: true,
@@ -158,12 +164,13 @@ describe("install app page", () => {
         expect(screen.getByText(copy.manualHint)).toBeInTheDocument()
 
         await act(async () => {
-            window.dispatchEvent(beforeInstallPromptEvent as Event)
+            capturePwaInstallPrompt(beforeInstallPromptEvent)
         })
         expect((await screen.findAllByRole("button", { name: copy.installNow }))[0]).toBeInTheDocument()
 
         fireEvent.click(screen.getAllByRole("button", { name: copy.installNow })[0])
         await waitFor(() => expect(prompt).toHaveBeenCalledTimes(1))
+        await waitFor(() => expect(getPwaInstallPromptSnapshot()).toBeNull())
         await waitFor(() => expect(screen.getAllByText(copy.manualHint).length).toBeGreaterThan(0))
     })
 })

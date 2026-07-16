@@ -1,4 +1,5 @@
 const EXCLUSIVE_MODE_FLAGS = new Map([
+    ["--pwa-only", "pwaOnly"],
     ["--first-load-only", "firstLoadOnly"],
     ["--input-intents-only", "inputIntentsOnly"],
 ]);
@@ -9,6 +10,7 @@ export function parsePlaywrightSmokeArgs(argv, { defaultPort = 4173 } = {}) {
         baseUrl: "",
         skipServer: false,
         includePwa: false,
+        pwaOnly: false,
         firstLoadOnly: false,
         writeFirstLoadArtifacts: false,
         inputIntentsOnly: false,

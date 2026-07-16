@@ -72,13 +72,19 @@ describe("app layout performance guard", () => {
     it("defers app runtime sidecars out of the initial shell", () => {
         const source = fs.readFileSync(path.join(process.cwd(), "src/components/layout/deferred-app-runtime.tsx"), "utf8")
         const runtimeSource = fs.readFileSync(path.join(process.cwd(), "src/components/layout/app-runtime.tsx"), "utf8")
+        const bootstrapSource = fs.readFileSync(path.join(process.cwd(), "public/runtime/theme-manifest-bootstrap.js"), "utf8")
 
         expect(source).toContain('const AppRuntime = dynamic(')
         expect(source).toContain('import("./app-runtime")')
         expect(source).toContain('useDeferredMount({ delayMs: 1800, activateOnInteraction: true })')
+        expect(source).not.toContain('window.addEventListener("beforeinstallprompt"')
+        expect(source).toContain("usePwaInstallPrompt()")
+        expect(source).toContain("capturedInstallPrompt={capturedInstallPrompt}")
 
-        expect(runtimeSource).toContain("beforeinstallprompt")
+        expect(runtimeSource).not.toContain('window.addEventListener("beforeinstallprompt"')
         expect(runtimeSource).toContain('navigator.serviceWorker.register("/sw.js")')
+        expect(bootstrapSource).toContain('window.addEventListener("beforeinstallprompt"')
+        expect(bootstrapSource).toContain('window.addEventListener("appinstalled"')
     })
 
     it("isolates non-home route chrome behind a split client module", () => {

@@ -39,7 +39,7 @@ export default function RootLayout({
       <head>
         <link rel="manifest" id="app-manifest" href="/manifest.json" />
         <meta name="theme-color" content={PWA_THEME_COLOR} />
-        {/* This tiny same-origin script must block first paint so saved light themes cannot flash dark. */}
+        {/* This same-origin bootstrap applies theme and owns pre-hydration PWA install events. */}
         {/* eslint-disable-next-line @next/next/no-sync-scripts */}
         <script src="/runtime/theme-manifest-bootstrap.js" />
         <meta name="apple-mobile-web-app-capable" content="yes" />

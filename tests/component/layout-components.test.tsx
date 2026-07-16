@@ -121,6 +121,22 @@ function createMockLangValue(lang: string) {
     }
 }
 
+function installMatchMedia(matches = false) {
+    Object.defineProperty(window, "matchMedia", {
+        configurable: true,
+        value: vi.fn((media: string) => ({
+            matches,
+            media,
+            onchange: null,
+            addListener: vi.fn(),
+            removeListener: vi.fn(),
+            addEventListener: vi.fn(),
+            removeEventListener: vi.fn(),
+            dispatchEvent: vi.fn(),
+        })),
+    })
+}
+
 vi.mock("next/navigation", () => ({
     usePathname: () => mocks.pathname,
     useRouter: () => ({ push: mocks.push, replace: mocks.push }),
@@ -242,6 +258,9 @@ describe("layout components", () => {
         mocks.pathname = "/en"
         mocks.push.mockReset()
         mocks.langValue = createMockLangValue("en")
+        window.localStorage.clear()
+        window.sessionStorage.clear()
+        installMatchMedia()
     })
 
     it("renders navbar search triggers with the command-palette data contract", () => {
@@ -413,6 +432,89 @@ describe("layout components", () => {
         })
         fireEvent(window, new Event("online"))
         await waitFor(() => expect(screen.queryByText("You are offline")).not.toBeInTheDocument())
+    })
+
+    it("completes an accepted install when localStorage is denied", async () => {
+        const storageRead = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+            throw new DOMException("Storage denied", "SecurityError")
+        })
+        const storageWrite = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+            throw new DOMException("Storage denied", "SecurityError")
+        })
+        const prompt = vi.fn().mockResolvedValue(undefined)
+        const onInstallPromptConsumed = vi.fn()
+        const capturedInstallPrompt = Object.assign(new Event("beforeinstallprompt"), {
+            prompt,
+            userChoice: Promise.resolve({ outcome: "accepted" as const, platform: "web" }),
+        })
+
+        try {
+            render(
+                <AppRuntime
+                    pathname="/en/json-formatter"
+                    capturedInstallPrompt={capturedInstallPrompt}
+                    onInstallPromptConsumed={onInstallPromptConsumed}
+                />,
+            )
+
+            fireEvent.click(await screen.findByRole("button", { name: "Install" }))
+            await waitFor(() => expect(prompt).toHaveBeenCalledTimes(1))
+            await waitFor(() => expect(onInstallPromptConsumed).toHaveBeenCalledTimes(1))
+        } finally {
+            storageRead.mockRestore()
+            storageWrite.mockRestore()
+        }
+    })
+
+    it("shows a captured install prompt only once in memory when storage is denied", async () => {
+        const storageRead = vi.spyOn(Storage.prototype, "getItem").mockImplementation(() => {
+            throw new DOMException("Storage denied", "SecurityError")
+        })
+        const storageWrite = vi.spyOn(Storage.prototype, "setItem").mockImplementation(() => {
+            throw new DOMException("Storage denied", "SecurityError")
+        })
+        const capturedInstallPrompt = Object.assign(new Event("beforeinstallprompt"), {
+            prompt: vi.fn(),
+            userChoice: Promise.resolve({ outcome: "dismissed" as const, platform: "web" }),
+        })
+
+        try {
+            const view = render(
+                <AppRuntime pathname="/en/json-formatter" capturedInstallPrompt={capturedInstallPrompt} />,
+            )
+
+            fireEvent.click(await screen.findByRole("button", { name: "Later" }))
+            expect(screen.queryByRole("button", { name: "Install" })).not.toBeInTheDocument()
+
+            view.rerender(
+                <AppRuntime pathname="/en/base64-encode-decode" capturedInstallPrompt={capturedInstallPrompt} />,
+            )
+            await waitFor(() => {
+                expect(screen.queryByRole("button", { name: "Install" })).not.toBeInTheDocument()
+            })
+        } finally {
+            storageRead.mockRestore()
+            storageWrite.mockRestore()
+        }
+    })
+
+    it("consumes a captured install prompt when the app is already installed", async () => {
+        installMatchMedia(true)
+        const onInstallPromptConsumed = vi.fn()
+        const capturedInstallPrompt = Object.assign(new Event("beforeinstallprompt"), {
+            prompt: vi.fn(),
+            userChoice: Promise.resolve({ outcome: "accepted" as const, platform: "web" }),
+        })
+
+        render(
+            <AppRuntime
+                pathname="/en"
+                capturedInstallPrompt={capturedInstallPrompt}
+                onInstallPromptConsumed={onInstallPromptConsumed}
+            />,
+        )
+
+        await waitFor(() => expect(onInstallPromptConsumed).toHaveBeenCalledTimes(1))
     })
 
     it("fails fast when visible i18n labels are missing", () => {

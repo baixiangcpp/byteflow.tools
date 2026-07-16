@@ -11,9 +11,9 @@ export const INLINE_SCRIPT_POLICY: readonly InlineScriptPolicyEntry[] = [
     {
         id: "theme-manifest-bootstrap",
         file: "src/app/layout.tsx",
-        purpose: "Set locale lang, color scheme, theme-color, and localized manifest before first paint.",
+        purpose: "Set locale, theme, and localized manifest before first paint, and bridge the one-shot PWA install lifecycle before hydration.",
         requiresUnsafeInline: false,
-        migrationPath: "Implemented as a parser-blocking same-origin runtime script in <head> so the saved theme is applied before first paint.",
+        migrationPath: "Implemented as a parser-blocking same-origin runtime script in <head> so theme and PWA install events are captured before hydration.",
         externalScript: "/runtime/theme-manifest-bootstrap.js",
     },
     {

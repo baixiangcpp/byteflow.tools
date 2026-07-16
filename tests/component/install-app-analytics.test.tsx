@@ -1,6 +1,7 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { InstallAppClient } from "@/features/install-app/components/install-app-client"
+import { capturePwaInstallPrompt, consumePwaInstallPrompt } from "@/core/pwa/install-prompt-store"
 import { getInstallPageCopy } from "@/core/utils/install-app-copy"
 
 const trackPwaInstalledMock = vi.hoisted(() => vi.fn())
@@ -41,6 +42,7 @@ function installMatchMedia() {
 
 describe("install app analytics", () => {
     beforeEach(() => {
+        consumePwaInstallPrompt()
         trackPwaInstalledMock.mockReset()
         installMatchMedia()
     })
@@ -68,7 +70,7 @@ describe("install app analytics", () => {
         )
 
         await act(async () => {
-            window.dispatchEvent(beforeInstallPromptEvent as Event)
+            capturePwaInstallPrompt(beforeInstallPromptEvent)
         })
 
         const installButtons = await screen.findAllByRole("button", { name: copy.installNow })
