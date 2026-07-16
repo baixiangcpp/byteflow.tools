@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { LangProvider } from "@/core/i18n/lang-provider"
 import { getTranslation } from "@/core/i18n/translations/catalog"
+import { AppToaster } from "@/components/ui/app-toaster"
 import { OauthJwksWorkbenchPage } from "@/features/tools/oauth-jwks-workbench/page"
 
 const clipboardWriteMock = vi.hoisted(() => vi.fn())
@@ -22,17 +23,11 @@ vi.mock("next/navigation", () => ({
     usePathname: () => "/en/oauth-jwks-workbench",
 }))
 
-vi.mock("sonner", () => ({
-    toast: {
-        error: vi.fn(),
-        success: vi.fn(),
-    },
-}))
-
 function renderOauthJwksWorkbench() {
     return render(
         <LangProvider lang="en" translations={getTranslation("en")}>
             <OauthJwksWorkbenchPage />
+            <AppToaster />
         </LangProvider>,
     )
 }
@@ -107,7 +102,7 @@ describe("OauthJwksWorkbenchPage", () => {
         }
     })
 
-    it("returns clipboard failures through the shared toolbar status path", async () => {
+    it("returns clipboard failures through the shared toast live region", async () => {
         const originalCrypto = globalThis.crypto
         clipboardWriteMock.mockResolvedValue({ ok: false, method: "none" })
 
@@ -135,7 +130,7 @@ describe("OauthJwksWorkbenchPage", () => {
             fireEvent.click(screen.getByRole("button", { name: "Copy" }))
 
             await waitFor(() => {
-                expect(screen.getByRole("status")).toHaveTextContent("Unable to copy. Please copy manually.")
+                expect(document.querySelector('section[aria-live="polite"]')).toHaveTextContent("Unable to copy. Please copy manually.")
             })
             expect(screen.getByRole("button", { name: "Copy" })).toHaveAttribute("data-tool-action-state", "failed")
         } finally {

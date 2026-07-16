@@ -766,8 +766,6 @@ async function assertInputProcessCopyJourney(context, baseUrl, locale) {
 
     const copyButton = page.getByRole("button", { name: /^Copy$/ }).first();
     await copyButton.waitFor({ state: "visible", timeout: 15_000 });
-    // Wait for DeferredToaster to mount (which has a 2000ms delay)
-    await page.waitForTimeout(2500);
     await copyButton.click();
 
     const copiedToast = page.getByText(/copied/i).first();

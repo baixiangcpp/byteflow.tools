@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import "@/app/globals.css";
-import { DeferredToaster } from "@/components/ui/deferred-toaster";
+import { AppToaster } from "@/components/ui/app-toaster";
 import { PWA_THEME_COLOR } from "@/core/pwa/constants";
 import { buildDefaultOgImageUrl, buildSiteKeywords } from "@/core/seo/seo";
 
@@ -47,7 +47,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased" suppressHydrationWarning>
         {children}
-        <DeferredToaster />
+        <AppToaster />
       </body>
     </html>
   );

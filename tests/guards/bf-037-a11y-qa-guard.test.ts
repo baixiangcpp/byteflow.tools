@@ -19,7 +19,8 @@ describe("BF-037 accessibility QA guard", () => {
         expect(source).toContain("<YouTubeThumbnailGrabberPage />")
         expect(source).toContain("<AllToolsDiscovery")
         expect(toastSource).toContain("toast.success")
-        expect(toastSource).toContain("screen.getByRole(\"status\")")
+        expect(toastSource).toContain('section[aria-live="polite"]')
+        expect(toastSource).toContain("data-toast-live-region")
     })
 
     it("keeps the manual screen-reader QA checklist documented", () => {

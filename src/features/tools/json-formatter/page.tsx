@@ -18,7 +18,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
-import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { ToolActionBar, type ToolAction, type ToolActionResult } from "@/features/tool-shell/tool-action-bar"
 import { copyTextWithToolFeedback, downloadedFileFeedback } from "@/features/tool-shell/tool-action-feedback"
 import type { OutputWrapMode } from "@/features/tool-shell/text-output-panel"
 import { ToolEmptyState } from "@/features/tool-shell/tool-empty-state"
@@ -52,6 +52,7 @@ import { downloadJsonOutput } from "./browser-actions"
 import type { JsonPath, JsonValue, ViewMode } from "./types"
 import { WideToolPageContainer } from "@/components/layout/page-container"
 import { useJsonTreeDialog } from "./use-json-tree-dialog"
+import { useJsonFormatterShortcuts } from "./use-json-formatter-shortcuts"
 
 export function JsonFormatterPage() {
     const { t, lang } = useLang()
@@ -97,10 +98,19 @@ export function JsonFormatterPage() {
     const monacoTheme = getByteflowMonacoThemeName(resolvedTheme)
     const fileInputRef = React.useRef<HTMLInputElement | null>(null)
     const outputPaneRef = React.useRef<HTMLDivElement | null>(null)
+    const toolHeaderRef = React.useRef<HTMLDivElement | null>(null)
     const appliedHandoffRef = React.useRef<string | null>(null)
     const formatRequestIdRef = React.useRef(0)
     const formatAbortControllerRef = React.useRef<AbortController | null>(null)
     const [lastFormatMode, setLastFormatMode] = React.useState<JsonFormatMode>("format")
+
+    const cancelPendingFormat = React.useCallback(() => {
+        formatRequestIdRef.current += 1
+        formatAbortControllerRef.current?.abort()
+        formatAbortControllerRef.current = null
+        setIsFormatting(false)
+    }, [])
+
     React.useEffect(() => {
         const savedMode = readStorageString(VIEW_MODE_STORAGE_KEY)
         if (savedMode === "text" || savedMode === "tree") {
@@ -155,13 +165,14 @@ export function JsonFormatterPage() {
     }, [text])
 
     const applyTreeValue = React.useCallback((nextValue: JsonValue) => {
+        cancelPendingFormat()
         const pretty = JSON.stringify(nextValue, null, 2)
         setTreeData(nextValue)
         setInput(pretty)
         setOutput(pretty)
         setError(null)
         setErrorDetails(null)
-    }, [])
+    }, [cancelPendingFormat])
 
     const buildTreeFromCurrentText = React.useCallback(() => {
         const source = input.trim() ? input : output
@@ -190,6 +201,7 @@ export function JsonFormatterPage() {
     }, [])
 
     const handleInputChange = React.useCallback((nextInput: string) => {
+        cancelPendingFormat()
         setInput(nextInput)
         if (output || treeData !== null) {
             setOutput("")
@@ -198,9 +210,9 @@ export function JsonFormatterPage() {
         }
         setError(null)
         setErrorDetails(null)
-    }, [output, treeData])
+    }, [cancelPendingFormat, output, treeData])
 
-    const runJsonFormat = React.useCallback(async (source: string, mode: JsonFormatMode) => {
+    const runJsonFormat = React.useCallback(async (source: string, mode: JsonFormatMode): Promise<ToolActionResult | undefined> => {
         const requestId = formatRequestIdRef.current + 1
         formatRequestIdRef.current = requestId
         formatAbortControllerRef.current?.abort()
@@ -211,7 +223,7 @@ export function JsonFormatterPage() {
             setTreeData(null)
             setError(null)
             setErrorDetails(null)
-            return
+            return undefined
         }
 
         const controller = new AbortController()
@@ -219,21 +231,23 @@ export function JsonFormatterPage() {
         setIsFormatting(true)
         try {
             const result = await runJsonFormatTask(source, mode, { signal: controller.signal })
-            if (formatRequestIdRef.current !== requestId) return
+            if (formatRequestIdRef.current !== requestId) return undefined
             setOutput(result.output)
             setTreeData(result.parsed)
             setLastFormatMode(mode)
             setError(null)
             setErrorDetails(null)
             scrollOutputIntoViewOnMobile()
+            return { status: "success" }
         } catch (err) {
-            if (formatRequestIdRef.current !== requestId) return
+            if (formatRequestIdRef.current !== requestId) return undefined
             const details = buildJsonParseErrorDetails(source, err, text)
             setOutput("")
             setTreeData(null)
             setExpanded(new Set(["$"]))
             setError(details.message)
             setErrorDetails(details)
+            return undefined
         } finally {
             if (formatRequestIdRef.current === requestId) {
                 formatAbortControllerRef.current = null
@@ -243,17 +257,17 @@ export function JsonFormatterPage() {
     }, [scrollOutputIntoViewOnMobile, text])
 
     const formatJsonSource = React.useCallback((source: string) => {
-        void runJsonFormat(source, "format")
+        return runJsonFormat(source, "format")
     }, [runJsonFormat])
 
     const formatJson = React.useCallback(() => {
-        void runJsonFormat(input, "format")
+        return runJsonFormat(input, "format")
     }, [input, runJsonFormat])
 
     const minifyJson = React.useCallback(() => {
-        if (!input.trim()) return
+        if (!input.trim()) return undefined
 
-        void runJsonFormat(input, "minify")
+        return runJsonFormat(input, "minify")
     }, [input, runJsonFormat])
 
     const handleCopy = React.useCallback(async () => {
@@ -277,6 +291,7 @@ export function JsonFormatterPage() {
     }, [error, lastFormatMode, output, t, treeData, viewMode])
 
     const handleClear = () => {
+        cancelPendingFormat()
         setInput("")
         setOutput("")
         setTreeData(null)
@@ -299,6 +314,7 @@ export function JsonFormatterPage() {
     const handleImportFile = async (file: File) => {
         try {
             const content = await importTextFile(file)
+            cancelPendingFormat()
             setInput(content)
             setOutput("")
             setTreeData(null)
@@ -314,6 +330,14 @@ export function JsonFormatterPage() {
             setErrorDetails(null)
         }
     }
+
+    const triggerToolbarFormatAction = React.useCallback((actionId: JsonFormatMode) => {
+        toolHeaderRef.current
+            ?.querySelector<HTMLButtonElement>(`button[data-analytics-id="${actionId}"]`)
+            ?.click()
+    }, [])
+
+    const openTreeSearch = React.useCallback(() => setIsSearchOpen(true), [])
 
     const openImportPicker = () => {
         fileInputRef.current?.click()
@@ -343,44 +367,20 @@ export function JsonFormatterPage() {
         setViewMode(nextMode)
     }
 
-    React.useEffect(() => {
-        const handleKeyDown = (event: KeyboardEvent) => {
-            const withModifier = event.metaKey || event.ctrlKey
-            if (!withModifier) return
-
-            if (event.key === "Enter" && !event.shiftKey) {
-                event.preventDefault()
-                formatJson()
-                return
-            }
-
-            if (event.key === "Enter" && event.shiftKey) {
-                event.preventDefault()
-                minifyJson()
-                return
-            }
-
-            if ((event.key === "c" || event.key === "C") && event.shiftKey && (output || treeData !== null)) {
-                event.preventDefault()
-                void handleCopy()
-            }
-
-            if ((event.key === "f" || event.key === "F") && withModifier && viewMode === "tree") {
-                event.preventDefault()
-                setIsSearchOpen(true)
-            }
-        }
-
-        window.addEventListener("keydown", handleKeyDown)
-        return () => window.removeEventListener("keydown", handleKeyDown)
-    }, [output, treeData, formatJson, minifyJson, handleCopy, viewMode])
+    useJsonFormatterShortcuts({
+        canCopy: Boolean(output || treeData !== null),
+        onCopy: handleCopy,
+        onFormatAction: triggerToolbarFormatAction,
+        onOpenTreeSearch: openTreeSearch,
+        treeViewActive: viewMode === "tree",
+    })
 
     const handleUseSample = () => {
         setInput(SAMPLE_JSON_SOURCE)
         setExpanded(new Set(["$"]))
         setError(null)
         setErrorDetails(null)
-        formatJsonSource(SAMPLE_JSON_SOURCE)
+        return formatJsonSource(SAMPLE_JSON_SOURCE)
     }
 
     const actions: ToolAction[] = [
@@ -571,7 +571,7 @@ export function JsonFormatterPage() {
                 onSubmit={confirmTreeDialog}
                 text={text}
             />
-            <div className="flex flex-col gap-4">
+            <div ref={toolHeaderRef} className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
                         <Braces className="h-6 w-6 text-primary" />
