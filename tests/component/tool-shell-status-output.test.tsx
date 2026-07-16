@@ -73,6 +73,54 @@ describe("shared tool shell status and output components", () => {
         expect(screen.getByRole("button", { name: "Verify" })).toHaveAttribute("data-tool-action-state", "idle")
     })
 
+    it("keeps a newer action announcement when an earlier Promise<void> action settles", async () => {
+        let resolveFormat: () => void = () => undefined
+        const actions: ToolAction[] = [
+            {
+                id: "format",
+                label: "Format",
+                onClick: () => new Promise<void>((resolve) => {
+                    resolveFormat = resolve
+                }),
+            },
+            {
+                id: "clear",
+                label: "Clear",
+                onClick: () => undefined,
+            },
+        ]
+
+        renderEnglish(<ToolActionBar actions={actions} />)
+
+        fireEvent.click(screen.getByRole("button", { name: "Format" }))
+        fireEvent.click(screen.getByRole("button", { name: "Clear" }))
+        expect(screen.getByRole("status")).toHaveTextContent("Clear completed.")
+
+        resolveFormat()
+
+        await waitFor(() => {
+            expect(screen.getByRole("button", { name: "Format" })).toHaveAttribute("data-tool-action-state", "idle")
+        })
+        expect(screen.getByRole("status")).toHaveTextContent("Clear completed.")
+    })
+
+    it("does not duplicate announcements for results already announced by a toast", async () => {
+        const actions: ToolAction[] = [{
+            id: "copy",
+            label: "Copy",
+            onClick: async () => ({ status: "success", message: "Copied", announce: false }),
+        }]
+
+        renderEnglish(<ToolActionBar actions={actions} />)
+
+        fireEvent.click(screen.getByRole("button", { name: "Copy" }))
+
+        await waitFor(() => {
+            expect(screen.getByRole("button", { name: "Copy" })).toHaveAttribute("data-tool-action-state", "success")
+        })
+        expect(screen.queryByRole("status")).not.toBeInTheDocument()
+    })
+
     it("lets long output switch between wrap and horizontal scroll modes without changing the output text", () => {
         const output = `https://example.com/${"a".repeat(180)}`
 
@@ -119,8 +167,10 @@ describe("shared tool shell status and output components", () => {
         )
 
         const permissionStatus = screen.getByRole("status")
-        expect(permissionStatus).toHaveAttribute("data-external-request-status", "permission")
+        expect(permissionStatus.closest('[data-external-request-status="permission"]')).not.toBeNull()
         expect(permissionStatus).toHaveAttribute("aria-live", "polite")
+        expect(permissionStatus.childNodes).toHaveLength(1)
+        expect(permissionStatus.firstChild?.nodeType).toBe(Node.TEXT_NODE)
 
         rerender(
             <LangProvider lang="en" translations={getTranslation("en")}>
@@ -133,7 +183,7 @@ describe("shared tool shell status and output components", () => {
             </LangProvider>,
         )
 
-        expect(screen.getByRole("alert")).toHaveAttribute("data-external-request-status", "offline")
+        expect(screen.getByRole("alert").closest('[data-external-request-status="offline"]')).not.toBeNull()
         expect(screen.getByRole("alert")).toHaveAttribute("aria-live", "assertive")
     })
 
@@ -147,7 +197,7 @@ describe("shared tool shell status and output components", () => {
             />,
         )
 
-        expect(screen.getByRole("alert")).toHaveAttribute("data-external-request-status", "offline")
+        expect(screen.getByRole("alert").closest('[data-external-request-status="offline"]')).not.toBeNull()
         expect(screen.getByRole("alert")).toHaveTextContent("What to do next: Reconnect and retry.")
         expect(screen.getByRole("alert")).toHaveTextContent("i.ytimg.com")
         expect(screen.getByRole("alert")).toHaveTextContent("Network access starts only after you choose the external-request action.")

@@ -119,6 +119,41 @@ describe("ToolActionBar", () => {
         expect(screen.getByText("Format failed")).toBeInTheDocument()
     })
 
+    it("tracks concurrent actions independently and prevents the same action from re-entering", async () => {
+        let resolveCopy: (value: { status: "success" }) => void = () => undefined
+        let resolveFormat: (value: { status: "success" }) => void = () => undefined
+        const copyAction = vi.fn(() => new Promise<{ status: "success" }>((resolve) => {
+            resolveCopy = resolve
+        }))
+        const formatAction = vi.fn(() => new Promise<{ status: "success" }>((resolve) => {
+            resolveFormat = resolve
+        }))
+
+        render(<ToolActionBar actions={[
+            { id: "copy", label: "Copy", onClick: copyAction },
+            { id: "format", label: "Format", onClick: formatAction },
+        ]} />)
+
+        fireEvent.click(screen.getByRole("button", { name: "Format" }))
+        fireEvent.click(screen.getByRole("button", { name: "Copy" }))
+
+        expect(screen.getByRole("button", { name: "Format" })).toHaveAttribute("data-tool-action-state", "pending")
+        expect(screen.getByRole("button", { name: "Copy" })).toHaveAttribute("data-tool-action-state", "pending")
+        fireEvent.click(screen.getByRole("button", { name: "Format" }))
+        expect(formatAction).toHaveBeenCalledTimes(1)
+
+        await act(async () => {
+            resolveCopy({ status: "success" })
+        })
+        expect(screen.getByRole("button", { name: "Copy" })).toHaveAttribute("data-tool-action-state", "success")
+        expect(screen.getByRole("button", { name: "Format" })).toHaveAttribute("data-tool-action-state", "pending")
+
+        await act(async () => {
+            resolveFormat({ status: "success" })
+        })
+        expect(screen.getByRole("button", { name: "Format" })).toHaveAttribute("data-tool-action-state", "success")
+    })
+
     it("describes disabled handoff actions without changing their accessible name", () => {
         render(<ToolActionBar actions={[{ id: "to_json", label: "JSON Formatter", icon: Copy, href: "/en/json-formatter" }]} />)
 

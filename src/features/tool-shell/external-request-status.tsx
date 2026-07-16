@@ -63,17 +63,16 @@ export function ExternalRequestStatus({
     const Icon = STATUS_ICON[status]
     const labels = t.common.external_request_status
     const role = ASSERTIVE_STATUSES.has(status) ? "alert" : "status"
+    const boundary = `${labels.boundary_label}: ${t.common.external_network_notice.consent_required_message} ${hosts.join(", ")}`
+    const announcement = `${labels[status]}. ${message} ${labels.next_step_label}: ${nextStep} ${boundary}`
 
     return (
         <section
             id={id}
-            role={role}
-            aria-live={role === "alert" ? "assertive" : "polite"}
-            aria-atomic="true"
             data-external-request-status={status}
             className={cn("rounded-lg border p-3 text-sm", STATUS_STYLE[status], className)}
         >
-            <div className="flex items-start gap-2">
+            <div className="flex items-start gap-2" aria-hidden="true">
                 <Icon className={cn("mt-0.5 h-4 w-4 shrink-0", status === "requesting" && "animate-pulse")} aria-hidden />
                 <div className="min-w-0 flex-1 space-y-1.5">
                     <div className="font-semibold text-foreground">
@@ -91,6 +90,13 @@ export function ExternalRequestStatus({
                     </p>
                 </div>
             </div>
+            <span
+                className="sr-only"
+                role={role}
+                aria-live={role === "alert" ? "assertive" : "polite"}
+                aria-atomic="true"
+                data-external-request-announcement
+            >{announcement}</span>
         </section>
     )
 }

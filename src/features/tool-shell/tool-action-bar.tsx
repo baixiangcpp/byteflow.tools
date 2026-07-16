@@ -31,6 +31,7 @@ export type ToolActionResult = {
     status: ToolActionResultStatus
     message?: string
     description?: string
+    announce?: boolean
 }
 
 export type ToolAction = {
@@ -48,6 +49,10 @@ export type ToolAction = {
 }
 
 type AnalyticsAction = "tool_run" | "copy_output" | "download_output" | null
+type ActionAnnouncement = {
+    actionId: string
+    message: string
+}
 
 const ACTION_BASE_CLASS =
     "inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 lg:min-h-9"
@@ -161,8 +166,9 @@ export function ToolActionBar({
 }) {
     const pathname = usePathname()
     const { t, lang } = useLang()
-    const [pendingActionId, setPendingActionId] = React.useState<string | null>(null)
-    const [actionAnnouncement, setActionAnnouncement] = React.useState("")
+    const pendingActionIdsRef = React.useRef<Set<string>>(new Set())
+    const [pendingActionIds, setPendingActionIds] = React.useState<ReadonlySet<string>>(() => new Set())
+    const [actionAnnouncement, setActionAnnouncement] = React.useState<ActionAnnouncement | null>(null)
     const [lastActionStatus, setLastActionStatus] = React.useState<Record<string, ToolActionRuntimeStatus>>({})
     const toolKey = React.useMemo(() => {
         const context = getRouteContext(pathname)
@@ -191,7 +197,7 @@ export function ToolActionBar({
 
     const triggerAction = React.useCallback(
         async (action: ToolAction) => {
-            if (action.disabled || pendingActionId === action.id) return
+            if (action.disabled || pendingActionIdsRef.current.has(action.id)) return
             const analyticsAction = classifyAnalyticsAction(action.id)
             if (toolKey && analyticsAction) {
                 if (analyticsAction === "tool_run") {
@@ -211,32 +217,54 @@ export function ToolActionBar({
                         ...current,
                         [action.id]: isActionResult(maybeResult) ? maybeResult.status : "success",
                     }))
-                    setActionAnnouncement(getResultAnnouncement(action, maybeResult, t))
+                    if (isActionResult(maybeResult) && maybeResult.announce === false) {
+                        setActionAnnouncement((current) => current?.actionId === action.id ? null : current)
+                    } else {
+                        setActionAnnouncement({
+                            actionId: action.id,
+                            message: getResultAnnouncement(action, maybeResult, t),
+                        })
+                    }
                     return
                 }
 
-                setPendingActionId(action.id)
+                pendingActionIdsRef.current.add(action.id)
+                setPendingActionIds(new Set(pendingActionIdsRef.current))
                 setLastActionStatus((current) => ({ ...current, [action.id]: "pending" }))
-                setActionAnnouncement(formatActionStatus(t.common.action_status_pending, action.label, "in progress"))
+                setActionAnnouncement({
+                    actionId: action.id,
+                    message: formatActionStatus(t.common.action_status_pending, action.label, "in progress"),
+                })
                 const awaitedResult = await maybeResult
                 if (isActionResult(awaitedResult)) {
                     setLastActionStatus((current) => ({
                         ...current,
                         [action.id]: awaitedResult.status,
                     }))
-                    setActionAnnouncement(getResultAnnouncement(action, awaitedResult, t))
+                    if (awaitedResult.announce === false) {
+                        setActionAnnouncement((current) => current?.actionId === action.id ? null : current)
+                    } else {
+                        setActionAnnouncement({
+                            actionId: action.id,
+                            message: getResultAnnouncement(action, awaitedResult, t),
+                        })
+                    }
                 } else {
                     setLastActionStatus((current) => ({ ...current, [action.id]: "idle" }))
-                    setActionAnnouncement("")
+                    setActionAnnouncement((current) => current?.actionId === action.id ? null : current)
                 }
             } catch {
                 setLastActionStatus((current) => ({ ...current, [action.id]: "failed" }))
-                setActionAnnouncement(formatActionStatus(t.common.action_status_failed, action.label, "failed"))
+                setActionAnnouncement({
+                    actionId: action.id,
+                    message: formatActionStatus(t.common.action_status_failed, action.label, "failed"),
+                })
             } finally {
-                setPendingActionId((current) => (current === action.id ? null : current))
+                pendingActionIdsRef.current.delete(action.id)
+                setPendingActionIds(new Set(pendingActionIdsRef.current))
             }
         },
-        [lang, pendingActionId, t, toolKey],
+        [lang, t, toolKey],
     )
 
     const handoffDisabledReason = !handoffPayload?.trim() ? t.common.action_disabled_no_output : undefined
@@ -256,7 +284,7 @@ export function ToolActionBar({
                 const title = disabledReason ? accessibleLabel : action.title || action.label
                 const disabledDescriptionId = disabledReason ? getActionDescriptionId(action.id) : undefined
                 const isDestructive = isDestructiveAction(action)
-                const isPending = pendingActionId === action.id
+                const isPending = pendingActionIds.has(action.id)
                 const runtimeStatus: ToolActionRuntimeStatus = action.disabled
                     ? "disabled"
                     : isPending
@@ -393,7 +421,7 @@ export function ToolActionBar({
             )}
             {actionAnnouncement ? (
                 <span className="sr-only" role="status" aria-live="polite" aria-atomic="true" data-tool-action-status>
-                    {actionAnnouncement}
+                    {actionAnnouncement.message}
                 </span>
             ) : null}
         </div>

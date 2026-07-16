@@ -83,13 +83,14 @@ describe("tool action consistency guard", () => {
 
     it("keeps copy/download feedback exposed through an accessible live region", () => {
         const toaster = read("src/components/ui/sonner.tsx")
+        const toasterTest = read("tests/component/toaster-live-region.test.tsx")
 
-        expect(toaster).toContain('role="status"')
-        expect(toaster).toContain('aria-live="polite"')
-        expect(toaster).toContain("data-toast-live-region")
-        expect(toaster).toContain("useSonner")
-        expect(toaster).toContain("toastNodeToText")
-        expect(read("tests/component/toaster-live-region.test.tsx")).toContain("announces the latest toast title and description")
+        expect(toaster).toContain("Toaster as Sonner")
+        expect(toaster).not.toContain("useSonner")
+        expect(toaster).not.toContain("data-toast-live-region")
+        expect(toasterTest).toContain("announces the latest toast title and description")
+        expect(toasterTest).toContain('section[aria-live=\"polite\"]')
+        expect(toasterTest).toContain('querySelector("[data-toast-live-region]")')
     })
 
     it("keeps audited copy, download, and share actions on visible success/failure feedback paths", () => {

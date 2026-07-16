@@ -21,10 +21,12 @@ describe("BF-016 accessibility and mobile baseline", () => {
 
     it("keeps toast feedback exposed through a polite live region", () => {
         const source = readSource("src/components/ui/sonner.tsx")
+        const testSource = readSource("tests/component/toaster-live-region.test.tsx")
 
-        expect(source).toContain('role="status"')
-        expect(source).toContain('aria-live="polite"')
-        expect(source).toContain("data-toast-live-region")
+        expect(source).toContain("Toaster as Sonner")
+        expect(source).not.toContain("data-toast-live-region")
+        expect(testSource).toContain('section[aria-live="polite"]')
+        expect(testSource).toContain("announces the latest toast title and description")
     })
 
     it("keeps coarse-pointer controls at the WCAG target-size baseline", () => {
