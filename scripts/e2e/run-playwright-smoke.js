@@ -6,6 +6,7 @@ import process from "node:process";
 import axe from "axe-core";
 import { chromium } from "playwright";
 import serveHandler from "serve-handler";
+import { parsePlaywrightSmokeArgs } from "./playwright-smoke-args.js";
 
 const DEFAULT_PORT = 4173;
 const DEFAULT_ROUTES = [
@@ -197,64 +198,6 @@ function createRuntimeObserver(page, label, baseUrl = "") {
             }
         },
     };
-}
-
-function parseArgs(argv) {
-    const args = {
-        port: DEFAULT_PORT,
-        baseUrl: "",
-        skipServer: false,
-        includePwa: false,
-        firstLoadOnly: false,
-        writeFirstLoadArtifacts: false,
-        inputIntentsOnly: false,
-    };
-
-    for (const arg of argv) {
-        if (arg === "--skip-server") {
-            args.skipServer = true;
-            continue;
-        }
-
-        if (arg === "--pwa") {
-            args.includePwa = true;
-            continue;
-        }
-
-        if (arg === "--first-load-only") {
-            args.firstLoadOnly = true;
-            continue;
-        }
-
-        if (arg === "--first-load-artifacts") {
-            args.writeFirstLoadArtifacts = true;
-            continue;
-        }
-
-        if (arg === "--input-intents-only") {
-            args.inputIntentsOnly = true;
-            continue;
-        }
-
-        if (arg.startsWith("--port=")) {
-            const parsed = Number(arg.slice("--port=".length));
-            if (Number.isFinite(parsed) && parsed > 0) {
-                args.port = parsed;
-            }
-            continue;
-        }
-
-        if (arg.startsWith("--base-url=")) {
-            args.baseUrl = arg.slice("--base-url=".length).trim();
-        }
-    }
-
-    if (!args.baseUrl) {
-        args.baseUrl = `http://127.0.0.1:${args.port}`;
-    }
-
-    args.baseUrl = args.baseUrl.replace(/\/+$/, "");
-    return args;
 }
 
 async function wait(ms) {
@@ -1175,7 +1118,25 @@ async function assertInputIntentSizingMatrix(browser, baseUrl) {
                 try {
                     await page.goto(`${baseUrl}${audit.route}`, { waitUntil: "domcontentloaded" });
                     await page.waitForSelector("main", { timeout: 15_000 });
-                    await page.locator("[data-input-intent]").first().waitFor({ state: "attached", timeout: 15_000 });
+                    await page.waitForFunction((requiredIntents) => {
+                        const visibleIntents = new Set(
+                            Array.from(document.querySelectorAll("[data-input-intent]"))
+                                .filter((element) => {
+                                    const style = window.getComputedStyle(element);
+                                    const rect = element.getBoundingClientRect();
+                                    return (
+                                        style.display !== "none" &&
+                                        style.visibility !== "hidden" &&
+                                        Number(style.opacity) !== 0 &&
+                                        rect.width > 0 &&
+                                        rect.height > 0
+                                    );
+                                })
+                                .map((element) => element.getAttribute("data-input-intent"))
+                                .filter(Boolean),
+                        );
+                        return requiredIntents.every((intent) => visibleIntents.has(intent));
+                    }, audit.requiredIntents, { timeout: 15_000 });
 
                     const measurements = await page.evaluate(({ mobile }) => {
                         const isVisible = (element) => {
@@ -2201,7 +2162,7 @@ async function main() {
         port,
         skipServer,
         writeFirstLoadArtifacts,
-    } = parseArgs(process.argv.slice(2));
+    } = parsePlaywrightSmokeArgs(process.argv.slice(2), { defaultPort: DEFAULT_PORT });
     let serverHandle = null;
 
     try {
@@ -2247,4 +2208,8 @@ async function main() {
     }
 }
 
-main();
+main().catch((error) => {
+    console.error("[playwright-smoke] FAILED");
+    console.error(error instanceof Error ? error.stack || error.message : String(error));
+    process.exitCode = 1;
+});
