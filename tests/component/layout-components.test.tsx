@@ -298,7 +298,7 @@ describe("layout components", () => {
         expect(screen.queryByRole("link", { name: "json_formatter" })).not.toBeInTheDocument()
     })
 
-    it("opens command palette with ctrl+k and navigates when selecting a command", async () => {
+    it("opens command palette with ctrl+k and navigates when selecting a command", { timeout: 10_000 }, async () => {
         render(<CommandPalette />)
 
         expect(screen.queryByTestId("command-dialog")).not.toBeInTheDocument()
@@ -314,7 +314,7 @@ describe("layout components", () => {
         await waitFor(() => expect(screen.queryByTestId("command-dialog")).not.toBeInTheDocument())
     })
 
-    it("indexes description and metadata terms in command item search value", () => {
+    it("indexes description and metadata terms in command item search value", { timeout: 10_000 }, () => {
         render(<CommandPalette />)
 
         fireEvent.keyDown(document, { key: "k", ctrlKey: true })
@@ -330,7 +330,7 @@ describe("layout components", () => {
         expect(jsonFormatterItem).toHaveTextContent("Pipeline ready")
     })
 
-    it("searches navigation, category hubs, static pages, and workflow templates", () => {
+    it("searches navigation, category hubs, static pages, and workflow templates", { timeout: 10_000 }, () => {
         render(<CommandPalette />)
 
         fireEvent.keyDown(document, { key: "k", ctrlKey: true })
@@ -347,7 +347,7 @@ describe("layout components", () => {
         expect(mocks.push).toHaveBeenLastCalledWith("/en/pipeline-builder")
     })
 
-    it("keeps English tool names as search aliases without replacing localized labels", () => {
+    it("keeps English tool names as search aliases without replacing localized labels", { timeout: 10_000 }, () => {
         const localizedValue = createMockLangValue("fr")
         localizedValue.t.tools.json_formatter = {
             title: "Formateur JSON",

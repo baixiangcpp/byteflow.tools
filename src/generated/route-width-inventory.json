@@ -2958,7 +2958,7 @@
       "file": "src/features/tools/json-formatter/page.tsx",
       "component": "JsonFormatterPage",
       "element": "WideToolPageContainer",
-      "line": 567
+      "line": 573
     },
     {
       "file": "src/features/tools/json-schema-workbench/page.tsx",
@@ -3102,7 +3102,7 @@
       "file": "src/features/tools/pipeline-builder/page.tsx",
       "component": "PipelineBuilderPage",
       "element": "WideToolPageContainer",
-      "line": 367
+      "line": 378
     },
     {
       "file": "src/features/tools/public-key-jwk-helper/page.tsx",
@@ -3427,6 +3427,7 @@
       "sm:grid-cols-2": 54,
       "sm:grid-cols-3": 8,
       "sm:grid-cols-4": 1,
+      "sm:max-w-2xl": 1,
       "w-full": 130,
       "xl:grid-cols-[0.9fr_1.1fr]": 1,
       "xl:grid-cols-[1.02fr_0.98fr]": 1,
