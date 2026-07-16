@@ -1,6 +1,11 @@
 import { act, fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { InstallAppClient } from "@/features/install-app/components/install-app-client"
+import {
+    capturePwaInstallPrompt,
+    consumePwaInstallPrompt,
+    getPwaInstallPromptSnapshot,
+} from "@/core/pwa/install-prompt-store"
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
 import { getInstallPageCopy } from "@/core/utils/install-app-copy"
 
@@ -24,6 +29,7 @@ vi.mock("@/core/analytics/analytics", () => ({
 
 describe("install app page", () => {
     beforeEach(() => {
+        consumePwaInstallPrompt()
         if (!window.matchMedia) {
             Object.defineProperty(window, "matchMedia", {
                 writable: true,
@@ -94,6 +100,37 @@ describe("install app page", () => {
         expect(previewImage).toHaveAttribute("aria-label", `${copy.guides.chrome_desktop.label} ${copy.guidePreviewLabel}`)
     })
 
+    it("selects the Android guide from browser signals on the first visit", async () => {
+        const userAgent = vi.spyOn(window.navigator, "userAgent", "get").mockReturnValue(
+            "Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 Chrome/138.0 Mobile Safari/537.36",
+        )
+        const platform = vi.spyOn(window.navigator, "platform", "get").mockReturnValue("Linux armv8l")
+        const copy = getInstallPageCopy("en")
+
+        try {
+            render(
+                <InstallAppClient
+                    locale="en"
+                    copy={copy}
+                    allToolsLabel="All tools"
+                    trustCenterLabel="Trust Center"
+                    localDataControlsLabel="Local data controls"
+                    distributionResearchLabel="Extension and desktop research"
+                    offlineMatrixTitle="Offline support matrix"
+                    offlineMatrixDescription="Review which workflows keep running after cache warm-up."
+                    offlineMatrixLink="Offline matrix"
+                />,
+            )
+
+            await waitFor(() => {
+                expect(screen.getByRole("heading", { name: copy.guides.android.title })).toBeInTheDocument()
+            })
+        } finally {
+            userAgent.mockRestore()
+            platform.mockRestore()
+        }
+    })
+
     it("clears only byteflow PWA cache buckets from the install page", async () => {
         const deleteCache = vi.fn().mockResolvedValue(true)
         Object.defineProperty(window, "caches", {
@@ -158,12 +195,13 @@ describe("install app page", () => {
         expect(screen.getByText(copy.manualHint)).toBeInTheDocument()
 
         await act(async () => {
-            window.dispatchEvent(beforeInstallPromptEvent as Event)
+            capturePwaInstallPrompt(beforeInstallPromptEvent)
         })
         expect((await screen.findAllByRole("button", { name: copy.installNow }))[0]).toBeInTheDocument()
 
         fireEvent.click(screen.getAllByRole("button", { name: copy.installNow })[0])
         await waitFor(() => expect(prompt).toHaveBeenCalledTimes(1))
+        await waitFor(() => expect(getPwaInstallPromptSnapshot()).toBeNull())
         await waitFor(() => expect(screen.getAllByText(copy.manualHint).length).toBeGreaterThan(0))
     })
 })

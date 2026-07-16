@@ -1,7 +1,13 @@
 import fs from "node:fs"
 import path from "node:path"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 import { buildThemeManifestBootstrapScript, readRuntimeScriptConfig } from "../../scripts/generators/generate-runtime-scripts.js"
+import {
+    PWA_INSTALL_INSTALLED_KEY,
+    PWA_INSTALL_PROMPT_CHANGE_EVENT,
+    PWA_INSTALL_PROMPT_SLOT,
+    PWA_INSTALL_SESSION_PROMPTED_KEY,
+} from "@/core/pwa/install-prompt-store"
 
 describe("root layout localized manifest guard", () => {
     it("has a static manifest fallback and updates it during head parsing", () => {
@@ -17,6 +23,39 @@ describe("root layout localized manifest guard", () => {
         expect(runtimeSource).toContain('manifestLink.rel = "manifest";')
         expect(runtimeSource).toContain("manifestLink.href = manifestHref;")
         expect(runtimeSource).toContain("currentScript.parentNode.insertBefore(manifestLink, currentScript.nextSibling);")
+    })
+
+    it("owns install prompt events before hydration without resetting the session gate", () => {
+        const runtimeScript = buildThemeManifestBootstrapScript(readRuntimeScriptConfig())
+        const promptWindow = window as unknown as Record<string, unknown>
+        const promptChange = vi.fn()
+        window.addEventListener(PWA_INSTALL_PROMPT_CHANGE_EVENT, promptChange)
+        window.localStorage.setItem(PWA_INSTALL_INSTALLED_KEY, "1")
+        window.sessionStorage.setItem(PWA_INSTALL_SESSION_PROMPTED_KEY, "1")
+
+        try {
+            Function(runtimeScript)()
+            const installPrompt = Object.assign(new Event("beforeinstallprompt", { cancelable: true }), {
+                prompt: vi.fn().mockResolvedValue(undefined),
+                userChoice: Promise.resolve({ outcome: "dismissed", platform: "web" }),
+            })
+            window.dispatchEvent(installPrompt)
+
+            expect(installPrompt.defaultPrevented).toBe(true)
+            expect(promptWindow[PWA_INSTALL_PROMPT_SLOT]).toBe(installPrompt)
+            expect(window.localStorage.getItem(PWA_INSTALL_INSTALLED_KEY)).toBeNull()
+            expect(window.sessionStorage.getItem(PWA_INSTALL_SESSION_PROMPTED_KEY)).toBe("1")
+
+            window.dispatchEvent(new Event("appinstalled"))
+            expect(promptWindow[PWA_INSTALL_PROMPT_SLOT]).toBeNull()
+            expect(window.localStorage.getItem(PWA_INSTALL_INSTALLED_KEY)).toBe("1")
+            expect(promptChange).toHaveBeenCalledTimes(2)
+        } finally {
+            window.removeEventListener(PWA_INSTALL_PROMPT_CHANGE_EVENT, promptChange)
+            window.localStorage.clear()
+            window.sessionStorage.clear()
+            promptWindow[PWA_INSTALL_PROMPT_SLOT] = null
+        }
     })
 
     it("falls back to the theme cookie when storage access is blocked", () => {

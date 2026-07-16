@@ -72,6 +72,7 @@ interface JsonTreeEditDialogProps {
     closeLabel: string
     dialog: TreeDialogState
     onClose: () => void
+    onCloseAutoFocus: (event: Event) => void
     onDraftChange: (draft: string) => void
     onSubmit: () => void
     text: (key: string) => string
@@ -82,6 +83,7 @@ export function JsonTreeEditDialog({
     closeLabel,
     dialog,
     onClose,
+    onCloseAutoFocus,
     onDraftChange,
     onSubmit,
     text,
@@ -101,7 +103,10 @@ export function JsonTreeEditDialog({
 
     return (
         <Dialog open={dialog !== null} onOpenChange={(open) => { if (!open) onClose() }}>
-            <DialogContent closeLabel={closeLabel}>
+            <DialogContent
+                closeLabel={closeLabel}
+                onCloseAutoFocus={onCloseAutoFocus}
+            >
                 <DialogHeader>
                     <DialogTitle>{title}</DialogTitle>
                     <DialogDescription>{description}</DialogDescription>
@@ -116,6 +121,7 @@ export function JsonTreeEditDialog({
                     {dialog?.type === "edit_value" ? (
                         <Textarea
                             autoFocus
+                            aria-label={title}
                             intent="shortText"
                             className="w-full font-mono text-sm"
                             value={dialog.draft}
@@ -125,6 +131,7 @@ export function JsonTreeEditDialog({
                     ) : (
                         <Input
                             autoFocus
+                            aria-label={title}
                             intent="shortText"
                             value={dialog?.draft || ""}
                             onChange={(event) => onDraftChange(event.target.value)}

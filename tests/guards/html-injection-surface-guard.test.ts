@@ -121,6 +121,9 @@ describe("HTML injection surface guard", () => {
 
     it("documents each remaining inline runtime script with a CSP migration path", () => {
         expect(INLINE_SCRIPT_POLICY).toHaveLength(2)
+        const bootstrapPolicy = INLINE_SCRIPT_POLICY.find((entry) => entry.id === "theme-manifest-bootstrap")
+        expect(bootstrapPolicy?.purpose).toContain("PWA install lifecycle")
+        expect(bootstrapPolicy?.externalScript).toBe("/runtime/theme-manifest-bootstrap.js")
 
         for (const entry of INLINE_SCRIPT_POLICY) {
             expect(fs.existsSync(path.join(process.cwd(), entry.file)), entry.file).toBe(true)

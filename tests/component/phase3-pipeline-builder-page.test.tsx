@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react"
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { LangProvider } from "@/core/i18n/lang-provider"
 import PipelineBuilderPage from "@/app/[lang]/pipeline-builder/page"
@@ -107,7 +107,7 @@ describe("phase 3 pipeline builder page", () => {
         expect(screen.getByRole("toolbar", { name: "Tool actions" })).toBeInTheDocument()
         expect(screen.getByLabelText("Initial input")).toBeInTheDocument()
         expect(screen.getByLabelText("Final output")).toBeInTheDocument()
-        expect(screen.getByText("Steps")).toBeInTheDocument()
+        expect(screen.getAllByText("Steps").length).toBeGreaterThan(0)
         expect(screen.getByText("Recipe Gallery")).toBeInTheDocument()
         expect(screen.getByLabelText("Search recipe templates")).toBeInTheDocument()
         expect(screen.getByText("API payload cleanup")).toBeInTheDocument()
@@ -134,6 +134,17 @@ describe("phase 3 pipeline builder page", () => {
         expect(stepsPanel).toBeInTheDocument()
         expect(stepsPanel).toHaveAttribute("tabindex", "-1")
         expect(document.querySelector("#pipeline-steps-title")).toHaveTextContent("Steps")
+    })
+
+    it("provides compact mobile jumps for steps, input/output, and the inspector", () => {
+        renderWithEnglish(<PipelineBuilderPage />)
+
+        const navigation = screen.getByRole("navigation", { name: "Workspace sections" })
+        expect(navigation.querySelector('[data-pipeline-jump="steps"]')).toHaveAttribute("href", "#pipeline-steps")
+        expect(navigation.querySelector('[data-pipeline-jump="input-output"]')).toHaveAttribute("href", "#pipeline-input-output")
+        expect(navigation.querySelector('[data-pipeline-jump="inspector"]')).toHaveAttribute("href", "#pipeline-inspector")
+        expect(document.querySelector("#pipeline-input-output")).toHaveAttribute("tabindex", "-1")
+        expect(document.querySelector("#pipeline-inspector")).toHaveAttribute("tabindex", "-1")
     })
 
     it("tracks template opens with safe template metadata only", () => {
@@ -298,6 +309,63 @@ describe("phase 3 pipeline builder page", () => {
         expect(screen.getByText("Constant step inputs, tokens, keys, and payloads")).toBeInTheDocument()
         expect(screen.getByRole("button", { name: "Export structure only" })).toBeInTheDocument()
     }, 10_000)
+
+    it("restores privacy dialog focus for toolbar and inspector actions", async () => {
+        renderWithEnglish(<PipelineBuilderPage />)
+
+        const toolbar = screen.getByRole("toolbar", { name: "Tool actions" })
+        const toolbarExport = within(toolbar).getByRole("button", { name: "Export JSON" })
+        toolbarExport.focus()
+        fireEvent.click(toolbarExport)
+
+        const firstDialog = await screen.findByRole("dialog", { name: "Privacy preview" })
+        expect(firstDialog).toHaveAccessibleDescription("Export a structure-only JSON recipe file.")
+        const firstDialogScope = within(firstDialog)
+        const firstConfirm = firstDialogScope.getByRole("button", { name: "Export structure only" })
+        const firstFocusable = firstDialogScope.getByRole("button", { name: "Cancel" })
+        const lastFocusable = firstDialogScope.getByRole("button", { name: "Close" })
+        await waitFor(() => expect(firstConfirm).toHaveFocus())
+
+        lastFocusable.focus()
+        fireEvent.keyDown(lastFocusable, { key: "Tab" })
+        expect(firstFocusable).toHaveFocus()
+        expect(firstDialog.contains(document.activeElement)).toBe(true)
+
+        firstFocusable.focus()
+        fireEvent.keyDown(firstFocusable, { key: "Tab", shiftKey: true })
+        expect(lastFocusable).toHaveFocus()
+        expect(firstDialog.contains(document.activeElement)).toBe(true)
+
+        fireEvent.keyDown(document, { key: "Escape" })
+
+        await waitFor(() => expect(screen.queryByRole("dialog", { name: "Privacy preview" })).not.toBeInTheDocument())
+        await waitFor(() => expect(toolbarExport).toHaveFocus())
+
+        fireEvent.click(toolbarExport)
+        const cancelDialog = await screen.findByRole("dialog", { name: "Privacy preview" })
+        fireEvent.click(within(cancelDialog).getByRole("button", { name: "Cancel" }))
+
+        await waitFor(() => expect(screen.queryByRole("dialog", { name: "Privacy preview" })).not.toBeInTheDocument())
+        await waitFor(() => expect(toolbarExport).toHaveFocus())
+
+        const inspector = screen.getByRole("complementary", { name: "Recipe inspector" })
+        const inspectorExport = within(inspector).getByRole("button", { name: "Export JSON" })
+        inspectorExport.focus()
+        fireEvent.click(inspectorExport)
+
+        const secondDialog = await screen.findByRole("dialog", { name: "Privacy preview" })
+        const confirm = within(secondDialog).getByRole("button", { name: "Export structure only" })
+        await waitFor(() => expect(confirm).toHaveFocus())
+        expect(document.querySelector("[data-pipeline-action-status]")).toHaveTextContent(
+            "Privacy preview. Export a structure-only JSON recipe file.",
+        )
+
+        fireEvent.click(confirm)
+
+        await waitFor(() => expect(downloadTextMock).toHaveBeenCalled())
+        await waitFor(() => expect(screen.queryByRole("dialog", { name: "Privacy preview" })).not.toBeInTheDocument())
+        await waitFor(() => expect(inspectorExport).toHaveFocus())
+    })
 
     it("announces Share URL success after privacy confirmation", async () => {
         renderWithEnglish(<PipelineBuilderPage />)

@@ -25,9 +25,17 @@ function isEditableShortcutTarget(target: EventTarget | null): boolean {
 export function DeferredCommandPalette() {
     const [isMounted, setIsMounted] = React.useState(false)
     const [open, setOpen] = React.useState(false)
+    const returnFocusRef = React.useRef<HTMLElement | null>(null)
+    const takeReturnFocusTarget = React.useCallback(() => {
+        const focusTarget = returnFocusRef.current
+        returnFocusRef.current = null
+        return focusTarget
+    }, [])
 
     React.useEffect(() => {
-        const activatePalette = () => {
+        const activatePalette = (focusTarget?: HTMLElement | null) => {
+            const activeElement = focusTarget ?? document.activeElement
+            returnFocusRef.current = activeElement instanceof HTMLElement ? activeElement : null
             setIsMounted(true)
             setOpen(true)
         }
@@ -46,7 +54,7 @@ export function DeferredCommandPalette() {
             if (!trigger) return
 
             e.preventDefault()
-            activatePalette()
+            activatePalette(trigger instanceof HTMLElement ? trigger : null)
         }
 
         document.addEventListener("keydown", down)
@@ -59,5 +67,12 @@ export function DeferredCommandPalette() {
 
     if (!isMounted) return null
 
-    return <CommandPalette open={open} onOpenChange={setOpen} enableShortcut={false} />
+    return (
+        <CommandPalette
+            open={open}
+            onOpenChange={setOpen}
+            enableShortcut={false}
+            takeReturnFocusTarget={takeReturnFocusTarget}
+        />
+    )
 }

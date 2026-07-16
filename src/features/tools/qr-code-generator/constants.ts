@@ -9,7 +9,7 @@ export const BUTTON_VARIANT_CLASS = {
 } as const
 
 export const BUTTON_SIZE_CLASS = {
-    sm: "h-9 px-3",
+    sm: "h-11 min-w-11 px-3 lg:h-9 lg:min-w-0",
 } as const
 
 export const DEFAULT_QR_TEXT = ""

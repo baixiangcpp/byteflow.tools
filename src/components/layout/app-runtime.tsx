@@ -1,18 +1,22 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import Link from "next/link"
 import { ArrowUp, Download, WifiOff } from "lucide-react"
 import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { requireTranslationValue } from "@/core/i18n/i18n"
 import { useLang } from "@/core/i18n/lang-provider"
+import {
+    PWA_INSTALL_INSTALLED_KEY,
+    PWA_INSTALL_SESSION_PROMPTED_KEY,
+    type BeforeInstallPromptEvent,
+} from "@/core/pwa/install-prompt-store"
+import { createPwaUpdateCoordinator } from "@/core/pwa/runtime-coordinator"
 import { VerificationModePanel } from "./verification-mode-panel"
 
 const PWA_INSTALL_VISIT_COUNT_KEY = "byteflow:pwa-install:visit-count"
 const PWA_INSTALL_DISMISSED_UNTIL_KEY = "byteflow:pwa-install:dismissed-until"
-const PWA_INSTALL_SESSION_PROMPTED_KEY = "byteflow:pwa-install:session-prompted"
-const PWA_INSTALL_INSTALLED_KEY = "byteflow:pwa-install:installed"
 const PWA_INSTALL_MIN_VISITS = 3
 const PWA_INSTALL_DISMISS_COOLDOWN_MS = 7 * 24 * 60 * 60 * 1000
 const SW_UPDATE_ENABLE_IN_DEV = process.env.NEXT_PUBLIC_ENABLE_SW_DEV === "1"
@@ -25,12 +29,10 @@ type PwaInstallCopy = {
     later: string
 }
 
-type BeforeInstallPromptEvent = Event & {
-    prompt: () => Promise<void>
-    userChoice: Promise<{
-        outcome: "accepted" | "dismissed"
-        platform: string
-    }>
+type AppRuntimeProps = {
+    pathname: string
+    capturedInstallPrompt?: BeforeInstallPromptEvent | null
+    onInstallPromptConsumed?: () => void
 }
 
 function isPwaInstalled(): boolean {
@@ -46,42 +48,54 @@ function isPwaInstalled(): boolean {
     return standaloneDisplayMode || iosStandalone || persistedInstalledFlag
 }
 
-export function AppRuntime({ pathname }: { pathname: string }) {
+function setPwaInstallStorageValue(key: string, value: string): void {
+    try {
+        window.localStorage.setItem(key, value)
+    } catch {
+        // Install and update controls must still complete when storage is denied.
+    }
+}
+
+function rememberInstallDismissal(): void {
+    setPwaInstallStorageValue(
+        PWA_INSTALL_DISMISSED_UNTIL_KEY,
+        String(Date.now() + PWA_INSTALL_DISMISS_COOLDOWN_MS),
+    )
+}
+
+export function AppRuntime({
+    pathname,
+    capturedInstallPrompt = null,
+    onInstallPromptConsumed,
+}: AppRuntimeProps) {
     const { lang, t } = useLang()
-    const [deferredInstallPrompt, setDeferredInstallPrompt] = useState<BeforeInstallPromptEvent | null>(null)
     const [showInstallPrompt, setShowInstallPrompt] = useState(false)
     const [showBackToTop, setShowBackToTop] = useState(false)
     const [isOffline, setIsOffline] = useState(false)
+    const installPromptShownInMemory = useRef(false)
 
     const dismissInstallPrompt = useCallback(() => {
         setShowInstallPrompt(false)
-        try {
-            const dismissedUntil = Date.now() + PWA_INSTALL_DISMISS_COOLDOWN_MS
-            window.localStorage.setItem(PWA_INSTALL_DISMISSED_UNTIL_KEY, String(dismissedUntil))
-        } catch {
-            // Ignore storage errors and keep runtime-only dismissal.
-        }
+        rememberInstallDismissal()
     }, [])
 
     const handleInstallNow = useCallback(async () => {
-        if (!deferredInstallPrompt) return
+        if (!capturedInstallPrompt) return
         setShowInstallPrompt(false)
         try {
-            await deferredInstallPrompt.prompt()
-            const choice = await deferredInstallPrompt.userChoice
+            await capturedInstallPrompt.prompt()
+            const choice = await capturedInstallPrompt.userChoice
             if (choice.outcome === "accepted") {
-                window.localStorage.setItem(PWA_INSTALL_INSTALLED_KEY, "1")
+                setPwaInstallStorageValue(PWA_INSTALL_INSTALLED_KEY, "1")
             } else {
-                const dismissedUntil = Date.now() + PWA_INSTALL_DISMISS_COOLDOWN_MS
-                window.localStorage.setItem(PWA_INSTALL_DISMISSED_UNTIL_KEY, String(dismissedUntil))
+                rememberInstallDismissal()
             }
         } catch {
-            const dismissedUntil = Date.now() + PWA_INSTALL_DISMISS_COOLDOWN_MS
-            window.localStorage.setItem(PWA_INSTALL_DISMISSED_UNTIL_KEY, String(dismissedUntil))
+            rememberInstallDismissal()
         } finally {
-            setDeferredInstallPrompt(null)
+            onInstallPromptConsumed?.()
         }
-    }, [deferredInstallPrompt])
+    }, [capturedInstallPrompt, onInstallPromptConsumed])
 
     useEffect(() => {
         const syncOnlineStatus = () => {
@@ -98,33 +112,26 @@ export function AppRuntime({ pathname }: { pathname: string }) {
     }, [])
 
     useEffect(() => {
-        const handleBeforeInstallPrompt = (event: Event) => {
-            if (isPwaInstalled()) return
-            event.preventDefault()
-            setDeferredInstallPrompt(event as BeforeInstallPromptEvent)
-        }
-
         const handleAppInstalled = () => {
-            setDeferredInstallPrompt(null)
+            onInstallPromptConsumed?.()
             setShowInstallPrompt(false)
-            try {
-                window.localStorage.setItem(PWA_INSTALL_INSTALLED_KEY, "1")
-            } catch {
-                // Ignore storage errors and rely on display-mode detection.
-            }
+            setPwaInstallStorageValue(PWA_INSTALL_INSTALLED_KEY, "1")
         }
 
-        window.addEventListener("beforeinstallprompt", handleBeforeInstallPrompt as EventListener)
         window.addEventListener("appinstalled", handleAppInstalled)
         return () => {
-            window.removeEventListener("beforeinstallprompt", handleBeforeInstallPrompt as EventListener)
             window.removeEventListener("appinstalled", handleAppInstalled)
         }
-    }, [])
+    }, [onInstallPromptConsumed])
 
     useEffect(() => {
-        if (!deferredInstallPrompt) return
-        if (isPwaInstalled()) return
+        if (!capturedInstallPrompt) return
+        if (isPwaInstalled()) {
+            setShowInstallPrompt(false)
+            onInstallPromptConsumed?.()
+            return
+        }
+        if (installPromptShownInMemory.current) return
 
         let visitCount = 0
         try {
@@ -142,27 +149,25 @@ export function AppRuntime({ pathname }: { pathname: string }) {
 
             if (window.sessionStorage.getItem(PWA_INSTALL_SESSION_PROMPTED_KEY) === "1") return
             window.sessionStorage.setItem(PWA_INSTALL_SESSION_PROMPTED_KEY, "1")
+            installPromptShownInMemory.current = true
             setShowInstallPrompt(true)
         } catch {
-            if (visitCount + 1 >= PWA_INSTALL_MIN_VISITS) {
-                setShowInstallPrompt(true)
-            }
+            installPromptShownInMemory.current = true
+            setShowInstallPrompt(true)
         }
-    }, [deferredInstallPrompt, pathname])
+    }, [capturedInstallPrompt, onInstallPromptConsumed, pathname])
 
     useEffect(() => {
         if (process.env.NODE_ENV !== "production" && !SW_UPDATE_ENABLE_IN_DEV) return
         if (!("serviceWorker" in navigator)) return
         let isActive = true
         let updateInterval: NodeJS.Timeout | null = null
-        let refreshing = false
         let updateToastShown = false
         let serviceWorkerRegistration: ServiceWorkerRegistration | null = null
+        const updateCoordinator = createPwaUpdateCoordinator(() => window.location.reload())
 
         const handleControllerChange = () => {
-            if (refreshing) return
-            refreshing = true
-            window.location.reload()
+            updateCoordinator.handleControllerChange()
         }
 
         navigator.serviceWorker.addEventListener("controllerchange", handleControllerChange)
@@ -174,7 +179,7 @@ export function AppRuntime({ pathname }: { pathname: string }) {
                 action: {
                     label: t.common.reload,
                     onClick: () => {
-                        registration.waiting?.postMessage({ type: "SKIP_WAITING" })
+                        updateCoordinator.activateWaitingWorker(registration.waiting)
                     },
                 },
                 duration: Number.POSITIVE_INFINITY,
@@ -276,7 +281,7 @@ export function AppRuntime({ pathname }: { pathname: string }) {
                     </div>
                 </div>
             ) : null}
-            {showInstallPrompt && deferredInstallPrompt ? (
+            {showInstallPrompt && capturedInstallPrompt ? (
                 <div className="fixed bottom-6 left-4 z-40 max-w-sm rounded-xl border border-border/70 bg-background/95 p-4 shadow-lg backdrop-blur sm:left-6">
                     <p className="text-sm font-semibold text-foreground">{pwaInstallCopy.title}</p>
                     <p className="mt-1 text-sm text-muted-foreground">{pwaInstallCopy.message}</p>

@@ -10,8 +10,8 @@ const BUTTON_VARIANT_CLASS = {
 } as const
 
 const BUTTON_SIZE_CLASS = {
-    sm: "h-9 px-3",
-    icon: "h-9 w-9",
+    sm: "h-11 min-w-11 px-3 lg:h-9 lg:min-w-0",
+    icon: "h-11 w-11 lg:h-9 lg:w-9",
 } as const
 
 function joinClasses(...values: Array<string | null | undefined | false>) {
@@ -39,4 +39,3 @@ export function InlineButton({
         />
     )
 }
-

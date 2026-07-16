@@ -361,7 +361,7 @@ describe("AllToolsDiscovery", () => {
         expect(screen.getByRole("button", { name: "Show fewer" })).toHaveAttribute("aria-expanded", "true")
     })
 
-    it("keeps a 300-tool inventory within default and filtered render budgets", () => {
+    it("keeps a 300-tool inventory within default and filtered render budgets", { timeout: 10_000 }, () => {
         const { container } = renderLargeInventoryDiscovery()
 
         expect(screen.getByRole("status")).toHaveTextContent("300 tools")

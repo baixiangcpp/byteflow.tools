@@ -6,6 +6,8 @@ import process from "node:process";
 import axe from "axe-core";
 import { chromium } from "playwright";
 import serveHandler from "serve-handler";
+import { parsePlaywrightSmokeArgs } from "./playwright-smoke-args.js";
+import { raceWithTimeout } from "./promise-timeout.js";
 
 const DEFAULT_PORT = 4173;
 const DEFAULT_ROUTES = [
@@ -35,6 +37,11 @@ const MOBILE_REVIEW_ROUTES = [
     "/en/all-tools",
     "/en/data-code-formats",
     "/en/json-formatter",
+    "/en/qr-code-generator",
+    "/en/base64-encode-decode",
+    "/en/csv-json-converter",
+    "/en/jwt-decoder",
+    "/en/regex-tester",
     "/en/pipeline-builder",
     "/en/trust-center",
     "/en/install-app",
@@ -65,6 +72,7 @@ const ALL_TOOLS_MOBILE_SCROLL_BUDGET_MS = 3500;
 const ALL_TOOLS_MOBILE_MAX_FRAME_DELTA_MS = 500;
 const FIRST_LOAD_CLS_BUDGET = 0.1;
 const FIRST_LOAD_SETTLE_MS = 2_600;
+const PWA_SERVICE_WORKER_READY_TIMEOUT_MS = 20_000;
 const FIRST_LOAD_ARTIFACT_DIR = path.resolve(process.cwd(), "output/first-load-audit");
 const FIRST_LOAD_AUDIT_CASES = [
     {
@@ -197,64 +205,6 @@ function createRuntimeObserver(page, label, baseUrl = "") {
             }
         },
     };
-}
-
-function parseArgs(argv) {
-    const args = {
-        port: DEFAULT_PORT,
-        baseUrl: "",
-        skipServer: false,
-        includePwa: false,
-        firstLoadOnly: false,
-        writeFirstLoadArtifacts: false,
-        inputIntentsOnly: false,
-    };
-
-    for (const arg of argv) {
-        if (arg === "--skip-server") {
-            args.skipServer = true;
-            continue;
-        }
-
-        if (arg === "--pwa") {
-            args.includePwa = true;
-            continue;
-        }
-
-        if (arg === "--first-load-only") {
-            args.firstLoadOnly = true;
-            continue;
-        }
-
-        if (arg === "--first-load-artifacts") {
-            args.writeFirstLoadArtifacts = true;
-            continue;
-        }
-
-        if (arg === "--input-intents-only") {
-            args.inputIntentsOnly = true;
-            continue;
-        }
-
-        if (arg.startsWith("--port=")) {
-            const parsed = Number(arg.slice("--port=".length));
-            if (Number.isFinite(parsed) && parsed > 0) {
-                args.port = parsed;
-            }
-            continue;
-        }
-
-        if (arg.startsWith("--base-url=")) {
-            args.baseUrl = arg.slice("--base-url=".length).trim();
-        }
-    }
-
-    if (!args.baseUrl) {
-        args.baseUrl = `http://127.0.0.1:${args.port}`;
-    }
-
-    args.baseUrl = args.baseUrl.replace(/\/+$/, "");
-    return args;
 }
 
 async function wait(ms) {
@@ -1052,6 +1002,49 @@ async function assertNoHorizontalOverflow(page, routeLabel) {
     }
 }
 
+async function assertLocatorReachable(page, locator, label, { focus = false, scroll = true } = {}) {
+    await locator.waitFor({ state: "visible", timeout: 15_000 });
+    if (scroll) {
+        await locator.scrollIntoViewIfNeeded();
+        await locator.evaluate((element) => element.scrollIntoView({ block: "center", inline: "nearest" }));
+    }
+    if (focus) await locator.focus();
+
+    const measurement = await locator.evaluate((element) => {
+        const rect = element.getBoundingClientRect();
+        const viewportTop = window.visualViewport?.offsetTop || 0;
+        const viewportHeight = window.visualViewport?.height || window.innerHeight;
+        const viewportBottom = viewportTop + viewportHeight;
+        const visibleTop = Math.max(rect.top, viewportTop);
+        const visibleBottom = Math.min(rect.bottom, viewportBottom);
+        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+        const hitX = Math.min(window.innerWidth - 1, Math.max(0, rect.left + Math.min(rect.width / 2, 24)));
+        const hitY = Math.min(viewportBottom - 1, Math.max(viewportTop, visibleTop + (visibleHeight / 2)));
+        const hit = document.elementFromPoint(hitX, hitY);
+
+        return {
+            active: document.activeElement === element || element.contains(document.activeElement),
+            height: rect.height,
+            hitTarget: hit === element || element.contains(hit),
+            visibleHeight,
+            width: rect.width,
+        };
+    });
+
+    if (measurement.visibleHeight + 0.5 < Math.min(44, measurement.height)) {
+        throw new Error(`${label} is not sufficiently visible in the active viewport (${Math.round(measurement.visibleHeight)}px visible).`);
+    }
+    if (measurement.width + 0.5 < 44 || measurement.height + 0.5 < 44) {
+        throw new Error(`${label} is smaller than the mobile target floor (${Math.round(measurement.width)}x${Math.round(measurement.height)}).`);
+    }
+    if (!measurement.hitTarget) {
+        throw new Error(`${label} is covered by another element after scrolling into view.`);
+    }
+    if (focus && !measurement.active) {
+        throw new Error(`${label} did not retain focus under reduced-height viewport pressure.`);
+    }
+}
+
 async function assertMobileTouchTargets(page, routeLabel) {
     const violations = await page.evaluate(() => {
         const controls = Array.from(document.querySelectorAll("button, input, select, textarea, [role='button']"));
@@ -1175,7 +1168,25 @@ async function assertInputIntentSizingMatrix(browser, baseUrl) {
                 try {
                     await page.goto(`${baseUrl}${audit.route}`, { waitUntil: "domcontentloaded" });
                     await page.waitForSelector("main", { timeout: 15_000 });
-                    await page.locator("[data-input-intent]").first().waitFor({ state: "attached", timeout: 15_000 });
+                    await page.waitForFunction((requiredIntents) => {
+                        const visibleIntents = new Set(
+                            Array.from(document.querySelectorAll("[data-input-intent]"))
+                                .filter((element) => {
+                                    const style = window.getComputedStyle(element);
+                                    const rect = element.getBoundingClientRect();
+                                    return (
+                                        style.display !== "none" &&
+                                        style.visibility !== "hidden" &&
+                                        Number(style.opacity) !== 0 &&
+                                        rect.width > 0 &&
+                                        rect.height > 0
+                                    );
+                                })
+                                .map((element) => element.getAttribute("data-input-intent"))
+                                .filter(Boolean),
+                        );
+                        return requiredIntents.every((intent) => visibleIntents.has(intent));
+                    }, audit.requiredIntents, { timeout: 15_000 });
 
                     const measurements = await page.evaluate(({ mobile }) => {
                         const isVisible = (element) => {
@@ -1495,6 +1506,80 @@ async function assertMobileTextDiffChecker(page) {
     await page.getByText(/Modified/i).first().waitFor({ state: "visible", timeout: 15_000 });
 }
 
+async function assertMobileQrCodeGenerator(page) {
+    const content = page.locator("#qr-content");
+    const payload = "https://byteflow.tools/mobile-qr-smoke";
+    await content.fill(payload);
+    await page.waitForFunction(() => {
+        const canvas = document.querySelector("canvas");
+        const pngButton = Array.from(document.querySelectorAll("button"))
+            .find((button) => button.textContent?.trim() === "PNG");
+        return canvas instanceof HTMLCanvasElement && canvas.width > 0 && pngButton && !pngButton.disabled;
+    }, null, { timeout: 15_000 });
+
+    await clickCopyAndExpectToast(
+        page,
+        page.getByRole("button", { name: /^Copy$/ }).first(),
+        "mobile QR data URL copy",
+    );
+
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: "PNG", exact: true }).first().click();
+    await assertDownloadedFile(await downloadPromise, "qr-code.png", "png");
+}
+
+async function assertMobileCsvJsonConverter(page) {
+    const input = page.locator("textarea").first();
+    await input.waitFor({ state: "visible", timeout: 15_000 });
+    await input.fill("id,name\n1,Ada\n2,Lin");
+    await page.getByRole("button", { name: /^Convert$/ }).first().click();
+    await expectTextareaValue(page, /"name": "Ada"/, "mobile CSV to JSON output");
+
+    await clickCopyAndExpectToast(
+        page,
+        page.getByRole("button", { name: /^Copy$/ }).first(),
+        "mobile CSV converter output copy",
+    );
+
+    const downloadPromise = page.waitForEvent("download");
+    await page.getByRole("button", { name: /^Download$/ }).first().click();
+    await assertDownloadedFile(await downloadPromise, "converted.json", "json");
+}
+
+async function assertMobilePipelineBuilder(page) {
+    await page.getByRole("button", { name: /^Sample$/ }).first().click();
+
+    const stepsJump = page.locator('[data-pipeline-jump="steps"]');
+    await assertLocatorReachable(page, stepsJump, "Pipeline steps jump");
+    await stepsJump.click();
+    await page.waitForFunction(() => window.location.hash === "#pipeline-steps", null, { timeout: 5_000 });
+    await assertLocatorReachable(page, page.locator("#pipeline-steps"), "Pipeline steps section", { scroll: false });
+    await page.locator("#pipeline-steps button[aria-pressed]").first().click();
+
+    const inspectorJump = page.locator('[data-pipeline-jump="inspector"]');
+    await assertLocatorReachable(page, inspectorJump, "Pipeline inspector jump");
+    await inspectorJump.click();
+    await page.waitForFunction(() => window.location.hash === "#pipeline-inspector", null, { timeout: 5_000 });
+    await assertLocatorReachable(page, page.locator("#pipeline-inspector"), "Pipeline inspector section", { scroll: false });
+    await page.getByLabel("Step label").fill("Mobile JSON cleanup");
+
+    const inputOutputJump = page.locator('[data-pipeline-jump="input-output"]');
+    await assertLocatorReachable(page, inputOutputJump, "Pipeline input/output jump");
+    await inputOutputJump.click();
+    await page.waitForFunction(() => window.location.hash === "#pipeline-input-output", null, { timeout: 5_000 });
+    await assertLocatorReachable(page, page.locator("#pipeline-input-output"), "Pipeline input/output section", { scroll: false });
+    await page.getByLabel("Initial input").fill('{ "mobile": true, "ok": true }');
+
+    await page.getByRole("button", { name: /Run Recipe/i }).first().click();
+    await expectTextareaValue(page, /"mobile": true/, "mobile Pipeline output");
+    await page.getByText(/^OK$/).first().waitFor({ state: "visible", timeout: 15_000 });
+    await clickCopyAndExpectToast(
+        page,
+        page.getByRole("button", { name: /^Copy$/ }).first(),
+        "mobile Pipeline output copy",
+    );
+}
+
 async function assertMobileToolPageJourneys(browser, baseUrl) {
     const journeys = [
         { route: "/en/all-tools", run: assertMobileAllTools },
@@ -1507,6 +1592,9 @@ async function assertMobileToolPageJourneys(browser, baseUrl) {
         { route: "/en/image-resizer", run: assertMobileImageResizer },
         { route: "/en/json-diff-viewer", run: assertMobileJsonDiffViewer },
         { route: "/en/text-diff-checker", run: assertMobileTextDiffChecker },
+        { route: "/en/qr-code-generator", run: assertMobileQrCodeGenerator },
+        { route: "/en/csv-json-converter", run: assertMobileCsvJsonConverter },
+        { route: "/en/pipeline-builder", run: assertMobilePipelineBuilder },
     ];
 
     for (const viewport of MOBILE_TOOL_VIEWPORTS) {
@@ -1522,6 +1610,73 @@ async function assertMobileToolPageJourneys(browser, baseUrl) {
                 await assertMobileToolJourney(context, baseUrl, viewport, journey.route, journey.run);
             }
         } finally {
+            await context.close();
+        }
+    }
+}
+
+async function assertMobileViewportPressure(browser, baseUrl) {
+    const cases = [
+        {
+            route: "/en/qr-code-generator",
+            input: (page) => page.locator("#qr-content"),
+            primaryAction: (page) => page.getByRole("button", { name: "PNG", exact: true }).first(),
+            prepare: async (page) => {
+                await page.locator("#qr-content").fill("https://byteflow.tools/mobile-viewport-pressure");
+                await page.waitForFunction(() => {
+                    const button = Array.from(document.querySelectorAll("button"))
+                        .find((candidate) => candidate.textContent?.trim() === "PNG");
+                    return Boolean(button && !button.disabled);
+                }, null, { timeout: 15_000 });
+            },
+        },
+        {
+            route: "/en/csv-json-converter",
+            input: (page) => page.locator("textarea").first(),
+            primaryAction: (page) => page.getByRole("button", { name: /^Convert$/ }).first(),
+            prepare: async (page) => {
+                await page.locator("textarea").first().fill("id,name\n1,Ada");
+            },
+        },
+        {
+            route: "/en/pipeline-builder",
+            input: (page) => page.getByLabel("Initial input"),
+            primaryAction: (page) => page.getByRole("button", { name: /Run Recipe/i }).first(),
+            prepare: async (page) => {
+                await page.getByRole("button", { name: /^Sample$/ }).first().click();
+            },
+        },
+    ];
+
+    for (const auditCase of cases) {
+        const context = await browser.newContext({
+            serviceWorkers: "block",
+            viewport: { width: 390, height: 844 },
+            isMobile: true,
+        });
+        const page = await context.newPage();
+        const runtime = createRuntimeObserver(page, `${auditCase.route} viewport pressure`, baseUrl);
+
+        try {
+            await page.goto(`${baseUrl}${auditCase.route}`, { waitUntil: "domcontentloaded" });
+            await page.waitForSelector("main", { timeout: 15_000 });
+            await auditCase.prepare(page);
+
+            const input = auditCase.input(page);
+            await input.focus();
+            await page.setViewportSize({ width: 390, height: 420 });
+            await page.waitForTimeout(100);
+            await assertLocatorReachable(page, input, `${auditCase.route} focused input at 390x420`, { focus: true });
+            await assertLocatorReachable(page, auditCase.primaryAction(page), `${auditCase.route} primary action at 390x420`);
+            await assertNoHorizontalOverflow(page, `${auditCase.route} reduced-height 390x420`);
+
+            await page.setViewportSize({ width: 844, height: 390 });
+            await page.waitForTimeout(100);
+            await assertNoHorizontalOverflow(page, `${auditCase.route} landscape 844x390`);
+            await assertLocatorReachable(page, auditCase.primaryAction(page), `${auditCase.route} primary action at 844x390`);
+            runtime.assertClean();
+        } finally {
+            await page.close();
             await context.close();
         }
     }
@@ -1876,14 +2031,18 @@ async function assertPwaShellJourney(browser, baseUrl) {
             throw new Error(`Expected default manifest link to be /manifest.json, found ${manifestHref || "none"}`);
         }
 
-        const registration = await page.evaluate(async () => {
-            if (!("serviceWorker" in navigator)) return null;
-            const ready = await navigator.serviceWorker.ready;
-            return {
-                scope: ready.scope,
-                activeScriptUrl: ready.active?.scriptURL || "",
-            };
-        });
+        const registration = await raceWithTimeout(
+            page.evaluate(async () => {
+                if (!("serviceWorker" in navigator)) return null;
+                const ready = await navigator.serviceWorker.ready;
+                return {
+                    scope: ready.scope,
+                    activeScriptUrl: ready.active?.scriptURL || "",
+                };
+            }),
+            PWA_SERVICE_WORKER_READY_TIMEOUT_MS,
+            `Timed out after ${PWA_SERVICE_WORKER_READY_TIMEOUT_MS}ms waiting for navigator.serviceWorker.ready at ${baseUrl}. Check /sw.js registration and browser errors.`,
+        );
         if (!registration?.activeScriptUrl.endsWith("/sw.js")) {
             throw new Error("Service worker did not become active for the PWA shell.");
         }
@@ -2147,7 +2306,10 @@ async function runSmoke(baseUrl, { writeFirstLoadArtifacts = false } = {}) {
         console.log("[playwright-smoke] PASS mobile journey: command palette -> /en/base64-encode-decode");
 
         await assertMobileToolPageJourneys(browser, baseUrl);
-        console.log("[playwright-smoke] PASS mobile journeys: JSON/Base64/JWT/Regex/Cron tool pages");
+        console.log("[playwright-smoke] PASS mobile journeys: core tools plus QR/CSV/Pipeline at 390x844 and 430x932");
+
+        await assertMobileViewportPressure(browser, baseUrl);
+        console.log("[playwright-smoke] PASS mobile viewport pressure: focused inputs and primary actions remain reachable");
 
         await assertMobileReviewMatrix(browser, baseUrl);
         console.log("[playwright-smoke] PASS mobile review matrix: no overflow or touch-target regressions");
@@ -2192,16 +2354,30 @@ async function runInputIntentSmoke(baseUrl) {
     }
 }
 
+async function runMobileSmoke(baseUrl) {
+    const browser = await chromium.launch({ headless: true });
+    try {
+        await assertMobileToolPageJourneys(browser, baseUrl);
+        await assertMobileViewportPressure(browser, baseUrl);
+        await assertMobileReviewMatrix(browser, baseUrl);
+        console.log("[playwright-smoke] PASS mobile-only: workflows, viewport pressure, touch targets, and overflow");
+    } finally {
+        await browser.close();
+    }
+}
+
 async function main() {
     const {
         baseUrl,
         firstLoadOnly,
         includePwa,
         inputIntentsOnly,
+        mobileOnly,
         port,
+        pwaOnly,
         skipServer,
         writeFirstLoadArtifacts,
-    } = parseArgs(process.argv.slice(2));
+    } = parsePlaywrightSmokeArgs(process.argv.slice(2), { defaultPort: DEFAULT_PORT });
     let serverHandle = null;
 
     try {
@@ -2211,17 +2387,21 @@ async function main() {
             console.log(`[playwright-smoke] Static server ready at ${baseUrl}`);
         }
 
-        if (inputIntentsOnly) {
+        if (pwaOnly) {
+            await runPwaSmoke(baseUrl);
+        } else if (mobileOnly) {
+            await runMobileSmoke(baseUrl);
+        } else if (inputIntentsOnly) {
             await runInputIntentSmoke(baseUrl);
         } else if (firstLoadOnly) {
             await runFirstLoadAudit(baseUrl, { writeArtifacts: writeFirstLoadArtifacts });
         } else {
             await runSmoke(baseUrl, { writeFirstLoadArtifacts });
         }
-        if (includePwa && !firstLoadOnly && !inputIntentsOnly) {
+        if (includePwa && !firstLoadOnly && !inputIntentsOnly && !mobileOnly && !pwaOnly) {
             await runPwaSmoke(baseUrl);
         }
-        if (!firstLoadOnly && !inputIntentsOnly) {
+        if (!firstLoadOnly && !inputIntentsOnly && !mobileOnly && !pwaOnly) {
             console.log("[playwright-smoke] PASS: critical routes render and navigate correctly");
         }
     } catch (error) {
@@ -2247,4 +2427,8 @@ async function main() {
     }
 }
 
-main();
+main().catch((error) => {
+    console.error("[playwright-smoke] FAILED");
+    console.error(error instanceof Error ? error.stack || error.message : String(error));
+    process.exitCode = 1;
+});

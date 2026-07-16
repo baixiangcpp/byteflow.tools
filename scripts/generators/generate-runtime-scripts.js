@@ -10,6 +10,7 @@ const CHECK_ONLY = process.argv.includes("--check")
 
 const I18N_SOURCE_PATH = path.join(ROOT, "src/core/i18n/i18n.ts")
 const PWA_CONSTANTS_PATH = path.join(ROOT, "src/core/pwa/constants.ts")
+const PWA_INSTALL_PROMPT_STORE_PATH = path.join(ROOT, "src/core/pwa/install-prompt-store.ts")
 const ROOT_LOCALE_REDIRECT_PATH = path.join(ROOT, "public/runtime/root-locale-redirect.js")
 const THEME_MANIFEST_BOOTSTRAP_PATH = path.join(ROOT, "public/runtime/theme-manifest-bootstrap.js")
 
@@ -46,6 +47,7 @@ function parseLocales(source) {
 function readRuntimeScriptConfig() {
     const i18nSource = readSource(I18N_SOURCE_PATH)
     const pwaSource = readSource(PWA_CONSTANTS_PATH)
+    const installPromptStoreSource = readSource(PWA_INSTALL_PROMPT_STORE_PATH)
     const locales = parseLocales(i18nSource)
     const defaultLocale = parseStringLiteral(i18nSource, "DEFAULT_LOCALE", I18N_SOURCE_PATH)
     const darkThemeColor = parseStringLiteral(pwaSource, "PWA_THEME_COLOR", PWA_CONSTANTS_PATH)
@@ -60,6 +62,10 @@ function readRuntimeScriptConfig() {
         defaultLocale,
         darkThemeColor,
         lightThemeColor,
+        installPromptBridgeReadySlot: parseStringLiteral(installPromptStoreSource, "PWA_INSTALL_PROMPT_BRIDGE_READY_SLOT", PWA_INSTALL_PROMPT_STORE_PATH),
+        installPromptChangeEvent: parseStringLiteral(installPromptStoreSource, "PWA_INSTALL_PROMPT_CHANGE_EVENT", PWA_INSTALL_PROMPT_STORE_PATH),
+        installPromptInstalledKey: parseStringLiteral(installPromptStoreSource, "PWA_INSTALL_INSTALLED_KEY", PWA_INSTALL_PROMPT_STORE_PATH),
+        installPromptSlot: parseStringLiteral(installPromptStoreSource, "PWA_INSTALL_PROMPT_SLOT", PWA_INSTALL_PROMPT_STORE_PATH),
     }
 }
 
@@ -131,8 +137,42 @@ function buildThemeManifestBootstrapScript(config) {
     const defaultLocale = json(config.defaultLocale)
     const lightThemeColor = json(config.lightThemeColor)
     const darkThemeColor = json(config.darkThemeColor)
+    const installPromptBridgeReadySlot = json(config.installPromptBridgeReadySlot)
+    const installPromptChangeEvent = json(config.installPromptChangeEvent)
+    const installPromptInstalledKey = json(config.installPromptInstalledKey)
+    const installPromptSlot = json(config.installPromptSlot)
 
     return `(function () {
+  var installPromptBridgeReadySlot = ${installPromptBridgeReadySlot};
+  var installPromptChangeEvent = ${installPromptChangeEvent};
+  var installPromptInstalledKey = ${installPromptInstalledKey};
+  var installPromptSlot = ${installPromptSlot};
+
+  function notifyInstallPromptChange() {
+    try {
+      window.dispatchEvent(new CustomEvent(installPromptChangeEvent));
+    } catch {}
+  }
+
+  if (!window[installPromptBridgeReadySlot]) {
+    window[installPromptBridgeReadySlot] = true;
+    window.addEventListener("beforeinstallprompt", function (event) {
+      event.preventDefault();
+      try {
+        localStorage.removeItem(installPromptInstalledKey);
+      } catch {}
+      window[installPromptSlot] = event;
+      notifyInstallPromptChange();
+    });
+    window.addEventListener("appinstalled", function () {
+      try {
+        localStorage.setItem(installPromptInstalledKey, "1");
+      } catch {}
+      window[installPromptSlot] = null;
+      notifyInstallPromptChange();
+    });
+  }
+
   try {
     var locales = ${locales};
     var p = window.location.pathname || "/";

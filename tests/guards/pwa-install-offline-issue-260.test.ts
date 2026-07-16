@@ -60,11 +60,35 @@ describe("issue #260 PWA install, offline state, cache, and update UX", () => {
 
     it("keeps update activation user-triggered so tool input is not discarded silently", () => {
         const appRuntime = read("src/components/layout/app-runtime.tsx")
+        const coordinator = read("src/core/pwa/runtime-coordinator.ts")
 
         expect(appRuntime).toContain("toast(t.common.update_available")
-        expect(appRuntime).toContain("registration.waiting?.postMessage({ type: \"SKIP_WAITING\" })")
+        expect(appRuntime).toContain("updateCoordinator.activateWaitingWorker(registration.waiting)")
         expect(appRuntime).toContain('navigator.serviceWorker.addEventListener("controllerchange"')
+        expect(appRuntime).toContain("updateCoordinator.handleControllerChange()")
         expect(appRuntime).toContain("window.location.reload()")
+        expect(coordinator).toContain("if (!activationRequested || reloadStarted) return false")
+        expect(coordinator).toContain('worker.postMessage({ type: "SKIP_WAITING" })')
+    })
+
+    it("runs the PWA journey independently from the general Playwright smoke", () => {
+        const packageJson = JSON.parse(read("package.json")) as { scripts: Record<string, string> }
+        const smoke = read("scripts/e2e/run-playwright-smoke.js")
+        const smokeArgs = read("scripts/e2e/playwright-smoke-args.js")
+        const workflow = read(".github/workflows/ci.yml")
+        const pwaJobIndex = workflow.indexOf("\n  pwa:\n")
+
+        expect(packageJson.scripts["test:e2e:pwa"]).toContain("--pwa-only")
+        expect(smokeArgs).toContain('["--pwa-only", "pwaOnly"]')
+        expect(smoke).toContain("if (pwaOnly) {")
+        expect(smoke).toContain("PWA_SERVICE_WORKER_READY_TIMEOUT_MS = 20_000")
+        expect(smoke).toContain("raceWithTimeout(")
+        expect(smoke).toContain("waiting for navigator.serviceWorker.ready")
+        expect(pwaJobIndex).toBeGreaterThan(0)
+        expect(workflow.slice(0, pwaJobIndex)).not.toContain("npm run test:e2e:pwa")
+        expect(workflow.slice(pwaJobIndex)).toContain("npm run test:e2e:pwa")
+        expect(workflow.slice(pwaJobIndex)).not.toContain("needs:")
+        expect(workflow.slice(pwaJobIndex)).toContain("timeout-minutes: 30")
     })
 
     it("keeps the remaining real-device PWA closure checklist documented", () => {

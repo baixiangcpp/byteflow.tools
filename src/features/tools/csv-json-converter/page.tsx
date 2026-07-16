@@ -395,10 +395,10 @@ export function CsvJsonConverterPage() {
                     <div className="tool-pane-header tool-pane-header-between">
                         <span>{t.common.output} ({outputFormatLabel})</span>
                         <div className="flex items-center gap-1">
-                            <InlineButton variant="ghost" size="icon" className="h-7 w-7" onClick={handleDownload} disabled={!output} title={t.common.download}>
+                            <InlineButton variant="ghost" size="icon" className="lg:h-7 lg:w-7" onClick={handleDownload} disabled={!output} title={t.common.download}>
                                 <Download className="h-4 w-4" />
                             </InlineButton>
-                            <InlineButton variant="ghost" size="icon" className="h-7 w-7" onClick={() => void handleCopy()} disabled={!output} title={t.common.copy}>
+                            <InlineButton variant="ghost" size="icon" className="lg:h-7 lg:w-7" onClick={() => void handleCopy()} disabled={!output} title={t.common.copy}>
                                 <Copy className="h-4 w-4" />
                             </InlineButton>
                         </div>

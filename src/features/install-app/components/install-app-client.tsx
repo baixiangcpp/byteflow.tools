@@ -9,14 +9,14 @@ import { Button } from "@/components/ui/button"
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
 import type { Locale } from "@/core/i18n/i18n"
 import { JsonLdScript } from "@/core/seo/components/json-ld-script"
+import {
+    consumePwaInstallPrompt,
+    usePwaInstallPrompt,
+} from "@/core/pwa/install-prompt-store"
 import { clearByteflowPwaCaches } from "@/core/storage/pwa-cache-controls"
 import type { GuidePlatform, InstallPageCopy } from "@/core/utils/install-app-copy"
 import { StaticPageContainer } from "@/components/layout/page-container"
-
-type BeforeInstallPromptEvent = Event & {
-    prompt: () => Promise<void>
-    userChoice: Promise<{ outcome: "accepted" | "dismissed"; platform: string }>
-}
+import { detectInstallGuidePlatform } from "../install-guide-platform"
 
 function isStandaloneInstalled() {
     if (typeof window === "undefined") return false
@@ -55,13 +55,24 @@ export function InstallAppClient({
     offlineMatrixLink,
 }: InstallAppClientProps) {
     const [platform, setPlatform] = React.useState<GuidePlatform>("chrome_desktop")
-    const [deferredPrompt, setDeferredPrompt] = React.useState<BeforeInstallPromptEvent | null>(null)
+    const deferredPrompt = usePwaInstallPrompt()
     const [installed, setInstalled] = React.useState(false)
     const [manualHintVisible, setManualHintVisible] = React.useState(false)
     const [cacheClearStatus, setCacheClearStatus] = React.useState<"idle" | "success" | "unavailable">("idle")
     const [cacheClearPending, setCacheClearPending] = React.useState(false)
     const guideRef = React.useRef<HTMLDivElement | null>(null)
     const installSuccessTrackedRef = React.useRef(false)
+
+    React.useEffect(() => {
+        const navigatorWithUserAgentData = window.navigator as Navigator & {
+            userAgentData?: { platform?: string }
+        }
+        setPlatform(detectInstallGuidePlatform({
+            maxTouchPoints: window.navigator.maxTouchPoints,
+            platform: navigatorWithUserAgentData.userAgentData?.platform || window.navigator.platform,
+            userAgent: window.navigator.userAgent,
+        }))
+    }, [])
 
     const recordInstallSuccess = React.useCallback((platformName?: string) => {
         if (installSuccessTrackedRef.current) return
@@ -72,23 +83,21 @@ export function InstallAppClient({
     React.useEffect(() => {
         setInstalled(isStandaloneInstalled())
 
-        const onBeforeInstallPrompt = (event: Event) => {
-            event.preventDefault()
-            setDeferredPrompt(event as BeforeInstallPromptEvent)
-        }
         const onInstalled = () => {
             setInstalled(true)
-            setDeferredPrompt(null)
+            consumePwaInstallPrompt()
             recordInstallSuccess()
         }
 
-        window.addEventListener("beforeinstallprompt", onBeforeInstallPrompt as EventListener)
         window.addEventListener("appinstalled", onInstalled)
         return () => {
-            window.removeEventListener("beforeinstallprompt", onBeforeInstallPrompt as EventListener)
             window.removeEventListener("appinstalled", onInstalled)
         }
     }, [locale, recordInstallSuccess])
+
+    React.useEffect(() => {
+        if (deferredPrompt) setInstalled(false)
+    }, [deferredPrompt])
 
     const activeGuide = copy.guides[platform]
     const faqJsonLd = React.useMemo(
@@ -129,7 +138,7 @@ export function InstallAppClient({
         } catch {
             scrollToGuide()
         } finally {
-            setDeferredPrompt(null)
+            consumePwaInstallPrompt(deferredPrompt)
         }
     }
 

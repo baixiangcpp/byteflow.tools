@@ -27,8 +27,8 @@ export function ModeSelector<TValue extends string>({
     size = "md",
 }: ModeSelectorProps<TValue>) {
     const buttonClassName = size === "sm"
-        ? "min-h-8 px-3 py-1.5 text-xs"
-        : "min-h-10 px-4 py-2 text-sm"
+        ? "min-h-11 px-3 py-1.5 text-xs lg:min-h-8"
+        : "min-h-11 px-4 py-2 text-sm lg:min-h-10"
 
     function selectOptionAt(index: number, event: KeyboardEvent<HTMLButtonElement>) {
         const option = options[index]
@@ -66,7 +66,7 @@ export function ModeSelector<TValue extends string>({
     return (
         <div className={cn("space-y-2", className)}>
             <div className="text-xs font-semibold uppercase text-muted-foreground">{label}</div>
-            <div role="radiogroup" aria-label={label} className="inline-flex w-full rounded-lg border bg-background/60 p-1 sm:w-auto">
+            <div role="radiogroup" aria-label={label} className="inline-flex w-full rounded-lg border bg-background/60 p-1 lg:w-auto">
                 {options.map((option, index) => {
                     const active = option.value === value
                     return (
@@ -79,7 +79,7 @@ export function ModeSelector<TValue extends string>({
                             onClick={() => onChange(option.value)}
                             onKeyDown={(event) => handleKeyDown(index, event)}
                             className={cn(
-                                "flex-1 rounded-md font-medium transition-colors sm:flex-none",
+                                "flex-1 rounded-md font-medium transition-colors lg:flex-none",
                                 buttonClassName,
                                 active
                                     ? "bg-primary text-primary-foreground shadow-sm"

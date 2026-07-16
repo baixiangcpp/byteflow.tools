@@ -21,6 +21,7 @@ import { getCommandSearchToolByKey } from "@/generated/command-search-index"
 import { readFavoriteToolKeys, readRecentToolKeys, TOOL_DISCOVERY_UPDATED_EVENT } from "@/core/storage/tool-discovery-state"
 import { useSystemCommands } from "@/core/commands/registry"
 import { applyToolSearchScoreBonuses, scoreCommandSearch } from "@/core/search/command-search"
+import { useDialogReturnFocus } from "@/hooks/use-dialog-return-focus"
 import {
     getToolSearchMetadata,
     getToolSearchMetadataTerms,
@@ -91,6 +92,7 @@ type CommandPaletteProps = {
     open?: boolean
     onOpenChange?: (open: boolean) => void
     enableShortcut?: boolean
+    takeReturnFocusTarget?: () => HTMLElement | null
 }
 
 function isEditableShortcutTarget(target: EventTarget | null): boolean {
@@ -204,11 +206,17 @@ function ToolCommandRow({
     )
 }
 
-export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = true }: CommandPaletteProps = {}) {
+export function CommandPalette({
+    open: openProp,
+    onOpenChange,
+    enableShortcut = true,
+    takeReturnFocusTarget,
+}: CommandPaletteProps = {}) {
     const [internalOpen, setInternalOpen] = React.useState(false)
     const [favoriteToolKeys, setFavoriteToolKeys] = React.useState<string[]>([])
     const [recentToolKeys, setRecentToolKeys] = React.useState<string[]>([])
     const router = useRouter()
+    const { captureReturnFocus, restoreReturnFocus } = useDialogReturnFocus(takeReturnFocusTarget)
     const { lang, t, englishToolSearchAliases } = useLang()
     const commonLabels = t.common
     const navigationLabel = requireTranslationValue(t.nav.navigation, "nav.navigation")
@@ -248,13 +256,14 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
             if (e.defaultPrevented || isEditableShortcutTarget(e.target)) return
             if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
                 e.preventDefault()
+                captureReturnFocus()
                 setOpen((prev) => !prev)
             }
         }
 
         document.addEventListener("keydown", down)
         return () => document.removeEventListener("keydown", down)
-    }, [enableShortcut, setOpen])
+    }, [captureReturnFocus, enableShortcut, setOpen])
 
     React.useEffect(() => {
         const sync = () => {
@@ -379,6 +388,7 @@ export function CommandPalette({ open: openProp, onOpenChange, enableShortcut = 
         <CommandDialog
             open={open}
             onOpenChange={setOpen}
+            onCloseAutoFocus={restoreReturnFocus}
             title={navigationLabel}
             description={searchLabel}
             filter={(value, search, keywords) => {

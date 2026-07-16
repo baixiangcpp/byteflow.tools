@@ -49,8 +49,10 @@ import {
 import { JsonTreeNode } from "./components"
 import { SAMPLE_JSON_SOURCE } from "./samples"
 import { downloadJsonOutput } from "./browser-actions"
-import type { JsonPath, JsonValue, TreeDialogState, ViewMode } from "./types"
+import type { JsonPath, JsonValue, ViewMode } from "./types"
 import { WideToolPageContainer } from "@/components/layout/page-container"
+import { useJsonTreeDialog } from "./use-json-tree-dialog"
+
 export function JsonFormatterPage() {
     const { t, lang } = useLang()
     const toolT = t.tools["json_formatter"] as Record<string, string>
@@ -64,10 +66,17 @@ export function JsonFormatterPage() {
     const [outputWrapMode, setOutputWrapMode] = React.useState<OutputWrapMode>("wrap")
     const [treeData, setTreeData] = React.useState<JsonValue | null>(null)
     const [expanded, setExpanded] = React.useState<Set<string>>(new Set(["$"]))
-    const [treeDialog, setTreeDialog] = React.useState<TreeDialogState>(null)
     const [searchQuery, setSearchQuery] = React.useState("")
     const [isSearchOpen, setIsSearchOpen] = React.useState(false)
     const [isFormatting, setIsFormatting] = React.useState(false)
+    const {
+        closeTreeDialog,
+        openTreeDialog,
+        prepareRenameReturnFocus,
+        restoreTreeDialogReturnFocus,
+        treeDialog,
+        updateTreeDialogDraft,
+    } = useJsonTreeDialog()
 
     const searchResults = React.useMemo(() => {
         if (!treeData || !searchQuery.trim()) return { matched: new Set<string>(), parents: new Set<string>() }
@@ -455,7 +464,7 @@ export function JsonFormatterPage() {
     }
 
     const handleEditNode = (path: JsonPath, currentValue: JsonValue) => {
-        setTreeDialog({
+        openTreeDialog({
             type: "edit_value",
             path,
             draft: JSON.stringify(currentValue),
@@ -480,7 +489,7 @@ export function JsonFormatterPage() {
         }
 
         if (isJsonObject(node)) {
-            setTreeDialog({
+            openTreeDialog({
                 type: "add_key",
                 path,
                 draft: "",
@@ -489,25 +498,11 @@ export function JsonFormatterPage() {
     }
 
     const handleRenameKey = (parentPath: JsonPath, currentKey: string) => {
-        setTreeDialog({
+        openTreeDialog({
             type: "rename_key",
             parentPath,
             currentKey,
             draft: currentKey,
-        })
-    }
-
-    const closeTreeDialog = () => {
-        setTreeDialog(null)
-    }
-
-    const updateTreeDialogDraft = (draft: string) => {
-        setTreeDialog((prev) => {
-            if (!prev) return prev
-            return {
-                ...prev,
-                draft,
-            }
         })
     }
 
@@ -559,6 +554,7 @@ export function JsonFormatterPage() {
             toast.error(text("rename_key_failed"))
             return
         }
+        prepareRenameReturnFocus(treeDialog.parentPath, nextKey)
         applyTreeValue(nextTree)
         closeTreeDialog()
     }
@@ -570,6 +566,7 @@ export function JsonFormatterPage() {
                 closeLabel={t.common.close}
                 dialog={treeDialog}
                 onClose={closeTreeDialog}
+                onCloseAutoFocus={restoreTreeDialogReturnFocus}
                 onDraftChange={updateTreeDialogDraft}
                 onSubmit={confirmTreeDialog}
                 text={text}

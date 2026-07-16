@@ -83,6 +83,8 @@ export function JsonTreeNode({
                             variant="ghost"
                             size="icon"
                             className="h-6 w-6"
+                            data-json-tree-action="rename-key"
+                            data-json-tree-path={JSON.stringify(path)}
                             onClick={() => handleRenameKey(parentPath, keyName)}
                         >
                             <Pencil className="h-3 w-3" />
@@ -94,6 +96,8 @@ export function JsonTreeNode({
                             variant="ghost"
                             size="icon"
                             className="h-6 w-6"
+                            data-json-tree-action="add-child"
+                            data-json-tree-path={JSON.stringify(path)}
                             onClick={() => handleAddChild(path)}
                         >
                             <Plus className="h-3 w-3" />
@@ -104,6 +108,8 @@ export function JsonTreeNode({
                         variant="ghost"
                         size="icon"
                         className="h-6 w-6"
+                        data-json-tree-action="edit-node"
+                        data-json-tree-path={JSON.stringify(path)}
                         onClick={() => handleEditNode(path, value)}
                     >
                         <Pencil className="h-3 w-3" />

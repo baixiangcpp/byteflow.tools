@@ -3,6 +3,8 @@ import path from "node:path"
 import { describe, expect, it } from "vitest"
 
 const SMOKE_SOURCE = fs.readFileSync(path.join(process.cwd(), "scripts/e2e/run-playwright-smoke.js"), "utf8")
+const SMOKE_ARGS_SOURCE = fs.readFileSync(path.join(process.cwd(), "scripts/e2e/playwright-smoke-args.js"), "utf8")
+const CI_SOURCE = fs.readFileSync(path.join(process.cwd(), ".github/workflows/ci.yml"), "utf8")
 
 describe("playwright smoke matrix guard", () => {
     it("keeps representative routes and browser journeys in the smoke script", () => {
@@ -21,6 +23,7 @@ describe("playwright smoke matrix guard", () => {
         expect(SMOKE_SOURCE).toContain("assertMonacoFallbackJourney")
         expect(SMOKE_SOURCE).toContain("assertMobileCommandPaletteJourney")
         expect(SMOKE_SOURCE).toContain("assertMobileToolPageJourneys")
+        expect(SMOKE_SOURCE).toContain("assertMobileViewportPressure")
         expect(SMOKE_SOURCE).toContain("assertMobileReviewMatrix")
         expect(SMOKE_SOURCE).toContain("assertAxeSeriousCriticalMatrix")
         expect(SMOKE_SOURCE).toContain("assertInputIntentSizingMatrix")
@@ -30,16 +33,18 @@ describe("playwright smoke matrix guard", () => {
     it("keeps real mobile and desktop input-intent sizing measurements", () => {
         expect(SMOKE_SOURCE).toContain("INPUT_INTENT_AUDIT_ROUTES")
         expect(SMOKE_SOURCE).toContain("INPUT_INTENT_AUDIT_VIEWPORTS")
-        expect(SMOKE_SOURCE).toContain('if (arg === "--input-intents-only")')
+        expect(SMOKE_ARGS_SOURCE).toContain('["--input-intents-only", "inputIntentsOnly"]')
         expect(SMOKE_SOURCE).toContain("runInputIntentSmoke")
         expect(SMOKE_SOURCE).toContain('{ width: 390, height: 844, mobile: true }')
         expect(SMOKE_SOURCE).toContain('{ width: 1280, height: 900, mobile: false }')
         expect(SMOKE_SOURCE).toContain('route: "/en/qr-code-generator"')
         expect(SMOKE_SOURCE).toContain('route: "/en/csv-json-converter"')
         expect(SMOKE_SOURCE).toContain('document.querySelectorAll("[data-input-intent]")')
+        expect(SMOKE_SOURCE).toContain("requiredIntents.every((intent) => visibleIntents.has(intent))")
         expect(SMOKE_SOURCE).toContain("getBoundingClientRect")
         expect(SMOKE_SOURCE).toContain('page.screenshot({ animations: "disabled", fullPage: false })')
         expect(SMOKE_SOURCE).toContain("assertNoHorizontalOverflow(page, routeLabel)")
+        expect(CI_SOURCE).toContain("if-no-files-found: warn")
     })
 
     it("keeps mobile tool-page regression coverage for core workflows", () => {
@@ -54,9 +59,18 @@ describe("playwright smoke matrix guard", () => {
         expect(SMOKE_SOURCE).toContain('route: "/en/image-resizer"')
         expect(SMOKE_SOURCE).toContain('route: "/en/json-diff-viewer"')
         expect(SMOKE_SOURCE).toContain('route: "/en/text-diff-checker"')
+        expect(SMOKE_SOURCE).toContain('route: "/en/qr-code-generator"')
+        expect(SMOKE_SOURCE).toContain('route: "/en/csv-json-converter"')
+        expect(SMOKE_SOURCE).toContain('route: "/en/pipeline-builder"')
         expect(SMOKE_SOURCE).toContain("assertMobileImageResizer")
         expect(SMOKE_SOURCE).toContain("assertMobileJsonDiffViewer")
         expect(SMOKE_SOURCE).toContain("assertMobileTextDiffChecker")
+        expect(SMOKE_SOURCE).toContain("assertMobileQrCodeGenerator")
+        expect(SMOKE_SOURCE).toContain("assertMobileCsvJsonConverter")
+        expect(SMOKE_SOURCE).toContain("assertMobilePipelineBuilder")
+        expect(SMOKE_ARGS_SOURCE).toContain('["--mobile-only", "mobileOnly"]')
+        expect(SMOKE_SOURCE).toContain("{ width: 390, height: 420 }")
+        expect(SMOKE_SOURCE).toContain("{ width: 844, height: 390 }")
         expect(SMOKE_SOURCE).toContain('getByRole("dialog", { name: /Show filters/i })')
         expect(SMOKE_SOURCE).toContain("assertNoHorizontalOverflow")
         expect(SMOKE_SOURCE).toContain("clickCopyAndExpectToast")
@@ -66,7 +80,10 @@ describe("playwright smoke matrix guard", () => {
     })
 
     it("keeps PWA smoke opt-in so CI can cover service worker behavior after export", () => {
-        expect(SMOKE_SOURCE).toContain('if (arg === "--pwa")')
+        expect(SMOKE_ARGS_SOURCE).toContain('if (arg === "--pwa")')
+        expect(SMOKE_ARGS_SOURCE).toContain('["--pwa-only", "pwaOnly"]')
+        expect(SMOKE_SOURCE).toContain("if (pwaOnly) {")
+        expect(SMOKE_SOURCE).toContain("await runPwaSmoke(baseUrl)")
         expect(SMOKE_SOURCE).toContain("assertPwaShellJourney")
         expect(SMOKE_SOURCE).toContain("serviceWorkers: \"allow\"")
         expect(SMOKE_SOURCE).toContain("await context.setOffline(true)")
