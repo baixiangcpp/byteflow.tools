@@ -107,7 +107,7 @@ describe("phase 3 pipeline builder page", () => {
         expect(screen.getByRole("toolbar", { name: "Tool actions" })).toBeInTheDocument()
         expect(screen.getByLabelText("Initial input")).toBeInTheDocument()
         expect(screen.getByLabelText("Final output")).toBeInTheDocument()
-        expect(screen.getByText("Steps")).toBeInTheDocument()
+        expect(screen.getAllByText("Steps").length).toBeGreaterThan(0)
         expect(screen.getByText("Recipe Gallery")).toBeInTheDocument()
         expect(screen.getByLabelText("Search recipe templates")).toBeInTheDocument()
         expect(screen.getByText("API payload cleanup")).toBeInTheDocument()
@@ -134,6 +134,17 @@ describe("phase 3 pipeline builder page", () => {
         expect(stepsPanel).toBeInTheDocument()
         expect(stepsPanel).toHaveAttribute("tabindex", "-1")
         expect(document.querySelector("#pipeline-steps-title")).toHaveTextContent("Steps")
+    })
+
+    it("provides compact mobile jumps for steps, input/output, and the inspector", () => {
+        renderWithEnglish(<PipelineBuilderPage />)
+
+        const navigation = screen.getByRole("navigation", { name: "Workspace sections" })
+        expect(navigation.querySelector('[data-pipeline-jump="steps"]')).toHaveAttribute("href", "#pipeline-steps")
+        expect(navigation.querySelector('[data-pipeline-jump="input-output"]')).toHaveAttribute("href", "#pipeline-input-output")
+        expect(navigation.querySelector('[data-pipeline-jump="inspector"]')).toHaveAttribute("href", "#pipeline-inspector")
+        expect(document.querySelector("#pipeline-input-output")).toHaveAttribute("tabindex", "-1")
+        expect(document.querySelector("#pipeline-inspector")).toHaveAttribute("tabindex", "-1")
     })
 
     it("tracks template opens with safe template metadata only", () => {

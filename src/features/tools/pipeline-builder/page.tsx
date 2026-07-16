@@ -6,7 +6,7 @@ import { toast } from "sonner"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { ToolActionBar, type ToolAction, type ToolActionResult } from "@/features/tool-shell/tool-action-bar"
+import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { copyTextWithToolFeedback } from "@/features/tool-shell/tool-action-feedback"
 import { useLang } from "@/core/i18n/lang-provider"
 import { trackPipelineTemplateOpened } from "@/core/analytics/analytics"
@@ -40,20 +40,19 @@ import { PipelineStepInspector } from "./pipeline-step-inspector"
 import { PipelineStepList } from "./pipeline-step-list"
 import { PipelineTemplateList } from "./pipeline-template-list"
 import { PipelineUsageGuide } from "./pipeline-usage-guide"
+import { PipelineWorkspaceNavigation } from "./pipeline-workspace-navigation"
 import type { OptionValue } from "./types"
+import { usePipelinePrivacyPreview } from "./use-pipeline-privacy-preview"
 import { WideToolPageContainer } from "@/components/layout/page-container"
-import { useDialogReturnFocus } from "@/hooks/use-dialog-return-focus"
 
 const ONBOARDING_DISMISSED_KEY = "byteflow:pipeline-builder:onboarding-dismissed"
 const TEMPLATE_PARAM = "template"
-type PendingPrivacyAction = "save" | "export" | "share"
 
 export function PipelineBuilderPage() {
     const { t, lang } = useLang()
     const toolT = t.tools["pipeline_builder"] as Record<string, string> | undefined
     const text = React.useCallback((key: string) => toolT?.[key] || key, [toolT])
     const fileInputRef = React.useRef<HTMLInputElement>(null)
-    const { captureReturnFocus: capturePrivacyReturnFocus, restoreReturnFocus: restorePrivacyReturnFocus } = useDialogReturnFocus()
 
     const [recipe, setRecipe] = React.useState<RecipeDocument>(() => createRecipe())
     const [selectedStepId, setSelectedStepId] = React.useState<string | null>(null)
@@ -68,8 +67,6 @@ export function PipelineBuilderPage() {
     const [importError, setImportError] = React.useState<string | null>(null)
     const [actionAnnouncement, setActionAnnouncement] = React.useState("")
     const [onboardingDismissed, setOnboardingDismissed] = React.useState(false)
-    const [privacyPreviewAction, setPrivacyPreviewAction] = React.useState<PendingPrivacyAction>("export")
-    const [privacyPreviewOpen, setPrivacyPreviewOpen] = React.useState(false)
 
     const selectedStep = recipe.steps.find((step) => step.id === selectedStepId) ?? recipe.steps[0] ?? null
     const validation = React.useMemo(() => validateRecipe(recipe), [recipe])
@@ -314,38 +311,20 @@ export function PipelineBuilderPage() {
         return sharePipelineRecipe(recipe, lang, t, text, setActionAnnouncement)
     }, [lang, recipe, t, text])
 
-    const requestPrivacyPreview = React.useCallback((
-        action: PendingPrivacyAction,
-        announceInPageStatus = false,
-    ): ToolActionResult => {
-        const feedback: ToolActionResult = {
-            status: "success",
-            message: text("privacy_preview_title"),
-            description: text(`privacy_preview_${action}`),
-        }
-        capturePrivacyReturnFocus()
-        setPrivacyPreviewAction(action)
-        setPrivacyPreviewOpen(true)
-        if (announceInPageStatus) {
-            setActionAnnouncement(`${feedback.message}. ${feedback.description}`)
-        }
-        return feedback
-    }, [capturePrivacyReturnFocus, text])
-
-    const cancelPrivacyPreview = React.useCallback(() => {
-        setPrivacyPreviewOpen(false)
-    }, [])
-
-    const confirmPrivacyPreview = React.useCallback(() => {
-        setPrivacyPreviewOpen(false)
-        if (privacyPreviewAction === "save") {
-            void performSaveRecipe()
-        } else if (privacyPreviewAction === "export") {
-            performExportRecipe()
-        } else if (privacyPreviewAction === "share") {
-            void performShareRecipe()
-        }
-    }, [performExportRecipe, performSaveRecipe, performShareRecipe, privacyPreviewAction])
+    const {
+        cancelPrivacyPreview,
+        confirmPrivacyPreview,
+        privacyPreviewAction,
+        privacyPreviewOpen,
+        requestPrivacyPreview,
+        restorePrivacyReturnFocus,
+    } = usePipelinePrivacyPreview({
+        onExport: performExportRecipe,
+        onSave: performSaveRecipe,
+        onShare: performShareRecipe,
+        setActionAnnouncement,
+        text,
+    })
 
     const copyText = React.useCallback(async (value?: string) => {
         if (!value) return
@@ -429,6 +408,8 @@ export function PipelineBuilderPage() {
                 text={text}
             />
 
+            <PipelineWorkspaceNavigation text={text} />
+
             <div data-input-intent="workbench" className="grid gap-4 lg:grid-cols-[340px_minmax(0,1fr)_360px]">
                 <aside className="space-y-4" aria-label={text("recipe_builder")}>
                     <section className="rounded-lg border bg-card p-4">
@@ -495,7 +476,7 @@ export function PipelineBuilderPage() {
                     />
                 </aside>
 
-                <main className="space-y-4">
+                <main id="pipeline-input-output" className="scroll-mt-32 space-y-4 lg:scroll-mt-24" tabIndex={-1}>
                     <section className="rounded-lg border bg-card p-4">
                         <div className="mb-2 flex items-center justify-between gap-2">
                             <Label htmlFor="pipeline-input">{text("initial_input")}</Label>

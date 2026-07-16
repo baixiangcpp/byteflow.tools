@@ -2,6 +2,7 @@ const EXCLUSIVE_MODE_FLAGS = new Map([
     ["--pwa-only", "pwaOnly"],
     ["--first-load-only", "firstLoadOnly"],
     ["--input-intents-only", "inputIntentsOnly"],
+    ["--mobile-only", "mobileOnly"],
 ]);
 
 export function parsePlaywrightSmokeArgs(argv, { defaultPort = 4173 } = {}) {
@@ -14,6 +15,7 @@ export function parsePlaywrightSmokeArgs(argv, { defaultPort = 4173 } = {}) {
         firstLoadOnly: false,
         writeFirstLoadArtifacts: false,
         inputIntentsOnly: false,
+        mobileOnly: false,
     };
     const activeExclusiveFlags = new Set();
     const unknownArgs = new Set();

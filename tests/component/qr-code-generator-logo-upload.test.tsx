@@ -74,6 +74,8 @@ describe("QR code generator logo uploads", () => {
         expect(input).toHaveAttribute("accept", FILE_INPUT_POLICIES["image-logo"].accept)
         expect(input).not.toHaveAttribute("accept", "image/*")
         expect(screen.getByText(/Convert SVG logos with the SVG to PNG tool first/i)).toBeInTheDocument()
+        expect(screen.getByRole("switch", { name: "Embed logo" })).toBeInTheDocument()
+        expect(screen.getByRole("button", { name: "Default" })).toHaveClass("h-11", "lg:h-9")
     })
 
     it("reports strict raster validation failures without enabling a rejected SVG logo", async () => {
@@ -89,7 +91,7 @@ describe("QR code generator logo uploads", () => {
             "Please upload a valid PNG, JPEG, WebP, or GIF logo. SVG files are not supported here.",
         ))
         expect(screen.queryByText("logo.png")).not.toBeInTheDocument()
-        expect(screen.getByRole("switch")).not.toBeChecked()
+        expect(screen.getByRole("switch", { name: "Embed logo" })).not.toBeChecked()
     })
 
     it("enables a logo only after raster content validation succeeds", async () => {
@@ -101,7 +103,7 @@ describe("QR code generator logo uploads", () => {
         fireEvent.change(input!, { target: { files: [logo] } })
 
         expect(await screen.findByText("logo.png")).toBeInTheDocument()
-        expect(screen.getByRole("switch")).toBeChecked()
+        expect(screen.getByRole("switch", { name: "Embed logo" })).toBeChecked()
         expect(toastErrorMock).not.toHaveBeenCalled()
     })
 

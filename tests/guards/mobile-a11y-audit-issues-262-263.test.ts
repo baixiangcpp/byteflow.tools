@@ -17,12 +17,17 @@ describe("issues #262/#263 mobile and accessibility audit coverage", () => {
         expect(smoke).toContain('"/en/all-tools"')
         expect(smoke).toContain('"/en/data-code-formats"')
         expect(smoke).toContain('"/en/json-formatter"')
+        expect(smoke).toContain('"/en/qr-code-generator"')
+        expect(smoke).toContain('"/en/csv-json-converter"')
         expect(smoke).toContain('"/en/pipeline-builder"')
         expect(smoke).toContain('"/en/trust-center"')
         expect(smoke).toContain('"/en/install-app"')
         expect(smoke).toContain("assertMobileReviewMatrix")
         expect(smoke).toContain("assertNoHorizontalOverflow")
         expect(smoke).toContain("assertMobileTouchTargets")
+        expect(smoke).toContain("assertMobileViewportPressure")
+        expect(smoke).toContain("{ width: 390, height: 420 }")
+        expect(smoke).toContain("{ width: 844, height: 390 }")
     })
 
     it("keeps browser-level axe serious and critical coverage for representative pages", () => {
@@ -36,13 +41,19 @@ describe("issues #262/#263 mobile and accessibility audit coverage", () => {
     })
 
     it("keeps Pipeline Builder mobile diagnostics readable without forcing page overflow", () => {
+        const page = read("src/features/tools/pipeline-builder/page.tsx")
         const runLog = read("src/features/tools/pipeline-builder/pipeline-run-log.tsx")
         const stepList = read("src/features/tools/pipeline-builder/pipeline-step-list.tsx")
+        const workspaceNavigation = read("src/features/tools/pipeline-builder/pipeline-workspace-navigation.tsx")
 
         expect(runLog).toContain("sm:hidden")
         expect(runLog).toContain("hidden overflow-x-auto sm:block")
         expect(runLog).toContain("min-w-[42rem]")
         expect(stepList).toContain("min-h-11 min-w-11")
+        expect(workspaceNavigation).toContain('data-pipeline-jump="steps"')
+        expect(workspaceNavigation).toContain('data-pipeline-jump="input-output"')
+        expect(workspaceNavigation).toContain('data-pipeline-jump="inspector"')
+        expect(page).toContain('id="pipeline-input-output"')
     })
 
     it("keeps the audit matrix documented with automated and manual boundaries", () => {
@@ -51,6 +62,10 @@ describe("issues #262/#263 mobile and accessibility audit coverage", () => {
 
         expect(doc).toContain("360x740")
         expect(doc).toContain("/en/pipeline-builder")
+        expect(doc).toContain("/en/qr-code-generator")
+        expect(doc).toContain("/en/csv-json-converter")
+        expect(doc).toContain("390x420")
+        expect(doc).toContain("844x390")
         expect(doc).toContain("Axe serious and critical violations must be zero")
         expect(doc).toContain("Android Chrome PWA install")
         expect(doc).toContain("iOS Safari Add to Home Screen")
@@ -63,5 +78,7 @@ describe("issues #262/#263 mobile and accessibility audit coverage", () => {
         expect(runbook).toContain("VoiceOver")
         expect(runbook).toContain("TalkBack")
         expect(runbook).toContain("Software keyboard")
+        expect(runbook).toContain("/en/qr-code-generator")
+        expect(runbook).toContain("/en/csv-json-converter")
     })
 })

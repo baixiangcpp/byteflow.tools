@@ -17,6 +17,7 @@ describe("ModeSelector", () => {
         expect(screen.getByRole("radio", { name: "Encode" })).toHaveAttribute("aria-checked", "false")
         expect(screen.getByRole("radio", { name: "Decode" })).toHaveAttribute("aria-checked", "true")
         expect(screen.getByRole("radio", { name: "Inspect" })).toHaveAttribute("aria-checked", "false")
+        expect(screen.getByRole("radio", { name: "Encode" })).toHaveClass("min-h-11", "lg:min-h-10")
     })
 
     it("supports arrow, Home, and End keyboard selection", () => {

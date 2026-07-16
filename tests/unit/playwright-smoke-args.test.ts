@@ -10,6 +10,7 @@ describe("playwright smoke CLI arguments", () => {
         ["--pwa-only", "pwaOnly"],
         ["--first-load-only", "firstLoadOnly"],
         ["--input-intents-only", "inputIntentsOnly"],
+        ["--mobile-only", "mobileOnly"],
     ] as const)("accepts the single exclusive mode %s", (flag, property) => {
         const args = parsePlaywrightSmokeArgs([flag])
 
@@ -35,10 +36,10 @@ describe("playwright smoke CLI arguments", () => {
     })
 
     it("rejects and lists conflicting exclusive modes", () => {
-        const parse = () => parsePlaywrightSmokeArgs(["--pwa-only", "--input-intents-only"])
+        const parse = () => parsePlaywrightSmokeArgs(["--mobile-only", "--pwa-only"])
 
         expect(parse).toThrow("Conflicting --*-only flags")
-        expect(parse).toThrow("--pwa-only, --input-intents-only")
+        expect(parse).toThrow("--mobile-only, --pwa-only")
     })
 
     it("rejects and lists every unknown argument", () => {
@@ -52,7 +53,7 @@ describe("playwright smoke CLI arguments", () => {
         const result = spawnSync(process.execPath, [
             SMOKE_SCRIPT,
             "--pwa-only",
-            "--input-intents-only",
+            "--mobile-only",
             "--unknown-mode",
         ], {
             cwd: process.cwd(),
@@ -61,7 +62,7 @@ describe("playwright smoke CLI arguments", () => {
 
         expect(result.status).toBe(1)
         expect(result.stderr).toContain("Unknown argument(s): --unknown-mode")
-        expect(result.stderr).toContain("Conflicting --*-only flags: --pwa-only, --input-intents-only")
+        expect(result.stderr).toContain("Conflicting --*-only flags: --pwa-only, --mobile-only")
         expect(result.stdout).not.toContain("PASS")
     })
 })

@@ -80,7 +80,9 @@ Routes:
 - `/en/all-tools`
 - `/en/data-code-formats`
 - `/en/json-formatter`
+- `/en/qr-code-generator`
 - `/en/base64-encode-decode`
+- `/en/csv-json-converter`
 - `/en/jwt-decoder`
 - `/en/regex-tester`
 - `/en/pipeline-builder`
@@ -100,11 +102,15 @@ Software keyboard:
 - On `/en/json-formatter`, focus the input, type invalid JSON, fix it, and run format.
 - Confirm the keyboard does not hide the active input or primary action in a way that prevents completion.
 - On `/en/base64-encode-decode`, enter a long URL-like value and copy output.
+- On `/en/qr-code-generator`, edit QR content, download PNG, and confirm copy feedback with the keyboard open.
+- On `/en/csv-json-converter`, convert a short CSV payload, copy the result, and confirm the Convert action remains reachable.
 - On `/en/regex-tester`, edit pattern and sample text with the keyboard open.
 
 Pipeline Builder:
 
 - Open `/en/pipeline-builder`.
+- Use the compact Steps, Input/output, and Inspector section jumps in portrait and landscape.
+- Select a step, edit its label in Inspector, and return to the input without searching through the full page.
 - Confirm the mobile diagnostics are readable without forcing page-level horizontal scrolling.
 - Run the default sample or a local sample.
 - Confirm run status and output are visible.

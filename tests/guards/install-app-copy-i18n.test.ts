@@ -31,6 +31,9 @@ describe("install-app copy localization", () => {
             expect(copy.guides.edge.label).toContain("Edge")
             expect(copy.guides.firefox.label).toContain("Firefox")
             expect(copy.guides.android.label).toContain("Android")
+            expect(copy.guides.android.label).toContain("Chrome")
+            expect(copy.guides.android.title).toContain("Chrome")
+            expect(copy.guides.android.steps[0]).toContain("Chrome")
             expect(copy.guides.ios.label).toContain("iOS")
 
             expect(copy.benefits).toHaveLength(3)

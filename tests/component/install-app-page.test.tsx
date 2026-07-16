@@ -100,6 +100,37 @@ describe("install app page", () => {
         expect(previewImage).toHaveAttribute("aria-label", `${copy.guides.chrome_desktop.label} ${copy.guidePreviewLabel}`)
     })
 
+    it("selects the Android guide from browser signals on the first visit", async () => {
+        const userAgent = vi.spyOn(window.navigator, "userAgent", "get").mockReturnValue(
+            "Mozilla/5.0 (Linux; Android 15; Pixel 9) AppleWebKit/537.36 Chrome/138.0 Mobile Safari/537.36",
+        )
+        const platform = vi.spyOn(window.navigator, "platform", "get").mockReturnValue("Linux armv8l")
+        const copy = getInstallPageCopy("en")
+
+        try {
+            render(
+                <InstallAppClient
+                    locale="en"
+                    copy={copy}
+                    allToolsLabel="All tools"
+                    trustCenterLabel="Trust Center"
+                    localDataControlsLabel="Local data controls"
+                    distributionResearchLabel="Extension and desktop research"
+                    offlineMatrixTitle="Offline support matrix"
+                    offlineMatrixDescription="Review which workflows keep running after cache warm-up."
+                    offlineMatrixLink="Offline matrix"
+                />,
+            )
+
+            await waitFor(() => {
+                expect(screen.getByRole("heading", { name: copy.guides.android.title })).toBeInTheDocument()
+            })
+        } finally {
+            userAgent.mockRestore()
+            platform.mockRestore()
+        }
+    })
+
     it("clears only byteflow PWA cache buckets from the install page", async () => {
         const deleteCache = vi.fn().mockResolvedValue(true)
         Object.defineProperty(window, "caches", {

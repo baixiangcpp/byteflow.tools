@@ -16,6 +16,7 @@ import {
 import { clearByteflowPwaCaches } from "@/core/storage/pwa-cache-controls"
 import type { GuidePlatform, InstallPageCopy } from "@/core/utils/install-app-copy"
 import { StaticPageContainer } from "@/components/layout/page-container"
+import { detectInstallGuidePlatform } from "../install-guide-platform"
 
 function isStandaloneInstalled() {
     if (typeof window === "undefined") return false
@@ -61,6 +62,17 @@ export function InstallAppClient({
     const [cacheClearPending, setCacheClearPending] = React.useState(false)
     const guideRef = React.useRef<HTMLDivElement | null>(null)
     const installSuccessTrackedRef = React.useRef(false)
+
+    React.useEffect(() => {
+        const navigatorWithUserAgentData = window.navigator as Navigator & {
+            userAgentData?: { platform?: string }
+        }
+        setPlatform(detectInstallGuidePlatform({
+            maxTouchPoints: window.navigator.maxTouchPoints,
+            platform: navigatorWithUserAgentData.userAgentData?.platform || window.navigator.platform,
+            userAgent: window.navigator.userAgent,
+        }))
+    }, [])
 
     const recordInstallSuccess = React.useCallback((platformName?: string) => {
         if (installSuccessTrackedRef.current) return

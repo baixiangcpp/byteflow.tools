@@ -70,7 +70,7 @@
     ]
   },
   "summary": {
-    "scannedFiles": 941,
+    "scannedFiles": 945,
     "pageRoots": 369,
     "toolSurfaces": 131,
     "standardTools": 82,
@@ -1035,7 +1035,7 @@
     {
       "file": "src/components/layout/app-runtime.tsx",
       "element": "div",
-      "line": 272,
+      "line": 267,
       "reason": "runtime-banner",
       "maxWidthTokens": [
         "max-w-6xl"
@@ -2958,7 +2958,7 @@
       "file": "src/features/tools/json-formatter/page.tsx",
       "component": "JsonFormatterPage",
       "element": "WideToolPageContainer",
-      "line": 573
+      "line": 563
     },
     {
       "file": "src/features/tools/json-schema-workbench/page.tsx",
@@ -3102,7 +3102,7 @@
       "file": "src/features/tools/pipeline-builder/page.tsx",
       "component": "PipelineBuilderPage",
       "element": "WideToolPageContainer",
-      "line": 378
+      "line": 357
     },
     {
       "file": "src/features/tools/public-key-jwk-helper/page.tsx",
@@ -3370,10 +3370,10 @@
       "grid-cols-[4.5rem_1fr]": 1,
       "grid-cols-[56px_1fr]": 2,
       "grid-cols-[96px_120px_minmax(0,1fr)_96px]": 2,
-      "grid-cols-1": 98,
+      "grid-cols-1": 99,
       "grid-cols-12": 1,
-      "grid-cols-2": 28,
-      "grid-cols-3": 9,
+      "grid-cols-2": 27,
+      "grid-cols-3": 10,
       "grid-cols-5": 1,
       "lg:col-span-2": 1,
       "lg:col-span-3": 5,
@@ -3387,7 +3387,7 @@
       "lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]": 2,
       "lg:grid-cols-[minmax(0,1fr)_320px]": 2,
       "lg:grid-cols-1": 1,
-      "lg:grid-cols-2": 51,
+      "lg:grid-cols-2": 52,
       "lg:grid-cols-3": 3,
       "lg:grid-cols-5": 2,
       "lg:grid-cols-6": 2,
@@ -3412,6 +3412,7 @@
       "md:grid-cols-[1fr_auto_1fr_auto_1fr]": 1,
       "md:grid-cols-[1fr_auto]": 2,
       "md:grid-cols-[minmax(0,1fr)_180px_180px]": 1,
+      "md:grid-cols-1": 1,
       "md:grid-cols-12": 9,
       "md:grid-cols-2": 15,
       "md:grid-cols-3": 7,
@@ -3424,7 +3425,7 @@
       "sm:grid-cols-[180px_1fr]": 1,
       "sm:grid-cols-[1fr_auto_1fr]": 1,
       "sm:grid-cols-[minmax(0,1fr)_minmax(220px,320px)]": 1,
-      "sm:grid-cols-2": 54,
+      "sm:grid-cols-2": 55,
       "sm:grid-cols-3": 8,
       "sm:grid-cols-4": 1,
       "sm:max-w-2xl": 1,

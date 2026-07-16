@@ -175,15 +175,15 @@ export function QrGeneratePanel({
                         </Select>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2">
                         <ColorControl label={textFor("fg")} value={fgColor} onChange={setFgColor} />
                         <ColorControl label={textFor("bg")} value={bgColor} onChange={setBgColor} />
                     </div>
 
                     <div className="space-y-3 rounded-md border bg-muted/20 p-3">
                         <div className="flex items-center justify-between">
-                            <label className="text-sm font-medium">{textFor("logo_toggle")}</label>
-                            <Switch checked={logoEnabled} onCheckedChange={setLogoEnabled} />
+                            <label htmlFor="qr-logo-toggle" className="text-sm font-medium">{textFor("logo_toggle")}</label>
+                            <Switch id="qr-logo-toggle" checked={logoEnabled} onCheckedChange={setLogoEnabled} />
                         </div>
                         <div className="flex flex-wrap items-center gap-2">
                             <InlineButton variant="outline" onClick={() => logoInputRef.current?.click()}>

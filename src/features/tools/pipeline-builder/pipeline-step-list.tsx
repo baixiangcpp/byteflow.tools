@@ -79,7 +79,7 @@ export function PipelineStepList({
     return (
         <section
             id="pipeline-steps"
-            className="scroll-mt-24 rounded-lg border bg-card p-4"
+            className="scroll-mt-32 rounded-lg border bg-card p-4 lg:scroll-mt-24"
             aria-labelledby="pipeline-steps-title"
             tabIndex={-1}
         >

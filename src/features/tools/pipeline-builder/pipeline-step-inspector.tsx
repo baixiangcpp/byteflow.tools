@@ -37,7 +37,12 @@ export function PipelineStepInspector({
     validation,
 }: PipelineStepInspectorProps) {
     return (
-        <aside className="space-y-4" aria-label={text("recipe_inspector")}>
+        <aside
+            id="pipeline-inspector"
+            className="scroll-mt-32 space-y-4 lg:scroll-mt-24"
+            aria-label={text("recipe_inspector")}
+            tabIndex={-1}
+        >
             <section className="rounded-lg border bg-card p-4">
                 <h2 className="text-sm font-semibold">{text("recipe_settings")}</h2>
                 <div className="mt-3 space-y-3">
