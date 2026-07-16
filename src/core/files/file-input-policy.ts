@@ -8,6 +8,7 @@ export type FileInputPolicyId =
     | "image-standard"
     | "image-compact"
     | "image-logo"
+    | "qr-decode-image"
     | "svg"
     | "scan-image"
     | "recipe-json"
@@ -27,6 +28,8 @@ export type FileInputPolicy = {
 export type FileValidationResult =
     | { ok: true; file: File }
     | { ok: false; reason: "empty" | "too_large" | "unsupported_type"; message: string }
+
+type RasterImageMime = "image/png" | "image/jpeg" | "image/gif" | "image/webp" | "image/avif"
 
 const TEXT_EXTENSIONS = [
     ".txt",
@@ -113,6 +116,15 @@ export const FILE_INPUT_POLICIES = {
         allowedExtensions: [".png", ".jpg", ".jpeg", ".webp", ".gif"],
         allowedMimeTypes: ["image/png", "image/jpeg", "image/webp", "image/gif"],
     },
+    "qr-decode-image": {
+        id: "qr-decode-image",
+        accept: ".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp",
+        description: "PNG, JPEG, or WebP QR images up to 8 MB and 12 MP",
+        maxBytes: 8 * 1024 * 1024,
+        maxPixels: 12_000_000,
+        allowedExtensions: [".png", ".jpg", ".jpeg", ".webp"],
+        allowedMimeTypes: ["image/png", "image/jpeg", "image/webp"],
+    },
     svg: {
         id: "svg",
         accept: ".svg,image/svg+xml",
@@ -123,13 +135,13 @@ export const FILE_INPUT_POLICIES = {
     },
     "scan-image": {
         id: "scan-image",
-        accept: "image/*",
-        description: "Up to 20 image pages, 12 MB and 24 MP each",
+        accept: ".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp",
+        description: "Up to 20 PNG, JPEG, or WebP pages, 12 MB and 24 MP each",
         maxBytes: 12 * 1024 * 1024,
         maxPixels: 24_000_000,
         maxFiles: 20,
-        allowedMimePrefixes: ["image/"],
         allowedExtensions: [".png", ".jpg", ".jpeg", ".webp"],
+        allowedMimeTypes: ["image/png", "image/jpeg", "image/webp"],
     },
     "recipe-json": {
         id: "recipe-json",
@@ -163,13 +175,88 @@ function fileExtension(file: File): string {
 function hasAllowedFileType(file: File, policy: FileInputPolicy): boolean {
     const mime = file.type.toLowerCase()
     const extension = fileExtension(file)
-    const hasTypeRules = Boolean(policy.allowedMimePrefixes?.length || policy.allowedMimeTypes?.length || policy.allowedExtensions?.length)
+    const hasExtensionRules = Boolean(policy.allowedExtensions?.length)
+    const hasMimeRules = Boolean(policy.allowedMimePrefixes?.length || policy.allowedMimeTypes?.length)
+    const hasTypeRules = hasExtensionRules || hasMimeRules
     if (!hasTypeRules) return true
-    if (extension && policy.allowedExtensions?.length && !policy.allowedExtensions.includes(extension)) return false
-    if (mime && policy.allowedMimePrefixes?.some((prefix) => mime.startsWith(prefix))) return true
-    if (mime && policy.allowedMimeTypes?.includes(mime)) return true
-    if (extension && policy.allowedExtensions?.includes(extension)) return true
-    return false
+
+    const extensionAllowed = Boolean(extension && policy.allowedExtensions?.includes(extension))
+    const mimeAllowed = Boolean(
+        mime && (
+            policy.allowedMimePrefixes?.some((prefix) => mime.startsWith(prefix))
+            || policy.allowedMimeTypes?.includes(mime)
+        ),
+    )
+
+    if (extension && hasExtensionRules) {
+        if (!extensionAllowed) return false
+
+        // Browsers often assign generic or vendor MIME types to extension-matched files.
+        // Raster content is checked separately against its file signature before decoding.
+        return !(mime.startsWith("image/") && hasMimeRules && !mimeAllowed)
+    }
+
+    return mimeAllowed
+}
+
+const RASTER_POLICY_IDS = new Set<FileInputPolicyId>([
+    "image-standard",
+    "image-compact",
+    "image-logo",
+    "qr-decode-image",
+    "scan-image",
+])
+
+const RASTER_MIME_BY_EXTENSION: Record<string, RasterImageMime> = {
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".gif": "image/gif",
+    ".webp": "image/webp",
+    ".avif": "image/avif",
+}
+
+function startsWithBytes(bytes: Uint8Array, signature: readonly number[]): boolean {
+    return signature.every((value, index) => bytes[index] === value)
+}
+
+export function detectRasterImageMime(input: ArrayBuffer | Uint8Array): RasterImageMime | null {
+    const bytes = input instanceof Uint8Array ? input : new Uint8Array(input)
+    if (startsWithBytes(bytes, [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])) return "image/png"
+    if (startsWithBytes(bytes, [0xff, 0xd8, 0xff])) return "image/jpeg"
+    if (startsWithBytes(bytes, [0x47, 0x49, 0x46, 0x38, 0x37, 0x61])
+        || startsWithBytes(bytes, [0x47, 0x49, 0x46, 0x38, 0x39, 0x61])) return "image/gif"
+    if (startsWithBytes(bytes, [0x52, 0x49, 0x46, 0x46])
+        && startsWithBytes(bytes.subarray(8), [0x57, 0x45, 0x42, 0x50])) return "image/webp"
+
+    const hasIsoFileTypeBox = startsWithBytes(bytes.subarray(4), [0x66, 0x74, 0x79, 0x70])
+    if (hasIsoFileTypeBox) {
+        const brands = new TextDecoder("ascii").decode(bytes.subarray(8, 64))
+        if (brands.includes("avif") || brands.includes("avis")) return "image/avif"
+    }
+    return null
+}
+
+function validateRasterFileBytes(file: File, policy: FileInputPolicy, input: ArrayBuffer | Uint8Array): FileValidationResult {
+    if (!RASTER_POLICY_IDS.has(policy.id)) return { ok: true, file }
+
+    const detectedMime = detectRasterImageMime(input)
+    const extensionMime = RASTER_MIME_BY_EXTENSION[fileExtension(file)]
+    const declaredMime = file.type.toLowerCase()
+    const detectedMimeAllowed = detectedMime && (
+        policy.allowedMimeTypes?.includes(detectedMime)
+        || policy.allowedMimePrefixes?.some((prefix) => detectedMime.startsWith(prefix))
+    )
+
+    const declaredMimeConflicts = declaredMime.startsWith("image/") && declaredMime !== detectedMime
+    if (!detectedMime || !detectedMimeAllowed || (extensionMime && extensionMime !== detectedMime) || declaredMimeConflicts) {
+        return {
+            ok: false,
+            reason: "unsupported_type",
+            message: `File content does not match a supported raster image. Supported input: ${policy.description}.`,
+        }
+    }
+    return { ok: true, file }
 }
 
 export function validateFileAgainstPolicy(file: File, policy: FileInputPolicy): FileValidationResult {
@@ -202,7 +289,26 @@ export async function readTextFileWithPolicy(file: File, policy: FileInputPolicy
 export async function readArrayBufferWithPolicy(file: File, policy: FileInputPolicy): Promise<ArrayBuffer> {
     const validation = validateFileAgainstPolicy(file, policy)
     if (!validation.ok) throw new Error(validation.message)
-    return file.arrayBuffer()
+    const buffer = await file.arrayBuffer()
+    const contentValidation = validateRasterFileBytes(file, policy, buffer)
+    if (!contentValidation.ok) throw new Error(contentValidation.message)
+    return buffer
+}
+
+export async function validateFileContentAgainstPolicy(file: File, policy: FileInputPolicy): Promise<FileValidationResult> {
+    const validation = validateFileAgainstPolicy(file, policy)
+    if (!validation.ok || !RASTER_POLICY_IDS.has(policy.id)) return validation
+
+    try {
+        const signatureBytes = await file.slice(0, 64).arrayBuffer()
+        return validateRasterFileBytes(file, policy, signatureBytes)
+    } catch {
+        return {
+            ok: false,
+            reason: "unsupported_type",
+            message: "Unable to verify the selected file content.",
+        }
+    }
 }
 
 export function filterFilesByPolicy(files: Iterable<File>, policy: FileInputPolicy): { accepted: File[]; rejected: Array<{ file: File; message: string }> } {

@@ -9,6 +9,7 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { convertHtmlToMarkdown } from "@/features/tools/html-to-markdown/utils"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE_HTML = `<article>
   <h1>release_2048</h1>
@@ -94,7 +95,7 @@ export function HtmlToMarkdownPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-[1400px] flex-col space-y-8">
+        <WideToolPageContainer className="flex h-full flex-col space-y-8">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -143,6 +144,6 @@ export function HtmlToMarkdownPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

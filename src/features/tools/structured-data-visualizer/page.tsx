@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { visualizeStructuredData, type DataTreeNode, type StructuredDataFormat, type StructuredDataResult } from "@/features/tools/structured-data-visualizer/utils"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 function TreeNodeView({ node, depth = 0 }: { node: DataTreeNode; depth?: number }) {
     return (
@@ -68,7 +69,7 @@ export function StructuredDataVisualizerPage() {
     }, [])
 
     return (
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8">
+        <WideToolPageContainer className="flex flex-col gap-6 py-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
@@ -133,6 +134,6 @@ export function StructuredDataVisualizerPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

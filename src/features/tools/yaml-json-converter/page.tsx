@@ -14,6 +14,7 @@ import { importTextFile, TEXT_FILE_IMPORT_ACCEPT } from "@/core/files/text-file-
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { convertStructuredData, type StructuredDataFormat } from "./utils"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 const MODE_STORAGE_KEY = "byteflow:yaml-json-converter:mode"
 const FROM_FORMAT_STORAGE_KEY = "byteflow:yaml-json-converter:from-format"
@@ -162,7 +163,7 @@ export function YamlJsonConverterPage() {
     }
 
     return (
-        <div className="flex flex-col h-full space-y-8 max-w-[1400px] mx-auto w-full">
+        <WideToolPageContainer className="flex flex-col h-full space-y-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -350,6 +351,6 @@ export function YamlJsonConverterPage() {
                 </div>
 
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

@@ -13,6 +13,7 @@ import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-war
 import { convertPublicKey, formatSummary } from "./logic"
 import { SAMPLE_PUBLIC_JWK, SAMPLE_PUBLIC_KEY_PEM } from "./samples"
 import type { PublicKeyConversionResult, PublicKeyInputFormat, PublicKeyOutputFormat } from "./types"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const INPUT_FORMAT_OPTIONS = [
     { value: "pem", label: "PEM" },
@@ -131,7 +132,7 @@ export function PublicKeyJwkHelperPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col gap-6">
+        <ToolPageContainer className="flex h-full flex-col gap-6">
             <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -240,6 +241,6 @@ export function PublicKeyJwkHelperPage() {
             ) : null}
 
             <RelatedTools toolKey="public_key_jwk_helper" />
-        </div>
+        </ToolPageContainer>
     )
 }

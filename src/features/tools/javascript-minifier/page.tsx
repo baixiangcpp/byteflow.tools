@@ -12,6 +12,7 @@ import { getToolHandoffFromSearchParams } from "@/core/routing/tool-handoff"
 import { importTextFile, TEXT_FILE_IMPORT_ACCEPT } from "@/core/files/text-file-import"
 import { removeStorageKey } from "@/core/storage/tool-persistence"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE_CODE = [
     "function normalizeId(raw) {",
@@ -194,7 +195,7 @@ export function JavascriptMinifierPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-[1400px] flex-col space-y-8">
+        <WideToolPageContainer className="flex h-full flex-col space-y-8">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -305,6 +306,6 @@ export function JavascriptMinifierPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

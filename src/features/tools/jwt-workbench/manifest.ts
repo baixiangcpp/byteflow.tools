@@ -3,6 +3,7 @@ import type { ToolMeta } from "@/core/registry/types"
 export const toolManifest = {
     key: "jwt_workbench",
     slug: "jwt-workbench",
+    inputBehavior: "explicit-sample",
     category: "text-string",
     relatedTools: ["jwt_decoder", "jwt_verifier", "oauth_jwks_workbench", "public_key_jwk_helper"],
     privacy: {

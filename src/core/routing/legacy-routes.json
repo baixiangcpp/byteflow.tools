@@ -10,5 +10,11 @@
     "targetSlug": "certificate-decoder",
     "status": 301,
     "reason": "merged"
+  },
+  {
+    "sourceSlug": "csv-to-json",
+    "targetSlug": "csv-json-converter",
+    "status": 301,
+    "reason": "renamed"
   }
 ]

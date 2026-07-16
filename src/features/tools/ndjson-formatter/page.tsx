@@ -9,6 +9,7 @@ import { RelatedTools } from "@/core/seo/components/related-tools"
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { countNdjsonLines, runNdjsonTransform, type NdjsonMessages, type NdjsonMode } from "./utils"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 const NDJSON_BUTTON_BASE_CLASS =
     "inline-flex items-center justify-center gap-1.5 rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50"
@@ -99,7 +100,7 @@ export function NdjsonFormatterPage() {
     const lineCount = input ? countNdjsonLines(input) : 0
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-[1400px] mx-auto w-full">
+        <WideToolPageContainer className="flex flex-col h-full space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -189,6 +190,6 @@ export function NdjsonFormatterPage() {
                 </div>
             </div>
             <RelatedTools toolKey="ndjson_formatter" />
-        </div>
+        </WideToolPageContainer>
     )
 }

@@ -10,6 +10,7 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { ToolPreviewArea } from "@/features/tool-shell/tool-preview-area"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildPatternCss, buildPatternSvg, type PatternKind } from "@/features/tools/svg-pattern-generator/utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const DEFAULT_STATE = {
     kind: "dots" as PatternKind,
@@ -107,7 +108,7 @@ export function SvgPatternGeneratorPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -183,7 +184,7 @@ export function SvgPatternGeneratorPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }
 

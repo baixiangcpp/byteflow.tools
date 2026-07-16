@@ -1383,9 +1383,9 @@
   "qr-code-generator": {
     "content": {
       "toolKey": "qr_code_generator",
-      "intro": "產生自訂大小和顏色的 QR Code。下載格式為 PNG 或 SVG。 這個頁面適合在瀏覽器中快速完成生成確認，並在提交、分享或交接前保留可重現的輸入與輸出紀錄。",
+      "intro": "產生自訂大小和顏色的 QR Code，並下載為 PNG 或 SVG。也可在瀏覽器本機解碼上傳的 PNG、JPEG 或 WebP QR 圖片；影像內容不會上傳，無法讀取或找不到 QR Code 時會顯示明確提示。",
       "whatThisToolDoes": [
-        "QR Code 產生器 會依照目前輸入立即更新結果，方便先確認主要輸出是否符合預期。",
+        "QR Code 產生器會依照目前輸入立即更新結果，也能讀取本機上傳 QR 圖片中的文字。",
         "頁面描述聚焦在這件事上：產生自訂大小和顏色的 QR Code。下載格式為 PNG 或 SVG。",
         "把 QR Code 產生器 放進生成流程中，可以更早發現格式、內容或參數上的落差。"
       ],

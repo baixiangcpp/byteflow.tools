@@ -15,6 +15,7 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
 import { jsonToTs } from "./utils"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE_JSON = `{
   "id": 1,
@@ -179,7 +180,7 @@ export function JsonToTypeScriptPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-[1400px] flex-col space-y-8">
+        <WideToolPageContainer className="flex h-full flex-col space-y-8">
             <input
                 ref={fileInputRef}
                 type="file"
@@ -310,6 +311,6 @@ export function JsonToTypeScriptPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

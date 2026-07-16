@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { NO_MATCH_RULE, parseRobotsTxt, testRobotsUrl } from "@/features/tools/robots-txt-tester/utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 let nextTestId = 0
 const PRIMARY_CRAWLER = "crawler-01"
@@ -69,7 +70,7 @@ Sitemap: https://example.com/sitemap.xml`
     }
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-5xl mx-auto w-full">
+        <ToolPageContainer className="flex flex-col h-full space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -183,6 +184,6 @@ Sitemap: https://example.com/sitemap.xml`
             </div>
 
             <RelatedTools toolKey="robots_txt_tester" />
-        </div>
+        </ToolPageContainer>
     )
 }

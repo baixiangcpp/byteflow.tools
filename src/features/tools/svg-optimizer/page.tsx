@@ -13,6 +13,7 @@ import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/u
 import { FILE_INPUT_POLICIES, readTextFileWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { sanitizeOptimizedSvg } from "./logic"
 import { runSvgOptimizeTask } from "./svg-optimize-task"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE_SVG = `<?xml version="1.0" encoding="UTF-8"?>
 <!-- BF -->
@@ -154,7 +155,7 @@ export function SvgOptimizerPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-[1400px] flex-col space-y-8">
+        <WideToolPageContainer className="flex h-full flex-col space-y-8">
             <div className="flex flex-col gap-6">
                 <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2">
@@ -263,6 +264,6 @@ export function SvgOptimizerPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

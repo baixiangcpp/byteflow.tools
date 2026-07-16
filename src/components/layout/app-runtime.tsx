@@ -259,7 +259,7 @@ export function AppRuntime({ pathname }: { pathname: string }) {
                     aria-live="polite"
                     className="fixed inset-x-0 top-0 z-50 border-b border-amber-300/70 bg-amber-50 px-4 py-3 text-amber-950 shadow-sm dark:border-amber-500/45 dark:bg-amber-950 dark:text-amber-50"
                 >
-                    <div className="mx-auto flex max-w-6xl flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
+                    <div data-route-width-exception="runtime-banner" className="mx-auto flex max-w-6xl flex-col gap-2 text-sm sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex items-start gap-2">
                             <WifiOff className="mt-0.5 h-4 w-4 shrink-0" aria-hidden="true" />
                             <div>

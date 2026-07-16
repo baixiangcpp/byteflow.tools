@@ -7,6 +7,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { Input } from "@/components/ui/input"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { serializeSpreadsheetSafeCsv } from "@/core/files/csv-export"
 import { v1 as uuidv1, v4 as uuidv4 } from "uuid"
 import { Button } from "@/components/ui/button"
 import { downloadTextFile } from "./browser-actions"
@@ -17,6 +18,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const PAGE_SIZE_OPTIONS = [50, 100, 250]
 type ExportFormat = "txt" | "csv" | "json"
@@ -85,8 +87,11 @@ export function UuidGeneratorPage() {
         if (format === "json") {
             downloadTextFile(JSON.stringify(formattedUuids, null, 2), "byteflow-uuids.json", "application/json;charset=utf-8")
         } else if (format === "csv") {
-            const rows = ["index,uuid", ...formattedUuids.map((id, index) => `${index + 1},"${id.replace(/"/g, '""')}"`)]
-            downloadTextFile(rows.join("\n"), "byteflow-uuids.csv", "text/csv;charset=utf-8")
+            const csv = serializeSpreadsheetSafeCsv([
+                ["index", "uuid"],
+                ...formattedUuids.map((id, index) => [index + 1, id] as const),
+            ])
+            downloadTextFile(csv, "byteflow-uuids.csv", "text/csv;charset=utf-8")
         } else {
             downloadTextFile(formattedUuids.join("\n"), "byteflow-uuids.txt")
         }
@@ -136,7 +141,7 @@ export function UuidGeneratorPage() {
     ]
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-5xl mx-auto">
+        <ToolPageContainer className="flex flex-col h-full space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -298,6 +303,6 @@ export function UuidGeneratorPage() {
                 </div>
 
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }

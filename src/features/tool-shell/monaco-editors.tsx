@@ -7,6 +7,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
 import { cn } from "@/core/utils/utils"
+import { inputIntentClassName, type InputIntent } from "@/components/ui/input-intent"
 
 const MOBILE_EDITOR_MEDIA_QUERY = "(max-width: 768px)"
 const MONACO_LOADER_TIMEOUT_MS = 5000
@@ -195,16 +196,19 @@ const DynamicMonacoDiffEditor = dynamic<DiffEditorProps>(
 export type MonacoEditorProps = EditorProps & {
     "aria-describedby"?: string
     "aria-invalid"?: React.AriaAttributes["aria-invalid"]
+    intent?: InputIntent
 }
 
 export function MonacoEditor(props: MonacoEditorProps) {
     const { t } = useLang()
     const {
         className,
+        intent,
         "aria-describedby": ariaDescribedBy,
         "aria-invalid": ariaInvalid,
         ...editorProps
     } = props
+    const resolvedIntent = intent ?? (props.options?.readOnly ? "generatedOutput" : "workbench")
     const { resolvedTheme } = useThemePreference()
     const monacoTheme = props.theme || getByteflowMonacoThemeName(resolvedTheme)
 
@@ -232,7 +236,8 @@ export function MonacoEditor(props: MonacoEditorProps) {
         return (
             <div
                 ref={hostRef}
-                className={cn("h-full w-full", className)}
+                data-input-intent={resolvedIntent}
+                className={cn("h-full w-full", intent ? inputIntentClassName(intent, "editor") : "", className)}
                 aria-describedby={ariaDescribedBy}
             >
                 <DynamicMonacoEditor {...editorProps} theme={monacoTheme} options={monacoOptions} height={resolvedHeight} />
@@ -252,6 +257,7 @@ export function MonacoEditor(props: MonacoEditorProps) {
             aria-label={monacoOptions.ariaLabel}
             aria-describedby={ariaDescribedBy}
             aria-invalid={ariaInvalid}
+            data-input-intent={resolvedIntent}
             onChange={(event) => props.onChange?.(event.target.value, undefined as never)}
             onFocus={() => {
                 setFallbackFocused(true)
@@ -266,9 +272,10 @@ export function MonacoEditor(props: MonacoEditorProps) {
                 "h-full w-full resize-none border-0 bg-background p-3 font-mono text-sm leading-relaxed focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring/50",
                 readOnly ? "cursor-default text-muted-foreground" : "",
                 wrapsText ? "whitespace-pre-wrap break-words" : "overflow-x-auto whitespace-pre",
+                intent ? inputIntentClassName(intent, "editor") : "",
                 className,
             )}
-            style={{ height: resolveEditorHeight(props.height), minHeight: 220 }}
+            style={{ height: resolveEditorHeight(props.height), minHeight: intent ? undefined : 220 }}
         />
     )
 }
@@ -276,11 +283,13 @@ export function MonacoEditor(props: MonacoEditorProps) {
 export type MonacoDiffEditorProps = DiffEditorProps & {
     onOriginalChange?: (value: string) => void
     onModifiedChange?: (value: string) => void
+    intent?: InputIntent
 }
 
 export function MonacoDiffEditor(props: MonacoDiffEditorProps) {
     const { t } = useLang()
-    const { className, onMount, ...diffProps } = props
+    const { className, intent, onMount, ...diffProps } = props
+    const resolvedIntent = intent ?? "workbench"
     const { resolvedTheme } = useThemePreference()
     const monacoTheme = props.theme || getByteflowMonacoThemeName(resolvedTheme)
 
@@ -314,7 +323,11 @@ export function MonacoDiffEditor(props: MonacoDiffEditorProps) {
     if (!isMobile && desktopActivation !== "deferred" && loaderState !== "fallback") {
         if (loaderState === "loading") return <EditorLoadingFallback />
         return (
-            <div ref={hostRef} className={cn("h-full w-full", className)}>
+            <div
+                ref={hostRef}
+                data-input-intent={resolvedIntent}
+                className={cn("h-full w-full", intent ? inputIntentClassName(intent, "editor") : "", className)}
+            >
                 <DynamicMonacoDiffEditor
                     {...diffProps}
                     theme={monacoTheme}
@@ -337,12 +350,16 @@ export function MonacoDiffEditor(props: MonacoDiffEditorProps) {
     const wrapsText = props.options?.wordWrap !== "off"
 
     return (
-        <div className={cn("grid h-full min-h-[360px] grid-cols-1 gap-2 p-2 md:grid-cols-2", className)}>
+        <div
+            data-input-intent={resolvedIntent}
+            className={cn("grid h-full grid-cols-1 gap-2 p-2 md:grid-cols-2", intent ? inputIntentClassName(intent, "editor") : "min-h-[360px]", className)}
+        >
             <textarea
                 value={originalValue}
                 readOnly={!originalEditable}
                 spellCheck={false}
                 aria-label={diffOptions.originalAriaLabel || t.common.original_text_editor}
+                data-input-intent={resolvedIntent}
                 onFocus={activateDesktopMonaco}
                 onPointerDown={activateDesktopMonaco}
                 onChange={(event) => {
@@ -361,6 +378,7 @@ export function MonacoDiffEditor(props: MonacoDiffEditorProps) {
                 readOnly={readOnly}
                 spellCheck={false}
                 aria-label={diffOptions.modifiedAriaLabel || t.common.modified_text_editor}
+                data-input-intent={resolvedIntent}
                 onFocus={activateDesktopMonaco}
                 onPointerDown={activateDesktopMonaco}
                 onChange={(event) => {

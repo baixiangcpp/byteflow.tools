@@ -17,6 +17,7 @@ import {
     probeFirstWorkingThumbnail,
     type ThumbnailCandidate,
 } from "@/core/utils/thumbnail-grabber-utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE_URL = "https://vimeo.com/76979871"
 const EXTERNAL_HOSTS = ["vimeo.com", "player.vimeo.com", "vumbnail.com"] as const
@@ -222,7 +223,7 @@ export function VimeoThumbnailGrabberPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -347,6 +348,6 @@ export function VimeoThumbnailGrabberPage() {
                     />
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }

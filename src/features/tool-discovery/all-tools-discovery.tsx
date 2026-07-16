@@ -376,11 +376,13 @@ function FavoriteButton({
     addLabel,
     removeLabel,
     onToggle,
+    ready,
 }: {
     active: boolean
     addLabel: string
     removeLabel: string
     onToggle: () => void
+    ready: boolean
 }) {
     return (
         <button
@@ -390,9 +392,12 @@ function FavoriteButton({
                 active
                     ? "border-primary/35 bg-primary/10 text-primary"
                     : "border-border/70 bg-background/55 text-muted-foreground hover:border-primary/35 hover:text-primary",
+                !ready && "invisible",
             )}
             aria-label={active ? removeLabel : addLabel}
             aria-pressed={active}
+            aria-hidden={!ready || undefined}
+            disabled={!ready}
             onClick={(event) => {
                 event.preventDefault()
                 event.stopPropagation()
@@ -792,8 +797,12 @@ export function AllToolsDiscovery({
     const noFavoritesDescription = `${labels.favorites}: 0`
     const noRecentToolsDescription = `${labels.recentTools}: 0`
 
-    const localToolsPanel = personalizationReady ? (
-        <div className="grid gap-3 lg:grid-cols-2">
+    const localToolsPanel = (
+        <div
+            className="grid gap-3 lg:grid-cols-2"
+            data-all-tools-personalization
+            aria-busy={!personalizationReady}
+        >
             <section className="rounded-lg border border-border/70 bg-background/35 p-3">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                     <div>
@@ -808,30 +817,32 @@ export function AllToolsDiscovery({
                         variant="ghost"
                         className="min-h-10 px-2 text-xs"
                         onClick={handleClearFavorites}
-                        disabled={favoriteTools.length === 0}
-                        aria-describedby={favoriteTools.length === 0 ? clearFavoritesDisabledDescriptionId : undefined}
-                        title={favoriteTools.length === 0 ? `${labels.clearFavorites}: ${noFavoritesDescription}` : labels.clearFavorites}
+                        disabled={!personalizationReady || favoriteTools.length === 0}
+                        aria-describedby={personalizationReady && favoriteTools.length === 0 ? clearFavoritesDisabledDescriptionId : undefined}
+                        title={personalizationReady && favoriteTools.length === 0 ? `${labels.clearFavorites}: ${noFavoritesDescription}` : labels.clearFavorites}
                     >
                         <Trash2 className="h-3.5 w-3.5" />
                         {labels.clearFavorites}
                     </Button>
-                    {favoriteTools.length === 0 ? <span id={clearFavoritesDisabledDescriptionId} className="sr-only">{noFavoritesDescription}</span> : null}
+                    {personalizationReady && favoriteTools.length === 0 ? <span id={clearFavoritesDisabledDescriptionId} className="sr-only">{noFavoritesDescription}</span> : null}
                 </div>
-                {favoriteTools.length > 0 ? (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                        {favoriteTools.map((tool) => (
-                            <Link
-                                key={tool.key}
-                                href={`/${locale}/${tool.slug}`}
-                                className="inline-flex min-h-10 items-center rounded-md border border-border bg-background px-2 py-1 text-sm text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
-                            >
-                                {tool.title}
-                            </Link>
-                        ))}
-                    </div>
-                ) : (
-                    <p className="mt-3 text-xs text-muted-foreground">{labels.noFavorites}</p>
-                )}
+                <div className="mt-3 h-11" data-all-tools-personalization-slot>
+                    {personalizationReady && favoriteTools.length > 0 ? (
+                        <div className="flex h-11 gap-2 overflow-x-auto pb-1">
+                            {favoriteTools.map((tool) => (
+                                <Link
+                                    key={tool.key}
+                                    href={`/${locale}/${tool.slug}`}
+                                    className="inline-flex min-h-10 shrink-0 items-center rounded-md border border-border bg-background px-2 py-1 text-sm text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
+                                >
+                                    {tool.title}
+                                </Link>
+                            ))}
+                        </div>
+                    ) : personalizationReady ? (
+                        <p className="flex h-10 items-center text-xs text-muted-foreground">{labels.noFavorites}</p>
+                    ) : null}
+                </div>
             </section>
 
             <section className="rounded-lg border border-border/70 bg-background/35 p-3">
@@ -848,33 +859,35 @@ export function AllToolsDiscovery({
                         variant="ghost"
                         className="min-h-10 px-2 text-xs"
                         onClick={handleClearRecentTools}
-                        disabled={recentTools.length === 0}
-                        aria-describedby={recentTools.length === 0 ? clearRecentDisabledDescriptionId : undefined}
-                        title={recentTools.length === 0 ? `${labels.clearRecentTools}: ${noRecentToolsDescription}` : labels.clearRecentTools}
+                        disabled={!personalizationReady || recentTools.length === 0}
+                        aria-describedby={personalizationReady && recentTools.length === 0 ? clearRecentDisabledDescriptionId : undefined}
+                        title={personalizationReady && recentTools.length === 0 ? `${labels.clearRecentTools}: ${noRecentToolsDescription}` : labels.clearRecentTools}
                     >
                         <Trash2 className="h-3.5 w-3.5" />
                         {labels.clearRecentTools}
                     </Button>
-                    {recentTools.length === 0 ? <span id={clearRecentDisabledDescriptionId} className="sr-only">{noRecentToolsDescription}</span> : null}
+                    {personalizationReady && recentTools.length === 0 ? <span id={clearRecentDisabledDescriptionId} className="sr-only">{noRecentToolsDescription}</span> : null}
                 </div>
-                {recentTools.length > 0 ? (
-                    <div className="mt-3 flex flex-wrap gap-2">
-                        {recentTools.map((tool) => (
-                            <Link
-                                key={tool.key}
-                                href={`/${locale}/${tool.slug}`}
-                                className="inline-flex min-h-10 items-center rounded-md border border-border bg-background px-2 py-1 text-sm text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
-                            >
-                                {tool.title}
-                            </Link>
-                        ))}
-                    </div>
-                ) : (
-                    <p className="mt-3 text-xs text-muted-foreground">{labels.noRecentTools}</p>
-                )}
+                <div className="mt-3 h-11" data-all-tools-personalization-slot>
+                    {personalizationReady && recentTools.length > 0 ? (
+                        <div className="flex h-11 gap-2 overflow-x-auto pb-1">
+                            {recentTools.map((tool) => (
+                                <Link
+                                    key={tool.key}
+                                    href={`/${locale}/${tool.slug}`}
+                                    className="inline-flex min-h-10 shrink-0 items-center rounded-md border border-border bg-background px-2 py-1 text-sm text-foreground hover:border-primary/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45"
+                                >
+                                    {tool.title}
+                                </Link>
+                            ))}
+                        </div>
+                    ) : personalizationReady ? (
+                        <p className="flex h-10 items-center text-xs text-muted-foreground">{labels.noRecentTools}</p>
+                    ) : null}
+                </div>
             </section>
         </div>
-    ) : null
+    )
 
     return (
         <div id="tool-discovery" className="min-w-0 space-y-5">
@@ -1137,14 +1150,13 @@ export function AllToolsDiscovery({
                                                     {tool.title}
                                                 </h3>
                                             </Link>
-                                            {personalizationReady ? (
-                                                <FavoriteButton
-                                                    active={isFavorite}
-                                                    addLabel={`${labels.addFavorite}: ${tool.title}`}
-                                                    removeLabel={`${labels.removeFavorite}: ${tool.title}`}
-                                                    onToggle={() => handleToggleFavorite(tool.key)}
-                                                />
-                                            ) : null}
+                                            <FavoriteButton
+                                                active={isFavorite}
+                                                addLabel={`${labels.addFavorite}: ${tool.title}`}
+                                                removeLabel={`${labels.removeFavorite}: ${tool.title}`}
+                                                onToggle={() => handleToggleFavorite(tool.key)}
+                                                ready={personalizationReady}
+                                            />
                                         </div>
                                         <p className="mt-2 line-clamp-3 break-words text-sm leading-relaxed text-muted-foreground">
                                             {tool.description}

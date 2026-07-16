@@ -4,6 +4,7 @@ import * as React from "react"
 import { Copy, Download, Eraser, Instagram, TestTube2, Upload } from "lucide-react"
 import { toast } from "sonner"
 import { useLang } from "@/core/i18n/lang-provider"
+import { FILE_INPUT_POLICIES, formatFilePolicyLimit, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
@@ -16,8 +17,9 @@ import {
     wrapLines,
     type SocialTheme,
 } from "@/core/utils/social-media-utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
-const MAX_FILE_SIZE = 12 * 1024 * 1024
+const IMAGE_FILE_POLICY = FILE_INPUT_POLICIES["image-standard"]
 
 const DEFAULT_STATE = {
     username: "s42.lab",
@@ -193,16 +195,15 @@ export function InstagramPostGeneratorPage() {
     )
 
     const handleFile = async (file: File) => {
-        if (!file.type.startsWith("image/")) {
-            toast.error(t.common.image_file_required)
-            return
-        }
-        if (file.size > MAX_FILE_SIZE) {
-            toast.error((t.common.image_file_too_large).replace("{size}", "12MB"))
+        const validation = validateFileAgainstPolicy(file, IMAGE_FILE_POLICY)
+        if (!validation.ok) {
+            toast.error(validation.reason === "too_large"
+                ? t.common.image_file_too_large.replace("{size}", formatFilePolicyLimit(IMAGE_FILE_POLICY))
+                : t.common.image_file_required)
             return
         }
         try {
-            const dataUrl = await fileToDataUrl(file)
+            const dataUrl = await fileToDataUrl(file, IMAGE_FILE_POLICY)
             setImageSrc(dataUrl)
             setFileName(file.name)
         } catch {
@@ -259,7 +260,7 @@ export function InstagramPostGeneratorPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -294,10 +295,11 @@ export function InstagramPostGeneratorPage() {
                             <input
                                 ref={fileInputRef}
                                 type="file"
-                                accept="image/*"
+                                accept={IMAGE_FILE_POLICY.accept}
                                 className="hidden"
                                 onChange={(event) => {
-                                    const file = event.target.files?.[0]
+                                    const file = event.currentTarget.files?.[0]
+                                    event.currentTarget.value = ""
                                     if (file) void handleFile(file)
                                 }}
                             />
@@ -383,7 +385,7 @@ export function InstagramPostGeneratorPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }
 

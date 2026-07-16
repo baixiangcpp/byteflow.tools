@@ -10,6 +10,7 @@ import { RelatedTools } from "@/core/seo/components/related-tools"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { extractEndpoints } from "@/features/tools/openapi-mock/utils"
 import { buildInputTooLargeMessage, isOverUtf8Budget, TOOL_RUNTIME_BUDGETS } from "@/core/performance/tool-runtime-budgets"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 function buildSampleSpec(toolT: Record<string, string>) {
     return JSON.stringify(
@@ -124,7 +125,7 @@ export function OpenApiMockPage() {
     }
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-[1400px] mx-auto w-full">
+        <WideToolPageContainer className="flex flex-col h-full space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -177,6 +178,6 @@ export function OpenApiMockPage() {
                 </div>
             </div>
             <RelatedTools toolKey="openapi_mock" />
-        </div>
+        </WideToolPageContainer>
     )
 }

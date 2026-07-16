@@ -2,6 +2,7 @@
 
 import * as React from "react"
 import { Copy, Eraser, Terminal, ArrowRight } from "lucide-react"
+import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
@@ -15,19 +16,58 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { convertCurlToCode, type OutputLang } from "./logic"
+import {
+    convertCurlToCodeResult,
+    type CurlDiagnostic,
+    type CurlDiagnosticCode,
+    type OutputLang,
+} from "./logic"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE_CURL = `curl -X POST 'https://api.example.com/users' \\
   -H 'Content-Type: application/json' \\
   -H 'Authorization: Bearer token123' \\
   -d '{"id": 42, "enabled": true}'`
 
+const DIAGNOSTIC_TRANSLATION_KEYS: Record<CurlDiagnosticCode, string> = {
+    empty_command: "diagnostic_invalid_command",
+    expected_curl: "diagnostic_invalid_command",
+    unterminated_quote: "diagnostic_unterminated_quote",
+    dangling_escape: "diagnostic_dangling_escape",
+    unsupported_operator: "diagnostic_unsupported_operator",
+    unsupported_option: "diagnostic_unsupported_option",
+    missing_option_value: "diagnostic_missing_option_value",
+    invalid_method: "diagnostic_invalid_value",
+    invalid_header: "diagnostic_invalid_value",
+    invalid_url: "diagnostic_invalid_value",
+    missing_url: "diagnostic_invalid_command",
+    multiple_urls: "diagnostic_unexpected_argument",
+    unexpected_argument: "diagnostic_unexpected_argument",
+    unsupported_data_file: "diagnostic_unsupported_data_file",
+    duplicate_header: "diagnostic_duplicate_header",
+}
+
+function formatDiagnostic(diagnostic: CurlDiagnostic, toolT: Record<string, string>): string {
+    const key = DIAGNOSTIC_TRANSLATION_KEYS[diagnostic.code]
+    const template = toolT[key] || toolT.parse_error
+    const rawToken = diagnostic.token || ""
+    const clippedToken = rawToken.length > 120 ? `${rawToken.slice(0, 117)}...` : rawToken
+    const token = JSON.stringify(clippedToken)
+    const message = template.replaceAll("{token}", token)
+    const position = (toolT.diagnostic_position || "Character {position}")
+        .replace("{position}", String(diagnostic.position))
+    return `${message} ${position}`
+}
+
 export function CurlToCodePage() {
     const { t } = useLang()
     const toolT = t.tools["curl_to_code"] as Record<string, string>
     const [curl, setCurl] = React.useState(SAMPLE_CURL)
     const [lang, setLang] = React.useState<OutputLang>("javascript")
-    const output = React.useMemo(() => convertCurlToCode(curl, lang, toolT.parse_error), [curl, lang, toolT.parse_error])
+    const conversion = React.useMemo(() => convertCurlToCodeResult(curl, lang), [curl, lang])
+    const output = conversion.code
+    const errors = conversion.diagnostics.filter((item) => item.severity === "error")
+    const warnings = conversion.diagnostics.filter((item) => item.severity === "warning")
 
     const handleCopy = async () => {
         return copyTextWithToolFeedback(t, output, `${toolT.output_label || "Code"} (${lang})`)
@@ -46,7 +86,7 @@ export function CurlToCodePage() {
     ]
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-[1400px] mx-auto w-full">
+        <WideToolPageContainer className="flex flex-col h-full space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -59,6 +99,32 @@ export function CurlToCodePage() {
                 </div>
                 <ToolActionBar actions={actions} />
             </div>
+
+            {errors.length > 0 && (
+                <Alert variant="destructive">
+                    <AlertDescription>
+                        <p className="font-medium">{toolT.parse_error}</p>
+                        <ul className="mt-2 list-disc space-y-1 pl-5 font-mono text-xs">
+                            {errors.map((item, index) => (
+                                <li key={`${item.code}-${item.position}-${index}`}>{formatDiagnostic(item, toolT)}</li>
+                            ))}
+                        </ul>
+                    </AlertDescription>
+                </Alert>
+            )}
+
+            {warnings.length > 0 && (
+                <Alert role="status">
+                    <AlertDescription>
+                        <p className="font-medium">{toolT.parse_warning}</p>
+                        <ul className="mt-2 list-disc space-y-1 pl-5 font-mono text-xs">
+                            {warnings.map((item, index) => (
+                                <li key={`${item.code}-${item.position}-${index}`}>{formatDiagnostic(item, toolT)}</li>
+                            ))}
+                        </ul>
+                    </AlertDescription>
+                </Alert>
+            )}
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 min-h-[500px]">
                 {/* cURL Input */}
@@ -99,6 +165,6 @@ export function CurlToCodePage() {
             </div>
 
             <RelatedTools toolKey="curl_to_code" />
-        </div>
+        </WideToolPageContainer>
     )
 }

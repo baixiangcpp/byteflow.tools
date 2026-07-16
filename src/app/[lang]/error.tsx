@@ -40,8 +40,8 @@ export default function LangError({ error, reset }: LangErrorProps) {
     const homeLabel = t.common.route_error_home
 
     return (
-        <div className="mx-auto w-full max-w-screen-2xl px-4 pb-10 pt-6 md:px-8 md:pt-10 lg:px-10">
-            <section className="mx-auto max-w-2xl rounded-2xl border border-border/70 bg-card/55 p-6 shadow-sm backdrop-blur-sm">
+        <div className="pb-10 pt-6 md:pt-10">
+            <section data-route-width-exception="focused-status" className="mx-auto max-w-2xl rounded-2xl border border-border/70 bg-card/55 p-6 shadow-sm backdrop-blur-sm">
                 <h1 className="text-xl font-semibold tracking-tight text-foreground">{title}</h1>
                 <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{description}</p>
                 <div className="mt-6 flex flex-wrap items-center gap-3">

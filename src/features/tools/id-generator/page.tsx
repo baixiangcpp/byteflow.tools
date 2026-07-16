@@ -16,166 +16,77 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { v4 as uuidv4 } from "uuid"
-
-function byteToHex(byte: number): string {
-    return byte.toString(16).padStart(2, "0")
-}
-
-// Clean UUID v7 implementation
-function generateUUIDv7(): string {
-    const timestamp = Date.now()
-    const timestampHex = timestamp.toString(16).padStart(12, "0")
-
-    const randomBytes = crypto.getRandomValues(new Uint8Array(10))
-    // Set version to 7 (0111)
-    randomBytes[0] = (randomBytes[0] & 0x0f) | 0x70
-    // Set variant to 10xx
-    randomBytes[2] = (randomBytes[2] & 0x3f) | 0x80
-
-    const randHex = Array.from(randomBytes).map((b) => byteToHex(b)).join("")
-
-    return (
-        timestampHex.slice(0, 8) + "-" +
-        timestampHex.slice(8, 12) + "-" +
-        randHex.slice(0, 4) + "-" +
-        randHex.slice(4, 8) + "-" +
-        randHex.slice(8, 20)
-    )
-}
-
-// ─── ULID ───────────────────────────────────────────────────────────────────
-const ULID_ENCODING = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
-
-function generateULID(): string {
-    const now = Date.now()
-    // 10-char timestamp (48 bits, base32)
-    let timePart = ""
-    let t = now
-    for (let i = 0; i < 10; i++) {
-        timePart = ULID_ENCODING[t % 32] + timePart
-        t = Math.floor(t / 32)
-    }
-    // 16-char randomness (80 bits, base32)
-    const randBytes = crypto.getRandomValues(new Uint8Array(10))
-    let randPart = ""
-    // Process 80 bits in groups of 5
-    let bits = 0
-    let numBits = 0
-    let byteIdx = 0
-    for (let i = 0; i < 16; i++) {
-        while (numBits < 5 && byteIdx < 10) {
-            bits = (bits << 8) | randBytes[byteIdx++]
-            numBits += 8
-        }
-        const idx = (bits >> (numBits - 5)) & 0x1f
-        randPart += ULID_ENCODING[idx]
-        numBits -= 5
-    }
-    return timePart + randPart
-}
-
-function extractULIDTimestamp(ulid: string): Date | null {
-    if (ulid.length !== 26) return null
-    let timestamp = 0
-    for (let i = 0; i < 10; i++) {
-        const idx = ULID_ENCODING.indexOf(ulid[i].toUpperCase())
-        if (idx === -1) return null
-        timestamp = timestamp * 32 + idx
-    }
-    return new Date(timestamp)
-}
-
-// ─── NanoID ─────────────────────────────────────────────────────────────────
-const NANOID_DEFAULT_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_-"
-
-function generateNanoID(size: number = 21, alphabet: string = NANOID_DEFAULT_ALPHABET): string {
-    const mask = (2 << (31 - Math.clz32((alphabet.length - 1) | 1))) - 1
-    const step = Math.ceil((1.6 * mask * size) / alphabet.length)
-    let id = ""
-    while (id.length < size) {
-        const bytes = crypto.getRandomValues(new Uint8Array(step))
-        for (let i = 0; i < step && id.length < size; i++) {
-            const charIdx = bytes[i] & mask
-            if (charIdx < alphabet.length) {
-                id += alphabet[charIdx]
-            }
-        }
-    }
-    return id
-}
-
-// ─── UUID v7 timestamp extraction ──────────────────────────────────────────
-function extractUUIDv7Timestamp(uuid: string): Date | null {
-    const clean = uuid.replace(/-/g, "")
-    if (clean.length !== 32) return null
-    // Version check: nibble at position 12 should be '7'
-    if (clean[12] !== "7") return null
-    const timestampHex = clean.slice(0, 12)
-    const timestamp = parseInt(timestampHex, 16)
-    if (isNaN(timestamp)) return null
-    return new Date(timestamp)
-}
-
-type IDType = "uuid-v4" | "uuid-v7" | "ulid" | "nanoid"
+import {
+    NANOID_DEFAULT_ALPHABET,
+    extractULIDTimestamp,
+    extractUUIDv7Timestamp,
+    generateIdBatch,
+    validateIdGeneratorSettings,
+    type IDCaseFormat,
+    type IDType,
+} from "./logic"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 export function IdGeneratorPage() {
     const { t } = useLang()
     const toolT = t.tools["id_generator"] as Record<string, string>
     const [ids, setIds] = React.useState<string[]>([])
-    const [quantity, setQuantity] = React.useState(5)
+    const [quantity, setQuantity] = React.useState("5")
     const [idType, setIdType] = React.useState<IDType>("uuid-v4")
-    const [nanoidSize, setNanoidSize] = React.useState(21)
+    const [nanoidSize, setNanoidSize] = React.useState("21")
     const [nanoidAlphabet, setNanoidAlphabet] = React.useState(NANOID_DEFAULT_ALPHABET)
-    const [caseFormat, setCaseFormat] = React.useState<"lowercase" | "uppercase">("lowercase")
+    const [caseFormat, setCaseFormat] = React.useState<IDCaseFormat>("lowercase")
+    const [generationFailed, setGenerationFailed] = React.useState(false)
+
+    const validation = React.useMemo(() => validateIdGeneratorSettings({
+        quantity,
+        idType,
+        caseFormat,
+        nanoidSize,
+        nanoidAlphabet,
+    }), [quantity, idType, caseFormat, nanoidSize, nanoidAlphabet])
 
     const generate = React.useCallback(() => {
-        const qty = Math.min(Math.max(1, quantity), 1000)
-        const results: string[] = []
-        for (let i = 0; i < qty; i++) {
-            let id = ""
-            switch (idType) {
-                case "uuid-v4":
-                    id = uuidv4()
-                    break
-                case "uuid-v7":
-                    id = generateUUIDv7()
-                    break
-                case "ulid":
-                    id = generateULID()
-                    break
-                case "nanoid":
-                    id = generateNanoID(nanoidSize, nanoidAlphabet)
-                    break
-            }
-            if (caseFormat === "uppercase" && idType !== "nanoid") {
-                id = id.toUpperCase()
-            }
-            results.push(id)
+        if (!validation.ok) {
+            setIds([])
+            setGenerationFailed(false)
+            return
         }
-        setIds(results)
-    }, [quantity, idType, caseFormat, nanoidSize, nanoidAlphabet])
+
+        try {
+            setIds(generateIdBatch(validation.value))
+            setGenerationFailed(false)
+        } catch {
+            setIds([])
+            setGenerationFailed(true)
+        }
+    }, [validation])
 
     React.useEffect(() => {
         generate()
     }, [generate])
 
+    const outputIds = React.useMemo(
+        () => validation.ok && !generationFailed ? ids : [],
+        [generationFailed, ids, validation.ok],
+    )
+
     const handleCopyAll = async () => {
-        if (ids.length === 0) return
-        const result = await safeClipboardWrite(ids.join("\n"))
+        if (outputIds.length === 0) return
+        const result = await safeClipboardWrite(outputIds.join("\n"))
         if (!result.ok) {
             toast.error(t.common.copy_failed)
             return
         }
         toast.success(t.common.copied, {
-            description: toolT.copied_desc.replace("{count}", String(ids.length)),
+            description: toolT.copied_desc.replace("{count}", String(outputIds.length)),
         })
     }
 
     // Show timestamp for UUID v7 or ULID (first ID only)
     const timestampInfo = React.useMemo(() => {
-        if (ids.length === 0) return null
-        const firstId = ids[0]
+        if (outputIds.length === 0) return null
+        const firstId = outputIds[0]
         if (idType === "uuid-v7") {
             const date = extractUUIDv7Timestamp(firstId)
             return date ? toolT.embedded_timestamp.replace("{value}", date.toISOString()) : null
@@ -185,10 +96,14 @@ export function IdGeneratorPage() {
             return date ? toolT.embedded_timestamp.replace("{value}", date.toISOString()) : null
         }
         return null
-    }, [ids, idType, toolT.embedded_timestamp])
+    }, [outputIds, idType, toolT.embedded_timestamp])
+
+    const quantityError = validation.errors.quantity ? toolT[validation.errors.quantity] : null
+    const nanoidSizeError = validation.errors.nanoidSize ? toolT[validation.errors.nanoidSize] : null
+    const nanoidAlphabetError = validation.errors.nanoidAlphabet ? toolT[validation.errors.nanoidAlphabet] : null
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-5xl mx-auto">
+        <ToolPageContainer className="flex flex-col h-full space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -200,7 +115,7 @@ export function IdGeneratorPage() {
                     </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
-                    <Button size="sm" onClick={generate}>
+                    <Button size="sm" onClick={generate} disabled={!validation.ok}>
                         <RefreshCw className="mr-2 h-4 w-4" />
                         {toolT.regenerate_action}
                     </Button>
@@ -214,9 +129,9 @@ export function IdGeneratorPage() {
                         <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">{toolT.settings_heading}</h3>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">{toolT.id_type_label}</label>
+                            <label htmlFor="id-generator-type" className="text-sm font-medium">{toolT.id_type_label}</label>
                             <Select value={idType} onValueChange={(v) => setIdType(v as IDType)}>
-                                <SelectTrigger><SelectValue /></SelectTrigger>
+                                <SelectTrigger id="id-generator-type" aria-label={toolT.id_type_label}><SelectValue /></SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="uuid-v4">{toolT.option_uuid_v4}</SelectItem>
                                     <SelectItem value="uuid-v7">{toolT.option_uuid_v7}</SelectItem>
@@ -227,21 +142,30 @@ export function IdGeneratorPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-sm font-medium">{toolT.quantity_label}</label>
+                            <label htmlFor="id-generator-quantity" className="text-sm font-medium">{toolT.quantity_label}</label>
                             <Input
+                                id="id-generator-quantity"
                                 type="number"
                                 min={1}
                                 max={1000}
+                                step={1}
                                 value={quantity}
-                                onChange={(e) => setQuantity(Number(e.target.value))}
+                                onChange={(e) => setQuantity(e.target.value)}
+                                aria-invalid={quantityError ? "true" : undefined}
+                                aria-describedby={quantityError ? "id-generator-quantity-error" : undefined}
                             />
+                            {quantityError && (
+                                <p id="id-generator-quantity-error" role="alert" className="text-sm text-destructive">
+                                    {quantityError}
+                                </p>
+                            )}
                         </div>
 
                         {idType !== "nanoid" && (
                             <div className="space-y-2">
-                                <label className="text-sm font-medium">{toolT.case_label}</label>
-                                <Select value={caseFormat} onValueChange={(v) => setCaseFormat(v as "lowercase" | "uppercase")}>
-                                    <SelectTrigger><SelectValue /></SelectTrigger>
+                                <label htmlFor="id-generator-case" className="text-sm font-medium">{toolT.case_label}</label>
+                                <Select value={caseFormat} onValueChange={(v) => setCaseFormat(v as IDCaseFormat)}>
+                                    <SelectTrigger id="id-generator-case" aria-label={toolT.case_label}><SelectValue /></SelectTrigger>
                                     <SelectContent>
                                         <SelectItem value="lowercase">{toolT.case_lowercase}</SelectItem>
                                         <SelectItem value="uppercase">{toolT.case_uppercase}</SelectItem>
@@ -253,22 +177,39 @@ export function IdGeneratorPage() {
                         {idType === "nanoid" && (
                             <>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">{toolT.length_label}</label>
+                                    <label htmlFor="id-generator-nanoid-size" className="text-sm font-medium">{toolT.length_label}</label>
                                     <Input
+                                        id="id-generator-nanoid-size"
                                         type="number"
                                         min={1}
                                         max={256}
+                                        step={1}
                                         value={nanoidSize}
-                                        onChange={(e) => setNanoidSize(Number(e.target.value))}
+                                        onChange={(e) => setNanoidSize(e.target.value)}
+                                        aria-invalid={nanoidSizeError ? "true" : undefined}
+                                        aria-describedby={nanoidSizeError ? "id-generator-nanoid-size-error" : undefined}
                                     />
+                                    {nanoidSizeError && (
+                                        <p id="id-generator-nanoid-size-error" role="alert" className="text-sm text-destructive">
+                                            {nanoidSizeError}
+                                        </p>
+                                    )}
                                 </div>
                                 <div className="space-y-2">
-                                    <label className="text-sm font-medium">{toolT.alphabet_label}</label>
+                                    <label htmlFor="id-generator-nanoid-alphabet" className="text-sm font-medium">{toolT.alphabet_label}</label>
                                     <Input
+                                        id="id-generator-nanoid-alphabet"
                                         className="font-mono text-xs"
                                         value={nanoidAlphabet}
                                         onChange={(e) => setNanoidAlphabet(e.target.value)}
+                                        aria-invalid={nanoidAlphabetError ? "true" : undefined}
+                                        aria-describedby={nanoidAlphabetError ? "id-generator-nanoid-alphabet-error" : undefined}
                                     />
+                                    {nanoidAlphabetError && (
+                                        <p id="id-generator-nanoid-alphabet-error" role="alert" className="text-sm text-destructive">
+                                            {nanoidAlphabetError}
+                                        </p>
+                                    )}
                                 </div>
                             </>
                         )}
@@ -290,20 +231,32 @@ export function IdGeneratorPage() {
                 <div className="md:col-span-8 lg:col-span-9 flex flex-col border rounded-lg bg-card overflow-hidden shadow-sm">
                     <div className="tool-pane-header tool-pane-header-between">
                         <div className="flex items-center gap-3">
-                            <span>{toolT.generated_heading} ({ids.length})</span>
+                            <span>{toolT.generated_heading} ({outputIds.length})</span>
                             {timestampInfo && (
                                 <span className="text-xs text-muted-foreground font-normal">{timestampInfo}</span>
                             )}
                         </div>
-                        <Button variant="ghost" size="sm" className="h-8 gap-2" onClick={() => void handleCopyAll()}>
+                        <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 gap-2"
+                            onClick={() => void handleCopyAll()}
+                            disabled={!validation.ok || generationFailed || outputIds.length === 0}
+                        >
                             <Copy className="h-4 w-4" />
                             {t.common.copy_all}
                         </Button>
                     </div>
+                    {generationFailed && (
+                        <div role="alert" className="border-b border-destructive/30 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                            {toolT.error_generation_failed}
+                        </div>
+                    )}
                     <div className="flex-1 p-0">
                         <Textarea
+                            aria-label={toolT.generated_heading}
                             className="h-full min-h-[400px] w-full resize-none border-0 focus-visible:ring-1 focus-visible:ring-ring/50 p-6 font-mono text-sm leading-8 text-foreground"
-                            value={ids.join("\n")}
+                            value={outputIds.join("\n")}
                             readOnly
                             spellCheck={false}
                         />
@@ -312,6 +265,6 @@ export function IdGeneratorPage() {
             </div>
 
             <RelatedTools toolKey="id_generator" />
-        </div>
+        </ToolPageContainer>
     )
 }

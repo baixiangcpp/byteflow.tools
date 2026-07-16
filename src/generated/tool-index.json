@@ -1,8 +1,8 @@
 {
   "counts": {
     "canonicalTools": 131,
-    "aliasRoutes": 2,
-    "routeDirs": 200,
+    "aliasRoutes": 3,
+    "routeDirs": 201,
     "unknownRouteDirs": 0
   },
   "canonicalTools": [
@@ -3432,13 +3432,16 @@
       "slug": "qr-code-generator",
       "category": "generators",
       "relatedTools": [
-        "uuid_generator",
-        "password_generator",
-        "url_encode_decode"
+        "barcode_generator",
+        "image_base64",
+        "url_encode_decode",
+        "svg_to_png_converter"
       ],
       "relatedWorkflows": [],
       "keywords": [
         "qr code generator",
+        "qr code decoder",
+        "scan qr image",
         "generate qr code online",
         "qr code maker"
       ],
@@ -5674,6 +5677,13 @@
       "inHubGroup": false
     },
     {
+      "slug": "csv-to-json",
+      "targetSlug": "csv-json-converter",
+      "pagePath": "src/app/[lang]/csv-to-json/page.tsx",
+      "inStaticGroup": false,
+      "inHubGroup": false
+    },
+    {
       "slug": "tls-chain-inspector",
       "targetSlug": "certificate-decoder",
       "pagePath": "src/app/[lang]/tls-chain-inspector/page.tsx",
@@ -6079,6 +6089,14 @@
       "hasPage": true,
       "kind": "canonical-tool",
       "targetSlug": null,
+      "inHubGroup": false,
+      "inStaticGroup": false
+    },
+    {
+      "slug": "csv-to-json",
+      "hasPage": true,
+      "kind": "alias-tool",
+      "targetSlug": "csv-json-converter",
       "inHubGroup": false,
       "inStaticGroup": false
     },

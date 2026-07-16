@@ -43,7 +43,7 @@ describe("http request builder codegen", () => {
     })
 
     it("generates all primary HTTP methods without bodies by default", () => {
-        const methods: HttpMethod[] = ["GET", "POST", "PUT", "PATCH", "DELETE"]
+        const methods: HttpMethod[] = ["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD", "OPTIONS"]
 
         for (const method of methods) {
             const curl = generateCurl(method, "https://api.example.com/items", [], "none", "")
@@ -53,7 +53,8 @@ describe("http request builder codegen", () => {
             if (method === "GET") expect(curl).not.toContain("-X GET")
             else expect(curl).toContain(`-X ${method}`)
             expect(fetchCode).toContain(`method: "${method}"`)
-            expect(python).toContain(`requests.${method.toLowerCase()}(`)
+            if (method === "OPTIONS") expect(python).toContain(`requests.request("OPTIONS", `)
+            else expect(python).toContain(`requests.${method.toLowerCase()}(`)
         }
     })
 
@@ -77,10 +78,12 @@ describe("http request builder codegen", () => {
         expect(fetchCode).toContain(`fetch(${JSON.stringify(url)}, {`)
         expect(fetchCode).toContain(`method: "POST"`)
         expect(fetchCode).toContain(`"Authorization": "Bearer TOKEN_PLACEHOLDER"`)
-        expect(fetchCode).toContain("body: JSON.stringify({")
-        expect(fetchCode).toContain(`"name": "Alice"`)
+        expect(fetchCode).toContain(`body: ${JSON.stringify(body)}`)
+        expect(fetchCode).not.toContain("JSON.stringify(")
 
         expect(python).toContain(`response = requests.post(${JSON.stringify(url)}, headers=headers, json=payload)`)
+        expect(python).toContain("import json")
+        expect(python).toContain("import requests")
         expect(python).toContain(`"Authorization": "Bearer TOKEN_PLACEHOLDER"`)
         expect(python).toContain(`payload = json.loads(${JSON.stringify(body)})`)
     })
@@ -98,6 +101,8 @@ describe("http request builder codegen", () => {
 
         expect(curl).toContain("-X PATCH")
         expect(curl).toContain("-H 'Content-Type: application/x-www-form-urlencoded'")
+        expect(curl).toContain("--data-raw 'mode=test&limit=10'")
+        expect(curl).not.toContain("--data-urlencode")
         expect(curl).not.toContain("X-Disabled")
 
         expect(fetchCode).toContain('"Content-Type": "application/x-www-form-urlencoded"')
@@ -114,6 +119,32 @@ describe("http request builder codegen", () => {
 
         expect(generateFetch("POST", "https://api.example.com/items", [], "json", body)).toContain(`body: "{ invalid"`)
         expect(generatePythonRequests("POST", "https://api.example.com/items", [], "json", body)).toContain(`data = "{ invalid"`)
+    })
+
+    it("preserves JSON text exactly in Fetch bodies", () => {
+        const body = '{\n  "id": 900719925474099312345,\n  "role": "first",\n  "role": "last"\n}\n'
+        const code = generateFetch("POST", "https://api.example.com/items", [], "json", body)
+
+        expect(code).toContain(`body: ${JSON.stringify(body)}`)
+        expect(code).not.toContain("JSON.parse(")
+        expect(code).not.toContain("JSON.stringify(")
+    })
+
+    it.each(["GET", "HEAD"] as const)("omits Fetch bodies for %s while leaving executable output", (method) => {
+        const code = generateFetch(method, "https://api.example.com/items", [], "raw", "configured body")
+
+        expect(code).not.toContain('body: "configured body"')
+        expect(code).toContain("Fetch does not allow a body for GET or HEAD")
+        expect(code).toContain("await response.text()")
+        expect(code).not.toContain("response.json()")
+    })
+
+    it("uses generic Python requests for OPTIONS and text-first response handling", () => {
+        const code = generatePythonRequests("OPTIONS", "https://api.example.com/items", [], "none", "")
+
+        expect(code).toContain('response = requests.request("OPTIONS", "https://api.example.com/items")')
+        expect(code).toContain("print(response.text)")
+        expect(code).not.toContain("response.json()")
     })
 
     it("escapes generated shell arguments", () => {

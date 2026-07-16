@@ -14,6 +14,8 @@ import { recordRecentToolKey } from "@/core/storage/tool-discovery-state"
 import { getRouteToolBySlug } from "@/generated/route-tool-lookup"
 import { ToolTrustHeader } from "@/features/tool-shell/tool-trust-header"
 import { ToolFavoriteControl } from "./tool-favorite-control"
+import { RouteShellContainer, RouteViewportContainer } from "./page-container"
+import { getRouteContainerIntent } from "./route-container-contract"
 
 const EXCLUDED_CONTENT_INTRO_SLUGS = new Set(["about", "pricing", "contact", "privacy", "terms", "install-app", "support"])
 
@@ -62,6 +64,7 @@ function RoutePageChromeContent({ children, pathname }: RoutePageChromeProps) {
     }, [lang, routeContext])
 
     const routeLocale = routeContext.locale ?? lang
+    const containerIntent = getRouteContainerIntent(routeContext)
     const shouldRenderFallbackRelatedTools = Boolean(activeTool?.key) && !INLINE_RELATED_TOOLS_TOOL_SLUGS.has(activeTool?.slug ?? "")
     const installInlineCopy = {
         title: requireTranslationValue(t.common.install_inline_title, "common.install_inline_title"),
@@ -70,14 +73,18 @@ function RoutePageChromeContent({ children, pathname }: RoutePageChromeProps) {
     }
 
     return (
-        <>
+        <RouteViewportContainer data-route-viewport="true">
+            <RouteShellContainer intent={containerIntent} data-route-shell="true">
             {routeIntentCopy ? (
-                <div className="mb-4 rounded-xl border border-primary/25 bg-primary/8 px-4 py-2.5 text-sm text-muted-foreground">
+                <div
+                    className="mb-4 rounded-xl border border-primary/25 bg-primary/8 px-4 py-2.5 text-sm text-muted-foreground"
+                    data-route-chrome-part="intent"
+                >
                     {routeIntentCopy}
                 </div>
             ) : null}
             {activeTool ? (
-                <>
+                <div data-route-chrome-part="tool-meta">
                     <ToolFavoriteControl toolKey={activeTool.key} />
                     <ToolTrustHeader
                         slug={activeTool.slug}
@@ -89,11 +96,14 @@ function RoutePageChromeContent({ children, pathname }: RoutePageChromeProps) {
                         externalDataSent={activeTool.externalDataSent}
                         compliance={activeTool.compliance}
                     />
-                </>
+                </div>
             ) : null}
             {children}
             {routeContext.routeType === "tool" ? (
-                <section className="mt-8 rounded-xl border border-primary/30 bg-primary/8 px-4 py-3">
+                <section
+                    className="mt-8 rounded-xl border border-primary/30 bg-primary/8 px-4 py-3"
+                    data-route-chrome-part="install"
+                >
                     <p className="text-sm font-medium text-foreground">{installInlineCopy.title}</p>
                     <div className="mt-1 flex flex-col gap-2">
                         <p className="text-sm text-muted-foreground">{installInlineCopy.description}</p>
@@ -104,9 +114,12 @@ function RoutePageChromeContent({ children, pathname }: RoutePageChromeProps) {
                 </section>
             ) : null}
             {shouldRenderFallbackRelatedTools && activeTool?.key ? (
-                <RelatedTools toolKey={activeTool.key} source="fallback" />
+                <div data-route-chrome-part="related-tools">
+                    <RelatedTools toolKey={activeTool.key} source="fallback" />
+                </div>
             ) : null}
-        </>
+            </RouteShellContainer>
+        </RouteViewportContainer>
     )
 }
 

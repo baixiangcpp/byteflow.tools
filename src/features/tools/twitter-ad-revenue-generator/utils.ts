@@ -1,3 +1,5 @@
+import { serializeSpreadsheetSafeCsv } from "@/core/files/csv-export"
+
 export type TwitterRevenueInput = {
     impressionsPerDay: number
     cpmUsd: number
@@ -98,15 +100,14 @@ export function summarizeTwitterRevenue(series: TwitterRevenuePoint[]): TwitterR
 }
 
 export function seriesToCsv(series: TwitterRevenuePoint[]): string {
-    const header = "day,impressions,display_ad_revenue_usd,click_revenue_usd,total_revenue_usd"
-    const rows = series.map((point) =>
-        [
+    return serializeSpreadsheetSafeCsv([
+        ["day", "impressions", "display_ad_revenue_usd", "click_revenue_usd", "total_revenue_usd"],
+        ...series.map((point) => [
             point.day,
             point.impressions,
             point.displayAdRevenueUsd.toFixed(2),
             point.clickRevenueUsd.toFixed(2),
             point.totalRevenueUsd.toFixed(2),
-        ].join(","),
-    )
-    return [header, ...rows].join("\n")
+        ] as const),
+    ])
 }

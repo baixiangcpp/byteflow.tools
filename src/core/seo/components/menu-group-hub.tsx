@@ -15,6 +15,7 @@ import {
     getWorkflowBySlug,
 } from "@/core/workflows/workflow-hubs"
 import type { PrimaryMenuGroupKey } from "@/core/registry/menu-groups"
+import { CatalogPageContainer } from "@/components/layout/page-container"
 
 const PRIMARY_MENU_GROUP_KEYS = new Set<PrimaryMenuGroupKey>(MENU_GROUP_DEFS.map((group) => group.key))
 
@@ -45,7 +46,7 @@ export function MenuGroupHub({ lang, groupKey }: MenuGroupHubProps) {
     )
 
     return (
-        <div className="flex max-h-full flex-col gap-7 overflow-y-auto pb-8">
+        <CatalogPageContainer className="flex max-h-full flex-col gap-7 overflow-y-auto pb-8">
             <CollectionPageJsonLd
                 lang={lang}
                 slug={group.slug}
@@ -307,7 +308,7 @@ export function MenuGroupHub({ lang, groupKey }: MenuGroupHubProps) {
                     )
                 })}
             </div>
-        </div>
+        </CatalogPageContainer>
     )
 }
 

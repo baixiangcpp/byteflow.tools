@@ -63,5 +63,16 @@ jobs:
       - name: Run Playwright Smoke
         run: npm run test:e2e:smoke
 
+      - name: Run Route Width Screenshot Matrix
+        run: npm run test:e2e:route-width
+
+      - name: Upload Route Width Screenshots
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: route-width-screenshots
+          path: test-results/route-width
+          if-no-files-found: error
+
       - name: Run PWA Smoke
         run: npm run test:e2e:pwa

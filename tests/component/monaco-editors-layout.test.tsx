@@ -99,7 +99,7 @@ describe("monaco editor layout guard", () => {
     it("resolves percentage height to parent pixel height for MonacoEditor", async () => {
         renderWithLang(
             <HeightHost height={640}>
-                <MonacoEditor language="json" value='{"a":1}' height="100%" />
+                <MonacoEditor intent="payload" language="json" value='{"a":1}' height="100%" />
             </HeightHost>,
         )
 
@@ -111,12 +111,13 @@ describe("monaco editor layout guard", () => {
         await waitFor(() => {
             expect(editor.getAttribute("data-height")).toBe("640px")
         })
+        expect(editor.parentElement).toHaveAttribute("data-input-intent", "payload")
     })
 
     it("resolves percentage height to parent pixel height for MonacoDiffEditor", async () => {
         renderWithLang(
             <HeightHost height={560}>
-                <MonacoDiffEditor language="text" original="a" modified="b" height="100%" />
+                <MonacoDiffEditor intent="workbench" language="text" original="a" modified="b" height="100%" />
             </HeightHost>,
         )
 
@@ -126,6 +127,7 @@ describe("monaco editor layout guard", () => {
         await waitFor(() => {
             expect(editor.getAttribute("data-height")).toBe("560px")
         })
+        expect(editor.parentElement).toHaveAttribute("data-input-intent", "workbench")
     })
 
     it("keeps textarea fallback active during the first desktop interaction and upgrades after blur", async () => {

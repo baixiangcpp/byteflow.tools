@@ -3,6 +3,7 @@ import type { ToolMeta } from "@/core/registry/types"
 export const toolManifest = {
     key: "json_diff_viewer",
     slug: "json-diff-viewer",
+    inputBehavior: "explicit-sample",
     category: "formatters",
     relatedTools: ["json_formatter", "openapi_diff", "text_diff_checker", "jsonpath_playground"],
     privacy: {

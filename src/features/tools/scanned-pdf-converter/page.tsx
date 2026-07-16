@@ -16,6 +16,7 @@ import {
 } from "@/features/tools/scanned-pdf-converter/utils"
 import { runScanEnhanceTask } from "@/features/tools/scanned-pdf-converter/scan-enhance-task"
 import { downloadPdfBytes, loadScanImageFile } from "@/features/tools/scanned-pdf-converter/browser-actions"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const SCAN_FILE_POLICY = FILE_INPUT_POLICIES["scan-image"]
 const MAX_FILES = SCAN_FILE_POLICY.maxFiles ?? 20
@@ -305,7 +306,7 @@ export function ScannedPdfConverterPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -468,7 +469,7 @@ export function ScannedPdfConverterPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }
 

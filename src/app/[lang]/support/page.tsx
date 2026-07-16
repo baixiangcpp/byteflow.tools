@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { ArrowUpRight, CheckCircle2, HeartHandshake, Mail, ServerCog, ShieldCheck } from "lucide-react"
 import { isValidLocale } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
+import { StaticPageContainer } from "@/components/layout/page-container"
 
 const EMAIL_ADDRESS = "contact@byteflow.tools"
 const GITHUB_REPOSITORY_URL = "https://github.com/baixiangcpp/byteflow.tools"
@@ -21,7 +22,7 @@ export default async function SupportPage({ params }: { params: Promise<{ lang: 
     ]
 
     return (
-        <div className="mx-auto w-full max-w-5xl space-y-8">
+        <StaticPageContainer className="space-y-8">
             <section className="rounded-lg border border-border/70 bg-card/55 p-6 sm:p-7">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">{p.support_badge}</p>
                 <h1 className="mt-3 text-3xl font-semibold tracking-tight">{p.support_title}</h1>
@@ -84,6 +85,6 @@ export default async function SupportPage({ params }: { params: Promise<{ lang: 
                     <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
                 </a>
             </section>
-        </div>
+        </StaticPageContainer>
     )
 }

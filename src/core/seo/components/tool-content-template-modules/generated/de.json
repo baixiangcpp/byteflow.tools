@@ -1387,9 +1387,9 @@
   "qr-code-generator": {
     "content": {
       "toolKey": "qr_code_generator",
-      "intro": "Generieren Sie QR-Codes mit benutzerdefinierten Größen und Farben. Als PNG oder SVG herunterladen. Diese Seite eignet sich, um Erzeugung direkt im Browser zu prüfen und vor Übergabe, Freigabe oder Teilen nachvollziehbare Ein- und Ausgaben festzuhalten.",
+      "intro": "Generieren Sie QR-Codes mit benutzerdefinierten Größen und Farben und laden Sie sie als PNG oder SVG herunter. PNG-, JPEG- und WebP-QR-Bilder lassen sich auch lokal im Browser dekodieren; Bildinhalte werden nicht hochgeladen. Bei unlesbaren Bildern oder fehlenden QR-Codes erscheint eine klare Rückmeldung.",
       "whatThisToolDoes": [
-        "QR-Code-Generator aktualisiert das Ergebnis sofort auf Basis der aktuellen Eingabe, sodass sich die wichtigste Ausgabe zuerst prüfen lässt.",
+        "Der QR-Code-Generator aktualisiert die Vorschau sofort und kann Text aus lokal hochgeladenen QR-Bildern lesen.",
         "Der Schwerpunkt dieser Seite liegt auf folgendem Punkt: Generieren Sie QR-Codes mit benutzerdefinierten Größen und Farben. Als PNG oder SVG herunterladen.",
         "Wenn QR-Code-Generator in den Erzeugung-Ablauf eingebaut wird, fallen Unterschiede bei Format, Inhalt oder Parametern deutlich früher auf."
       ],

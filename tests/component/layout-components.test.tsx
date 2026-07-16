@@ -261,6 +261,9 @@ describe("layout components", () => {
         expect(screen.getByRole("link", { name: "Pipeline Builder" })).toHaveAttribute("href", "/en/pipeline-builder")
         expect(screen.getByRole("link", { name: "All tools" })).toHaveAttribute("href", getAllToolsHref("en"))
         expect(screen.getByLabelText("Search")).toHaveAttribute("data-command-palette-trigger")
+        expect(document.querySelector("[data-navbar-language-footprint]")).toHaveTextContent("English")
+        expect(document.querySelector("[data-navbar-theme-footprint]")).toBeInTheDocument()
+        expect(document.querySelector("[data-navbar-controls-footprint]")).toHaveTextContent("English")
     })
 
     it("exposes language and theme controls inside the mobile navigation sheet", () => {

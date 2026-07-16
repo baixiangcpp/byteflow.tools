@@ -15,11 +15,15 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Button } from "@/components/ui/button"
 
-export function LanguageSwitcher() {
+export function LanguageSwitcher({ onReady }: { onReady?: () => void }) {
     const { lang } = useLang()
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
+
+    React.useLayoutEffect(() => {
+        onReady?.()
+    }, [onReady])
 
     const switchLang = (newLang: Locale) => {
         if (newLang === lang) return

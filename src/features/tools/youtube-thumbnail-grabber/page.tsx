@@ -17,6 +17,7 @@ import {
     probeFirstWorkingThumbnail,
     type ThumbnailCandidate,
 } from "@/core/utils/thumbnail-grabber-utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE_URL = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 const EXTERNAL_HOSTS = ["youtube.com", "youtube-nocookie.com", "youtu.be", "i.ytimg.com"] as const
@@ -222,7 +223,7 @@ export function YouTubeThumbnailGrabberPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -347,6 +348,6 @@ export function YouTubeThumbnailGrabberPage() {
                     />
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }

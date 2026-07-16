@@ -14,6 +14,7 @@ import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-war
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { decodeJwtParts, JwtDecodeError, type JwtClaimSemantic, type JwtDecodeErrorCode, type JwtSemanticSummary } from "./utils"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 function formatLocalTime(utc: string): string {
     return new Date(utc).toLocaleString()
@@ -146,7 +147,7 @@ export function JwtDecoderPage() {
     ]
 
     return (
-        <div className="flex flex-col h-full space-y-8 max-w-[1400px] mx-auto w-full">
+        <WideToolPageContainer className="flex flex-col h-full space-y-8">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -194,7 +195,7 @@ export function JwtDecoderPage() {
             )}
 
             {/* Workspace Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 min-h-[600px]">
+            <div data-input-intent="workbench" className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 min-h-[600px]">
                 {/* Input Pane */}
                 <div className="flex flex-col h-full border rounded-lg bg-card overflow-hidden">
                     <div className="tool-pane-header tool-pane-header-between">
@@ -202,7 +203,8 @@ export function JwtDecoderPage() {
                     </div>
                     <div className="flex-1 p-0">
                         <Textarea
-                            className="h-full min-h-[300px] w-full resize-none border-0 focus-visible:ring-1 focus-visible:ring-ring/50 p-4 font-mono text-sm leading-relaxed"
+                            intent="payload"
+                            className="h-full w-full resize-none border-0 focus-visible:ring-1 focus-visible:ring-ring/50 p-4 font-mono text-sm leading-relaxed"
                             placeholder={toolT.token_placeholder}
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
@@ -230,6 +232,7 @@ export function JwtDecoderPage() {
                         </div>
                         <div className="flex-1 min-h-[150px]">
                             <MonacoEditor
+                                intent="generatedOutput"
                                 height="100%"
                                 language="json"
                                 theme={monacoTheme}
@@ -264,6 +267,7 @@ export function JwtDecoderPage() {
                         </div>
                         <div className="flex-1 min-h-[300px]">
                             <MonacoEditor
+                                intent="generatedOutput"
                                 height="100%"
                                 language="json"
                                 theme={monacoTheme}
@@ -368,6 +372,6 @@ export function JwtDecoderPage() {
                     )}
                 </div>
             ) : null}
-        </div>
+        </WideToolPageContainer>
     )
 }

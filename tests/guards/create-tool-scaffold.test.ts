@@ -38,6 +38,25 @@ describe("create-tool scaffold boundaries", () => {
         expect(CREATE_TOOL_SOURCE).not.toContain("export default function ${componentName}Page()")
     })
 
+    it("keeps generated transformation inputs empty-first with explicit sample and clear actions", () => {
+        expect(CREATE_TOOL_SOURCE).toContain('const [input, setInput] = React.useState("")')
+        expect(CREATE_TOOL_SOURCE).not.toContain("React.useState(SAMPLE_INPUT)")
+        expect(CREATE_TOOL_SOURCE).toContain("const handleSample = () =>")
+        expect(CREATE_TOOL_SOURCE).toContain("setInput(SAMPLE_INPUT)")
+        expect(CREATE_TOOL_SOURCE).toContain("const handleClear = () =>")
+        expect(CREATE_TOOL_SOURCE).toContain('inputBehavior: "empty-first"')
+        expect(CREATE_TOOL_SOURCE).toContain('intent="payload"')
+        expect(CREATE_TOOL_SOURCE).toContain('intent="generatedOutput"')
+        expect(CREATE_TOOL_SOURCE).toContain('data-input-intent="workbench"')
+        expect(CREATE_TOOL_SOURCE).not.toContain('className="min-h-[360px] font-mono"')
+    })
+
+    it("uses the standard tool page container contract", () => {
+        expect(CREATE_TOOL_SOURCE).toContain('import { ToolPageContainer } from "@/components/layout/page-container"')
+        expect(CREATE_TOOL_SOURCE).toContain('<ToolPageContainer className="flex h-full flex-col gap-6">')
+        expect(CREATE_TOOL_SOURCE).not.toContain('max-w-6xl flex-col gap-6')
+    })
+
     it("creates manifest metadata instead of appending legacy category metadata", () => {
         expect(CREATE_TOOL_SOURCE).toContain('import type { ToolMeta } from "@/core/registry/types"')
         expect(CREATE_TOOL_SOURCE).toContain("satisfies ToolMeta")

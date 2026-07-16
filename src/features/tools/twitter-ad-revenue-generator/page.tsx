@@ -15,6 +15,7 @@ import {
     summarizeTwitterRevenue,
     type TwitterRevenueInput,
 } from "@/features/tools/twitter-ad-revenue-generator/utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE: TwitterRevenueInput = {
     impressionsPerDay: 220_000,
@@ -123,7 +124,7 @@ export function TwitterAdRevenueGeneratorPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -193,7 +194,7 @@ export function TwitterAdRevenueGeneratorPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }
 

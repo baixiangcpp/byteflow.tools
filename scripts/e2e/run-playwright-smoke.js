@@ -1,6 +1,6 @@
 import { createServer } from "node:http";
 import { existsSync, readFileSync } from "node:fs";
-import { readFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import axe from "axe-core";
@@ -47,9 +47,103 @@ const AXE_REVIEW_ROUTES = [
     "/en/trust-center",
     "/en/install-app",
 ];
+const INPUT_INTENT_AUDIT_ROUTES = [
+    { route: "/en/qr-code-generator", requiredIntents: ["shortText", "scalar"] },
+    { route: "/en/base64-encode-decode", requiredIntents: ["payload", "generatedOutput"] },
+    { route: "/en/regex-tester", requiredIntents: ["scalar", "shortText", "payload"] },
+    { route: "/en/json-formatter", requiredIntents: ["workbench", "payload"] },
+    { route: "/en/csv-json-converter", requiredIntents: ["workbench", "payload", "generatedOutput"] },
+    { route: "/en/jwt-decoder", requiredIntents: ["workbench", "payload", "generatedOutput"] },
+    { route: "/en/pipeline-builder", requiredIntents: ["workbench", "shortText", "payload", "generatedOutput"] },
+];
+const INPUT_INTENT_AUDIT_VIEWPORTS = [
+    { width: 390, height: 844, mobile: true },
+    { width: 1280, height: 900, mobile: false },
+];
 const ALL_TOOLS_FILTER_INTERACTION_BUDGET_MS = 2000;
 const ALL_TOOLS_MOBILE_SCROLL_BUDGET_MS = 3500;
 const ALL_TOOLS_MOBILE_MAX_FRAME_DELTA_MS = 500;
+const FIRST_LOAD_CLS_BUDGET = 0.1;
+const FIRST_LOAD_SETTLE_MS = 2_600;
+const FIRST_LOAD_ARTIFACT_DIR = path.resolve(process.cwd(), "output/first-load-audit");
+const FIRST_LOAD_AUDIT_CASES = [
+    {
+        id: "root-preferred-locale",
+        route: "/",
+        expectedPathname: "/",
+        expectedLang: "en",
+        theme: "dark",
+        colorScheme: "dark",
+        preferredLocale: "zh-CN",
+    },
+    {
+        id: "qr-light",
+        route: "/en/qr-code-generator",
+        expectedPathname: "/en/qr-code-generator",
+        expectedLang: "en",
+        theme: "light",
+        colorScheme: "dark",
+        warmReload: true,
+    },
+    {
+        id: "json-dark",
+        route: "/en/json-formatter",
+        expectedPathname: "/en/json-formatter",
+        expectedLang: "en",
+        theme: "dark",
+        colorScheme: "light",
+    },
+    {
+        id: "all-tools-system",
+        route: "/en/all-tools",
+        expectedPathname: "/en/all-tools",
+        expectedLang: "en",
+        theme: "system",
+        colorScheme: "light",
+    },
+    {
+        id: "all-tools-personalized",
+        route: "/en/all-tools",
+        expectedPathname: "/en/all-tools",
+        expectedLang: "en",
+        theme: "dark",
+        colorScheme: "dark",
+        storage: {
+            "byteflow:tools:favorites": JSON.stringify([
+                { toolKey: "json_formatter", updatedAt: "2026-07-01T00:00:00.000Z" },
+                { toolKey: "base64_encode_decode", updatedAt: "2026-07-01T00:00:00.000Z" },
+                { toolKey: "uuid_generator", updatedAt: "2026-07-01T00:00:00.000Z" },
+            ]),
+            "byteflow:tools:recent": JSON.stringify([
+                { toolKey: "qr_code_generator", updatedAt: "2026-07-01T00:00:00.000Z" },
+                { toolKey: "json_formatter", updatedAt: "2026-07-01T00:00:00.000Z" },
+            ]),
+        },
+    },
+    {
+        id: "qr-zh-cn-system",
+        route: "/zh-CN/qr-code-generator",
+        expectedPathname: "/zh-CN/qr-code-generator",
+        expectedLang: "zh-CN",
+        theme: "system",
+        colorScheme: "dark",
+        warmReload: true,
+    },
+];
+const FIRST_LOAD_AUDIT_PROFILES = [
+    {
+        id: "mobile-390x844",
+        viewport: { width: 390, height: 844 },
+        isMobile: true,
+        caseIds: FIRST_LOAD_AUDIT_CASES.map((testCase) => testCase.id),
+    },
+    {
+        id: "desktop-1280x800",
+        viewport: { width: 1280, height: 800 },
+        isMobile: false,
+        caseIds: ["root-preferred-locale", "all-tools-system", "qr-zh-cn-system"],
+    },
+];
 const GENERATED_TOOL_INDEX_PATH = path.resolve(process.cwd(), "src/generated/tool-index.json");
 
 function getExpectedToolCount() {
@@ -111,6 +205,9 @@ function parseArgs(argv) {
         baseUrl: "",
         skipServer: false,
         includePwa: false,
+        firstLoadOnly: false,
+        writeFirstLoadArtifacts: false,
+        inputIntentsOnly: false,
     };
 
     for (const arg of argv) {
@@ -121,6 +218,21 @@ function parseArgs(argv) {
 
         if (arg === "--pwa") {
             args.includePwa = true;
+            continue;
+        }
+
+        if (arg === "--first-load-only") {
+            args.firstLoadOnly = true;
+            continue;
+        }
+
+        if (arg === "--first-load-artifacts") {
+            args.writeFirstLoadArtifacts = true;
+            continue;
+        }
+
+        if (arg === "--input-intents-only") {
+            args.inputIntentsOnly = true;
             continue;
         }
 
@@ -224,6 +336,363 @@ async function assertRouteRenders(context, baseUrl, route) {
     runtime.assertClean();
 
     await page.close();
+}
+
+function expectedResolvedTheme(testCase) {
+    return testCase.theme === "system" ? testCase.colorScheme : testCase.theme;
+}
+
+async function installFirstLoadInstrumentation(context, testCase) {
+    await context.addInitScript(({ preferredLocale, storage, theme }) => {
+        try {
+            localStorage.setItem("theme", theme);
+            if (preferredLocale) {
+                localStorage.setItem("byteflow:preferred-locale", preferredLocale);
+            }
+            for (const [key, value] of Object.entries(storage || {})) {
+                localStorage.setItem(key, value);
+            }
+        } catch {
+            // The audit still validates the default path when storage is unavailable.
+        }
+
+        const audit = {
+            layoutShiftSupported: false,
+            shifts: [],
+            themeChanges: [],
+        };
+        window.__byteflowFirstLoadAudit = audit;
+
+        const readTheme = () => ({
+            className: document.documentElement?.className || "",
+            colorScheme: document.documentElement?.style.colorScheme || "",
+        });
+        const recordTheme = () => audit.themeChanges.push({
+            startTime: performance.now(),
+            ...readTheme(),
+        });
+        const observeThemeRoot = () => {
+            if (!document.documentElement) return false;
+            recordTheme();
+            new MutationObserver(recordTheme).observe(document.documentElement, {
+                attributeFilter: ["class", "style"],
+                attributes: true,
+            });
+            return true;
+        };
+        if (!observeThemeRoot()) {
+            const rootObserver = new MutationObserver(() => {
+                if (observeThemeRoot()) rootObserver.disconnect();
+            });
+            rootObserver.observe(document, { childList: true, subtree: true });
+        }
+
+        const supportedEntryTypes = PerformanceObserver.supportedEntryTypes || [];
+        audit.layoutShiftSupported = supportedEntryTypes.includes("layout-shift");
+        if (!audit.layoutShiftSupported) return;
+
+        const copyRect = (rect) => ({
+            height: rect.height,
+            width: rect.width,
+            x: rect.x,
+            y: rect.y,
+        });
+        const describeNode = (node) => {
+            if (!(node instanceof Element)) return "unknown";
+            if (node.id) return `#${node.id}`;
+            for (const attribute of [
+                "data-all-tools-personalization",
+                "data-all-tools-card",
+                "data-navbar-controls-footprint",
+                "data-navbar-language-footprint",
+                "data-navbar-theme-footprint",
+                "data-tool-global-actions",
+            ]) {
+                if (node.hasAttribute(attribute)) return `[${attribute}]`;
+            }
+            const classes = Array.from(node.classList).slice(0, 3).join(".");
+            return `${node.tagName.toLowerCase()}${classes ? `.${classes}` : ""}`;
+        };
+
+        const observer = new PerformanceObserver((list) => {
+            for (const entry of list.getEntries()) {
+                if (entry.hadRecentInput) continue;
+                audit.shifts.push({
+                    startTime: entry.startTime,
+                    value: entry.value,
+                    sources: (entry.sources || []).map((source) => ({
+                        currentRect: copyRect(source.currentRect),
+                        node: describeNode(source.node),
+                        previousRect: copyRect(source.previousRect),
+                    })),
+                });
+            }
+        });
+        observer.observe({ type: "layout-shift", buffered: true });
+    }, {
+        preferredLocale: testCase.preferredLocale || "",
+        storage: testCase.storage || {},
+        theme: testCase.theme,
+    });
+}
+
+function calculateSessionWindowCls(entries) {
+    let currentScore = 0;
+    let currentWindowStart = 0;
+    let lastEntryTime = 0;
+    let maxScore = 0;
+
+    for (const entry of [...entries].sort((left, right) => left.startTime - right.startTime)) {
+        const startsNewWindow = currentScore === 0
+            || entry.startTime - lastEntryTime > 1_000
+            || entry.startTime - currentWindowStart > 5_000;
+        if (startsNewWindow) {
+            currentScore = entry.value;
+            currentWindowStart = entry.startTime;
+        } else {
+            currentScore += entry.value;
+        }
+        lastEntryTime = entry.startTime;
+        maxScore = Math.max(maxScore, currentScore);
+    }
+
+    return maxScore;
+}
+
+async function capturePreHydrationState(browser, baseUrl, profile, testCase) {
+    const context = await browser.newContext({
+        colorScheme: testCase.colorScheme,
+        isMobile: profile.isMobile,
+        serviceWorkers: "block",
+        viewport: profile.viewport,
+    });
+    await installFirstLoadInstrumentation(context, testCase);
+    const page = await context.newPage();
+
+    try {
+        await page.route("**/*", async (route) => {
+            const request = route.request();
+            const pathname = new URL(request.url()).pathname;
+            if (request.resourceType() === "script" && pathname.startsWith("/_next/")) {
+                await route.abort();
+                return;
+            }
+            await route.continue();
+        });
+
+        const response = await page.goto(`${baseUrl}${testCase.route}`, { waitUntil: "domcontentloaded" });
+        if (!response || !response.ok()) {
+            throw new Error(`Pre-hydration route ${testCase.route} failed with ${response?.status() || "no response"}.`);
+        }
+        await page.waitForSelector("main", { timeout: 30_000 });
+        await page.evaluate(() => document.fonts?.ready);
+        await page.waitForTimeout(100);
+
+        return {
+            heading: (await page.locator("h1").first().textContent())?.replace(/\s+/g, " ").trim() || "",
+            screenshot: await page.screenshot({ animations: "disabled", fullPage: false }),
+            theme: await page.evaluate(() => ({
+                className: document.documentElement.className,
+                colorScheme: document.documentElement.style.colorScheme,
+            })),
+        };
+    } finally {
+        await context.close();
+    }
+}
+
+async function captureHydratedState(browser, baseUrl, profile, testCase) {
+    const context = await browser.newContext({
+        colorScheme: testCase.colorScheme,
+        isMobile: profile.isMobile,
+        serviceWorkers: "block",
+        viewport: profile.viewport,
+    });
+    await installFirstLoadInstrumentation(context, testCase);
+    const page = await context.newPage();
+    const runtime = createRuntimeObserver(page, `First-load audit ${profile.id}/${testCase.id}`, baseUrl);
+
+    try {
+        const cdp = await context.newCDPSession(page);
+        await cdp.send("Network.enable");
+        await cdp.send("Network.setCacheDisabled", { cacheDisabled: true });
+        await cdp.send("Network.emulateNetworkConditions", {
+            connectionType: "cellular4g",
+            downloadThroughput: (1.6 * 1024 * 1024) / 8,
+            latency: 100,
+            offline: false,
+            uploadThroughput: (750 * 1024) / 8,
+        });
+        await cdp.send("Emulation.setCPUThrottlingRate", { rate: 4 });
+
+        const response = await page.goto(`${baseUrl}${testCase.route}`, { waitUntil: "domcontentloaded", timeout: 60_000 });
+        if (!response || !response.ok()) {
+            throw new Error(`Hydrated route ${testCase.route} failed with ${response?.status() || "no response"}.`);
+        }
+        await page.waitForSelector("main", { timeout: 30_000 });
+        await page.waitForTimeout(FIRST_LOAD_SETTLE_MS);
+        await page.evaluate(() => document.fonts?.ready);
+
+        const metrics = await page.evaluate(() => ({
+            audit: window.__byteflowFirstLoadAudit,
+            firstContentfulPaint: performance.getEntriesByName("first-contentful-paint")[0]?.startTime ?? null,
+            heading: document.querySelector("h1")?.textContent?.replace(/\s+/g, " ").trim() || "",
+            lang: document.documentElement.lang,
+            pathname: window.location.pathname,
+            theme: {
+                className: document.documentElement.className,
+                colorScheme: document.documentElement.style.colorScheme,
+            },
+        }));
+        const screenshot = await page.screenshot({ animations: "disabled", fullPage: false });
+        runtime.assertClean();
+        return { metrics, screenshot };
+    } finally {
+        await context.close();
+    }
+}
+
+async function captureWarmReloadState(browser, baseUrl, profile, testCase) {
+    const context = await browser.newContext({
+        colorScheme: testCase.colorScheme,
+        isMobile: profile.isMobile,
+        serviceWorkers: "block",
+        viewport: profile.viewport,
+    });
+    await installFirstLoadInstrumentation(context, testCase);
+    const page = await context.newPage();
+    const runtime = createRuntimeObserver(page, `Warm reload audit ${profile.id}/${testCase.id}`, baseUrl);
+
+    try {
+        const initialResponse = await page.goto(`${baseUrl}${testCase.route}`, { waitUntil: "domcontentloaded", timeout: 60_000 });
+        if (!initialResponse || !initialResponse.ok()) {
+            throw new Error(`Warm reload seed ${testCase.route} failed with ${initialResponse?.status() || "no response"}.`);
+        }
+        await page.waitForSelector("main", { timeout: 30_000 });
+        await page.waitForTimeout(200);
+
+        const cdp = await context.newCDPSession(page);
+        await cdp.send("Emulation.setCPUThrottlingRate", { rate: 4 });
+
+        const response = await page.reload({ waitUntil: "domcontentloaded", timeout: 60_000 });
+        if (!response || !response.ok()) {
+            throw new Error(`Warm reload ${testCase.route} failed with ${response?.status() || "no response"}.`);
+        }
+        await page.waitForSelector("main", { timeout: 30_000 });
+        await page.waitForTimeout(FIRST_LOAD_SETTLE_MS);
+        await page.evaluate(() => document.fonts?.ready);
+
+        const metrics = await page.evaluate(() => ({
+            audit: window.__byteflowFirstLoadAudit,
+            firstContentfulPaint: performance.getEntriesByName("first-contentful-paint")[0]?.startTime ?? null,
+            heading: document.querySelector("h1")?.textContent?.replace(/\s+/g, " ").trim() || "",
+            lang: document.documentElement.lang,
+            pathname: window.location.pathname,
+            theme: {
+                className: document.documentElement.className,
+                colorScheme: document.documentElement.style.colorScheme,
+            },
+        }));
+        const screenshot = await page.screenshot({ animations: "disabled", fullPage: false });
+        runtime.assertClean();
+        return { metrics, screenshot };
+    } finally {
+        await context.close();
+    }
+}
+
+function assertFirstLoadResult(profile, testCase, before, after) {
+    const expectedTheme = expectedResolvedTheme(testCase);
+    const shifts = after.metrics.audit?.shifts || [];
+    const cls = calculateSessionWindowCls(shifts);
+    const label = `${profile.id}/${testCase.id}`;
+    const themeAtFirstContentfulPaint = [...(after.metrics.audit?.themeChanges || [])]
+        .reverse()
+        .find((entry) => entry.startTime <= after.metrics.firstContentfulPaint);
+
+    if (!after.metrics.audit?.layoutShiftSupported) {
+        throw new Error(`${label} did not expose Chromium layout-shift entries.`);
+    }
+    if (cls >= FIRST_LOAD_CLS_BUDGET) {
+        throw new Error(`${label} CLS ${cls.toFixed(4)} exceeded the ${FIRST_LOAD_CLS_BUDGET} budget. Sources: ${JSON.stringify(shifts)}`);
+    }
+    if (
+        after.metrics.firstContentfulPaint === null
+        || !themeAtFirstContentfulPaint?.className.split(/\s+/).includes(expectedTheme)
+        || themeAtFirstContentfulPaint.colorScheme !== expectedTheme
+    ) {
+        throw new Error(`${label} first contentful paint used ${JSON.stringify(themeAtFirstContentfulPaint)} instead of ${expectedTheme}.`);
+    }
+    if (!after.metrics.theme.className.split(/\s+/).includes(expectedTheme) || after.metrics.theme.colorScheme !== expectedTheme) {
+        throw new Error(`${label} settled theme used ${JSON.stringify(after.metrics.theme)} instead of ${expectedTheme}.`);
+    }
+    if (!before.theme.className.split(/\s+/).includes(expectedTheme) || before.theme.colorScheme !== expectedTheme) {
+        throw new Error(`${label} pre-hydration theme used ${JSON.stringify(before.theme)} instead of ${expectedTheme}.`);
+    }
+    if (after.metrics.pathname !== testCase.expectedPathname || after.metrics.lang !== testCase.expectedLang) {
+        throw new Error(`${label} settled at ${after.metrics.pathname} (${after.metrics.lang}), expected ${testCase.expectedPathname} (${testCase.expectedLang}).`);
+    }
+    if (!before.heading || before.heading !== after.metrics.heading) {
+        throw new Error(`${label} changed its first heading across hydration: ${JSON.stringify(before.heading)} -> ${JSON.stringify(after.metrics.heading)}.`);
+    }
+    if (before.screenshot.length < 2_000 || after.screenshot.length < 2_000) {
+        throw new Error(`${label} produced an unexpectedly empty first-load screenshot.`);
+    }
+
+    return {
+        cls,
+        heading: after.metrics.heading,
+        lang: after.metrics.lang,
+        pathname: after.metrics.pathname,
+        shifts,
+        theme: after.metrics.theme,
+        themeAtFirstContentfulPaint,
+    };
+}
+
+async function writeFirstLoadCaseArtifacts(profile, testCase, before, after, warmAfter) {
+    await mkdir(FIRST_LOAD_ARTIFACT_DIR, { recursive: true });
+    const prefix = `${profile.id}-${testCase.id}`;
+    await Promise.all([
+        writeFile(path.join(FIRST_LOAD_ARTIFACT_DIR, `${prefix}-before-hydration.png`), before.screenshot),
+        writeFile(path.join(FIRST_LOAD_ARTIFACT_DIR, `${prefix}-after-hydration.png`), after.screenshot),
+        ...(warmAfter ? [writeFile(path.join(FIRST_LOAD_ARTIFACT_DIR, `${prefix}-warm-reload.png`), warmAfter.screenshot)] : []),
+    ]);
+}
+
+async function assertFirstLoadStabilityMatrix(browser, baseUrl, { writeArtifacts = false } = {}) {
+    const reports = [];
+    for (const profile of FIRST_LOAD_AUDIT_PROFILES) {
+        for (const caseId of profile.caseIds) {
+            const testCase = FIRST_LOAD_AUDIT_CASES.find((candidate) => candidate.id === caseId);
+            if (!testCase) throw new Error(`Unknown first-load audit case: ${caseId}`);
+
+            const before = await capturePreHydrationState(browser, baseUrl, profile, testCase);
+            const after = await captureHydratedState(browser, baseUrl, profile, testCase);
+            const report = assertFirstLoadResult(profile, testCase, before, after);
+            reports.push({ caseId, profileId: profile.id, ...report });
+            let warmAfter = null;
+            if (testCase.warmReload) {
+                const warmReloadCase = { ...testCase, id: `${testCase.id}-warm-reload` };
+                warmAfter = await captureWarmReloadState(browser, baseUrl, profile, testCase);
+                const warmReport = assertFirstLoadResult(profile, warmReloadCase, before, warmAfter);
+                reports.push({ caseId: warmReloadCase.id, profileId: profile.id, ...warmReport });
+                console.log(`[playwright-smoke] PASS warm reload: ${profile.id}/${testCase.id} CLS=${warmReport.cls.toFixed(4)}`);
+            }
+            if (writeArtifacts) {
+                await writeFirstLoadCaseArtifacts(profile, testCase, before, after, warmAfter);
+            }
+            console.log(`[playwright-smoke] PASS first load: ${profile.id}/${caseId} CLS=${report.cls.toFixed(4)}`);
+        }
+    }
+
+    if (writeArtifacts) {
+        await writeFile(
+            path.join(FIRST_LOAD_ARTIFACT_DIR, "report.json"),
+            `${JSON.stringify(reports, null, 2)}\n`,
+            "utf8",
+        );
+    }
 }
 
 async function assertHomeNavigation(context, baseUrl, locale) {
@@ -689,6 +1158,93 @@ async function assertMobileReviewMatrix(browser, baseUrl) {
     }
 }
 
+async function assertInputIntentSizingMatrix(browser, baseUrl) {
+    for (const viewport of INPUT_INTENT_AUDIT_VIEWPORTS) {
+        const context = await browser.newContext({
+            serviceWorkers: "block",
+            viewport: { width: viewport.width, height: viewport.height },
+            isMobile: viewport.mobile,
+        });
+
+        try {
+            for (const audit of INPUT_INTENT_AUDIT_ROUTES) {
+                const page = await context.newPage();
+                const routeLabel = `${audit.route} input intent ${viewport.width}x${viewport.height}`;
+                const runtime = createRuntimeObserver(page, routeLabel, baseUrl);
+
+                try {
+                    await page.goto(`${baseUrl}${audit.route}`, { waitUntil: "domcontentloaded" });
+                    await page.waitForSelector("main", { timeout: 15_000 });
+                    await page.locator("[data-input-intent]").first().waitFor({ state: "attached", timeout: 15_000 });
+
+                    const measurements = await page.evaluate(({ mobile }) => {
+                        const isVisible = (element) => {
+                            const style = window.getComputedStyle(element);
+                            const rect = element.getBoundingClientRect();
+                            return style.display !== "none" && style.visibility !== "hidden" && Number(style.opacity) !== 0 && rect.width > 0 && rect.height > 0;
+                        };
+                        const nodes = Array.from(document.querySelectorAll("[data-input-intent]")).filter(isVisible);
+                        const counts = {};
+                        const issues = [];
+
+                        for (const element of nodes) {
+                            const intent = element.getAttribute("data-input-intent");
+                            if (!intent) continue;
+                            counts[intent] = (counts[intent] || 0) + 1;
+
+                            const rect = element.getBoundingClientRect();
+                            const tag = element.tagName.toLowerCase();
+                            const field = ["input", "textarea", "select"].includes(tag);
+                            if (intent === "scalar" && field) {
+                                const target = element.closest("label") || element;
+                                const targetRect = target.getBoundingClientRect();
+                                const minimum = mobile ? 44 : 36;
+                                if (targetRect.height + 0.5 < minimum || targetRect.width + 0.5 < minimum) {
+                                    issues.push(`${intent} ${tag}: ${Math.round(targetRect.width)}x${Math.round(targetRect.height)}`);
+                                }
+                            }
+                            if (intent === "shortText" && tag === "input" && rect.height + 0.5 < (mobile ? 44 : 44)) {
+                                issues.push(`${intent} input height: ${Math.round(rect.height)}px`);
+                            }
+                            if (intent === "shortText" && tag === "textarea") {
+                                const style = window.getComputedStyle(element);
+                                const resize = style.resize;
+                                if (rect.height + 0.5 < 144) issues.push(`${intent} textarea height: ${Math.round(rect.height)}px (min-height ${style.minHeight}; ${element.className})`);
+                                if (!resize.includes("vertical") && resize !== "both") issues.push(`${intent} textarea resize: ${resize}`);
+                            }
+                            if (["payload", "generatedOutput"].includes(intent) && ["textarea", "pre"].includes(tag) && rect.height + 0.5 < 256) {
+                                issues.push(`${intent} ${tag} height: ${Math.round(rect.height)}px`);
+                            }
+                        }
+
+                        return { counts, issues };
+                    }, { mobile: viewport.mobile });
+
+                    for (const intent of audit.requiredIntents) {
+                        if (!measurements.counts[intent]) {
+                            throw new Error(`${routeLabel} did not render required ${intent} input intent.`);
+                        }
+                    }
+                    if (measurements.issues.length > 0) {
+                        throw new Error(`${routeLabel} input sizing failed:\n- ${measurements.issues.join("\n- ")}`);
+                    }
+
+                    await assertNoHorizontalOverflow(page, routeLabel);
+                    const screenshot = await page.screenshot({ animations: "disabled", fullPage: false });
+                    if (screenshot.byteLength < 5_000) {
+                        throw new Error(`${routeLabel} sizing screenshot was unexpectedly blank (${screenshot.byteLength} bytes).`);
+                    }
+                    runtime.assertClean();
+                } finally {
+                    await page.close();
+                }
+            }
+        } finally {
+            await context.close();
+        }
+    }
+}
+
 async function assertAxeSeriousCriticalMatrix(browser, baseUrl) {
     const context = await browser.newContext({ serviceWorkers: "block" });
 
@@ -1012,6 +1568,93 @@ async function assertBase64PipelineSafeNavigationJourney(context, baseUrl) {
     runtime.assertClean();
 
     await page.close();
+}
+
+async function assertDownloadedFile(download, expectedFilename, kind) {
+    if (download.suggestedFilename() !== expectedFilename) {
+        throw new Error(`Expected ${expectedFilename}, received ${download.suggestedFilename()}.`);
+    }
+
+    const failure = await download.failure();
+    if (failure) {
+        throw new Error(`${expectedFilename} download failed: ${failure}`);
+    }
+
+    const downloadPath = await download.path();
+    if (!downloadPath) {
+        throw new Error(`${expectedFilename} did not produce a downloadable file.`);
+    }
+
+    const contents = await readFile(downloadPath);
+    if (contents.length === 0) {
+        throw new Error(`${expectedFilename} download was empty.`);
+    }
+
+    if (kind === "png" && !contents.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) {
+        throw new Error(`${expectedFilename} did not contain a PNG signature.`);
+    }
+    if (kind === "svg" && !contents.toString("utf8").includes("<svg")) {
+        throw new Error(`${expectedFilename} did not contain SVG markup.`);
+    }
+
+    return downloadPath;
+}
+
+async function assertQrDownloadJourney(context, baseUrl) {
+    const page = await context.newPage();
+    const runtime = createRuntimeObserver(page, "QR code downloads", baseUrl);
+
+    try {
+        await page.goto(`${baseUrl}/en/qr-code-generator`, { waitUntil: "domcontentloaded" });
+        await page.locator("textarea").first().fill("https://byteflow.tools/qr-download-smoke");
+
+        const pngButton = page.getByRole("button", { name: "PNG", exact: true }).first();
+        await page.waitForFunction(() => {
+            const canvas = document.querySelector("canvas");
+            const button = Array.from(document.querySelectorAll("button"))
+                .find((candidate) => candidate.textContent?.trim() === "PNG");
+            return canvas instanceof HTMLCanvasElement && canvas.width > 0 && button && !button.disabled;
+        }, null, { timeout: 15_000 });
+        const pngDownloadPromise = page.waitForEvent("download");
+        await pngButton.click();
+        const pngDownloadPath = await assertDownloadedFile(await pngDownloadPromise, "qr-code.png", "png");
+
+        const svgDownloadPromise = page.waitForEvent("download");
+        await page.getByRole("button", { name: "SVG", exact: true }).first().click();
+        await assertDownloadedFile(await svgDownloadPromise, "qr-code.svg", "svg");
+
+        const pageCountBeforeDecode = context.pages().length;
+        await page.getByRole("tab", { name: "Decode image", exact: true }).click();
+        const decodeInput = page.locator('input[type="file"][accept*=".png"]').first();
+        await decodeInput.setInputFiles({
+            name: "qr-code.png",
+            mimeType: "image/png",
+            buffer: await readFile(pngDownloadPath),
+        });
+        await page.waitForFunction((expectedPayload) => {
+            const output = document.querySelector('[data-testid="qr-decoded-output"]')?.textContent?.trim();
+            const error = document.querySelector('[data-testid="qr-decode-error"]')
+                || Array.from(document.querySelectorAll('[role="alert"]')).find((node) => node.textContent?.trim());
+            return output === expectedPayload || Boolean(error);
+        }, "https://byteflow.tools/qr-download-smoke", { timeout: 15_000 });
+        const decodeAlert = (await page.getByRole("alert").allTextContents()).filter((message) => message.trim());
+        if (decodeAlert.length > 0) {
+            throw new Error(`QR round-trip decode failed: ${decodeAlert.join(" ")}`);
+        }
+        if (context.pages().length !== pageCountBeforeDecode) {
+            throw new Error("QR decoding opened the decoded URL without explicit user action.");
+        }
+
+        await decodeInput.setInputFiles({
+            name: "blank.png",
+            mimeType: "image/png",
+            buffer: Buffer.from("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=", "base64"),
+        });
+        await page.getByRole("alert").filter({ hasText: "No QR code was found" }).waitFor({ timeout: 15_000 });
+        runtime.assertClean();
+    } finally {
+        await page.close();
+    }
 }
 
 async function expectTextareaValueAbsent(page, pattern, label) {
@@ -1449,7 +2092,7 @@ async function assertPwaShellJourney(browser, baseUrl) {
     }
 }
 
-async function runSmoke(baseUrl) {
+async function runSmoke(baseUrl, { writeFirstLoadArtifacts = false } = {}) {
     const browser = await chromium.launch({ headless: true });
     const context = await browser.newContext({ serviceWorkers: "block" });
 
@@ -1460,6 +2103,9 @@ async function runSmoke(baseUrl) {
             await assertRouteRenders(context, baseUrl, route);
             console.log(`[playwright-smoke] PASS render: ${route}`);
         }
+
+        await assertFirstLoadStabilityMatrix(browser, baseUrl, { writeArtifacts: writeFirstLoadArtifacts });
+        console.log("[playwright-smoke] PASS first-load CLS, theme, locale, and hydration screenshot matrix");
 
         await assertHomeNavigation(context, baseUrl, "en");
         console.log("[playwright-smoke] PASS navigation: /en -> /en/json-formatter");
@@ -1482,6 +2128,9 @@ async function runSmoke(baseUrl) {
         await assertBase64PipelineSafeNavigationJourney(context, baseUrl);
         console.log("[playwright-smoke] PASS journey: /en/base64-encode-decode -> /en/pipeline-builder safe navigation");
 
+        await assertQrDownloadJourney(context, baseUrl);
+        console.log("[playwright-smoke] PASS journey: /en/qr-code-generator PNG and SVG downloads");
+
         await assertPipelineRecipeJourney(context, baseUrl);
         console.log("[playwright-smoke] PASS journey: /en/pipeline-builder template -> run");
 
@@ -1503,10 +2152,22 @@ async function runSmoke(baseUrl) {
         await assertMobileReviewMatrix(browser, baseUrl);
         console.log("[playwright-smoke] PASS mobile review matrix: no overflow or touch-target regressions");
 
+        await assertInputIntentSizingMatrix(browser, baseUrl);
+        console.log("[playwright-smoke] PASS input intent sizing matrix: mobile/desktop heights, touch targets, overflow, and screenshots");
+
         await assertAxeSeriousCriticalMatrix(browser, baseUrl);
         console.log("[playwright-smoke] PASS accessibility: no serious or critical axe violations on representative pages");
     } finally {
         await context.close();
+        await browser.close();
+    }
+}
+
+async function runFirstLoadAudit(baseUrl, { writeArtifacts = false } = {}) {
+    const browser = await chromium.launch({ headless: true });
+    try {
+        await assertFirstLoadStabilityMatrix(browser, baseUrl, { writeArtifacts });
+    } finally {
         await browser.close();
     }
 }
@@ -1521,8 +2182,26 @@ async function runPwaSmoke(baseUrl) {
     }
 }
 
+async function runInputIntentSmoke(baseUrl) {
+    const browser = await chromium.launch({ headless: true });
+    try {
+        await assertInputIntentSizingMatrix(browser, baseUrl);
+        console.log("[playwright-smoke] PASS input intent sizing matrix: mobile/desktop heights, touch targets, overflow, and screenshots");
+    } finally {
+        await browser.close();
+    }
+}
+
 async function main() {
-    const { baseUrl, port, skipServer, includePwa } = parseArgs(process.argv.slice(2));
+    const {
+        baseUrl,
+        firstLoadOnly,
+        includePwa,
+        inputIntentsOnly,
+        port,
+        skipServer,
+        writeFirstLoadArtifacts,
+    } = parseArgs(process.argv.slice(2));
     let serverHandle = null;
 
     try {
@@ -1532,11 +2211,19 @@ async function main() {
             console.log(`[playwright-smoke] Static server ready at ${baseUrl}`);
         }
 
-        await runSmoke(baseUrl);
-        if (includePwa) {
+        if (inputIntentsOnly) {
+            await runInputIntentSmoke(baseUrl);
+        } else if (firstLoadOnly) {
+            await runFirstLoadAudit(baseUrl, { writeArtifacts: writeFirstLoadArtifacts });
+        } else {
+            await runSmoke(baseUrl, { writeFirstLoadArtifacts });
+        }
+        if (includePwa && !firstLoadOnly && !inputIntentsOnly) {
             await runPwaSmoke(baseUrl);
         }
-        console.log("[playwright-smoke] PASS: critical routes render and navigate correctly");
+        if (!firstLoadOnly && !inputIntentsOnly) {
+            console.log("[playwright-smoke] PASS: critical routes render and navigate correctly");
+        }
     } catch (error) {
         console.error("[playwright-smoke] FAILED");
         if (serverHandle) {

@@ -3,6 +3,7 @@ import type { ToolMeta } from "@/core/registry/types"
 export const toolManifest = {
     key: "base64_encode_decode",
     slug: "base64-encode-decode",
+    inputBehavior: "empty-first",
     category: "text-string",
     relatedTools: ["url_encode_decode", "jwt_decoder", "hash_generator", "image_base64"],
     privacy: {

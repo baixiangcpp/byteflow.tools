@@ -43,12 +43,16 @@ export function ToolFavoriteControl({ toolKey }: ToolFavoriteControlProps) {
                 variant="outline"
                 size="sm"
                 className="min-h-10 border-border bg-background shadow-xs"
+                aria-label={isFavorite ? removeLabel : addLabel}
                 aria-pressed={isFavorite}
                 title={isFavorite ? removeLabel : addLabel}
                 onClick={() => setFavoriteToolKeys(toggleFavoriteToolKey(toolKey))}
             >
                 <Heart className={cn("h-4 w-4", isFavorite ? "fill-primary text-primary" : "")} />
-                {isFavorite ? removeLabel : addLabel}
+                <span className="grid" aria-hidden="true">
+                    <span className={cn("col-start-1 row-start-1", isFavorite && "invisible")}>{addLabel}</span>
+                    <span className={cn("col-start-1 row-start-1", !isFavorite && "invisible")}>{removeLabel}</span>
+                </span>
             </Button>
             <span className="text-xs text-muted-foreground">{privacyLabel}</span>
         </div>

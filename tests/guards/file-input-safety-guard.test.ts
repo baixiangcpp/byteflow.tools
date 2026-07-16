@@ -9,7 +9,6 @@ const TEXT_FILE_PATTERN = /\.(ts|tsx)$/
 const ALLOWED_RAW_FILE_READERS = new Set([
     "src/core/files/file-input-policy.ts",
     "src/core/utils/image-canvas-utils.ts",
-    "src/features/tools/qr-code-generator/browser-actions.ts",
     "src/features/tools/image-resizer/image-resize-task.ts",
     "src/features/tools/scanned-pdf-converter/scan-enhance-task.ts",
 ])
@@ -63,6 +62,62 @@ describe("file input safety guard", () => {
         }
         for (const id of ["image-standard", "image-compact", "image-logo", "scan-image"]) {
             expect(policySource).toMatch(new RegExp(`"${id}"[\\s\\S]*maxPixels`))
+        }
+    })
+
+    it("requires generic raster readers to verify file signatures before decoding", () => {
+        const policySource = read("src/core/files/file-input-policy.ts")
+        const imageUtilsSource = read("src/core/utils/image-canvas-utils.ts")
+        const qrActionsSource = read("src/features/tools/qr-code-generator/browser-actions.ts")
+
+        expect(policySource).toContain("detectRasterImageMime")
+        expect(policySource).toContain("validateFileContentAgainstPolicy")
+        expect(policySource).not.toContain('"scan-image": {\n        id: "scan-image",\n        accept: "image/*"')
+        expect(imageUtilsSource).toContain("validateFileContentAgainstPolicy(file, policy)")
+        expect(qrActionsSource).toContain('fileToDataUrl(file, FILE_INPUT_POLICIES["image-logo"])')
+        expect(qrActionsSource).not.toContain("new FileReader")
+    })
+
+    it("keeps every raster-only picker aligned with an explicit shared policy", () => {
+        const wildcardImagePickers = sourceFiles().filter((file) => read(file).includes('accept="image/*"'))
+        expect(wildcardImagePickers).toEqual([])
+
+        const filesByPolicy = [
+            ["src/features/tools/ascii-art-generator/page.tsx", "image-compact"],
+            ["src/features/tools/image-average-color-finder/page.tsx", "image-compact"],
+            ["src/features/tools/image-base64/page.tsx", "image-compact"],
+            ["src/features/tools/instagram-filters/page.tsx", "image-standard"],
+            ["src/features/tools/instagram-post-generator/page.tsx", "image-standard"],
+            ["src/features/tools/instagram-story-generator/page.tsx", "image-standard"],
+            ["src/features/tools/qr-code-generator/panels.tsx", "image-logo"],
+            ["src/features/tools/qr-code-generator/panels.tsx", "qr-decode-image"],
+            ["src/features/tools/tweet-generator/page.tsx", "image-logo"],
+        ] as const
+
+        for (const [file, policyId] of filesByPolicy) {
+            const source = read(file)
+            expect(source, file).toContain(`FILE_INPUT_POLICIES["${policyId}"]`)
+            expect(source, file).toContain("accept={")
+            expect(source, file).not.toContain('accept="image/*"')
+            expect(source, file).not.toContain('file.type.startsWith("image/")')
+        }
+    })
+
+    it("directs SVG users from raster upload copy to the SVG-to-PNG workflow", () => {
+        for (const locale of ["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr"]) {
+            const translations = JSON.parse(read(`src/core/i18n/translations/${locale}.json`)) as {
+                tools: Record<string, Record<string, string>>
+            }
+            const rasterUploadCopy = [
+                translations.tools.image_base64.supports,
+                translations.tools.image_base64.invalid_file_desc,
+                translations.tools.qr_code_generator.logo_hint,
+            ]
+
+            for (const copy of rasterUploadCopy) {
+                expect(copy, locale).toContain("SVG")
+                expect(copy.lastIndexOf("PNG"), locale).toBeGreaterThan(copy.lastIndexOf("SVG"))
+            }
         }
     })
 

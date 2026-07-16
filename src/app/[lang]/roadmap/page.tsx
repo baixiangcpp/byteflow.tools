@@ -4,6 +4,7 @@ import { CheckCircle2, GitPullRequest, Map, ShieldCheck, ThumbsUp } from "lucide
 import type { Locale } from "@/core/i18n/i18n"
 import { isValidLocale } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
+import { StaticPageContainer } from "@/components/layout/page-container"
 
 const ROADMAP_COPY: Record<Locale, {
     badge: string
@@ -137,7 +138,7 @@ export default async function RoadmapPage({ params }: { params: Promise<{ lang: 
     const copy = ROADMAP_COPY[lang]
 
     return (
-        <div className="mx-auto w-full max-w-5xl space-y-8">
+        <StaticPageContainer className="space-y-8">
             <section className="rounded-lg border border-border/70 bg-card/55 p-6 sm:p-7">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">{copy.badge}</p>
                 <h1 className="mt-3 text-3xl font-semibold tracking-tight">{t.pages.roadmap_title}</h1>
@@ -198,6 +199,6 @@ export default async function RoadmapPage({ params }: { params: Promise<{ lang: 
                     </div>
                 </div>
             </section>
-        </div>
+        </StaticPageContainer>
     )
 }

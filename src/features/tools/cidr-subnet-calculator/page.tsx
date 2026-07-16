@@ -7,6 +7,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { calculateCidr, formatCidrSummary, type CidrCalculationResult } from "@/features/tools/cidr-subnet-calculator/utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE_CIDR = "192.168.1.42/24"
 
@@ -86,7 +87,7 @@ export function CidrSubnetCalculatorPage() {
     ]
 
     return (
-        <div className="flex h-full flex-col">
+        <ToolPageContainer className="flex h-full flex-col">
             <div className="border-b px-4 py-3">
                 <div className="flex flex-col gap-3">
                     <div className="flex items-center gap-2">
@@ -103,7 +104,7 @@ export function CidrSubnetCalculatorPage() {
             </div>
 
             <div className="flex-1 overflow-auto p-4 md:p-6">
-                <div className="mx-auto w-full max-w-3xl space-y-4">
+                <div data-route-width-exception="focused-work-surface" className="mx-auto w-full max-w-3xl space-y-4">
                     <section className="space-y-2">
                         <label className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                             {text("input_label")}
@@ -181,6 +182,6 @@ export function CidrSubnetCalculatorPage() {
                     ) : null}
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }

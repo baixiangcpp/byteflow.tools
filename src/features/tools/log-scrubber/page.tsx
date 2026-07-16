@@ -18,6 +18,7 @@ import {
     type ScrubFinding,
     type ScrubOptions,
 } from "@/core/utils/log-scrubber-utils"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 type OptionKey = keyof ScrubOptions
 
@@ -138,7 +139,7 @@ password=hunter2`)
     ]
 
     return (
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8">
+        <WideToolPageContainer className="flex flex-col gap-6 py-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
@@ -246,6 +247,6 @@ password=hunter2`)
                     </div>
                 </div>
             )}
-        </div>
+        </WideToolPageContainer>
     )
 }

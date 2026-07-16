@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { useLang } from "@/core/i18n/lang-provider"
 import { Input } from "@/components/ui/input"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 function parseCron(expr: string): { minute: string; hour: string; dom: string; month: string; dow: string } | null {
     const parts = expr.trim().split(/\s+/)
@@ -126,7 +127,7 @@ export function CronVisualizerPage() {
     const fields = cron ? [cron.minute, cron.hour, cron.dom, cron.month, cron.dow] : []
 
     return (
-        <div className="flex flex-col h-full">
+        <ToolPageContainer className="flex flex-col h-full">
             <div className="flex items-center justify-between border-b px-4 py-3 gap-2 flex-wrap">
                 <div className="flex items-center gap-2">
                     <Clock className="h-5 w-5 text-primary" />
@@ -208,6 +209,6 @@ export function CronVisualizerPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }

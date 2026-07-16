@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const CSP_DIRECTIVE_KEYS: Record<string, { descriptionKey: string; risk: "low" | "medium" | "high" | "info" }> = {
     "default-src": { descriptionKey: "directive_default_src_desc", risk: "info" },
@@ -115,7 +116,7 @@ export function CspParserPage() {
     }
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-5xl mx-auto w-full">
+        <ToolPageContainer className="flex flex-col h-full space-y-6">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -190,6 +191,6 @@ export function CspParserPage() {
             )}
 
             <RelatedTools toolKey="csp_parser" />
-        </div>
+        </ToolPageContainer>
     )
 }

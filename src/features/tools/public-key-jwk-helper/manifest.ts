@@ -3,6 +3,7 @@ import type { ToolMeta } from "@/core/registry/types"
 export const toolManifest = {
     key: "public_key_jwk_helper",
     slug: "public-key-jwk-helper",
+    inputBehavior: "explicit-sample",
     category: "network-web",
     relatedTools: ["oauth_jwks_workbench", "certificate_decoder", "jwt_verifier", "jwt_workbench", "asn1_der_inspector"],
     privacy: {

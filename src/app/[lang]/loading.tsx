@@ -1,6 +1,6 @@
 export default function LangLoading() {
     return (
-        <div className="mx-auto w-full max-w-screen-2xl px-4 pb-10 pt-6 md:px-8 md:pt-8 lg:px-10">
+        <div className="pb-10 pt-6 md:pt-8">
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <section className="rounded-2xl border border-border/70 bg-card/55 p-4 md:p-5">
                     <div className="h-5 w-36 animate-pulse rounded-md bg-muted/45" />

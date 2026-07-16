@@ -13,7 +13,7 @@ export const INLINE_SCRIPT_POLICY: readonly InlineScriptPolicyEntry[] = [
         file: "src/app/layout.tsx",
         purpose: "Set locale lang, color scheme, theme-color, and localized manifest before first paint.",
         requiresUnsafeInline: false,
-        migrationPath: "Implemented as a same-origin runtime script loaded in <head> before first paint.",
+        migrationPath: "Implemented as a parser-blocking same-origin runtime script in <head> so the saved theme is applied before first paint.",
         externalScript: "/runtime/theme-manifest-bootstrap.js",
     },
     {

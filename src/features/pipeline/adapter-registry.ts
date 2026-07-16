@@ -4,7 +4,7 @@ import { cleanText, analyzeText, type CleanOptions } from "@/core/utils/invisibl
 import { scrubLogs, DEFAULT_SCRUB_OPTIONS, type ScrubOptions } from "@/core/utils/log-scrubber-utils"
 import { encodeUrlByMode, decodeUrlByMode, type UrlEncodingMode } from "@/core/utils/url-codec-utils"
 import { removeExtraWhitespace } from "@/core/utils/whitespace-utils"
-import { csvToJson, jsonToCsv } from "@/features/tools/csv-json-converter/logic"
+import { csvToJsonWithDiagnostics, jsonToCsv } from "@/features/tools/csv-json-converter/logic"
 import { JSON_ARRAY_REQUIRED_ERROR } from "@/features/tools/csv-json-converter/constants"
 import { exportEnvVars, parseEnvFile, type EnvExportFormat } from "@/features/tools/env-parser/utils"
 import { formatDevopsYamlReport, validateDevopsYaml } from "@/features/tools/devops-yaml-validator/logic"
@@ -16,7 +16,6 @@ import { decodeJwtParts } from "@/features/tools/jwt-decoder/utils"
 import { runNdjsonTransform, type NdjsonMessages, type NdjsonMode } from "@/features/tools/ndjson-formatter/utils"
 import { diffOpenApiSpecs, formatOpenApiDiffReport } from "@/features/tools/openapi-diff/logic"
 import { runRegexTestTask } from "@/features/tools/regex-tester/regex-test-task"
-import { testRegexPattern } from "@/features/tools/regex-tester/utils"
 import { convertCase, type CaseStyle } from "@/features/tools/slugify-case-converter/utils"
 import { parseTimestampHeuristic } from "@/features/tools/unix-timestamp/utils"
 import { convertYamlJson, type YamlJsonMode } from "@/features/tools/yaml-json-converter/utils"
@@ -361,10 +360,18 @@ const csvJsonAdapter: PipelineToolAdapter = {
             const delimiter = stringOption(options, "delimiter", "auto")
             const hasHeader = booleanOption(options, "hasHeader", true)
             const typeInference = booleanOption(options, "typeInference", true)
-            const output = direction === "csv-to-json"
-                ? csvToJson(input, delimiter, hasHeader, typeInference)
-                : jsonToCsv(input, delimiter, hasHeader)
-            return success(output, startedAt, input)
+            if (direction === "csv-to-json") {
+                const result = csvToJsonWithDiagnostics(input, delimiter, hasHeader, typeInference)
+                return success(
+                    result.output,
+                    startedAt,
+                    input,
+                    result.diagnostics
+                        .filter((diagnostic) => diagnostic.severity === "warning")
+                        .map((diagnostic) => diagnostic.message),
+                )
+            }
+            return success(jsonToCsv(input, delimiter, hasHeader), startedAt, input)
         } catch (error) {
             const message = error instanceof Error && error.message === JSON_ARRAY_REQUIRED_ERROR
                 ? "JSON input must be an array to convert to CSV."
@@ -608,8 +615,6 @@ const regexTesterAdapter: PipelineToolAdapter = {
         if (!/^[gimsuy]*$/.test(flags)) return fail("flags must contain only g, i, m, s, u, or y.")
         if (new Set(flags).size !== flags.length) return fail("flags must not contain duplicates.")
         if (!Number.isFinite(maxMatches) || maxMatches < 1 || maxMatches > 5000) return fail("maxMatches must be between 1 and 5000.")
-        const validation = testRegexPattern(pattern, flags, "")
-        if (!validation.ok) return fail("pattern must be a valid JavaScript regular expression.")
         return ok()
     },
     async run(input, options) {

@@ -19,6 +19,7 @@ import {
     type StandardHashAlgorithm,
 } from "@/core/utils/hash-utils"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { serializeSpreadsheetSafeCsv } from "@/core/files/csv-export"
 import { FILE_INPUT_POLICIES, describeFilePolicy, readArrayBufferWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 
 type HashMode = "text" | "file" | "hmac" | "batch"
@@ -206,10 +207,10 @@ export function FocusedHashToolPage({
 
     const handleDownload = () => {
         if (mode === "batch") {
-            const csv = [
-                "index,input,algorithm,digest",
-                ...batchRows.map((row) => `${row.index},\"${row.input.replace(/\"/g, "\"\"")}\",${algorithm},${row.digest}`),
-            ].join("\n")
+            const csv = serializeSpreadsheetSafeCsv([
+                ["index", "input", "algorithm", "digest"],
+                ...batchRows.map((row) => [row.index, row.input, algorithm, row.digest] as const),
+            ])
             downloadTextFile(csv, `${algorithm}-batch.csv`)
             return
         }

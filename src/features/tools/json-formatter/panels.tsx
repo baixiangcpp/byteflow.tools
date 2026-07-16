@@ -116,7 +116,8 @@ export function JsonTreeEditDialog({
                     {dialog?.type === "edit_value" ? (
                         <Textarea
                             autoFocus
-                            className="min-h-[140px] w-full font-mono text-sm"
+                            intent="shortText"
+                            className="w-full font-mono text-sm"
                             value={dialog.draft}
                             onChange={(event) => onDraftChange(event.target.value)}
                             spellCheck={false}
@@ -124,6 +125,7 @@ export function JsonTreeEditDialog({
                     ) : (
                         <Input
                             autoFocus
+                            intent="shortText"
                             value={dialog?.draft || ""}
                             onChange={(event) => onDraftChange(event.target.value)}
                             placeholder={dialog?.type === "add_key" ? text("tree_new_key_placeholder") : undefined}

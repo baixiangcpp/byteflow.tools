@@ -6,6 +6,7 @@ import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 export function ChmodCalculatorPage() {
     const { t } = useLang()
@@ -59,7 +60,7 @@ export function ChmodCalculatorPage() {
     }
 
     return (
-        <div className="flex flex-col h-full">
+        <ToolPageContainer className="flex flex-col h-full">
             <div className="flex items-center justify-between border-b px-4 py-3 gap-2 flex-wrap">
                 <div className="flex items-center gap-2">
                     <ShieldCheck className="h-5 w-5 text-primary" />
@@ -137,6 +138,6 @@ export function ChmodCalculatorPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }

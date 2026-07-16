@@ -39,7 +39,7 @@ export function SeoFaqSection({ toolSlug }: { toolSlug?: string }) {
 
     return (
         <section className="border-t border-border/30 bg-muted/10 px-6 py-8 mt-auto">
-            <div className="max-w-3xl mx-auto space-y-6">
+            <div data-route-width-exception="readable-content" className="max-w-3xl mx-auto space-y-6">
                 <div>
                     <h2 className="text-lg font-bold tracking-tight">{data.title}</h2>
                     <p className="text-sm text-muted-foreground mt-1 leading-relaxed">{data.description}</p>

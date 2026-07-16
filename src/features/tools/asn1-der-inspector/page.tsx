@@ -11,6 +11,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { parseAsn1Der, type Asn1Node, type Asn1ParseResult } from "@/features/tools/asn1-der-inspector/utils"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 function NodeView({ node, depth = 0 }: { node: Asn1Node; depth?: number }) {
     return (
@@ -61,7 +62,7 @@ export function Asn1DerInspectorPage() {
     }, [])
 
     return (
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8">
+        <WideToolPageContainer className="flex flex-col gap-6 py-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
@@ -106,6 +107,6 @@ export function Asn1DerInspectorPage() {
                     </div>
                 </section>
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

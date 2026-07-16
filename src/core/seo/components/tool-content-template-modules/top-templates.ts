@@ -735,11 +735,11 @@ export const TOP_TOOL_CONTENT_TEMPLATES: Record<string, ToolContentTemplateData>
     },
     "qr-code-generator": {
         toolKey: "qr_code_generator",
-        intro: "Generate scannable QR codes for links, Wi-Fi onboarding, and contact sharing with configurable error correction, margin, size, and export format controls suitable for production print and digital workflows.",
+        intro: "Generate scannable QR codes or decode QR images locally for link checks, campaign audits, Wi-Fi onboarding, and contact sharing without uploading the payload or image.",
         whatThisToolDoes: [
             "It converts text payloads into QR matrices and renders preview output in real time for quick validation.",
             "It supports practical controls such as error correction level, margin spacing, and download options for PNG or SVG.",
-            "It helps teams verify payload integrity before publishing codes on packaging, slides, social cards, or in-app screens.",
+            "It reads one QR code from a PNG, JPEG, or WebP image and displays the decoded payload as text before any URL can be opened.",
         ],
         useCases: [
             "Create campaign QR links for print posters and event materials.",
@@ -747,6 +747,7 @@ export const TOP_TOOL_CONTENT_TEMPLATES: Record<string, ToolContentTemplateData>
             "Publish vCard or contact handoff codes for sales and support teams.",
             "Attach scanable deep links to product tutorials and help docs.",
             "Prepare SVG QR assets for responsive web and retina display use.",
+            "Decode an existing campaign QR image to verify its destination before publishing.",
         ],
         inputExamples: [
             { label: "URL payload", value: "https://example.com/qr?id=42" },
@@ -763,9 +764,11 @@ export const TOP_TOOL_CONTENT_TEMPLATES: Record<string, ToolContentTemplateData>
             { error: "Poor scan reliability in print", fix: "Increase margin and avoid low-contrast foreground/background combinations." },
             { error: "Logo overlay blocks finder patterns", fix: "Keep center overlays small and do not cover corner position markers." },
             { error: "Encoded URL redirects unexpectedly", fix: "Verify final URL after shortener and campaign parameter expansion." },
+            { error: "No QR code is found in an uploaded image", fix: "Use a sharper image with the complete code, quiet zone, and stronger contrast." },
         ],
         privacyNotes: [
             "QR generation is handled locally and payload text is not uploaded by this tool.",
+            "Uploaded QR images and decoded text remain in the browser and are not sent to a server.",
             "Avoid embedding secrets or one-time credentials in publicly distributed QR codes.",
             "Treat generated codes as shareable data because scanners can decode content instantly.",
         ],
@@ -774,6 +777,7 @@ export const TOP_TOOL_CONTENT_TEMPLATES: Record<string, ToolContentTemplateData>
             { q: "Should I export PNG or SVG?", a: "Use SVG for scalable design workflows and PNG for quick fixed-size sharing." },
             { q: "Can I encode non-URL text?", a: "Yes. QR codes can store plain text, Wi-Fi config strings, vCards, and more." },
             { q: "How do I test before publishing?", a: "Scan with multiple devices and camera qualities under realistic lighting conditions." },
+            { q: "Can I decode a QR image without uploading it?", a: "Yes. PNG, JPEG, and WebP decoding runs locally in the browser and displays URLs as text first." },
         ],
     },
     "color-converter": {

@@ -6,6 +6,7 @@ import { Copy, Eye, Code2, Download, Trash2, ShieldCheck } from "lucide-react"
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildMarkdownExportDocument, sanitizeMarkdownPreviewHtml } from "./export"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE_MARKDOWN_BY_LANG = {
     en: `# Hello, Markdown! 👋
@@ -237,7 +238,7 @@ export function MarkdownPreviewPage() {
     }
 
     return (
-        <div className="flex flex-col h-full">
+        <WideToolPageContainer className="flex flex-col h-full">
             {/* Header */}
             <div className="flex items-start justify-between border-b px-4 py-3 gap-3 flex-wrap">
                 <div className="flex min-w-0 items-start gap-2">
@@ -360,6 +361,6 @@ export function MarkdownPreviewPage() {
                     </div>
                 )}
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

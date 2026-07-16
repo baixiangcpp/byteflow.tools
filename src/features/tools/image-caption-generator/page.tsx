@@ -12,6 +12,7 @@ import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/fil
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { createDemoImageDataUrl, fileToDataUrl, loadImageElement, validateImageDimensions } from "@/core/utils/image-canvas-utils"
 import { FileUploadStatus, type FileUploadStatusState } from "@/features/tool-shell/file-upload-status"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 type CaptionPosition = "top" | "bottom"
 
@@ -250,7 +251,7 @@ export function ImageCaptionGeneratorPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -374,7 +375,7 @@ export function ImageCaptionGeneratorPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }
 

@@ -1,9 +1,9 @@
 import Link from "next/link"
-import { ArrowUpRight, Search, Workflow } from "lucide-react"
+import { ArrowUpRight, ChevronDown, Globe, Search, Sun, Workflow } from "lucide-react"
 import { DeferredMobileNavMenu } from "./deferred-mobile-nav-menu"
 import { DeferredNavbarControls } from "./deferred-navbar-controls"
 import { Button } from "@/components/ui/button"
-import type { Locale } from "@/core/i18n/i18n"
+import { LOCALE_NAMES, type Locale } from "@/core/i18n/i18n"
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
 import { cn } from "@/core/utils/utils"
 import { buildHomepageHref } from "@/core/routing/homepage-route"
@@ -30,7 +30,7 @@ export function Navbar({
             className="sticky top-0 z-50 px-3 pt-3 md:px-6 md:pt-4"
             style={{ paddingTop: "max(env(safe-area-inset-top), 1rem)" }}
         >
-            <div className="mx-auto flex h-16 w-full max-w-screen-2xl items-center gap-2 rounded-2xl border border-border/70 bg-background/80 px-3 shadow-xl shadow-black/10 backdrop-blur-xl supports-[backdrop-filter]:bg-background/72 dark:shadow-black/35 md:gap-3 md:px-4">
+            <div data-route-width-exception="global-shell" className="mx-auto flex h-16 w-full max-w-screen-2xl items-center gap-2 rounded-2xl border border-border/70 bg-background/80 px-3 shadow-xl shadow-black/10 backdrop-blur-xl supports-[backdrop-filter]:bg-background/72 dark:shadow-black/35 md:gap-3 md:px-4">
                 <Link
                     href={homeHref}
                     className="mr-1 flex shrink-0 items-center gap-2.5 rounded-lg px-1.5 py-1 transition-colors hover:bg-muted/65 max-[420px]:mr-0 max-[420px]:gap-2"
@@ -111,7 +111,21 @@ export function Navbar({
                             <span className="text-foreground">K</span>
                         </kbd>
                     </Button>
-                    <DeferredNavbarControls />
+                    <div className="relative h-11 shrink-0" data-navbar-controls-footprint>
+                        <div className="invisible flex h-11 items-center gap-1.5" aria-hidden="true">
+                            <div className="flex h-11 items-center gap-1 px-2.5">
+                                <Globe className="h-4 w-4" />
+                                <span className="hidden text-xs 2xl:inline">{LOCALE_NAMES[lang]}</span>
+                                <ChevronDown className="h-3 w-3" />
+                            </div>
+                            <div className="flex h-11 w-11 items-center justify-center">
+                                <Sun className="h-4 w-4" />
+                            </div>
+                        </div>
+                        <div className="absolute inset-0 flex items-center gap-1.5">
+                            <DeferredNavbarControls languageLabel={LOCALE_NAMES[lang]} />
+                        </div>
+                    </div>
                 </div>
             </div>
         </header>

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import { isValidLocale } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { LocalizedArticlePage } from "@/core/seo/components/localized-article-page"
+import { StaticPageContainer } from "@/components/layout/page-container"
 
 export default async function ValidateJsonBeforeApiRequestsPage({ params }: { params: Promise<{ lang: string }> }) {
     const { lang } = await params
@@ -17,7 +18,7 @@ export default async function ValidateJsonBeforeApiRequestsPage({ params }: { pa
     }
 
     return (
-        <article className="mx-auto w-full max-w-4xl space-y-8">
+        <StaticPageContainer as="article" className="space-y-8">
             <header className="rounded-2xl border border-border/70 bg-card/55 p-6 backdrop-blur-sm sm:p-7">
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">Cluster C1: JSON Ecosystem</p>
                 <h1 className="mt-3 text-3xl font-semibold tracking-tight">How to validate JSON before API requests</h1>
@@ -87,6 +88,6 @@ reason: enabled must be boolean`}</pre>
                     </Link>
                 </p>
             </footer>
-        </article>
+        </StaticPageContainer>
     )
 }

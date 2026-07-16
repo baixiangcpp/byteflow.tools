@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { Check, Sparkles, ShieldCheck, LockKeyhole, ArrowUpRight, HeartHandshake, ServerCog, Mail } from "lucide-react"
 import { useLang } from "@/core/i18n/lang-provider"
+import { StaticPageContainer } from "@/components/layout/page-container"
 
 export default function PricingPage() {
     const { t, lang } = useLang()
@@ -40,7 +41,7 @@ export default function PricingPage() {
     ]
 
     return (
-        <div className="mx-auto w-full max-w-6xl space-y-8">
+        <StaticPageContainer className="space-y-8">
             <section className="rounded-2xl border border-border/70 bg-card/55 p-6 backdrop-blur-sm sm:p-8">
                 <p className="inline-flex items-center rounded-full border border-primary/30 bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
                     {p.pricing_badge}
@@ -140,6 +141,6 @@ export default function PricingPage() {
                     {p.pricing_self_hosting_guide}
                 </Link>
             </section>
-        </div>
+        </StaticPageContainer>
     )
 }

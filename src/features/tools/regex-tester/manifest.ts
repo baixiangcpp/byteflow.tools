@@ -3,6 +3,7 @@ import type { ToolMeta } from "@/core/registry/types"
 export const toolManifest = {
     key: "regex_tester",
     slug: "regex-tester",
+    inputBehavior: "explicit-sample",
     category: "network-web",
     relatedTools: ["jsonpath_playground", "text_diff_checker", "url_encode_decode"],
     privacy: {

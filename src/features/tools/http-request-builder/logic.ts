@@ -1,10 +1,13 @@
 import {
-    jsJsonBodyExpression,
-    jsStringLiteral,
-    pythonJsonBodyExpression,
-    pythonStringLiteral,
     shellSingleQuote,
 } from "@/core/codegen/literals"
+import {
+    emitJavaScriptFetch,
+    emitPythonRequests,
+    normalizeHttpRequest,
+    type NormalizedHttpBody,
+    type NormalizedHttpHeader,
+} from "@/core/codegen/http-request"
 
 export type HttpMethod = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "HEAD" | "OPTIONS"
 export type BodyType = "none" | "json" | "raw" | "form-urlencoded"
@@ -35,14 +38,28 @@ function enabledQueryParams(queryParams: QueryEntry[]): QueryEntry[] {
     return queryParams.filter((param) => param.enabled && param.key.trim())
 }
 
-function headersObject(headers: HeaderEntry[], bodyType?: BodyType): Record<string, string> {
-    const result: Record<string, string> = {}
-    for (const header of enabledHeaders(headers)) {
-        result[header.key] = header.value
-    }
-    if (bodyType === "json") result["Content-Type"] = "application/json"
-    if (bodyType === "form-urlencoded") result["Content-Type"] = "application/x-www-form-urlencoded"
+function normalizedHeaders(headers: HeaderEntry[], bodyType?: BodyType): NormalizedHttpHeader[] {
+    const result = enabledHeaders(headers).map((header) => ({ name: header.key, value: header.value }))
+    if (bodyType === "json") result.push({ name: "Content-Type", value: "application/json" })
+    if (bodyType === "form-urlencoded") result.push({ name: "Content-Type", value: "application/x-www-form-urlencoded" })
     return result
+}
+
+function normalizedBody(bodyType: BodyType, body: string): NormalizedHttpBody | null {
+    if (!body || bodyType === "none") return null
+    return {
+        type: bodyType === "form-urlencoded" ? "form" : bodyType,
+        value: body,
+    }
+}
+
+function normalizedBuilderRequest(method: HttpMethod, url: string, headers: HeaderEntry[], bodyType: BodyType, body: string) {
+    return normalizeHttpRequest({
+        method,
+        url,
+        headers: normalizedHeaders(headers, bodyType),
+        body: normalizedBody(bodyType, body),
+    })
 }
 
 export function validateRequestUrl(url: string): UrlValidationResult {
@@ -97,66 +114,16 @@ export function generateCurl(method: HttpMethod, url: string, headers: HeaderEnt
         parts.push(`-d ${shellSingleQuote(body)}`)
     } else if (bodyType === "form-urlencoded" && body) {
         parts.push(`-H ${shellSingleQuote("Content-Type: application/x-www-form-urlencoded")}`)
-        parts.push(`--data-urlencode ${shellSingleQuote(body)}`)
+        parts.push(`--data-raw ${shellSingleQuote(body)}`)
     }
 
     return parts.join(" \\\n  ")
 }
 
 export function generateFetch(method: HttpMethod, url: string, headers: HeaderEntry[], bodyType: BodyType, body: string): string {
-    const headersObj = headersObject(headers, bodyType)
-    const optionLines = [`  method: ${jsStringLiteral(method)},`]
-
-    if (Object.keys(headersObj).length > 0) {
-        optionLines.push(`  headers: ${JSON.stringify(headersObj, null, 2).replace(/\n/g, "\n  ")},`)
-    }
-
-    if (body && bodyType !== "none") {
-        const jsonExpression = bodyType === "json" ? jsJsonBodyExpression(body) : null
-        optionLines.push(`  body: ${jsonExpression ?? jsStringLiteral(body)},`)
-    }
-
-    return [
-        `const response = await fetch(${jsStringLiteral(url)}, {`,
-        ...optionLines,
-        "});",
-        "const data = await response.json();",
-        "console.log(data);",
-    ].join("\n")
+    return emitJavaScriptFetch(normalizedBuilderRequest(method, url, headers, bodyType, body)).code
 }
 
 export function generatePythonRequests(method: HttpMethod, url: string, headers: HeaderEntry[], bodyType: BodyType, body: string): string {
-    const lines = ["import requests"]
-    const headersObj = headersObject(headers, bodyType)
-    const methodLower = method.toLowerCase()
-    const callArgs = [pythonStringLiteral(url)]
-
-    if (Object.keys(headersObj).length > 0) {
-        lines.push("", `headers = ${JSON.stringify(headersObj, null, 4)}`)
-        callArgs.push("headers=headers")
-    }
-
-    if (body && bodyType !== "none") {
-        if (bodyType === "json") {
-            const payloadExpression = pythonJsonBodyExpression(body)
-            if (payloadExpression) {
-                lines[0] = "import json"
-                lines.push("", `payload = ${payloadExpression}`)
-                callArgs.push("json=payload")
-            } else {
-                lines.push("", `data = ${pythonStringLiteral(body)}`)
-                callArgs.push("data=data")
-            }
-        } else {
-            lines.push("", `data = ${pythonStringLiteral(body)}`)
-            callArgs.push("data=data")
-        }
-    }
-
-    lines.push("")
-    lines.push(`response = requests.${methodLower}(${callArgs.join(", ")})`)
-    lines.push("print(response.status_code)")
-    lines.push("print(response.json())")
-
-    return lines.join("\n")
+    return emitPythonRequests(normalizedBuilderRequest(method, url, headers, bodyType, body)).code
 }

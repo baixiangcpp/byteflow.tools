@@ -3,6 +3,7 @@ import type { ToolMeta } from "@/core/registry/types"
 export const toolManifest = {
     key: "svg_to_png_converter",
     slug: "svg-to-png-converter",
+    inputBehavior: "explicit-sample",
     category: "generators",
     relatedTools: ["svg_optimizer", "svg_pattern_generator", "svg_blob_generator", "svg_stroke_to_fill_converter"],
     privacy: {

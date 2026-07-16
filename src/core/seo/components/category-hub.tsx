@@ -4,6 +4,7 @@ import { getToolsByCategory, type ToolCategory } from "@/core/registry"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { ArrowRight } from "lucide-react"
 import { CollectionPageJsonLd } from "./page-json-ld"
+import { CatalogPageContainer } from "@/components/layout/page-container"
 
 interface CategoryHubProps {
     lang: Locale
@@ -34,7 +35,7 @@ export function CategoryHub({ lang, category, titleKey, descriptionKey }: Catego
     }
 
     return (
-        <div className="flex max-h-full flex-col gap-7 overflow-y-auto pb-8">
+        <CatalogPageContainer className="flex max-h-full flex-col gap-7 overflow-y-auto pb-8">
             <CollectionPageJsonLd
                 lang={lang}
                 slug={slugByCategory[category]}
@@ -79,6 +80,6 @@ export function CategoryHub({ lang, category, titleKey, descriptionKey }: Catego
                     )
                 })}
             </div>
-        </div>
+        </CatalogPageContainer>
     )
 }

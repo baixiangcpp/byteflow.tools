@@ -8,6 +8,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { exportEnvVars, parseEnvFile, type EnvExportFormat } from "./utils"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE_ENV = `# Application Config
 NODE_ENV=production
@@ -75,7 +76,7 @@ export function EnvVariableParserPage() {
     }
 
     return (
-        <div className="flex min-w-0 flex-col h-full">
+        <WideToolPageContainer className="flex min-w-0 flex-col h-full">
             <div className="flex flex-col border-b px-4 py-3 gap-2">
                 <div className="flex items-center gap-2">
                     <FileText className="h-5 w-5 text-primary" />
@@ -174,6 +175,6 @@ export function EnvVariableParserPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

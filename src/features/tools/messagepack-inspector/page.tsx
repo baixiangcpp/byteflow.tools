@@ -12,6 +12,7 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { decodeMessagePack } from "./logic"
 import { SAMPLE_INPUT } from "./samples"
 import type { MessagePackInputMode } from "./types"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 export function MessagepackInspectorPage() {
     const { t } = useLang()
@@ -53,7 +54,7 @@ export function MessagepackInspectorPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col gap-6">
+        <ToolPageContainer className="flex h-full flex-col gap-6">
             <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -95,7 +96,7 @@ export function MessagepackInspectorPage() {
             </div>
 
             <RelatedTools toolKey="messagepack_inspector" />
-        </div>
+        </ToolPageContainer>
     )
 }
 

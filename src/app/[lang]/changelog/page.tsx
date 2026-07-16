@@ -4,6 +4,7 @@ import { GitPullRequest, Map, Sparkles, ThumbsUp } from "lucide-react"
 import type { Locale } from "@/core/i18n/i18n"
 import { isValidLocale } from "@/core/i18n/i18n"
 import { getTranslation } from "@/core/i18n/translations/catalog"
+import { StaticPageContainer } from "@/components/layout/page-container"
 
 const CHANGELOG_COPY: Record<Locale, {
     badge: string
@@ -218,7 +219,7 @@ export default async function ChangelogPage({ params }: { params: Promise<{ lang
     const copy = CHANGELOG_COPY[lang]
 
     return (
-        <div className="mx-auto w-full max-w-4xl space-y-8">
+        <StaticPageContainer className="space-y-8">
             <section className="rounded-lg border border-border/70 bg-card/55 p-6 sm:p-7">
                 <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">{copy.badge}</p>
                 <h1 className="mt-3 text-3xl font-semibold tracking-tight">{t.pages.changelog_title}</h1>
@@ -260,6 +261,6 @@ export default async function ChangelogPage({ params }: { params: Promise<{ lang
                     {copy.voteLink}
                 </a>
             </div>
-        </div>
+        </StaticPageContainer>
     )
 }

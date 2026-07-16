@@ -1,3 +1,5 @@
+import { serializeSpreadsheetSafeCsv } from "@/core/files/csv-export"
+
 /**
  * Local log parser utilities for JSON Lines, plain text, and common log formats
  */
@@ -178,17 +180,15 @@ export function filterLogs(
  * Export logs to CSV
  */
 export function exportToCSV(entries: ParsedLogEntry[]): string {
-    const lines = ["Line,Timestamp,Level,Message"]
-
-    entries.forEach((entry) => {
-        const line = entry.lineNumber
-        const timestamp = entry.timestamp || ""
-        const level = entry.level || "UNKNOWN"
-        const message = (entry.message || entry.raw).replace(/"/g, '""')
-        lines.push(`${line},"${timestamp}","${level}","${message}"`)
-    })
-
-    return lines.join("\n")
+    return serializeSpreadsheetSafeCsv([
+        ["Line", "Timestamp", "Level", "Message"],
+        ...entries.map((entry) => [
+            entry.lineNumber,
+            entry.timestamp || "",
+            entry.level || "UNKNOWN",
+            entry.message || entry.raw,
+        ] as const),
+    ])
 }
 
 /**

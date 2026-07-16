@@ -300,7 +300,7 @@ export function HtmlCssBeautifierTool({
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-[1400px] flex-col space-y-8">
+        <div className="flex h-full flex-col space-y-8">
             <input
                 ref={fileInputRef}
                 type="file"

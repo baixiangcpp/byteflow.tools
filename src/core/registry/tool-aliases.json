@@ -1,4 +1,5 @@
 {
   "cron-expression-generator": "crontab-generator",
-  "tls-chain-inspector": "certificate-decoder"
+  "tls-chain-inspector": "certificate-decoder",
+  "csv-to-json": "csv-json-converter"
 }

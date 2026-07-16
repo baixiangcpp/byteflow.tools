@@ -1,6 +1,7 @@
 import fs from "node:fs"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+import { loadOrderedToolManifests } from "../lib/tool-manifest-lib.js"
 
 const ROOT = process.cwd()
 const LEGACY_ROUTES_PATH = path.join(ROOT, "src/core/routing/legacy-routes.json")
@@ -8,6 +9,7 @@ const LEGACY_TAXONOMY_REDIRECTS_PATH = path.join(ROOT, "src/core/routing/legacy-
 const TOOL_ALIASES_PATH = path.join(ROOT, "src/core/registry/tool-aliases.json")
 const REDIRECTS_PATH = path.join(ROOT, "public/_redirects")
 const LOCALES = ["en", "zh-CN", "zh-TW", "ja", "ko", "de", "fr"]
+const DEFAULT_LOCALE = "en"
 const REDIRECT_STATUSES = new Set([301, 302])
 const STATIC_REDIRECT_LINES = [
     "/security.txt /.well-known/security.txt 301",
@@ -92,9 +94,25 @@ export function loadLegacyTaxonomyRedirects() {
     return validated
 }
 
-function buildRedirectLines(routes, taxonomyRedirects = loadLegacyTaxonomyRedirects()) {
+function loadCanonicalToolSlugs() {
+    return loadOrderedToolManifests().map((tool) => tool.slug)
+}
+
+function buildRedirectLines(
+    routes,
+    taxonomyRedirects = loadLegacyTaxonomyRedirects(),
+    canonicalToolSlugs = loadCanonicalToolSlugs(),
+) {
     return [
         ...STATIC_REDIRECT_LINES,
+        ...canonicalToolSlugs.map((slug) => `/${slug} /${DEFAULT_LOCALE}/${slug} 301`),
+        ...routes.flatMap((route) => {
+            if (!REDIRECT_STATUSES.has(route.status)) return []
+            return [`/${route.sourceSlug} /${DEFAULT_LOCALE}/${route.targetSlug} ${route.status}`]
+        }),
+        ...Object.entries(taxonomyRedirects).map(([sourceSlug, targetSlug]) => (
+            `/${sourceSlug} /${DEFAULT_LOCALE}/${targetSlug} 301`
+        )),
         ...routes.flatMap((route) => {
             if (!REDIRECT_STATUSES.has(route.status)) return []
             return LOCALES.map((locale) => `/${locale}/${route.sourceSlug} /${locale}/${route.targetSlug} ${route.status}`)
@@ -105,8 +123,12 @@ function buildRedirectLines(routes, taxonomyRedirects = loadLegacyTaxonomyRedire
     ]
 }
 
-export function buildRedirectsSource(routes = loadLegacyRoutes(), taxonomyRedirects = loadLegacyTaxonomyRedirects()) {
-    const lines = buildRedirectLines(routes, taxonomyRedirects)
+export function buildRedirectsSource(
+    routes = loadLegacyRoutes(),
+    taxonomyRedirects = loadLegacyTaxonomyRedirects(),
+    canonicalToolSlugs = loadCanonicalToolSlugs(),
+) {
+    const lines = buildRedirectLines(routes, taxonomyRedirects, canonicalToolSlugs)
 
     return `${lines.join("\n")}\n`
 }
@@ -114,8 +136,9 @@ export function buildRedirectsSource(routes = loadLegacyRoutes(), taxonomyRedire
 export function checkGeneratedLegacyRoutes() {
     const routes = loadLegacyRoutes()
     const taxonomyRedirects = loadLegacyTaxonomyRedirects()
+    const canonicalToolSlugs = loadCanonicalToolSlugs()
     const expectedAliases = buildToolAliasesSource(routes)
-    const expectedRedirects = buildRedirectsSource(routes, taxonomyRedirects)
+    const expectedRedirects = buildRedirectsSource(routes, taxonomyRedirects, canonicalToolSlugs)
     const problems = []
 
     if (!fs.existsSync(TOOL_ALIASES_PATH) || readText(TOOL_ALIASES_PATH) !== expectedAliases) {
@@ -131,14 +154,15 @@ export function checkGeneratedLegacyRoutes() {
         process.exit(1)
     }
 
-    return { routes, taxonomyRedirects }
+    return { routes, taxonomyRedirects, canonicalToolSlugs }
 }
 
 function writeGeneratedFiles() {
     const routes = loadLegacyRoutes()
     const taxonomyRedirects = loadLegacyTaxonomyRedirects()
+    const canonicalToolSlugs = loadCanonicalToolSlugs()
     fs.writeFileSync(TOOL_ALIASES_PATH, buildToolAliasesSource(routes))
-    fs.writeFileSync(REDIRECTS_PATH, buildRedirectsSource(routes, taxonomyRedirects))
+    fs.writeFileSync(REDIRECTS_PATH, buildRedirectsSource(routes, taxonomyRedirects, canonicalToolSlugs))
     console.log(`[generate:legacy-routes] wrote ${path.relative(ROOT, TOOL_ALIASES_PATH)}`)
     console.log(`[generate:legacy-routes] wrote ${path.relative(ROOT, REDIRECTS_PATH)}`)
 }

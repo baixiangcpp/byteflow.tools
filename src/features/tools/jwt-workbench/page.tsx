@@ -29,6 +29,7 @@ import { decodeJsonSegment, encodeJsonSegment, safeJsonStringify, signHmac } fro
 import { JwtSecretField } from "./jwt-secret-field"
 import { SAMPLE_HEADER, SAMPLE_PAYLOAD } from "./samples"
 import type { JwtAlg } from "./types"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const ICON_BUTTON_CLASS =
     "inline-flex h-7 w-7 items-center justify-center rounded-md text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:opacity-50 dark:hover:bg-accent/50"
@@ -258,7 +259,7 @@ export function JwtWorkbenchPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col space-y-6">
+        <ToolPageContainer className="flex h-full flex-col space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -392,6 +393,6 @@ export function JwtWorkbenchPage() {
             </div>
 
             <RelatedTools toolKey="jwt_workbench" />
-        </div>
+        </ToolPageContainer>
     )
 }

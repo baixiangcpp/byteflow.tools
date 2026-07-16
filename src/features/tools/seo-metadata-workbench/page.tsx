@@ -12,6 +12,7 @@ import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-war
 import { downloadText } from "./browser-actions"
 import { runSeoWorkbench } from "./logic"
 import { SAMPLE_INPUT } from "./samples"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 export function SeoMetadataWorkbenchPage() {
     const { t } = useLang()
@@ -49,7 +50,7 @@ export function SeoMetadataWorkbenchPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-6xl flex-col gap-6">
+        <ToolPageContainer className="flex h-full flex-col gap-6">
             <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -77,6 +78,6 @@ export function SeoMetadataWorkbenchPage() {
             </div>
 
             <RelatedTools toolKey="seo_metadata_workbench" />
-        </div>
+        </ToolPageContainer>
     )
 }

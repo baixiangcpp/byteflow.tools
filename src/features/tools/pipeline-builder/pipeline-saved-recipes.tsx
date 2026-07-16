@@ -29,6 +29,7 @@ export function PipelineSavedRecipes({
             <div className="mt-3 flex gap-2">
                 <select
                     aria-label={text("saved_recipe_select")}
+                    data-input-intent="scalar"
                     className="h-9 min-w-0 flex-1 rounded-md border bg-background px-2 text-sm"
                     value={selectedSavedId}
                     onChange={(event) => onSelectedSavedIdChange(event.target.value)}

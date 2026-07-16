@@ -90,6 +90,7 @@ export function PipelineStepList({
             <div className="mt-3 flex gap-2">
                 <select
                     aria-label={text("adapter_select")}
+                    data-input-intent="scalar"
                     className="h-11 min-w-0 flex-1 rounded-md border bg-background px-2 text-sm lg:h-9"
                     value={pendingToolKey}
                     onChange={(event) => onPendingToolKeyChange(event.target.value)}

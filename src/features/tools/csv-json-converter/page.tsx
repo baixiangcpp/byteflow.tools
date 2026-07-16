@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { ArrowLeftRight, Copy, Eraser, Play, Settings2, Download, Upload } from "lucide-react"
+import { ArrowLeftRight, Copy, Eraser, Play, Settings2, Download, Upload, TriangleAlert } from "lucide-react"
 import { useLang } from "@/core/i18n/lang-provider"
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
@@ -13,13 +13,6 @@ import { buildInputTooLargeMessage, countNonEmptyLines, isOverUtf8Budget, TOOL_R
 import { FILE_INPUT_POLICIES, readTextFileWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { readStorageString, removeStorageKey, writeStorageString } from "@/core/storage/tool-persistence"
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import {
     DIRECTION_STORAGE_KEY,
     DELIMITER_STORAGE_KEY,
     HAS_HEADER_STORAGE_KEY,
@@ -29,8 +22,9 @@ import {
 } from "./constants"
 import { runCsvJsonTask } from "./csv-json-task"
 import { InlineButton } from "./components"
-import type { Direction } from "./types"
-
+import { CsvSettingsPanel } from "./settings-panel"
+import type { CsvJsonDiagnostic, Direction } from "./types"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 async function loadToast() {
     const { toast } = await import("sonner")
     return toast
@@ -44,6 +38,7 @@ export function CsvJsonConverterPage() {
     const [input, setInput] = React.useState("")
     const [output, setOutput] = React.useState("")
     const [error, setError] = React.useState<string | null>(null)
+    const [diagnostics, setDiagnostics] = React.useState<CsvJsonDiagnostic[]>([])
     const [direction, setDirection] = React.useState<Direction>("csv-to-json")
     const [delimiter, setDelimiter] = React.useState("auto")
     const [hasHeader, setHasHeader] = React.useState(true)
@@ -117,6 +112,7 @@ export function CsvJsonConverterPage() {
         if (!input.trim()) {
             setOutput("")
             setError(null)
+            setDiagnostics([])
             setIsConverting(false)
             return
         }
@@ -124,6 +120,7 @@ export function CsvJsonConverterPage() {
         if (isOverUtf8Budget(input, TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes)) {
             setOutput("")
             setError(buildInputTooLargeMessage(t.common.local_input_too_large, TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes))
+            setDiagnostics([])
             setIsConverting(false)
             return
         }
@@ -131,22 +128,29 @@ export function CsvJsonConverterPage() {
         if (direction === "csv-to-json" && countNonEmptyLines(input, TOOL_RUNTIME_BUDGETS.maxCsvJsonRows).exceeded) {
             setOutput("")
             setError(t.common.local_row_limit_exceeded.replace("{count}", String(TOOL_RUNTIME_BUDGETS.maxCsvJsonRows)))
+            setDiagnostics([])
             setIsConverting(false)
             return
         }
 
         const controller = new AbortController()
         convertAbortControllerRef.current = controller
+        setOutput("")
+        setError(null)
+        setDiagnostics([])
         setIsConverting(true)
         void runCsvJsonTask({ input, direction, delimiter, hasHeader, typeInference }, { signal: controller.signal })
             .then((result) => {
                 if (convertRequestIdRef.current !== requestId) return
                 setOutput(result.output)
+                setDiagnostics(result.diagnostics)
                 setError(null)
             })
             .catch((e: unknown) => {
                 if (convertRequestIdRef.current !== requestId) return
                 const message = e instanceof Error ? e.message : String(e)
+                setOutput("")
+                setDiagnostics([])
                 setError(message === JSON_ARRAY_REQUIRED_ERROR ? toolT.error_json_array_required : message)
             })
             .finally(() => {
@@ -172,6 +176,7 @@ export function CsvJsonConverterPage() {
         setInput("")
         setOutput("")
         setError(null)
+        setDiagnostics([])
         removeStorageKey(INPUT_STORAGE_KEY)
     }
 
@@ -182,6 +187,7 @@ export function CsvJsonConverterPage() {
         setInput(output)
         setOutput("")
         setError(null)
+        setDiagnostics([])
     }
 
     const handleDownload = () => {
@@ -203,6 +209,8 @@ export function CsvJsonConverterPage() {
         const policy = FILE_INPUT_POLICIES["csv-json"]
         const validation = validateFileAgainstPolicy(file, policy)
         if (!validation.ok) {
+            setOutput("")
+            setDiagnostics([])
             setError(validation.reason === "too_large" ? buildInputTooLargeMessage(t.common.local_input_too_large, TOOL_RUNTIME_BUDGETS.maxCsvJsonInputBytes) : validation.message)
             e.target.value = ""
             return
@@ -211,6 +219,8 @@ export function CsvJsonConverterPage() {
             .then((text) => {
                 cancelPendingConversion()
                 setInput(text)
+                setOutput("")
+                setDiagnostics([])
                 setError(null)
             })
             .catch((error) => setError(error instanceof Error ? error.message : t.common.image_file_read_failed))
@@ -240,7 +250,7 @@ export function CsvJsonConverterPage() {
     const outputFormatLabel = direction === "csv-to-json" ? "JSON" : "CSV"
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-[1400px] mx-auto w-full">
+        <WideToolPageContainer className="flex flex-col h-full space-y-6">
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
@@ -297,54 +307,18 @@ export function CsvJsonConverterPage() {
             </div>
 
             {/* Settings Panel */}
-            {showSettings && (
-                <div className="p-4 border rounded-lg bg-card space-y-4">
-                    <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">
-                        {toolT.settings_title}
-                    </h3>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium">{toolT.delimiter_label}</label>
-                            <Select value={delimiter} onValueChange={setDelimiter}>
-                                <SelectTrigger><SelectValue /></SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="auto">{toolT.delimiter_auto_label}</SelectItem>
-                                    <SelectItem value=",">{toolT.delimiter_comma_label}</SelectItem>
-                                    <SelectItem value=";">{toolT.delimiter_semicolon_label}</SelectItem>
-                                    <SelectItem value="\t">{toolT.delimiter_tab_label}</SelectItem>
-                                    <SelectItem value="|">{toolT.delimiter_pipe_label}</SelectItem>
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <label className="text-sm font-medium flex items-center gap-2">
-                                <input
-                                    type="checkbox"
-                                    checked={hasHeader}
-                                    onChange={(e) => setHasHeader(e.target.checked)}
-                                    className="rounded border-input"
-                                />
-                                {direction === "csv-to-json"
-                                    ? toolT.csv_has_header_label
-                                    : toolT.json_include_header_label}
-                            </label>
-                        </div>
-                        {direction === "csv-to-json" && (
-                            <div className="space-y-2">
-                                <label className="text-sm font-medium flex items-center gap-2">
-                                    <input
-                                        type="checkbox"
-                                        checked={typeInference}
-                                        onChange={(e) => setTypeInference(e.target.checked)}
-                                        className="rounded border-input"
-                                    />
-                                    {toolT.type_inference_label}
-                                </label>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            )}
+            {showSettings ? (
+                <CsvSettingsPanel
+                    delimiter={delimiter}
+                    direction={direction}
+                    hasHeader={hasHeader}
+                    setDelimiter={setDelimiter}
+                    setHasHeader={setHasHeader}
+                    setTypeInference={setTypeInference}
+                    toolT={toolT}
+                    typeInference={typeInference}
+                />
+            ) : null}
 
             {/* Error */}
             {error && (
@@ -353,14 +327,34 @@ export function CsvJsonConverterPage() {
                 </div>
             )}
 
+            {diagnostics.length > 0 && (
+                <section
+                    aria-label={toolT.diagnostics_label}
+                    aria-live="polite"
+                    className="rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-sm"
+                >
+                    <div className="flex items-center gap-2 font-medium text-foreground">
+                        <TriangleAlert className="h-4 w-4 shrink-0 text-amber-600 dark:text-amber-400" aria-hidden="true" />
+                        <h2>{toolT.diagnostics_label}</h2>
+                    </div>
+                    <ul className="mt-2 space-y-1 text-muted-foreground">
+                        {diagnostics.map((diagnostic, index) => (
+                            <li key={`${diagnostic.code}-${diagnostic.row ?? 0}-${diagnostic.column ?? 0}-${index}`}>
+                                {diagnostic.message}
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
+
             {/* Workspace Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 min-h-[600px] border rounded-lg bg-card overflow-hidden">
+            <div data-input-intent="workbench" className="grid grid-cols-1 lg:grid-cols-2 gap-4 flex-1 min-h-[600px] border rounded-lg bg-card overflow-hidden">
                 {/* Input Pane */}
                 <div className="flex flex-col h-full border-b lg:border-b-0 lg:border-r">
                     <div className="tool-pane-header tool-pane-header-between">
                         <span>{t.common.input} ({inputFormatLabel})</span>
                         <label className="cursor-pointer">
-                            <input type="file" className="hidden" accept={FILE_INPUT_POLICIES["csv-json"].accept} onChange={handleFileUpload} />
+                            <input type="file" data-input-intent="payload" className="hidden" accept={FILE_INPUT_POLICIES["csv-json"].accept} onChange={handleFileUpload} />
                             <span className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors">
                                 <Upload className="h-3.5 w-3.5" />
                                 {toolT.input_upload_action}
@@ -369,6 +363,7 @@ export function CsvJsonConverterPage() {
                     </div>
                     <div className="flex-1 min-h-[300px]">
                         <MonacoEditor
+                            intent="payload"
                             height="100%"
                             defaultLanguage={inputLang}
                             language={inputLang}
@@ -378,6 +373,9 @@ export function CsvJsonConverterPage() {
                             onChange={(val) => {
                                 cancelPendingConversion()
                                 setInput(val || "")
+                                setOutput("")
+                                setDiagnostics([])
+                                setError(null)
                             }}
                             options={{
                                 minimap: { enabled: false },
@@ -405,8 +403,14 @@ export function CsvJsonConverterPage() {
                             </InlineButton>
                         </div>
                     </div>
+                    {direction === "json-to-csv" && (
+                        <p className="border-b border-border/70 bg-muted/30 px-3 py-2 text-xs text-muted-foreground">
+                            {toolT.spreadsheet_safe_note}
+                        </p>
+                    )}
                     <div className="flex-1 min-h-[300px]">
                         <MonacoEditor
+                            intent="generatedOutput"
                             height="100%"
                             defaultLanguage={outputLang}
                             language={outputLang}
@@ -429,6 +433,6 @@ export function CsvJsonConverterPage() {
             </div>
 
             <RelatedTools toolKey="csv_json_converter" />
-        </div>
+        </WideToolPageContainer>
     )
 }

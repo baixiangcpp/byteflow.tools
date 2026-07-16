@@ -11,6 +11,7 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { inspectGraphql } from "./logic"
 import { SAMPLE_INPUT, SAMPLE_INTROSPECTION, SAMPLE_VARIABLES } from "./samples"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 export function GraphqlWorkbenchPage() {
     const { t } = useLang()
@@ -66,7 +67,7 @@ export function GraphqlWorkbenchPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-7xl flex-col gap-6">
+        <WideToolPageContainer className="flex h-full flex-col gap-6">
             <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -111,6 +112,6 @@ export function GraphqlWorkbenchPage() {
             </div>
 
             <RelatedTools toolKey="graphql_workbench" />
-        </div>
+        </WideToolPageContainer>
     )
 }

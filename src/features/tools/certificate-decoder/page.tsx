@@ -7,6 +7,7 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 // ─── ASN.1 / PEM Parser (Pure JS, no dependencies) ──────────────────────────
 
@@ -318,7 +319,7 @@ export function CertificateDecoderPage() {
     ]
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-5xl mx-auto w-full">
+        <ToolPageContainer className="flex flex-col h-full space-y-6">
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
@@ -407,6 +408,6 @@ export function CertificateDecoderPage() {
             )}
 
             <RelatedTools toolKey="certificate_decoder" />
-        </div>
+        </ToolPageContainer>
     )
 }

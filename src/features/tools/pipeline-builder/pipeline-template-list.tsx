@@ -46,6 +46,7 @@ export function PipelineTemplateList({ onLoadTemplate, templates, text }: Pipeli
                     <Search className="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                     <Input
                         aria-label={text("recipe_gallery_search")}
+                        intent="shortText"
                         className="pl-8"
                         placeholder={text("recipe_gallery_search_placeholder")}
                         value={query}

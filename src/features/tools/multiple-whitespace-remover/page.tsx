@@ -10,6 +10,7 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { removeExtraWhitespace } from "@/core/utils/whitespace-utils"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildToolHandoffLink } from "@/core/routing/tool-handoff"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 export function MultipleWhitespaceRemoverPage() {
     const { t, lang } = useLang()
@@ -112,7 +113,7 @@ export function MultipleWhitespaceRemoverPage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-[1400px] flex-col space-y-8">
+        <WideToolPageContainer className="flex h-full flex-col space-y-8">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -171,6 +172,6 @@ export function MultipleWhitespaceRemoverPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

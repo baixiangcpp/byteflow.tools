@@ -8,6 +8,7 @@ import { TOOL_REGISTRY } from "@/core/registry"
 import { getExternalRequestToolDisclosures } from "@/core/registry/privacy"
 import { JsonLdScript } from "@/core/seo/components/json-ld-script"
 import { SITE_URL, buildCanonicalUrl } from "@/core/seo/urls"
+import { StaticPageContainer } from "@/components/layout/page-container"
 
 const SECURITY_ADVISORY_URL = "https://github.com/baixiangcpp/byteflow.tools/security/advisories/new"
 const GITHUB_REPO_URL = "https://github.com/baixiangcpp/byteflow.tools"
@@ -142,7 +143,7 @@ export default async function TrustCenterPage({
     }
 
     return (
-        <div className="mx-auto w-full max-w-6xl space-y-8">
+        <StaticPageContainer className="space-y-8">
             <JsonLdScript data-jsonld="trust-center" jsonLd={jsonLd} />
 
             <section className="rounded-lg border border-border/70 bg-card/55 p-6 backdrop-blur-sm sm:p-7">
@@ -378,6 +379,6 @@ export default async function TrustCenterPage({
                     </a>
                 </div>
             </section>
-        </div>
+        </StaticPageContainer>
     )
 }

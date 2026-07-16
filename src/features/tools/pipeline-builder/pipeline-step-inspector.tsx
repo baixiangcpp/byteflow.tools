@@ -70,6 +70,7 @@ export function PipelineStepInspector({
                             <Label htmlFor="step-label">{text("step_label")}</Label>
                             <Input
                                 id="step-label"
+                                intent="shortText"
                                 value={selectedStep.label ?? ""}
                                 onChange={(event) => onUpdateStep(selectedStep.id, (step) => ({ ...step, label: event.target.value }))}
                             />
@@ -100,10 +101,11 @@ export function PipelineStepInspector({
                                 <Label htmlFor="constant-input">{text("constant_input")}</Label>
                                 <Textarea
                                     id="constant-input"
+                                    intent="shortText"
                                     value={selectedStep.constantInput ?? ""}
                                     onChange={(event) => onUpdateStep(selectedStep.id, (step) => ({ ...step, constantInput: event.target.value }))}
                                     placeholder={text("constant_input_placeholder")}
-                                    className="min-h-[120px] font-mono text-xs"
+                                    className="font-mono text-xs"
                                 />
                                 <p className="rounded-md border border-amber-300/60 bg-amber-50 p-2 text-xs leading-5 text-amber-900 dark:border-amber-500/30 dark:bg-amber-950/30 dark:text-amber-100">
                                     {text("constant_input_persistence_hint")}
@@ -139,6 +141,7 @@ export function PipelineStepInspector({
                 <input
                     ref={fileInputRef}
                     type="file"
+                    data-input-intent="payload"
                     aria-label={text("import_recipe")}
                     accept="application/json,.json"
                     className="hidden"

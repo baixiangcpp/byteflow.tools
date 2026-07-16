@@ -24,14 +24,24 @@ function sitemapContainsSlugUrl(sitemap, slug) {
 }
 
 function main() {
-    const { routes, taxonomyRedirects } = checkGeneratedLegacyRoutes()
+    const { routes, taxonomyRedirects, canonicalToolSlugs: generatedCanonicalToolSlugs } = checkGeneratedLegacyRoutes()
     const canonicalToolSlugs = new Set(loadOrderedToolManifests().map((tool) => tool.slug))
+    const redirects = fs.readFileSync(path.join(ROOT, "public/_redirects"), "utf8")
     const routeGroups = readJson(ROUTE_GROUPS_PATH)
     const sitemapRouteSlugs = new Set([
         ...(routeGroups.hubSlugs || []),
         ...(routeGroups.staticSlugs || []),
     ])
     const problems = []
+
+    for (const slug of generatedCanonicalToolSlugs) {
+        if (!canonicalToolSlugs.has(slug)) {
+            problems.push(`${slug}: generated direct-entry redirect is not a canonical tool`)
+        }
+        if (!redirects.includes(`/${slug} /en/${slug} 301`)) {
+            problems.push(`${slug}: missing default-locale direct-entry redirect`)
+        }
+    }
 
     for (const route of routes) {
         if (canonicalToolSlugs.has(route.sourceSlug)) {
@@ -83,7 +93,7 @@ function main() {
         process.exit(1)
     }
 
-    console.log(`[check:legacy-routes] OK: ${routes.length} legacy route(s) and ${Object.keys(taxonomyRedirects).length} legacy taxonomy route(s) have valid targets, redirects, and sitemap exclusions`)
+    console.log(`[check:legacy-routes] OK: ${generatedCanonicalToolSlugs.length} direct tool route(s), ${routes.length} legacy route(s), and ${Object.keys(taxonomyRedirects).length} legacy taxonomy route(s) have valid targets, redirects, and sitemap exclusions`)
 }
 
 main()

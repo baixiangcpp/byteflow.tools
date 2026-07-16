@@ -138,4 +138,11 @@ describe("HttpRequestBuilderPage", () => {
 
         expect(toggleFavoriteToolKeyMock).not.toHaveBeenCalled()
     })
+
+    it("disables request body controls for GET and explains the constraint", () => {
+        renderHttpBuilder()
+
+        expect(screen.getByRole("combobox", { name: "Body" })).toBeDisabled()
+        expect(screen.getByRole("status")).toHaveTextContent("GET and HEAD requests cannot include a body")
+    })
 })

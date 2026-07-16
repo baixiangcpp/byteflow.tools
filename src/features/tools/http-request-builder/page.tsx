@@ -11,6 +11,7 @@ import { RelatedTools } from "@/core/seo/components/related-tools"
 import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { fetchMethodAllowsBody } from "@/core/codegen/http-request"
 import {
     Select,
     SelectContent,
@@ -29,6 +30,7 @@ import {
     type HttpMethod,
     type QueryEntry,
 } from "./logic"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 let nextId = 0
 
@@ -99,15 +101,18 @@ export function HttpRequestBuilderPage() {
         if (!urlValidation.ok) return url
         return buildUrlWithQueryParams(urlValidation.url, queryParams)
     }, [queryParams, url, urlValidation])
+    const bodyAllowed = fetchMethodAllowsBody(method)
+    const effectiveBodyType = bodyAllowed ? bodyType : "none"
+    const effectiveBody = bodyAllowed ? body : ""
 
     const generatedCode = React.useMemo(() => {
         if (!urlValidation.ok) return urlValidationMessage
         switch (codeType) {
-            case "curl": return generateCurl(method, requestUrl, headers, bodyType, body)
-            case "fetch": return generateFetch(method, requestUrl, headers, bodyType, body)
-            case "python": return generatePythonRequests(method, requestUrl, headers, bodyType, body)
+            case "curl": return generateCurl(method, requestUrl, headers, effectiveBodyType, effectiveBody)
+            case "fetch": return generateFetch(method, requestUrl, headers, effectiveBodyType, effectiveBody)
+            case "python": return generatePythonRequests(method, requestUrl, headers, effectiveBodyType, effectiveBody)
         }
-    }, [body, bodyType, codeType, headers, method, requestUrl, urlValidation, urlValidationMessage])
+    }, [codeType, effectiveBody, effectiveBodyType, headers, method, requestUrl, urlValidation, urlValidationMessage])
 
     const handleCopy = async () => {
         if (!urlValidation.ok) return
@@ -148,7 +153,7 @@ export function HttpRequestBuilderPage() {
     }
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-5xl mx-auto w-full">
+        <ToolPageContainer className="flex flex-col h-full space-y-6">
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                 <div>
@@ -312,8 +317,14 @@ export function HttpRequestBuilderPage() {
                     <div className="p-5 border rounded-lg bg-card shadow-sm space-y-4">
                         <div className="flex items-center justify-between">
                             <h3 className="font-semibold text-sm uppercase tracking-wider text-muted-foreground">{toolT.body}</h3>
-                            <Select value={bodyType} onValueChange={(v) => setBodyType(v as BodyType)}>
-                                <SelectTrigger className="w-40"><SelectValue /></SelectTrigger>
+                            <Select value={bodyType} onValueChange={(v) => setBodyType(v as BodyType)} disabled={!bodyAllowed}>
+                                <SelectTrigger
+                                    className="w-40"
+                                    aria-label={toolT.body}
+                                    aria-describedby={!bodyAllowed ? "http-body-method-warning" : undefined}
+                                >
+                                    <SelectValue />
+                                </SelectTrigger>
                                 <SelectContent>
                                     <SelectItem value="none">{toolT.body_type_none}</SelectItem>
                                     <SelectItem value="json">JSON</SelectItem>
@@ -322,6 +333,11 @@ export function HttpRequestBuilderPage() {
                                 </SelectContent>
                             </Select>
                         </div>
+                        {!bodyAllowed && (
+                            <p id="http-body-method-warning" role="status" className="text-sm text-muted-foreground">
+                                {toolT.body_not_allowed}
+                            </p>
+                        )}
                         {bodyType !== "none" && (
                             <Textarea
                                 aria-label={toolT.body_input_label}
@@ -329,6 +345,7 @@ export function HttpRequestBuilderPage() {
                                 placeholder={bodyType === "json" ? JSON_BODY_PLACEHOLDER : FORM_BODY_PLACEHOLDER}
                                 value={body}
                                 onChange={(e) => setBody(e.target.value)}
+                                disabled={!bodyAllowed}
                                 spellCheck={false}
                             />
                         )}
@@ -368,6 +385,6 @@ export function HttpRequestBuilderPage() {
             </div>
 
             <RelatedTools toolKey="http_request_builder" />
-        </div>
+        </ToolPageContainer>
     )
 }

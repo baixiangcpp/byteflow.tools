@@ -3,6 +3,7 @@ import type { ToolMeta } from "@/core/registry/types"
 export const toolManifest = {
     key: "jsonpath_playground",
     slug: "jsonpath-playground",
+    inputBehavior: "explicit-sample",
     category: "formatters",
     relatedTools: ["json_formatter", "json_diff_viewer", "json_to_typescript", "yaml_json_converter"],
     privacy: {

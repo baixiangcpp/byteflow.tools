@@ -32,7 +32,7 @@ export function AppLayout({
         : "relative flex min-h-0 flex-1 flex-col bg-background/55"
     const contentClassName = isHomePage
         ? "flex-1 min-h-0"
-        : "flex-1 min-h-0 mx-auto w-full max-w-screen-2xl px-4 pb-10 pt-4 md:px-8 md:pt-8 lg:px-10"
+        : "min-h-0 flex-1 pb-10 pt-4 md:pt-8"
 
     return (
         <div className="flex min-h-screen flex-col bg-background pl-[env(safe-area-inset-left)] pr-[env(safe-area-inset-right)] pb-[env(safe-area-inset-bottom)]">

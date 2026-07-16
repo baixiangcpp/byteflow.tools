@@ -11,6 +11,7 @@ import { OutputWrapModeControl, type OutputWrapMode } from "@/features/tool-shel
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { buildInputTooLargeMessage, isOverUtf8Budget, TOOL_RUNTIME_BUDGETS } from "@/core/performance/tool-runtime-budgets"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 function flattenJson(obj: unknown, prefix = "", context = { nodes: 0, truncated: false }): Record<string, string> {
     const result: Record<string, string> = {}
@@ -168,7 +169,7 @@ export function JsonDiffViewerPage() {
         : error
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-[1400px] flex-col space-y-8 py-8 px-4">
+        <WideToolPageContainer className="flex h-full flex-col space-y-8 py-8">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-center gap-3">
                     <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -295,6 +296,6 @@ export function JsonDiffViewerPage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

@@ -41,6 +41,7 @@ import { PipelineStepList } from "./pipeline-step-list"
 import { PipelineTemplateList } from "./pipeline-template-list"
 import { PipelineUsageGuide } from "./pipeline-usage-guide"
 import type { OptionValue } from "./types"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 const ONBOARDING_DISMISSED_KEY = "byteflow:pipeline-builder:onboarding-dismissed"
 const TEMPLATE_PARAM = "template"
@@ -363,7 +364,7 @@ export function PipelineBuilderPage() {
     ]
 
     return (
-        <div className="mx-auto flex w-full max-w-7xl flex-col gap-6 px-4 py-8">
+        <WideToolPageContainer className="flex flex-col gap-6 py-8">
             <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight">
@@ -416,7 +417,7 @@ export function PipelineBuilderPage() {
                 />
             ) : null}
 
-            <div className="grid gap-4 lg:grid-cols-[340px_minmax(0,1fr)_360px]">
+            <div data-input-intent="workbench" className="grid gap-4 lg:grid-cols-[340px_minmax(0,1fr)_360px]">
                 <aside className="space-y-4" aria-label={text("recipe_builder")}>
                     <section className="rounded-lg border bg-card p-4">
                         <div className="space-y-3">
@@ -424,6 +425,7 @@ export function PipelineBuilderPage() {
                                 <Label htmlFor="recipe-name">{text("recipe_name")}</Label>
                                 <Input
                                     id="recipe-name"
+                                    intent="shortText"
                                     value={recipe.name}
                                     onChange={(event) => updateRecipe((current) => ({ ...current, name: event.target.value }))}
                                 />
@@ -432,6 +434,7 @@ export function PipelineBuilderPage() {
                                 <Label htmlFor="recipe-description">{text("recipe_description")}</Label>
                                 <Input
                                     id="recipe-description"
+                                    intent="shortText"
                                     value={recipe.description ?? ""}
                                     onChange={(event) => updateRecipe((current) => ({ ...current, description: event.target.value }))}
                                     placeholder={text("recipe_description_placeholder")}
@@ -488,13 +491,14 @@ export function PipelineBuilderPage() {
                         </div>
                         <Textarea
                             id="pipeline-input"
+                            intent="payload"
                             value={initialInput}
                             onChange={(event) => {
                                 setInitialInput(event.target.value)
                                 setResult(null)
                             }}
                             placeholder={text("initial_input_placeholder")}
-                            className="min-h-[220px] font-mono text-sm"
+                            className="font-mono text-sm"
                             spellCheck={false}
                             aria-describedby="pipeline-input-count"
                         />
@@ -507,10 +511,11 @@ export function PipelineBuilderPage() {
                         </div>
                         <Textarea
                             id="pipeline-output"
+                            intent="generatedOutput"
                             value={finalOutput}
                             readOnly
                             placeholder={text("final_output_placeholder")}
-                            className="min-h-[260px] bg-muted font-mono text-sm"
+                            className="bg-muted font-mono text-sm"
                             spellCheck={false}
                             aria-describedby="pipeline-output-count pipeline-run-log-status"
                         />
@@ -547,6 +552,6 @@ export function PipelineBuilderPage() {
                     validation={validation}
                 />
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }

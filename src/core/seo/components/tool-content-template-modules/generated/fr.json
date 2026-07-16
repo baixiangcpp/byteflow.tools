@@ -1387,9 +1387,9 @@
   "qr-code-generator": {
     "content": {
       "toolKey": "qr_code_generator",
-      "intro": "Générez des QR codes avec des tailles et des couleurs personnalisées. Téléchargez au format PNG ou SVG. Cette page est utile pour valider la génération dans le navigateur et conserver des entrées/sorties reproductibles avant livraison, partage ou passation.",
+      "intro": "Générez des QR codes avec des tailles et des couleurs personnalisées, puis téléchargez-les en PNG ou SVG. Vous pouvez aussi décoder localement dans le navigateur des images QR PNG, JPEG ou WebP ; leur contenu n'est pas envoyé. Un message clair apparaît si l'image est illisible ou ne contient pas de QR code.",
       "whatThisToolDoes": [
-        "Générateur de QR Code met à jour le résultat immédiatement à partir de l’entrée courante afin de vérifier d’abord la sortie principale.",
+        "Le Générateur de QR Code met à jour l’aperçu immédiatement et peut lire le texte d’images QR importées localement.",
         "Le point central de cette page est le suivant : Générez des QR codes avec des tailles et des couleurs personnalisées. Téléchargez au format PNG ou SVG.",
         "En intégrant Générateur de QR Code dans un flux de génération, les écarts de format, de contenu ou de paramètres apparaissent plus tôt."
       ],

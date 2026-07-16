@@ -11,6 +11,7 @@ import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-actio
 import { readStorageString, writeStorageString } from "@/core/storage/tool-persistence"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildSensitiveToolHandoffLink } from "@/core/routing/tool-handoff"
+import { WideToolPageContainer } from "@/components/layout/page-container"
 
 type UrlExample = {
     id: string
@@ -166,7 +167,7 @@ export function UrlEncodeDecodePage() {
     ]
 
     return (
-        <div className="mx-auto flex h-full w-full max-w-[1400px] flex-col space-y-8">
+        <WideToolPageContainer className="flex h-full flex-col space-y-8">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-foreground">
@@ -309,7 +310,7 @@ export function UrlEncodeDecodePage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </WideToolPageContainer>
     )
 }
 

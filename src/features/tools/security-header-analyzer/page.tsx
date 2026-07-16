@@ -10,6 +10,7 @@ import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-war
 import { RelatedTools } from "@/core/seo/components/related-tools"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { analyzeSecurityHeaders, formatSecurityHeaderReport, type HeaderStatus } from "@/features/tools/security-header-analyzer/utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE_HEADERS = `HTTP/2 200
 content-security-policy: default-src 'self'; script-src 'self'; object-src 'none'; frame-ancestors 'none'; base-uri 'self'
@@ -99,7 +100,7 @@ export function SecurityHeaderAnalyzerPage() {
     ]
 
     return (
-        <div className="flex h-full flex-col">
+        <ToolPageContainer className="flex h-full flex-col">
             <div className="border-b px-4 py-3">
                 <div className="flex flex-col gap-3">
                     <div className="flex items-center gap-2">
@@ -118,9 +119,9 @@ export function SecurityHeaderAnalyzerPage() {
             </div>
 
             <div className="flex-1 overflow-auto p-4 md:p-6">
-                <SensitiveInputWarning variant="log" className="mx-auto mb-4 w-full max-w-6xl" />
+                <SensitiveInputWarning variant="log" className="mb-4 w-full" />
 
-                <div className="mx-auto grid w-full max-w-6xl gap-4 lg:grid-cols-5">
+                <div className="grid w-full gap-4 lg:grid-cols-5">
                     <section className="lg:col-span-2 space-y-2">
                         <label className="text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
                             {text("header_input_label")}
@@ -189,10 +190,10 @@ export function SecurityHeaderAnalyzerPage() {
                     </section>
                 </div>
 
-                <div className="mx-auto mt-6 w-full max-w-6xl">
+                <div className="mt-6 w-full">
                     <RelatedTools toolKey="security_header_analyzer" />
                 </div>
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }

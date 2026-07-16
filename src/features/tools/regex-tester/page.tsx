@@ -8,6 +8,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
 import { runRegexTestTask } from "./regex-test-task"
 import { type RegexMatchSummary } from "./utils"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 const SAMPLE_PATTERN = "[A-Z][a-z]+"
 const SAMPLE_FLAGS = "g"
@@ -54,7 +55,12 @@ export function RegexTesterPage() {
                     setMatches(result.matches)
                     setError(result.limited ? toolT.error_match_limit : null)
                 } else {
-                    setError(result.error || toolT.error_invalid_regex)
+                    const localizedTaskError = result.errorCode === "worker_timeout"
+                        ? toolT.error_worker_timeout
+                        : result.errorCode === "safe_evaluation_unavailable"
+                            ? toolT.error_safe_evaluation_unavailable
+                            : null
+                    setError(localizedTaskError || result.error || toolT.error_invalid_regex)
                     setMatches([])
                 }
             })
@@ -74,7 +80,15 @@ export function RegexTesterPage() {
         return () => {
             controller.abort()
         }
-    }, [flags, pattern, testString, toolT.error_invalid_regex, toolT.error_match_limit])
+    }, [
+        flags,
+        pattern,
+        testString,
+        toolT.error_invalid_regex,
+        toolT.error_match_limit,
+        toolT.error_safe_evaluation_unavailable,
+        toolT.error_worker_timeout,
+    ])
 
     const handleClear = () => {
         setPattern("")
@@ -112,7 +126,7 @@ export function RegexTesterPage() {
     ]
 
     return (
-        <div className="flex flex-col h-full space-y-6 max-w-5xl mx-auto">
+        <ToolPageContainer className="flex flex-col h-full space-y-6">
             <div className="flex flex-col gap-4">
                 <div>
                     <h1 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -139,7 +153,8 @@ export function RegexTesterPage() {
                                 <Input
                                     id="regex-pattern"
                                     type="text"
-                                    className={`font-mono text-lg h-12 pl-8 pr-4 ${error ? 'border-destructive focus-visible:ring-destructive' : ''}`}
+                                    intent="shortText"
+                                    className={`font-mono text-lg pl-8 pr-4 ${error ? 'border-destructive focus-visible:ring-destructive' : ''}`}
                                     placeholder={toolT.pattern_placeholder}
                                     value={pattern}
                                     onChange={(e) => setPattern(e.target.value)}
@@ -159,7 +174,8 @@ export function RegexTesterPage() {
                             <Input
                                 id="regex-flags"
                                 type="text"
-                                className="font-mono text-lg h-12"
+                                intent="scalar"
+                                className="font-mono text-lg"
                                 placeholder={toolT.flags_placeholder}
                                 value={flags}
                                 onChange={(e) => setFlags(e.target.value.replace(/[^gimsuy]/g, ''))} // Restrict to valid JS regex flags
@@ -175,7 +191,8 @@ export function RegexTesterPage() {
                         <span>{toolT.test_string_label}</span>
                     </div>
                     <Textarea
-                        className="flex-1 min-h-[350px] resize-none border-0 focus-visible:ring-1 focus-visible:ring-ring/50 p-4 font-mono text-base leading-relaxed"
+                        intent="payload"
+                        className="flex-1 resize-none border-0 focus-visible:ring-1 focus-visible:ring-ring/50 p-4 font-mono text-base leading-relaxed"
                         placeholder={toolT.test_string_placeholder}
                         value={testString}
                         onChange={(e) => setTestString(e.target.value)}
@@ -247,6 +264,6 @@ export function RegexTesterPage() {
                 </div>
 
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }

@@ -6,6 +6,7 @@ import { toast } from "sonner"
 import { Input } from "@/components/ui/input"
 import { useLang } from "@/core/i18n/lang-provider"
 import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { ToolPageContainer } from "@/components/layout/page-container"
 
 type HttpCategory = "1xx" | "2xx" | "3xx" | "4xx" | "5xx"
 
@@ -112,7 +113,7 @@ export function HttpStatusCodesPage() {
     }
 
     return (
-        <div className="flex flex-col h-full">
+        <ToolPageContainer className="flex flex-col h-full">
             <div className="flex items-center justify-between border-b px-4 py-3 gap-2 flex-wrap">
                 <div className="flex items-center gap-2">
                     <Globe className="h-5 w-5 text-primary" />
@@ -159,6 +160,6 @@ export function HttpStatusCodesPage() {
                     </div>
                 ))}
             </div>
-        </div>
+        </ToolPageContainer>
     )
 }

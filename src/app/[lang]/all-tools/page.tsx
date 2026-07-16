@@ -7,6 +7,7 @@ import { TOOL_CAPABILITY_LABELS, TOOL_FAMILY_LABELS, type ToolCapability, type T
 import { getGuideIndexCopy, getGuideIndexItems } from "@/core/growth/guide-index"
 import { AllToolsDiscovery } from "@/features/tool-discovery/all-tools-discovery"
 import { AllToolsQueryRobots } from "@/features/tool-discovery/all-tools-query-robots"
+import { CatalogPageContainer } from "@/components/layout/page-container"
 
 const POPULAR_DISCOVERY_TAGS = [
     "json",
@@ -95,7 +96,7 @@ export default async function AllToolsPage({ params }: { params: Promise<{ lang:
         }),
     }))
     return (
-        <div className="mx-auto flex w-full max-w-6xl flex-col gap-7 pb-8">
+        <CatalogPageContainer className="flex flex-col gap-7 pb-8">
             <AllToolsQueryRobots />
             <header className="rounded-2xl border border-border/70 bg-card/55 p-5 backdrop-blur-sm sm:p-6">
                 <p className="text-xs font-semibold uppercase tracking-[0.22em] text-primary/80">
@@ -175,6 +176,6 @@ export default async function AllToolsPage({ params }: { params: Promise<{ lang:
                     tags: workflow.tags,
                 }))}
             />
-        </div>
+        </CatalogPageContainer>
     )
 }

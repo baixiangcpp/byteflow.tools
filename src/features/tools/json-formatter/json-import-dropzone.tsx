@@ -56,6 +56,7 @@ export function JsonImportDropzone({
             <input
                 ref={fileInputRef}
                 type="file"
+                data-input-intent="payload"
                 aria-label={text("import_file")}
                 accept={TEXT_FILE_IMPORT_ACCEPT}
                 className="hidden"

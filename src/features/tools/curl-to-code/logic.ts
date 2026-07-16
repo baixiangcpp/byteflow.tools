@@ -1,138 +1,72 @@
 import {
     goStringLiteral,
-    jsJsonBodyExpression,
-    jsStringLiteral,
     phpStringLiteral,
-    pythonJsonBodyExpression,
-    pythonStringLiteral,
-    rustStringLiteral,
 } from "@/core/codegen/literals"
+import {
+    emitJavaScriptFetch,
+    emitPythonRequests,
+    emitRustReqwest,
+    normalizeHttpRequest,
+    type NormalizedHttpRequest,
+} from "@/core/codegen/http-request"
+import {
+    parseCurl,
+    type CurlDiagnostic,
+    type ParsedRequest,
+} from "./parser"
+
+export { parseCurl } from "./parser"
+export type {
+    CurlDataOption,
+    CurlDiagnostic,
+    CurlDiagnosticCode,
+    CurlDiagnosticSeverity,
+    CurlParseResult,
+    ParsedDataPart,
+    ParsedHeader,
+    ParsedRequest,
+} from "./parser"
 
 export type OutputLang = "javascript" | "python" | "go" | "php" | "rust"
 
-export interface ParsedRequest {
-    method: string
-    url: string
-    headers: Record<string, string>
-    data: string
-    dataType: "raw" | "json" | "form"
+function effectiveHeaders(req: ParsedRequest): Array<[string, string]> {
+    const headers = Object.entries(req.headers)
+    const hasContentType = headers.some(([name]) => name.toLowerCase() === "content-type")
+    if (req.dataParts.length > 0 && !hasContentType) {
+        headers.push(["Content-Type", "application/x-www-form-urlencoded"])
+    }
+    return headers
 }
 
-export function parseCurl(curlStr: string): ParsedRequest | null {
-    try {
-        const result: ParsedRequest = { method: "GET", url: "", headers: {}, data: "", dataType: "raw" }
-
-        const normalized = curlStr.replace(/\\\n\s*/g, " ").replace(/\\\r?\n\s*/g, " ").trim()
-        const rest = normalized.replace(/^curl\s+/, "")
-        const urlMatch = rest.match(/['"]?(https?:\/\/[^\s'"]+)['"]?/)
-        if (urlMatch) {
-            result.url = urlMatch[1]
-        }
-
-        const methodMatch = rest.match(/-X\s+['"]?(\w+)['"]?/i)
-        if (methodMatch) {
-            result.method = methodMatch[1].toUpperCase()
-        }
-
-        const headerRegex = /-H\s+['"]([^'"]+)['"]/g
-        let headerMatch: RegExpExecArray | null
-        while ((headerMatch = headerRegex.exec(rest)) !== null) {
-            const colonIdx = headerMatch[1].indexOf(":")
-            if (colonIdx > 0) {
-                const key = headerMatch[1].slice(0, colonIdx).trim()
-                const value = headerMatch[1].slice(colonIdx + 1).trim()
-                result.headers[key] = value
-            }
-        }
-
-        const dataMatch = rest.match(/(?:-d|--data|--data-raw|--data-binary)\s+['"]([^'"]*)['"]/i) ||
-            rest.match(/(?:-d|--data|--data-raw|--data-binary)\s+(\S+)/i)
-        if (dataMatch) {
-            result.data = dataMatch[1]
-            if (result.method === "GET") result.method = "POST"
-
-            try {
-                JSON.parse(result.data)
-                result.dataType = "json"
-            } catch {
-                if (result.data.includes("=") && !result.data.includes("{")) {
-                    result.dataType = "form"
-                }
-            }
-        }
-
-        if (!result.url) return null
-        return result
-    } catch {
-        return null
-    }
+function normalizedParsedRequest(req: ParsedRequest): NormalizedHttpRequest {
+    return normalizeHttpRequest({
+        method: req.method,
+        url: req.url,
+        headers: effectiveHeaders(req).map(([name, value]) => ({ name, value })),
+        body: req.dataParts.length > 0
+            ? { type: req.dataType === "form" ? "form" : req.dataType, value: req.data }
+            : null,
+    })
 }
 
 export function toJavaScript(req: ParsedRequest): string {
-    const lines: string[] = []
-    const hasHeaders = Object.keys(req.headers).length > 0
-    const hasBody = !!req.data
-
-    lines.push(`const response = await fetch(${jsStringLiteral(req.url)}, {`)
-    lines.push(`  method: ${jsStringLiteral(req.method)},`)
-    if (hasHeaders) {
-        lines.push(`  headers: ${JSON.stringify(req.headers, null, 2).replace(/\n/g, "\n  ")},`)
-    }
-    if (hasBody) {
-        const jsonExpression = req.dataType === "json" ? jsJsonBodyExpression(req.data) : null
-        lines.push(`  body: ${jsonExpression ?? jsStringLiteral(req.data)},`)
-    }
-    lines.push("});")
-    lines.push("")
-    lines.push("const data = await response.json();")
-    lines.push("console.log(data);")
-    return lines.join("\n")
+    return emitJavaScriptFetch(normalizedParsedRequest(req)).code
 }
 
 export function toPython(req: ParsedRequest): string {
-    const lines: string[] = ["import requests"]
-    const hasHeaders = Object.keys(req.headers).length > 0
-    const method = req.method.toLowerCase()
-    const args = [pythonStringLiteral(req.url)]
-
-    if (hasHeaders) {
-        lines.push("", `headers = ${JSON.stringify(req.headers, null, 4)}`)
-        args.push("headers=headers")
-    }
-
-    if (req.data) {
-        if (req.dataType === "json") {
-            const payloadExpression = pythonJsonBodyExpression(req.data)
-            if (payloadExpression) {
-                lines[0] = "import json"
-                lines.push("", `payload = ${payloadExpression}`)
-                args.push("json=payload")
-            } else {
-                lines.push("", `data = ${pythonStringLiteral(req.data)}`)
-                args.push("data=data")
-            }
-        } else {
-            lines.push("", `data = ${pythonStringLiteral(req.data)}`)
-            args.push("data=data")
-        }
-    }
-
-    lines.push("")
-    lines.push(`response = requests.${method}(${args.join(", ")})`)
-    lines.push("print(response.status_code)")
-    lines.push("print(response.json())")
-    return lines.join("\n")
+    return emitPythonRequests(normalizedParsedRequest(req)).code
 }
 
 export function toGo(req: ParsedRequest): string {
+    const hasBody = req.dataParts.length > 0
     const lines: string[] = [
         "package main", "", "import (", "    \"fmt\"", "    \"io\"", "    \"net/http\"",
     ]
-    if (req.data) lines.push("    \"strings\"")
+    if (hasBody) lines.push("    \"strings\"")
     lines.push(")", "")
     lines.push("func main() {")
 
-    if (req.data) {
+    if (hasBody) {
         lines.push(`    body := strings.NewReader(${goStringLiteral(req.data)})`)
         lines.push(`    req, err := http.NewRequest(${goStringLiteral(req.method)}, ${goStringLiteral(req.url)}, body)`)
     } else {
@@ -140,7 +74,7 @@ export function toGo(req: ParsedRequest): string {
     }
     lines.push("    if err != nil { panic(err) }")
 
-    for (const [key, value] of Object.entries(req.headers)) {
+    for (const [key, value] of effectiveHeaders(req)) {
         lines.push(`    req.Header.Set(${goStringLiteral(key)}, ${goStringLiteral(value)})`)
     }
 
@@ -157,13 +91,13 @@ export function toPhp(req: ParsedRequest): string {
     const lines: string[] = ["<?php", "", "$ch = curl_init();", ""]
     lines.push(`curl_setopt($ch, CURLOPT_URL, ${phpStringLiteral(req.url)});`)
     lines.push("curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);")
-    if (req.method !== "GET") {
+    if (req.method !== "GET" || req.dataParts.length > 0) {
         lines.push(`curl_setopt($ch, CURLOPT_CUSTOMREQUEST, ${phpStringLiteral(req.method)});`)
     }
-    if (req.data) {
+    if (req.dataParts.length > 0) {
         lines.push(`curl_setopt($ch, CURLOPT_POSTFIELDS, ${phpStringLiteral(req.data)});`)
     }
-    const headerEntries = Object.entries(req.headers)
+    const headerEntries = effectiveHeaders(req)
     if (headerEntries.length > 0) {
         lines.push("curl_setopt($ch, CURLOPT_HTTPHEADER, [")
         for (const [key, value] of headerEntries) {
@@ -179,36 +113,36 @@ export function toPhp(req: ParsedRequest): string {
 }
 
 export function toRust(req: ParsedRequest): string {
-    const lines: string[] = [
-        "use reqwest;", "", "#[tokio::main]", "async fn main() -> Result<(), Box<dyn std::error::Error>> {",
-        "    let client = reqwest::Client::new();", "",
-    ]
-    const method = req.method.toLowerCase()
-    lines.push(`    let response = client.${method}(${rustStringLiteral(req.url)})`)
-    for (const [key, value] of Object.entries(req.headers)) {
-        lines.push(`        .header(${rustStringLiteral(key)}, ${rustStringLiteral(value)})`)
+    return emitRustReqwest(normalizedParsedRequest(req)).code
+}
+
+function generateCode(request: ParsedRequest, lang: OutputLang): string {
+    switch (lang) {
+        case "javascript": return toJavaScript(request)
+        case "python": return toPython(request)
+        case "go": return toGo(request)
+        case "php": return toPhp(request)
+        case "rust": return toRust(request)
     }
-    if (req.data) {
-        lines.push(`        .body(${rustStringLiteral(req.data)})`)
+}
+
+export interface CurlConversionResult {
+    code: string
+    diagnostics: CurlDiagnostic[]
+}
+
+export function convertCurlToCodeResult(curl: string, lang: OutputLang): CurlConversionResult {
+    if (!curl.trim()) return { code: "", diagnostics: [] }
+    const parsed = parseCurl(curl)
+    if (!parsed.ok) return { code: "", diagnostics: parsed.diagnostics }
+    return {
+        code: generateCode(parsed.request, lang),
+        diagnostics: parsed.diagnostics,
     }
-    lines.push("        .send()")
-    lines.push("        .await?;")
-    lines.push("")
-    lines.push("    println!(\"{}\", response.text().await?);")
-    lines.push("    Ok(())")
-    lines.push("}")
-    return lines.join("\n")
 }
 
 export function convertCurlToCode(curl: string, lang: OutputLang, parseError: string): string {
-    if (!curl.trim()) return ""
-    const parsed = parseCurl(curl)
-    if (!parsed) return parseError
-    switch (lang) {
-        case "javascript": return toJavaScript(parsed)
-        case "python": return toPython(parsed)
-        case "go": return toGo(parsed)
-        case "php": return toPhp(parsed)
-        case "rust": return toRust(parsed)
-    }
+    const result = convertCurlToCodeResult(curl, lang)
+    if (result.diagnostics.some((item) => item.severity === "error")) return parseError
+    return result.code
 }

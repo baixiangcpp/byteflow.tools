@@ -1,11 +1,11 @@
-import { FILE_INPUT_POLICIES, formatPixelLimit, validateFileAgainstPolicy, type FileInputPolicy } from "@/core/files/file-input-policy"
+import { FILE_INPUT_POLICIES, formatPixelLimit, validateFileContentAgainstPolicy, type FileInputPolicy } from "@/core/files/file-input-policy"
 
 export async function fileToDataUrl(
     file: File,
     policy: FileInputPolicy = FILE_INPUT_POLICIES["image-standard"],
     options: { signal?: AbortSignal } = {},
 ): Promise<string> {
-    const validation = validateFileAgainstPolicy(file, policy)
+    const validation = await validateFileContentAgainstPolicy(file, policy)
     if (!validation.ok) throw new Error(validation.message)
     return new Promise((resolve, reject) => {
         const reader = new FileReader()

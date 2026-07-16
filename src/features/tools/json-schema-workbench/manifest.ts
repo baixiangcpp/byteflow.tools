@@ -3,6 +3,7 @@ import type { ToolMeta } from "@/core/registry/types"
 export const toolManifest = {
     key: "json_schema_workbench",
     slug: "json-schema-workbench",
+    inputBehavior: "explicit-sample",
     category: "formatters",
     relatedTools: ["json_formatter", "jsonpath_playground", "json_diff_viewer", "json_to_typescript"],
     privacy: {

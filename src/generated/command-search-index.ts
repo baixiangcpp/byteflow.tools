@@ -1867,14 +1867,24 @@ const COMMAND_SEARCH_INDEX: Record<string, CommandSearchIndexEntry> = {
         "slug": "qr-code-generator",
         "keywords": [
             "qr code generator",
+            "qr code decoder",
+            "scan qr image",
             "generate qr code online",
             "qr code maker"
         ],
         "aliases": [],
-        "searchKeywords": [],
+        "searchKeywords": [
+            "decode qr",
+            "read qr code",
+            "qr image scanner",
+            "二维码解析",
+            "QRコード読み取り",
+            "QR 코드 해독"
+        ],
         "family": "generators",
         "tags": [
-            "generators"
+            "generators",
+            "image"
         ],
         "capabilities": [
             "browser-local",
