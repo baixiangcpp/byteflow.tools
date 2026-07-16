@@ -6,20 +6,43 @@ function read(path: string) {
 }
 
 describe("issue #7 Next bundled PostCSS advisory runbook", () => {
-    it("keeps stable remediation evidence and closure criteria documented", () => {
+    it("keeps the stable remediation and regression checks documented", () => {
         const doc = read("docs/security/next-postcss-advisory-runbook.md")
-        const packageJson = read("package.json")
+        const ci = read(".github/workflows/ci.yml")
+        const packageJson = JSON.parse(read("package.json")) as {
+            dependencies: Record<string, string>
+            devDependencies: Record<string, string>
+            overrides: Record<string, unknown>
+            scripts: Record<string, string>
+        }
+        const packageLock = JSON.parse(read("package-lock.json")) as {
+            packages: Record<string, { version?: string }>
+        }
 
         expect(doc).toContain("issue #7")
         expect(doc).toContain("GHSA-qx2v-qp2m-jg93")
         expect(doc).toContain("postcss >= 8.5.10")
-        expect(doc).toContain("Checked on 2026-06-27")
-        expect(doc).toContain("16.2.9")
+        expect(doc).toContain("Checked on 2026-07-16")
+        expect(doc).toContain("16.2.10")
         expect(doc).toContain("8.4.31")
+        expect(doc).toContain("controlled npm override")
+        expect(doc).toContain("0 moderate/high/critical")
+        expect(doc).toContain("npm run check:audit:prod")
         expect(doc).toContain("npm run check:audit:prod-high")
         expect(doc).toContain("npm run test:e2e:pwa")
         expect(doc).toContain("Do not run `npm audit fix --force`")
-        expect(packageJson).toContain('"next": "16.2.9"')
-        expect(packageJson).toContain('"@next/bundle-analyzer": "16.2.9"')
+        expect(packageJson.dependencies.next).toBe("16.2.10")
+        expect(packageJson.devDependencies["@next/bundle-analyzer"]).toBe("16.2.10")
+        expect(packageJson.devDependencies["eslint-config-next"]).toBe("16.2.10")
+        expect(packageJson.overrides).toMatchObject({
+            next: { postcss: "8.5.10" },
+        })
+        expect(packageJson.scripts["check:audit:prod"]).toBe(
+            "npm audit --omit=dev --audit-level=moderate",
+        )
+        expect(ci).toMatch(/^\s*run: npm run check:audit:prod\s*$/m)
+        expect(packageLock.packages["node_modules/next/node_modules/postcss"]?.version).toBe(
+            "8.5.10",
+        )
     })
 })
