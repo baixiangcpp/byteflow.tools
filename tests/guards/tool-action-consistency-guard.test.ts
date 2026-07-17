@@ -113,6 +113,12 @@ describe("tool action consistency guard", () => {
             "src/features/tools/curl-to-code/page.tsx",
             "src/features/tools/url-parser/page.tsx",
             "src/features/tools/pipeline-builder/page.tsx",
+            "src/features/tools/jwt-decoder/page.tsx",
+            "src/features/tools/markdown-preview/page.tsx",
+            "src/features/tools/crontab-generator/page.tsx",
+            "src/features/tools/qr-code-generator/page.tsx",
+            "src/features/tools/csv-json-converter/page.tsx",
+            "src/features/tools/list-randomizer/page.tsx",
         ]
 
         expect(read("src/features/tool-shell/tool-action-feedback.ts")).toContain("copyTextWithToolFeedback")
@@ -121,14 +127,41 @@ describe("tool action consistency guard", () => {
 
         for (const file of sharedFeedbackTools) {
             const source = read(file)
-            expect(source, file).toMatch(/copyTextWithToolFeedback|downloadedFileFeedback|notifyToolAction(Failure|Success)/)
+            expect(source, file).toMatch(/copyTextWith(?:Lazy)?ToolFeedback|downloadedFileFeedback|notifyToolAction(Failure|Success)/)
+        }
+
+        const lazyFeedbackTools = [
+            "src/features/tools/jwt-decoder/page.tsx",
+            "src/features/tools/markdown-preview/page.tsx",
+            "src/features/tools/crontab-generator/page.tsx",
+            "src/features/tools/qr-code-generator/page.tsx",
+            "src/features/tools/csv-json-converter/page.tsx",
+            "src/features/tools/list-randomizer/page.tsx",
+        ]
+        for (const file of lazyFeedbackTools) {
+            const source = read(file)
+            expect(source, file).toContain("copyTextWithLazyToolFeedback")
+            expect(source, file).not.toContain('from "@/features/tool-shell/tool-action-feedback"')
+        }
+
+        for (const file of lazyFeedbackTools) {
+            const source = read(file)
+            expect(source, file).toContain("useInlineToolActionFeedback")
+            expect(source, file).toContain("<InlineToolActionFeedback")
+        }
+
+        for (const file of [
+            "src/features/tools/qr-code-generator/page.tsx",
+            "src/features/tools/list-randomizer/page.tsx",
+        ]) {
+            expect(read(file), file).toContain("result.announce ? { ...result, announce: false } : result")
         }
 
         for (const file of auditedFeedbackFiles) {
             const source = read(file)
             if (source.includes('id: "copy') || source.includes("id: \"copy_")) {
-                expect(source, file).toMatch(/copyTextWithToolFeedback|safeClipboardWrite/)
-                expect(source, file).toMatch(/copy_failed|copyTextWithToolFeedback/)
+                expect(source, file).toMatch(/copyTextWith(?:Lazy)?ToolFeedback|safeClipboardWrite/)
+                expect(source, file).toMatch(/copy_failed|copyTextWith(?:Lazy)?ToolFeedback/)
             }
             if (source.includes('id: "download') || source.includes("id: \"download_")) {
                 expect(source, file).toMatch(/downloaded|downloadedFileFeedback/)

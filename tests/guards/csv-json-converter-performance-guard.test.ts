@@ -12,11 +12,21 @@ describe("csv json converter performance guard", () => {
             path.join(process.cwd(), "src/features/tools/csv-json-converter/components.tsx"),
             "utf8",
         )
+        const lazyFeedbackSource = fs.readFileSync(
+            path.join(process.cwd(), "src/features/tool-shell/lazy-tool-action-feedback.ts"),
+            "utf8",
+        )
 
         expect(source).not.toContain('from "sonner"')
+        expect(source).not.toContain('from "@/features/tool-shell/tool-action-feedback"')
         expect(source).not.toContain('from "@/components/ui/button"')
         expect(componentsSource).not.toContain('from "@/components/ui/button"')
-        expect(source).toContain('await import("sonner")')
+        expect(source).toContain("copyTextWithLazyToolFeedback")
+        expect(lazyFeedbackSource).toContain('await import("sonner")')
+        expect(lazyFeedbackSource).toContain('import { safeClipboardWrite } from "@/core/clipboard/clipboard"')
+        expect(lazyFeedbackSource.indexOf("await safeClipboardWrite")).toBeLessThan(
+            lazyFeedbackSource.indexOf('await import("sonner")'),
+        )
         expect(componentsSource).toContain("function InlineButton(")
     })
 

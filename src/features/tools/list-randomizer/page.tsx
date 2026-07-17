@@ -8,7 +8,8 @@ import { RelatedTools } from "@/core/seo/components/related-tools"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
-import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { copyTextWithLazyToolFeedback } from "@/features/tool-shell/lazy-tool-action-feedback"
+import { InlineToolActionFeedback, useInlineToolActionFeedback } from "@/features/tool-shell/inline-tool-action-feedback"
 import { readStorageJson, writeStorageJson } from "@/core/storage/tool-persistence"
 import { importTextFile, TEXT_FILE_IMPORT_ACCEPT } from "@/core/files/text-file-import"
 import { randomizeList, type RandomizeMode } from "@/features/tools/list-randomizer/utils"
@@ -80,6 +81,7 @@ export function ListRandomizerPage() {
     const [hydrated, setHydrated] = React.useState(false)
     const [importError, setImportError] = React.useState<string | null>(null)
     const [isImportDragActive, setIsImportDragActive] = React.useState(false)
+    const { feedback: copyFeedback, run: runCopyAction } = useInlineToolActionFeedback()
     const fileInputRef = React.useRef<HTMLInputElement | null>(null)
 
     React.useEffect(() => {
@@ -181,12 +183,12 @@ export function ListRandomizerPage() {
     }
 
     const handleCopy = async () => {
-        const result = await safeClipboardWrite(output)
-        if (!result.ok) {
-            toast.error(t.common.copy_failed)
-            return
-        }
-        toast.success(t.common.copied)
+        const result = await runCopyAction(() => copyTextWithLazyToolFeedback(
+            t,
+            output,
+            t.common.output,
+        ))
+        return result.announce ? { ...result, announce: false } : result
     }
 
     const handleDownload = () => downloadTextFile(output, "randomized-list.txt")
@@ -214,6 +216,8 @@ export function ListRandomizerPage() {
                 </div>
                 <ToolActionBar actions={actions} />
             </div>
+
+            <InlineToolActionFeedback feedback={copyFeedback} />
 
             <div
                 className={`rounded-xl border border-dashed px-4 py-3 transition-colors ${isImportDragActive ? "border-primary bg-primary/10" : "border-border/70 bg-card/40"}`}

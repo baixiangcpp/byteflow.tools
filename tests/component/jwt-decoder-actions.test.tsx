@@ -1,5 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
+import { toast } from "sonner"
+import { drainQueuedToastFeedback, setToastLiveRegionReady } from "@/core/feedback/toast-live-region-state"
 import { LangProvider } from "@/core/i18n/lang-provider"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { JwtDecoderPage } from "@/features/tools/jwt-decoder/page"
@@ -48,6 +50,9 @@ function localStorageValues() {
 
 describe("JwtDecoderPage actions", () => {
     beforeEach(() => {
+        vi.clearAllMocks()
+        setToastLiveRegionReady(false)
+        drainQueuedToastFeedback()
         const store = new Map<string, string>()
         Object.defineProperty(window, "localStorage", {
             configurable: true,
@@ -68,6 +73,27 @@ describe("JwtDecoderPage actions", () => {
         })
     })
 
+    it("shows immediate first-copy feedback without depending on the toaster", async () => {
+        renderJwtDecoder()
+
+        fireEvent.click(screen.getByRole("button", { name: "Sample" }))
+        const copyHeader = await screen.findByRole("button", { name: "Copy: Header" })
+        await waitFor(() => expect(copyHeader).toBeEnabled())
+        fireEvent.click(copyHeader)
+
+        await waitFor(() => {
+            expect(navigator.clipboard.writeText).toHaveBeenCalledWith(expect.stringContaining('"alg": "HS256"'))
+        })
+        const inlineFeedback = await waitFor(() => {
+            const element = document.querySelector<HTMLElement>("[data-inline-tool-action-feedback]")
+            expect(element).toBeVisible()
+            return element!
+        })
+        expect(inlineFeedback).toHaveTextContent("Copied to clipboard. Header copied")
+        expect(toast.success).not.toHaveBeenCalled()
+        expect(drainQueuedToastFeedback()).toEqual([])
+    })
+
     it("keeps decode-only warning visible and copies claim values", async () => {
         renderJwtDecoder()
 
@@ -80,10 +106,14 @@ describe("JwtDecoderPage actions", () => {
         })
 
         fireEvent.click(screen.getByRole("button", { name: "Copy exp claim value" }))
-        expect(navigator.clipboard.writeText).toHaveBeenLastCalledWith("1516242622")
+        await waitFor(() => {
+            expect(navigator.clipboard.writeText).toHaveBeenLastCalledWith("1516242622")
+        })
 
         fireEvent.click(screen.getByRole("button", { name: "Copy iat claim value" }))
-        expect(navigator.clipboard.writeText).toHaveBeenLastCalledWith("1516239022")
+        await waitFor(() => {
+            expect(navigator.clipboard.writeText).toHaveBeenLastCalledWith("1516239022")
+        })
         expect(screen.getByText("This token is expired according to its exp claim.")).toBeInTheDocument()
     })
 

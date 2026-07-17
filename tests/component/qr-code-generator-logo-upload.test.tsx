@@ -1,6 +1,7 @@
 import { fireEvent, render, screen, waitFor } from "@testing-library/react"
 import { beforeEach, describe, expect, it, vi } from "vitest"
 import { FILE_INPUT_POLICIES } from "@/core/files/file-input-policy"
+import { drainQueuedToastFeedback, setToastLiveRegionReady } from "@/core/feedback/toast-live-region-state"
 import { LangProvider } from "@/core/i18n/lang-provider"
 import { getTranslation } from "@/core/i18n/translations/catalog"
 import { QrCodeGeneratorPage } from "@/features/tools/qr-code-generator/page"
@@ -62,6 +63,8 @@ describe("QR code generator logo uploads", () => {
         })
         toCanvasMock.mockResolvedValue(undefined)
         decodeQrImageFileMock.mockResolvedValue({ ok: false, error: "no_qr" })
+        setToastLiveRegionReady(false)
+        drainQueuedToastFeedback()
         HTMLCanvasElement.prototype.getContext = vi.fn(() => null) as unknown as HTMLCanvasElement["getContext"]
         HTMLCanvasElement.prototype.toDataURL = vi.fn(() => "data:image/png;base64,qr-code")
     })
@@ -132,6 +135,34 @@ describe("QR code generator logo uploads", () => {
         fireEvent.click(screen.getByRole("button", { name: "Reset" }))
         expect(content).toHaveValue("user-owned QR payload")
         expect(screen.getByText(/Size:\s*256px/)).toBeInTheDocument()
+    })
+
+    it("uses one inline announcement while copy toast feedback is not mounted", async () => {
+        const writeText = vi.fn().mockResolvedValue(undefined)
+        Object.defineProperty(navigator, "clipboard", {
+            configurable: true,
+            value: { writeText },
+        })
+        const { container } = renderPage()
+        const content = container.querySelector<HTMLTextAreaElement>("#qr-content")
+
+        fireEvent.change(content!, { target: { value: "https://byteflow.tools/qr-copy" } })
+        const copyButton = screen.getByRole("button", { name: "Copy" })
+        await waitFor(() => expect(copyButton).toBeEnabled())
+        fireEvent.click(copyButton)
+
+        await waitFor(() => expect(writeText).toHaveBeenCalledWith("data:image/png;base64,qr-code"))
+        const inlineFeedback = await waitFor(() => {
+            const element = document.querySelector<HTMLElement>("[data-inline-tool-action-feedback]")
+            expect(element).toBeVisible()
+            return element!
+        })
+        expect(inlineFeedback).toHaveTextContent("Copied to clipboard. Data URL copied to clipboard")
+        await waitFor(() => {
+            expect(document.querySelector("[data-tool-action-status]")).not.toBeInTheDocument()
+        })
+
+        expect(drainQueuedToastFeedback()).toEqual([])
     })
 
     it("decodes an uploaded QR image without opening URL payloads automatically", async () => {

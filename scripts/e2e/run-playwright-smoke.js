@@ -1081,19 +1081,51 @@ async function assertMobileTouchTargets(page, routeLabel) {
 
 async function clickCopyAndExpectToast(page, button, label) {
     await button.waitFor({ state: "visible", timeout: 15_000 });
-    await page.waitForTimeout(2500);
     await button.scrollIntoViewIfNeeded();
     await button.evaluate((element) => {
         element.scrollIntoView({ block: "center", inline: "nearest" });
     });
     await button.click();
 
-    const copiedToast = page.getByText(/copied/i).first();
-    await copiedToast.waitFor({ state: "visible", timeout: 5_000 }).catch(() => {
-        throw new Error(`Expected copied toast after ${label}.`);
+    const copiedFeedback = page.locator("[data-sonner-toast], [data-inline-tool-action-feedback]")
+        .filter({ hasText: /copied/i })
+        .first();
+    await copiedFeedback.waitFor({ state: "visible", timeout: 5_000 }).catch(() => {
+        throw new Error(`Expected copied feedback after ${label}.`);
+    });
+    await page.waitForFunction(() => {
+        const feedback = [...document.querySelectorAll("[data-sonner-toast], [data-inline-tool-action-feedback]")]
+            .find((element) => element.textContent?.toLowerCase().includes("copied"));
+        if (!(feedback instanceof HTMLElement)) return false;
+
+        const style = getComputedStyle(feedback);
+        const rect = feedback.getBoundingClientRect();
+        const viewport = visualViewport || {
+            offsetLeft: 0,
+            offsetTop: 0,
+            width: innerWidth,
+            height: innerHeight,
+        };
+        const viewportRight = viewport.offsetLeft + viewport.width;
+        const viewportBottom = viewport.offsetTop + viewport.height;
+        const sonnerReady = !feedback.matches("[data-sonner-toast]")
+            || (feedback.dataset.mounted === "true" && feedback.dataset.visible === "true");
+        return sonnerReady
+            && Number.parseFloat(style.opacity) >= 0.99
+            && style.visibility !== "hidden"
+            && rect.width > 0
+            && rect.height > 0
+            && rect.left >= viewport.offsetLeft - 1
+            && rect.right <= viewportRight + 1
+            && rect.top >= viewport.offsetTop - 1
+            && rect.bottom <= viewportBottom + 1;
+    }, null, { timeout: 5_000 }).catch(() => {
+        throw new Error(`Expected opaque copied feedback fully inside the visual viewport after ${label}.`);
     });
 
-    await page.locator("[data-sonner-toast]").filter({ hasText: /copied/i }).first()
+    await page.locator("[data-sonner-toast], [data-inline-tool-action-feedback]")
+        .filter({ hasText: /copied/i })
+        .first()
         .waitFor({ state: "hidden", timeout: 8_000 })
         .catch(() => {});
 }

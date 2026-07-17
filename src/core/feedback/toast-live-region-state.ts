@@ -13,6 +13,7 @@ export function isToastLiveRegionReady() {
 }
 
 export function setToastLiveRegionReady(ready: boolean) {
+    if (liveRegionReady === ready) return
     liveRegionReady = ready
 }
 

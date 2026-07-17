@@ -3,16 +3,16 @@
 import * as React from "react"
 import { ShieldAlert, Eraser, TestTube2, Copy, KeyRound, Clock3 } from "lucide-react"
 import Link from "next/link"
-import { toast } from "sonner"
 import { useLang } from "@/core/i18n/lang-provider"
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
 import { Textarea } from "@/components/ui/textarea"
 import { Button } from "@/components/ui/button"
 import { ToolActionBar, type ToolAction } from "@/features/tool-shell/tool-action-bar"
+import { copyTextWithLazyToolFeedback } from "@/features/tool-shell/lazy-tool-action-feedback"
+import { InlineToolActionFeedback, useInlineToolActionFeedback } from "@/features/tool-shell/inline-tool-action-feedback"
 import { SensitiveInputWarning } from "@/features/tool-shell/sensitive-input-warning"
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
-import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { decodeJwtParts, JwtDecodeError, type JwtClaimSemantic, type JwtDecodeErrorCode, type JwtSemanticSummary } from "./utils"
 import { WideToolPageContainer } from "@/components/layout/page-container"
 
@@ -52,6 +52,7 @@ export function JwtDecoderPage() {
     const [payload, setPayload] = React.useState("")
     const [error, setError] = React.useState<string | null>(null)
     const [semantics, setSemantics] = React.useState<JwtSemanticSummary | null>(null)
+    const { feedback: copyFeedback, run: runCopyAction } = useInlineToolActionFeedback()
 
     const { resolvedTheme } = useThemePreference()
     const monacoTheme = getByteflowMonacoThemeName(resolvedTheme)
@@ -93,41 +94,35 @@ export function JwtDecoderPage() {
         setInput(sampleJwt)
     }
 
-    const handleCopyHeader = async () => {
+    const handleCopyHeader = () => {
         if (!header) return
-        const result = await safeClipboardWrite(header)
-        if (!result.ok) {
-            toast.error(t.common.copy_failed)
-            return
-        }
-        toast.success(t.common.copied, {
-            description: toolT.header_copied || "Header copied",
-        })
+        return runCopyAction(() => copyTextWithLazyToolFeedback(
+            t,
+            header,
+            toolT.header_label,
+            toolT.header_copied || "Header copied",
+        ))
     }
 
-    const handleCopyPayload = async () => {
+    const handleCopyPayload = () => {
         if (!payload) return
-        const result = await safeClipboardWrite(payload)
-        if (!result.ok) {
-            toast.error(t.common.copy_failed)
-            return
-        }
-        toast.success(t.common.copied, {
-            description: toolT.payload_copied || "Payload copied",
-        })
+        return runCopyAction(() => copyTextWithLazyToolFeedback(
+            t,
+            payload,
+            toolT.payload_label,
+            toolT.payload_copied || "Payload copied",
+        ))
     }
 
-    const handleCopyClaim = async (claim: JwtClaimSemantic) => {
+    const handleCopyClaim = (claim: JwtClaimSemantic) => {
         const value = getClaimCopyValue(claim)
         if (!value) return
-        const result = await safeClipboardWrite(value)
-        if (!result.ok) {
-            toast.error(t.common.copy_failed)
-            return
-        }
-        toast.success(t.common.copied, {
-            description: toolT.claim_copied.replace("{claim}", claim.claim),
-        })
+        return runCopyAction(() => copyTextWithLazyToolFeedback(
+            t,
+            value,
+            claim.claim,
+            toolT.claim_copied.replace("{claim}", claim.claim),
+        ))
     }
 
     const actions: ToolAction[] = [
@@ -159,6 +154,8 @@ export function JwtDecoderPage() {
                 </div>
                 <ToolActionBar actions={actions} />
             </div>
+
+            <InlineToolActionFeedback feedback={copyFeedback} />
 
             <div className="grid gap-3 md:grid-cols-[1fr_auto]">
                 <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-900 dark:text-amber-100">

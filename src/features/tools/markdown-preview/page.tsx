@@ -4,7 +4,8 @@ import * as React from "react"
 import dynamic from "next/dynamic"
 import { Copy, Eye, Code2, Download, Trash2, ShieldCheck } from "lucide-react"
 import { useLang } from "@/core/i18n/lang-provider"
-import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { copyTextWithLazyToolFeedback } from "@/features/tool-shell/lazy-tool-action-feedback"
+import { InlineToolActionFeedback, useInlineToolActionFeedback } from "@/features/tool-shell/inline-tool-action-feedback"
 import { buildMarkdownExportDocument, sanitizeMarkdownPreviewHtml } from "./export"
 import { WideToolPageContainer } from "@/components/layout/page-container"
 
@@ -138,6 +139,7 @@ export function MarkdownPreviewPage() {
     const deferredMarkdown = React.useDeferredValue(markdown)
     const [previewEnabled, setPreviewEnabled] = React.useState(false)
     const toolT = t.tools["markdown_preview"] as Record<string, string>
+    const { feedback: copyFeedback, run: runCopyAction } = useInlineToolActionFeedback()
     const editorVisible = view === "editor" || view === "split"
     const previewVisible = view === "preview" || view === "split"
 
@@ -186,13 +188,8 @@ export function MarkdownPreviewPage() {
         }
     }, [previewEnabled, previewVisible])
 
-    const handleCopy = async () => {
-        const result = await safeClipboardWrite(markdown)
-        if (!result.ok) {
-            await notifyError(t.common.copy_failed)
-            return
-        }
-        await notifySuccess(t.common.copied, toolT.copied_md)
+    const handleCopy = () => {
+        return runCopyAction(() => copyTextWithLazyToolFeedback(t, markdown, toolT.md_source, toolT.copied_md))
     }
 
     const handleCopyHtml = async () => {
@@ -202,12 +199,12 @@ export function MarkdownPreviewPage() {
             return
         }
 
-        const result = await safeClipboardWrite(sanitizeMarkdownPreviewHtml(previewHtml))
-        if (!result.ok) {
-            await notifyError(t.common.copy_failed)
-            return
-        }
-        await notifySuccess(t.common.copied, toolT.copied_html)
+        return runCopyAction(() => copyTextWithLazyToolFeedback(
+            t,
+            sanitizeMarkdownPreviewHtml(previewHtml),
+            toolT.copy_html,
+            toolT.copied_html,
+        ))
     }
 
     const handleDownloadHtml = () => {
@@ -303,6 +300,8 @@ export function MarkdownPreviewPage() {
                     </button>
                 </div>
             </div>
+
+            <InlineToolActionFeedback feedback={copyFeedback} />
 
             {/* Content */}
             <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
