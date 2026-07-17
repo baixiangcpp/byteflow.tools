@@ -1035,7 +1035,7 @@
     {
       "file": "src/components/layout/app-runtime.tsx",
       "element": "div",
-      "line": 267,
+      "line": 255,
       "reason": "runtime-banner",
       "maxWidthTokens": [
         "max-w-6xl"

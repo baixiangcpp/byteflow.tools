@@ -20,6 +20,28 @@ type PwaInstallPromptWindow = Window & {
     [PWA_INSTALL_PROMPT_SLOT]?: BeforeInstallPromptEvent | null
 }
 
+export function isPwaInstalled(): boolean {
+    if (typeof window === "undefined") return false
+
+    let standaloneDisplayMode = false
+    try {
+        standaloneDisplayMode = typeof window.matchMedia === "function"
+            && window.matchMedia("(display-mode: standalone)").matches
+    } catch {
+        standaloneDisplayMode = false
+    }
+
+    const iosStandalone = (window.navigator as Navigator & { standalone?: boolean }).standalone === true
+    let persistedInstalledFlag = false
+    try {
+        persistedInstalledFlag = window.localStorage.getItem(PWA_INSTALL_INSTALLED_KEY) === "1"
+    } catch {
+        persistedInstalledFlag = false
+    }
+
+    return standaloneDisplayMode || iosStandalone || persistedInstalledFlag
+}
+
 function readWindowPrompt(): BeforeInstallPromptEvent | null {
     if (typeof window === "undefined") return null
     return (window as PwaInstallPromptWindow)[PWA_INSTALL_PROMPT_SLOT] ?? null

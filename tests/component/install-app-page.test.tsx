@@ -5,6 +5,7 @@ import {
     capturePwaInstallPrompt,
     consumePwaInstallPrompt,
     getPwaInstallPromptSnapshot,
+    PWA_INSTALL_INSTALLED_KEY,
 } from "@/core/pwa/install-prompt-store"
 import { getAllToolsHref } from "@/core/routing/all-tools-route"
 import { getInstallPageCopy } from "@/core/utils/install-app-copy"
@@ -30,6 +31,7 @@ vi.mock("@/core/analytics/analytics", () => ({
 describe("install app page", () => {
     beforeEach(() => {
         consumePwaInstallPrompt()
+        window.localStorage.clear()
         if (!window.matchMedia) {
             Object.defineProperty(window, "matchMedia", {
                 writable: true,
@@ -203,5 +205,44 @@ describe("install app page", () => {
         await waitFor(() => expect(prompt).toHaveBeenCalledTimes(1))
         await waitFor(() => expect(getPwaInstallPromptSnapshot()).toBeNull())
         await waitFor(() => expect(screen.getAllByText(copy.manualHint).length).toBeGreaterThan(0))
+    })
+
+    it("restores persisted install evidence and clears it when a fresh prompt arrives", async () => {
+        const copy = getInstallPageCopy("en")
+        window.localStorage.setItem(PWA_INSTALL_INSTALLED_KEY, "1")
+
+        render(
+            <InstallAppClient
+                locale="en"
+                copy={copy}
+                allToolsLabel="All tools"
+                trustCenterLabel="Trust Center"
+                localDataControlsLabel="Local data controls"
+                distributionResearchLabel="Extension and desktop research"
+                offlineMatrixTitle="Offline support matrix"
+                offlineMatrixDescription="Review which workflows keep running after cache warm-up."
+                offlineMatrixLink="Offline matrix"
+            />,
+        )
+
+        await waitFor(() => {
+            const installedActions = screen.getAllByRole("button", { name: copy.alreadyInstalled })
+            expect(installedActions).toHaveLength(2)
+            installedActions.forEach((action) => expect(action).toBeDisabled())
+        })
+
+        const beforeInstallPromptEvent = Object.assign(new Event("beforeinstallprompt", { cancelable: true }), {
+            prompt: vi.fn().mockResolvedValue(undefined),
+            userChoice: Promise.resolve({ outcome: "dismissed", platform: "web" }),
+        })
+        await act(async () => {
+            capturePwaInstallPrompt(beforeInstallPromptEvent)
+        })
+
+        expect(window.localStorage.getItem(PWA_INSTALL_INSTALLED_KEY)).toBeNull()
+        await waitFor(() => {
+            expect(screen.getAllByRole("button", { name: copy.installNow })).toHaveLength(2)
+        })
+        expect(screen.queryByRole("button", { name: copy.alreadyInstalled })).not.toBeInTheDocument()
     })
 })

@@ -11,19 +11,13 @@ import type { Locale } from "@/core/i18n/i18n"
 import { JsonLdScript } from "@/core/seo/components/json-ld-script"
 import {
     consumePwaInstallPrompt,
+    isPwaInstalled,
     usePwaInstallPrompt,
 } from "@/core/pwa/install-prompt-store"
 import { clearByteflowPwaCaches } from "@/core/storage/pwa-cache-controls"
 import type { GuidePlatform, InstallPageCopy } from "@/core/utils/install-app-copy"
 import { StaticPageContainer } from "@/components/layout/page-container"
 import { detectInstallGuidePlatform } from "../install-guide-platform"
-
-function isStandaloneInstalled() {
-    if (typeof window === "undefined") return false
-    const standaloneDisplayMode = window.matchMedia("(display-mode: standalone)").matches
-    const iosStandalone = (window.navigator as Navigator & { standalone?: boolean }).standalone === true
-    return standaloneDisplayMode || iosStandalone
-}
 
 const BENEFIT_ICON_BY_KEY = {
     instant_launch: Zap,
@@ -81,7 +75,7 @@ export function InstallAppClient({
     }, [locale])
 
     React.useEffect(() => {
-        setInstalled(isStandaloneInstalled())
+        setInstalled(isPwaInstalled())
 
         const onInstalled = () => {
             setInstalled(true)
