@@ -104,7 +104,7 @@ describe("phase 3 pipeline builder page", () => {
 
         expect(screen.getByRole("heading", { name: "Pipeline Builder" })).toBeInTheDocument()
         expect(screen.getByRole("heading", { name: "Build a recipe in three moves" })).toBeInTheDocument()
-        expect(screen.getByRole("toolbar", { name: "Tool actions" })).toBeInTheDocument()
+        expect(screen.getByRole("group", { name: "Tool actions" })).toBeInTheDocument()
         expect(screen.getByLabelText("Initial input")).toBeInTheDocument()
         expect(screen.getByLabelText("Final output")).toBeInTheDocument()
         expect(screen.getAllByText("Steps").length).toBeGreaterThan(0)
@@ -310,13 +310,13 @@ describe("phase 3 pipeline builder page", () => {
         expect(screen.getByRole("button", { name: "Export structure only" })).toBeInTheDocument()
     }, 10_000)
 
-    it("restores privacy dialog focus for toolbar and inspector actions", async () => {
+    it("restores privacy dialog focus for action-bar and inspector actions", async () => {
         renderWithEnglish(<PipelineBuilderPage />)
 
-        const toolbar = screen.getByRole("toolbar", { name: "Tool actions" })
-        const toolbarExport = within(toolbar).getByRole("button", { name: "Export JSON" })
-        toolbarExport.focus()
-        fireEvent.click(toolbarExport)
+        const actionGroup = screen.getByRole("group", { name: "Tool actions" })
+        const actionGroupExport = within(actionGroup).getByRole("button", { name: "Export JSON" })
+        actionGroupExport.focus()
+        fireEvent.click(actionGroupExport)
 
         const firstDialog = await screen.findByRole("dialog", { name: "Privacy preview" })
         expect(firstDialog).toHaveAccessibleDescription("Export a structure-only JSON recipe file.")
@@ -339,14 +339,14 @@ describe("phase 3 pipeline builder page", () => {
         fireEvent.keyDown(document, { key: "Escape" })
 
         await waitFor(() => expect(screen.queryByRole("dialog", { name: "Privacy preview" })).not.toBeInTheDocument())
-        await waitFor(() => expect(toolbarExport).toHaveFocus())
+        await waitFor(() => expect(actionGroupExport).toHaveFocus())
 
-        fireEvent.click(toolbarExport)
+        fireEvent.click(actionGroupExport)
         const cancelDialog = await screen.findByRole("dialog", { name: "Privacy preview" })
         fireEvent.click(within(cancelDialog).getByRole("button", { name: "Cancel" }))
 
         await waitFor(() => expect(screen.queryByRole("dialog", { name: "Privacy preview" })).not.toBeInTheDocument())
-        await waitFor(() => expect(toolbarExport).toHaveFocus())
+        await waitFor(() => expect(actionGroupExport).toHaveFocus())
 
         const inspector = screen.getByRole("complementary", { name: "Recipe inspector" })
         const inspectorExport = within(inspector).getByRole("button", { name: "Export JSON" })

@@ -45,9 +45,12 @@ describe("ToolActionBar", () => {
 
         render(<ToolActionBar actions={actions} />)
 
-        const toolbar = screen.getByRole("toolbar", { name: "Tool actions" })
-        const labels = within(toolbar).getAllByRole("button").map((button) => button.textContent)
+        const actionGroup = screen.getByRole("group", { name: "Tool actions" })
+        const actionButtons = within(actionGroup).getAllByRole("button")
+        const labels = actionButtons.map((button) => button.textContent)
 
+        expect(screen.queryByRole("toolbar", { name: "Tool actions" })).not.toBeInTheDocument()
+        expect(actionButtons.filter((button) => !button.hasAttribute("disabled")).every((button) => button.tabIndex === 0)).toBe(true)
         expect(labels).toEqual(["Sample", "Clear", "Format", "Copy", "Download"])
         expect(screen.getByRole("button", { name: "Download", description: "Nothing to download." })).toHaveAttribute("title", "Download: Nothing to download.")
     })

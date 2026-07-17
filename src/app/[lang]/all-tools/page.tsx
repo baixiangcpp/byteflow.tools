@@ -142,6 +142,7 @@ export default async function AllToolsPage({ params }: { params: Promise<{ lang:
                     popularTags: requireTranslationValue(t.common.popular_tags, "common.popular_tags"),
                     removeFilter: requireTranslationValue(t.common.remove_filter, "common.remove_filter"),
                     showFilters: requireTranslationValue(t.common.show_filters, "common.show_filters"),
+                    showFiltersWithCount: requireTranslationValue(t.common.show_filters_with_count, "common.show_filters_with_count"),
                     showFewerTools: requireTranslationValue(t.common.show_fewer_tools, "common.show_fewer_tools"),
                     showMoreTools: requireTranslationValue(t.common.show_more_tools, "common.show_more_tools"),
                     closeFilters: requireTranslationValue(t.common.close_filters, "common.close_filters"),

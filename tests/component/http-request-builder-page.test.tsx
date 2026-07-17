@@ -126,7 +126,7 @@ describe("HttpRequestBuilderPage", () => {
 
         expect(screen.getByRole("group", { name: "Add to favorites / Remove from favorites" })).toHaveAttribute("data-tool-global-actions")
         expect(screen.getByRole("button", { name: "Add to favorites" })).toBeInTheDocument()
-        expect(screen.getByRole("toolbar", { name: "Tool actions" })).toBeInTheDocument()
+        expect(screen.getByRole("group", { name: "Tool actions" })).toBeInTheDocument()
 
         fireEvent.click(screen.getByRole("button", { name: "Add Header" }))
         fireEvent.change(screen.getAllByRole("textbox", { name: "Header name" })[1], {

@@ -458,6 +458,7 @@
     "input_url_domain": "URL/ドメイン",
     "remove_filter": "フィルターを削除",
     "show_filters": "フィルターを表示",
+    "show_filters_with_count": "フィルターを表示（適用中: {count} 件）",
     "show_fewer_tools": "少なく表示",
     "show_more_tools": "もっと表示",
     "use_case_encode": "エンコード/デコード",

@@ -23,7 +23,8 @@ describe("shared accessibility surfaces", () => {
     it("keeps the shared tool action bar named and described", () => {
         const source = readSource("src/features/tool-shell/tool-action-bar.tsx")
 
-        expect(source).toContain("role=\"toolbar\"")
+        expect(source).toContain("role=\"group\"")
+        expect(source).not.toContain("role=\"toolbar\"")
         expect(source).toContain("aria-label={t.common.tool_actions}")
         expect(source).toContain("aria-describedby={disabledDescriptionId}")
         expect(source).toContain("aria-describedby={handoffDisabledDescriptionId}")
@@ -66,8 +67,10 @@ describe("shared accessibility surfaces", () => {
         for (const source of [youtube, vimeo, instagram]) {
             expect(source).toContain("ExternalRequestStatus")
         }
-        expect(externalRequestStatus).toContain('role={role}')
-        expect(externalRequestStatus).toContain('aria-live={role === "alert" ? "assertive" : "polite"}')
+        expect(externalRequestStatus).toContain('role="status"')
+        expect(externalRequestStatus).toContain('aria-live="polite"')
+        expect(externalRequestStatus).toContain('role="alert"')
+        expect(externalRequestStatus).toContain('{role === "alert" ? announcement : ""}')
         expect(externalRequestStatus).toContain("data-external-request-status")
     })
 })
