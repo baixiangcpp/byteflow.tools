@@ -273,7 +273,7 @@ export function ToolActionBar({
     return (
         <div
             className={joinClasses("flex w-full flex-wrap items-center gap-2 sm:w-auto", className)}
-            role="toolbar"
+            role="group"
             aria-label={t.common.tool_actions}
         >
             {primaryActions.map((action) => {

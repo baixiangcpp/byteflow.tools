@@ -17,7 +17,7 @@ Scope: representative dynamic tool interfaces for BF-037.
 - All Tools: search exposes the result-count status as its accessible description; filtered result counts announce through a polite live region; the mobile filter drawer has a dialog name, description, trapped focus, Escape close, and focus restoration.
 - Pipeline Builder: final output is label-associated; run-log status announces through a polite live region; the run-log table has an accessible name; run failures expose an alert.
 - External-request media flow: confirmation panel identifies the destination/purpose/data sent; preview/download actions remain disabled with accessible descriptions until explicit confirmation.
-- Shared tool actions: action groups expose a toolbar label; disabled actions use visible button names plus programmatic descriptions, without exposing tool payloads.
+- Shared tool actions: action groups expose a named group container; disabled actions use visible button names plus programmatic descriptions, without exposing tool payloads.
 - Copy, download, export, save, and share feedback: toast title/description text is mirrored into the shared polite status region so success and failure states are announced consistently.
 
 ## Automated Coverage

@@ -167,10 +167,12 @@ describe("shared tool shell status and output components", () => {
         )
 
         const permissionStatus = screen.getByRole("status")
+        const failureAlert = screen.getByRole("alert")
         expect(permissionStatus.closest('[data-external-request-status="permission"]')).not.toBeNull()
         expect(permissionStatus).toHaveAttribute("aria-live", "polite")
         expect(permissionStatus.childNodes).toHaveLength(1)
         expect(permissionStatus.firstChild?.nodeType).toBe(Node.TEXT_NODE)
+        expect(failureAlert).toBeEmptyDOMElement()
 
         rerender(
             <LangProvider lang="en" translations={getTranslation("en")}>
@@ -184,7 +186,9 @@ describe("shared tool shell status and output components", () => {
         )
 
         expect(screen.getByRole("alert").closest('[data-external-request-status="offline"]')).not.toBeNull()
-        expect(screen.getByRole("alert")).toHaveAttribute("aria-live", "assertive")
+        expect(screen.getByRole("alert")).not.toHaveAttribute("aria-live")
+        expect(screen.getByRole("alert")).toHaveAttribute("data-external-request-announcement")
+        expect(permissionStatus).toBeEmptyDOMElement()
     })
 
     it("exposes external request status, next step, hosts, and alert semantics for failures", () => {
@@ -201,5 +205,6 @@ describe("shared tool shell status and output components", () => {
         expect(screen.getByRole("alert")).toHaveTextContent("What to do next: Reconnect and retry.")
         expect(screen.getByRole("alert")).toHaveTextContent("i.ytimg.com")
         expect(screen.getByRole("alert")).toHaveTextContent("Network access starts only after you choose the external-request action.")
+        expect(screen.getByRole("status")).toBeEmptyDOMElement()
     })
 })

@@ -458,6 +458,7 @@
     "input_url_domain": "URL/domain",
     "remove_filter": "Remove filter",
     "show_filters": "Show filters",
+    "show_filters_with_count": "Show filters. Active filters: {count}",
     "show_fewer_tools": "Show fewer",
     "show_more_tools": "Show more",
     "use_case_encode": "Encode/decode",

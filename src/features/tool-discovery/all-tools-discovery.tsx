@@ -102,6 +102,7 @@ type AllToolsDiscoveryLabels = {
     removeFilter: string
     closeFilters: string
     showFilters: string
+    showFiltersWithCount: string
     showFewerTools: string
     showMoreTools: string
     clearRecentTools: string
@@ -925,6 +926,7 @@ export function AllToolsDiscovery({
                     type="button"
                     className="mt-4 flex min-h-11 w-full items-center justify-between gap-3 rounded-lg border border-border/70 bg-background/45 px-3 text-sm font-medium focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/45 lg:hidden"
                     onClick={() => setShowMobileFilters(true)}
+                    aria-label={labels.showFiltersWithCount.replace("{count}", String(activeFilters.length))}
                     aria-expanded={showMobileFilters}
                     aria-controls="all-tools-filter-drawer"
                     aria-describedby="all-tools-result-status"

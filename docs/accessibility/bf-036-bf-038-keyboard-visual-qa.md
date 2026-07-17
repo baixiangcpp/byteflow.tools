@@ -31,7 +31,7 @@ Scope: representative navigation, discovery, tool action, upload, and output sur
 ## Automated Coverage
 
 - `tests/guards/focus-visible-guard.test.ts` prevents removing visible focus rings from app/component surfaces.
-- `tests/guards/shared-a11y-surfaces.test.ts` guards All Tools dialog focus trap/restore behavior, shared action toolbar names, and Pipeline Builder run status.
+- `tests/guards/shared-a11y-surfaces.test.ts` guards All Tools dialog focus trap/restore behavior, shared action-group names, and Pipeline Builder run status.
 - `tests/guards/a11y-mobile-baseline.test.ts` guards skip-link behavior, live toast feedback, mobile touch target baseline, and core mobile routes.
 - `tests/guards/all-tools-performance-a11y-guard.test.ts` guards disabled explanations plus long-text/mobile containment on All Tools.
 - `tests/guards/theme-contrast-token-guard.test.ts` checks light/dark foreground and muted text contrast tokens against WCAG AA.

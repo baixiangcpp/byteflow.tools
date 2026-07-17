@@ -458,6 +458,7 @@
     "input_url_domain": "URL/도메인",
     "remove_filter": "필터 제거",
     "show_filters": "필터 표시",
+    "show_filters_with_count": "필터 표시, 적용됨 {count}개",
     "show_fewer_tools": "줄여 보기",
     "show_more_tools": "더 보기",
     "use_case_encode": "인코드/디코드",

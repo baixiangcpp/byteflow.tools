@@ -92,11 +92,17 @@ export function ExternalRequestStatus({
             </div>
             <span
                 className="sr-only"
-                role={role}
-                aria-live={role === "alert" ? "assertive" : "polite"}
+                role="status"
+                aria-live="polite"
                 aria-atomic="true"
-                data-external-request-announcement
-            >{announcement}</span>
+                data-external-request-announcement={role === "status" ? true : undefined}
+            >{role === "status" ? announcement : ""}</span>
+            <span
+                className="sr-only"
+                role="alert"
+                aria-atomic="true"
+                data-external-request-announcement={role === "alert" ? true : undefined}
+            >{role === "alert" ? announcement : ""}</span>
         </section>
     )
 }

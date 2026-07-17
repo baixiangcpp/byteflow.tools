@@ -112,6 +112,7 @@ const discoveryLabels = {
     popularTags: "Popular tags",
     removeFilter: "Remove filter",
     showFilters: "Show filters",
+    showFiltersWithCount: "Show filters. Active filters: {count}",
     showFewerTools: "Show fewer",
     showMoreTools: "Show more",
     closeFilters: "Done",

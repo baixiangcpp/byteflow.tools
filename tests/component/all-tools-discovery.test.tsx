@@ -40,6 +40,7 @@ const labels = {
     popularTags: "Popular tags",
     removeFilter: "Remove filter",
     showFilters: "Show filters",
+    showFiltersWithCount: "Show filters. Active filters: {count}",
     showFewerTools: "Show fewer",
     showMoreTools: "Show more",
     closeFilters: "Done",
@@ -387,6 +388,7 @@ describe("AllToolsDiscovery", () => {
         renderDiscovery()
 
         const trigger = screen.getByRole("button", { name: /Show filters/ })
+        expect(trigger).toHaveAccessibleName("Show filters. Active filters: 0")
         trigger.focus()
         fireEvent.click(trigger)
 
@@ -396,9 +398,11 @@ describe("AllToolsDiscovery", () => {
         expect(within(drawer).getByText(/10 tools/)).toBeInTheDocument()
         fireEvent.click(within(drawer).getAllByRole("button", { name: "File" })[0])
         expect(within(drawer).getByText(/1 tools/)).toBeInTheDocument()
+        expect(trigger).toHaveAccessibleName("Show filters. Active filters: 1")
 
         fireEvent.click(within(drawer).getByRole("button", { name: "Clear filters" }))
         expect(within(drawer).getByText(/10 tools/)).toBeInTheDocument()
+        expect(trigger).toHaveAccessibleName("Show filters. Active filters: 0")
 
         const doneButtons = within(drawer).getAllByRole("button", { name: "Done" })
         fireEvent.click(doneButtons[doneButtons.length - 1])

@@ -458,6 +458,7 @@
     "input_url_domain": "URL/域名",
     "remove_filter": "移除筛选",
     "show_filters": "显示筛选",
+    "show_filters_with_count": "显示筛选，已选 {count} 项",
     "show_fewer_tools": "收起",
     "show_more_tools": "显示更多",
     "use_case_encode": "编码/解码",
