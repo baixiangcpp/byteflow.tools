@@ -2,11 +2,11 @@
 
 import * as React from "react"
 import { Copy, CalendarClock, Eraser } from "lucide-react"
-import { toast } from "sonner"
 import { Button } from "@/components/ui/button"
 import { useLang } from "@/core/i18n/lang-provider"
 import { Input } from "@/components/ui/input"
-import { safeClipboardWrite } from "@/core/clipboard/clipboard"
+import { copyTextWithLazyToolFeedback } from "@/features/tool-shell/lazy-tool-action-feedback"
+import { InlineToolActionFeedback, useInlineToolActionFeedback } from "@/features/tool-shell/inline-tool-action-feedback"
 import type { Locale } from "@/core/i18n/i18n"
 import cronstrue from "cronstrue/i18n.js"
 import {
@@ -43,6 +43,7 @@ export function CrontabGeneratorPage() {
     const [cronString, setCronString] = React.useState("* * * * *")
     const [description, setDescription] = React.useState("")
     const [error, setError] = React.useState<string | null>(null)
+    const { feedback: copyFeedback, run: runCopyAction } = useInlineToolActionFeedback()
 
     const parts = parseCronParts(cronString)
     const fieldDefinitions = getCronFieldDefinitions(parts.length)
@@ -86,16 +87,14 @@ export function CrontabGeneratorPage() {
         }
     }, [cronLocale, cronString, toolT.invalid_expression])
 
-    const handleCopy = async () => {
+    const handleCopy = () => {
         if (!cronString || error) return
-        const result = await safeClipboardWrite(cronString)
-        if (!result.ok) {
-            toast.error(t.common.copy_failed)
-            return
-        }
-        toast.success(t.common.copied, {
-            description: toolT.copy_expression_success,
-        })
+        return runCopyAction(() => copyTextWithLazyToolFeedback(
+            t,
+            cronString,
+            toolT.copy_expression,
+            toolT.copy_expression_success,
+        ))
     }
 
     const handleClear = () => {
@@ -124,6 +123,8 @@ export function CrontabGeneratorPage() {
                     </Button>
                 </div>
             </div>
+
+            <InlineToolActionFeedback feedback={copyFeedback} />
 
             <div className="grid grid-cols-1 gap-8">
 

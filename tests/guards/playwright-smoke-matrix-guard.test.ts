@@ -74,6 +74,15 @@ describe("playwright smoke matrix guard", () => {
         expect(SMOKE_SOURCE).toContain('getByRole("dialog", { name: /Show filters/i })')
         expect(SMOKE_SOURCE).toContain("assertNoHorizontalOverflow")
         expect(SMOKE_SOURCE).toContain("clickCopyAndExpectToast")
+        const copyHelper = SMOKE_SOURCE.match(
+            /async function clickCopyAndExpectToast[\s\S]*?(?=\nasync function assertMobileToolJourney)/
+        )?.[0]
+        expect(copyHelper).toBeDefined()
+        expect(copyHelper).not.toContain("waitForTimeout")
+        expect(copyHelper).toContain("[data-sonner-toast], [data-inline-tool-action-feedback]")
+        expect(copyHelper).toContain("Number.parseFloat(style.opacity) >= 0.99")
+        expect(copyHelper).toContain("rect.bottom <= viewportBottom + 1")
+        expect(copyHelper).not.toContain("page.getByText(/copied/i)")
         expect(SMOKE_SOURCE).toContain("MOBILE_REVIEW_ROUTES")
         expect(SMOKE_SOURCE).toContain('"/en/install-app"')
         expect(SMOKE_SOURCE).toContain('"/en/trust-center"')

@@ -4,8 +4,9 @@ import * as React from "react"
 import { Copy, Download, ExternalLink, QrCode, RotateCcw, TestTube2, Trash2, Upload } from "lucide-react"
 import { useLang } from "@/core/i18n/lang-provider"
 import { ToolActionBar, type ToolAction, type ToolActionResult } from "@/features/tool-shell/tool-action-bar"
+import { copyTextWithLazyToolFeedback } from "@/features/tool-shell/lazy-tool-action-feedback"
+import { InlineToolActionFeedback, useInlineToolActionFeedback } from "@/features/tool-shell/inline-tool-action-feedback"
 import { RelatedTools } from "@/core/seo/components/related-tools"
-import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { FILE_INPUT_POLICIES, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
 import { parseSafeExternalUrl } from "@/core/security/external-url"
 import {
@@ -67,6 +68,7 @@ export function QrCodeGeneratorPage() {
     const [decodeError, setDecodeError] = React.useState("")
     const [decodeFileName, setDecodeFileName] = React.useState("")
     const [decodeDragActive, setDecodeDragActive] = React.useState(false)
+    const { feedback: copyFeedback, run: runCopyAction } = useInlineToolActionFeedback()
 
     const canvasRef = React.useRef<HTMLCanvasElement>(null)
     const logoInputRef = React.useRef<HTMLInputElement>(null)
@@ -221,12 +223,13 @@ export function QrCodeGeneratorPage() {
 
     const handleCopyDataUrl = async () => {
         if (!dataUrl) return
-        const result = await safeClipboardWrite(dataUrl)
-        if (!result.ok) {
-            await notifyError(t.common.copy_failed)
-            return
-        }
-        await notifySuccess(t.common.copied, textFor("copied_data_url"))
+        const result = await runCopyAction(() => copyTextWithLazyToolFeedback(
+            t,
+            dataUrl,
+            t.common.output,
+            textFor("copied_data_url"),
+        ))
+        return result.announce ? { ...result, announce: false } : result
     }
 
     const handleReset = () => {
@@ -279,13 +282,13 @@ export function QrCodeGeneratorPage() {
 
     const handleCopyDecoded = async (): Promise<ToolActionResult> => {
         if (!decodedPayload) return { status: "failed", message: t.common.copy_failed }
-        const result = await safeClipboardWrite(decodedPayload)
-        if (!result.ok) {
-            await notifyError(t.common.copy_failed)
-            return { status: "failed", message: t.common.copy_failed }
-        }
-        await notifySuccess(t.common.copied, textFor("decode_copy_success"))
-        return { status: "success", message: textFor("decode_copy_success") }
+        const result = await runCopyAction(() => copyTextWithLazyToolFeedback(
+            t,
+            decodedPayload,
+            textFor("decode_result"),
+            textFor("decode_copy_success"),
+        ))
+        return result.announce ? { ...result, announce: false } : result
     }
 
     const generateActions: ToolAction[] = [
@@ -376,6 +379,8 @@ export function QrCodeGeneratorPage() {
                 <QrModeTabs mode={mode} onChange={setMode} textFor={textFor} />
                 <ToolActionBar actions={mode === "generate" ? generateActions : decodeActions} />
             </div>
+
+            <InlineToolActionFeedback feedback={copyFeedback} />
 
             {mode === "generate" ? (
                 <QrGeneratePanel

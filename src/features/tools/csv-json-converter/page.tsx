@@ -6,8 +6,9 @@ import { useLang } from "@/core/i18n/lang-provider"
 import { useThemePreference } from "@/hooks/use-theme-preference"
 import { ensureByteflowMonacoThemes, getByteflowMonacoThemeName } from "@/core/utils/monaco-theme"
 import { MonacoEditor } from "@/features/tool-shell/monaco-editors"
+import { copyTextWithLazyToolFeedback } from "@/features/tool-shell/lazy-tool-action-feedback"
+import { InlineToolActionFeedback, useInlineToolActionFeedback } from "@/features/tool-shell/inline-tool-action-feedback"
 import { RelatedTools } from "@/core/seo/components/related-tools"
-import { safeClipboardWrite } from "@/core/clipboard/clipboard"
 import { buildToolHandoffLink } from "@/core/routing/tool-handoff"
 import { buildInputTooLargeMessage, countNonEmptyLines, isOverUtf8Budget, TOOL_RUNTIME_BUDGETS } from "@/core/performance/tool-runtime-budgets"
 import { FILE_INPUT_POLICIES, readTextFileWithPolicy, validateFileAgainstPolicy } from "@/core/files/file-input-policy"
@@ -25,10 +26,6 @@ import { InlineButton } from "./components"
 import { CsvSettingsPanel } from "./settings-panel"
 import type { CsvJsonDiagnostic, Direction } from "./types"
 import { WideToolPageContainer } from "@/components/layout/page-container"
-async function loadToast() {
-    const { toast } = await import("sonner")
-    return toast
-}
 
 // ─── Component ──────────────────────────────────────────────────────────────
 
@@ -45,18 +42,11 @@ export function CsvJsonConverterPage() {
     const [typeInference, setTypeInference] = React.useState(true)
     const [showSettings, setShowSettings] = React.useState(false)
     const [isConverting, setIsConverting] = React.useState(false)
+    const { feedback: copyFeedback, run: runCopyAction } = useInlineToolActionFeedback()
     const convertRequestIdRef = React.useRef(0)
     const convertAbortControllerRef = React.useRef<AbortController | null>(null)
     const { resolvedTheme } = useThemePreference()
     const monacoTheme = getByteflowMonacoThemeName(resolvedTheme)
-    const notifyError = React.useCallback(async (message: string) => {
-        const toast = await loadToast()
-        toast.error(message)
-    }, [])
-    const notifySuccess = React.useCallback(async (message: string, description?: string) => {
-        const toast = await loadToast()
-        toast.success(message, description ? { description } : undefined)
-    }, [])
     React.useEffect(() => {
         removeStorageKey(INPUT_STORAGE_KEY)
 
@@ -161,14 +151,9 @@ export function CsvJsonConverterPage() {
             })
     }
 
-    const handleCopy = async () => {
+    const handleCopy = () => {
         if (!output) return
-        const result = await safeClipboardWrite(output)
-        if (!result.ok) {
-            await notifyError(t.common.copy_failed)
-            return
-        }
-        await notifySuccess(t.common.copied, t.common.copied_desc)
+        return runCopyAction(() => copyTextWithLazyToolFeedback(t, output, t.common.output, t.common.copied_desc))
     }
 
     const handleClear = () => {
@@ -294,6 +279,8 @@ export function CsvJsonConverterPage() {
                     </InlineButton>
                 </div>
             </div>
+
+            <InlineToolActionFeedback feedback={copyFeedback} />
 
             {/* Direction indicator */}
             <div className="flex items-center gap-3 text-sm">
