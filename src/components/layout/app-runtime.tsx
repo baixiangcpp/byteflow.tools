@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button"
 import { requireTranslationValue } from "@/core/i18n/i18n"
 import { useLang } from "@/core/i18n/lang-provider"
 import {
+    isPwaInstalled,
     PWA_INSTALL_INSTALLED_KEY,
     PWA_INSTALL_SESSION_PROMPTED_KEY,
     type BeforeInstallPromptEvent,
@@ -33,19 +34,6 @@ type AppRuntimeProps = {
     pathname: string
     capturedInstallPrompt?: BeforeInstallPromptEvent | null
     onInstallPromptConsumed?: () => void
-}
-
-function isPwaInstalled(): boolean {
-    if (typeof window === "undefined") return false
-    const standaloneDisplayMode = window.matchMedia("(display-mode: standalone)").matches
-    const iosStandalone = (window.navigator as Navigator & { standalone?: boolean }).standalone === true
-    let persistedInstalledFlag = false
-    try {
-        persistedInstalledFlag = window.localStorage.getItem(PWA_INSTALL_INSTALLED_KEY) === "1"
-    } catch {
-        persistedInstalledFlag = false
-    }
-    return standaloneDisplayMode || iosStandalone || persistedInstalledFlag
 }
 
 function setPwaInstallStorageValue(key: string, value: string): void {
